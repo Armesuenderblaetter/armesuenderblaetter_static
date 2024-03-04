@@ -1,5 +1,6 @@
 # project specific
 .typesense_sec
+json/
 html/
 data/editions/
 *.html
