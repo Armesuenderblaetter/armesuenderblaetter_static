@@ -1,4 +1,5 @@
 # project specific
+data/editions/
 *.html
 !search.html
 /saxon
