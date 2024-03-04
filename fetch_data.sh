@@ -1,15 +1,19 @@
 # bin/bash
 
-echo "fetching transkriptions from data_repo"
+echo "fetching transkriptions"
+# prepare folders
 rm -rf data/editions && mkdir data/editions
-rm -rf data/indices && mkdir data/indices
-rm -rf data/meta && mkdir data/meta
-curl -LO https://github.com/acdh-oeaw/dse-static-cookiecutter/dse-static-data/archive/refs/heads/main.zip
-unzip main
+# #rm -rf data/indices && mkdir data/indices
+# #rm -rf data/meta && mkdir data/meta
+# get the data
+(cd ../flugblaetter_data/ && \
+    ./shellscripts/extract_infos.sh
+) && cp ../todesurteile-daten/303_annot_tei/*.xml ./data/editions/
 
-mv ./dse-static-data-main/data/editions/ ./data
-mv ./dse-static-data-main/data/indices/ ./data
-mv ./dse-static-data-main/data/meta/ ./data
-
-rm main.zip
-rm -rf ./dse-static-data-main
+# ## distribute the data
+# #mv ./dse-static-data-main/data/editions/ ./data
+# #mv ./dse-static-data-main/data/indices/ ./data
+# #mv ./dse-static-data-main/data/meta/ ./data
+# ## clean up
+# #rm main.zip
+# #rm -rf ./dse-static-data-main
