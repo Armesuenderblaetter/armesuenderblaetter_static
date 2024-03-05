@@ -32,14 +32,16 @@ def create_records(punishments_by_id: dict):
         elif len(execution) == 0:
             # z.B.
             # 303_annot_tei/17970000_JohannMüllner-JgnazMenz-GeorgDürnböck-ThomasSchedel.xml 
-            input(f"doc {id} contains no execution")
+            #input(f"doc {id} contains no execution")
+            pass
         else:
             # z.B.
             # fb_17780827_JohannH_MichaelH
-            input(f"doc {id} contains more then one execution")
+            #input(f"doc {id} contains more then one execution")
             execution = trial_results[-1]
         document_record = {
-            "execution_date" : re.sub("-", "", execution["date"][0]) if execution else "17490000",
+            "title": doc_info["title"],
+            "execution_date" : int(re.sub("-", "", execution["date"][0])) if execution else 17490000,
             "identifier" : doc_info["id"],
             "git_file_path" : doc_info["local_path"],
             "fulltext" : doc_info["fulltext"],
@@ -58,9 +60,11 @@ def setup_collection():
             {"name": "identifier", "type": "string"},
             {"name": "git_file_path", "type": "string"},
             {"name": "fulltext", "type": "string"},
+            {"name": "title", "type": "string"}
         ],
     }
     try:
+        input(client.collections[typesense_collection_name])
         client.collections[typesense_collection_name].delete()
         print(f"resetted collection '{typesense_collection_name}'")
     except ObjectNotFound:
