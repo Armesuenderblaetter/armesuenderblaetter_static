@@ -64,7 +64,6 @@ def setup_collection():
         ],
     }
     try:
-        input(client.collections[typesense_collection_name])
         client.collections[typesense_collection_name].delete()
         print(f"resetted collection '{typesense_collection_name}'")
     except ObjectNotFound:
