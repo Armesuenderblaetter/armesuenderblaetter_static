@@ -1,4 +1,4 @@
 acdh-tei-pyutils
-
-
+typesense
+tqdm
 acdh-cfts-pyutils
