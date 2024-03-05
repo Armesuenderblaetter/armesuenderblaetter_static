@@ -6,4 +6,4 @@ To run/develop the page locally, you need access to the gitlab repository contai
 * clone this repo into a subfolder of said parent directory
 * clone the [repository fetching the data](https://github.com/Flugblatter/flugblaetter_data) into another subfolder on the same level as this repository named `flugblaetter_data`
 * start python virtual environment
-* run `./fetch_data.sh`
+* run `./build_dev.sh`
