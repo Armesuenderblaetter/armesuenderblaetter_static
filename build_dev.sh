@@ -10,6 +10,7 @@ else
     echo 'export TYPESENSE_COL_NAME=""' >> $secrets_path
     exit 1
 fi
+pip install -r requirements.txt
 ./fetch_data.sh
 python ./pyscripts/setup_typesense.py
 ant
