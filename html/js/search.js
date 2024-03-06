@@ -69,7 +69,7 @@ search.addWidgets([
                                     <td>${hit.identifier}</td>
                                 </tr>
                                 <tr>
-                                    <td><em>filepath (wrong):</em></td>
+                                    <td><em>filepath:</em></td>
                                     <td>
                                         <a href="${hit.identifier+'.html'}">
                                             ${hit.filename}
