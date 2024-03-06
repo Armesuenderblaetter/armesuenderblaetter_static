@@ -7,7 +7,7 @@ rm -rf $editions_dir && mkdir $editions_dir
 # get the data
 (cd ../flugblaetter_data/ && \
     ./shellscripts/extract_infos.sh
-) && cp ../todesurteile-daten/303_annot_tei/*.xml $editions_dir
+) && cp ../flugblaetter_data/todesurteile_master/303_annot_tei/*.xml $editions_dir
 if [ -d $json_dir ]
 then
     rm -r $json_dir
