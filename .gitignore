@@ -6,7 +6,6 @@ html/*
 !html/js/
 data/editions/
 *.html
-!search.html
 /saxon
 data/imprint.xml
 /static-search
