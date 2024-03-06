@@ -79,7 +79,7 @@ search.addWidgets([
                             </table>
                         </div>
                         <div class="col-md-12 p-0 m-0">
-                            <p>${hit._snippetResult.fulltext.matchedWords.length > 0 ? components.Snippet({ hit, attribute: 'fulltext' }) : ''}</p>
+                            <p>${hit._snippetResult.fulltext.matchedWords.length> 0 ? components.Snippet({ hit, attribute: 'fulltext' }) : ''}</p>
                         </div>
                     </div>
                 </a>

@@ -1,7 +1,9 @@
 # project specific
 .typesense_sec
 json/
-html/
+html/*
+!html/css/
+!html/js/
 data/editions/
 *.html
 !search.html
