@@ -43,7 +43,7 @@ def create_records(punishments_by_id: dict):
             "title": doc_info["title"],
             "execution_date" : int(re.sub("-", "", execution["date"][0])) if execution else 17490000,
             "identifier" : doc_info["id"],
-            "git_file_path" : doc_info["local_path"],
+            "filename" : doc_info["filename"],
             "fulltext" : doc_info["fulltext"],
         }
         document_records.append(document_record)
@@ -58,7 +58,7 @@ def setup_collection():
         "fields": [
             {"name": "execution_date", "type": "int32"},
             {"name": "identifier", "type": "string"},
-            {"name": "git_file_path", "type": "string"},
+            {"name": "filename", "type": "string"},
             {"name": "fulltext", "type": "string"},
             {"name": "title", "type": "string"}
         ],
