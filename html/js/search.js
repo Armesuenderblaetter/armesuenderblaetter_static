@@ -62,7 +62,7 @@ search.addWidgets([
                                 </tr>
                                 <tr>
                                     <td><em>date</em></td>
-                                    <td>${hit.date}</td>
+                                    <td>${hit.execution_date}</td>
                                 </tr>
                                 <tr>
                                     <td><em>ID:</em></td>
@@ -70,7 +70,11 @@ search.addWidgets([
                                 </tr>
                                 <tr>
                                     <td><em>filepath (wrong):</em></td>
-                                    <td>${hit.git_file_path}</td>
+                                    <td>
+                                        <a href="${hit.identifier+'.html'}">
+                                            ${hit.filename}
+                                        </a>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
