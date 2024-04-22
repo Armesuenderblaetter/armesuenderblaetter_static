@@ -10,8 +10,39 @@ page_base_url = ""
 typesense_collection_name = "flugblaetter_todesurteile"
 xml_path = "./data/editions/*.xml"
 tei_ns = ""
-json_docsindex_path = "./json/documents.json"
+json_ts_index_path = "./json/typesense_entries.json"
 json_punishments_path = "./json/punishments.json"
+
+
+# current_typesense_schema = {
+#     "name": typesense_collection_name,
+#     "enable_nested_fields": False,
+#     "default_sorting_field": "execution_date",
+#     "fields": [
+#         {"name": "execution_date", "type": "int32"},
+#         {"name": "identifier", "type": "string"},
+#         {"name": "filename", "type": "string"},
+#         {"name": "fulltext", "type": "string"},
+#         {"name": "title", "type": "string"}
+#     ],
+# }
+
+
+current_typesense_schema = {
+    "name": typesense_collection_name,
+    "enable_nested_fields": False,
+    "default_sorting_field": "sorting_date",
+    "fields": [
+        {"name": "sorting_date", "type": "int32"},
+        {"name": "title", "type": "string"},
+        {"name": "id", "type": "string"},
+        {"name": "filename", "type": "string"},
+        {"name": "fulltext", "type": "string"},
+        {"name": "print_date", "type": "string"},
+        {"name": "printer", "type": "string"},
+        {"name": "printing_location", "type": "string"},
+    ],
+}
 
 
 def load_json(path):
@@ -21,9 +52,14 @@ def load_json(path):
     return json_data
 
 
-def create_records(punishments_by_id: dict):
+def create_records():
+    docindex_json = load_json(json_ts_index_path)
+    return list(docindex_json.values())
+
+
+def create_records_bak(punishments_by_id: dict):
     document_records = []
-    docindex_json = load_json(json_docsindex_path)
+    docindex_json = load_json(json_ts_index_path)
     for id, doc_info in docindex_json.items():
         trial_results = [ punishments_by_id[e_id] for e_id in doc_info["contains_events"] if "trial_result" in e_id ]
         execution = [trial_result for trial_result in trial_results if trial_result["type"] == "execution"]
@@ -51,24 +87,12 @@ def create_records(punishments_by_id: dict):
 
 def setup_collection():
     print(f"setting up collection '{typesense_collection_name}'")
-    current_schema = {
-        "name": typesense_collection_name,
-        "enable_nested_fields": False,
-        "default_sorting_field": "execution_date",
-        "fields": [
-            {"name": "execution_date", "type": "int32"},
-            {"name": "identifier", "type": "string"},
-            {"name": "filename", "type": "string"},
-            {"name": "fulltext", "type": "string"},
-            {"name": "title", "type": "string"}
-        ],
-    }
     try:
         client.collections[typesense_collection_name].delete()
         print(f"resetted collection '{typesense_collection_name}'")
     except ObjectNotFound:
         pass
-    client.collections.create(current_schema)
+    client.collections.create(current_typesense_schema)
     print(f"created collection '{typesense_collection_name}'")
 
 
@@ -84,6 +108,11 @@ def upload_records(records):
     ]
     if errors:
         for err in errors:
+            result = re.search(
+                r',\\\"error\\\":\\\"(.*)\\\",\\\"',
+                str(err)
+            ).group(1)
+            print(f"\n\n{result}\n")
             print(err)
     else:
         print("\nno errors")
@@ -92,6 +121,6 @@ def upload_records(records):
 
 
 if __name__ == "__main__":
-    punishments_by_id = load_json(json_punishments_path)
-    records = create_records(punishments_by_id)
+    # punishments_by_id = load_json(json_punishments_path)
+    records = create_records()
     result = upload_records(records)
