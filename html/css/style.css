@@ -1,0 +1,22 @@
+div#searchPage {
+    padding: 2rem;
+}
+
+div#searchContainer {
+    padding: 2rem;
+}
+
+div#searchContainer>div {
+    padding: 1rem;
+    margin: 1rem;
+    border: solid lightgrey 3px;
+    border-radius: 15px;
+}
+
+div#searchContainer div.col-3>div{
+    padding-bottom: 2rem;
+}
+
+div#current-refinements {
+    padding-bottom: 1.5rem;
+}
