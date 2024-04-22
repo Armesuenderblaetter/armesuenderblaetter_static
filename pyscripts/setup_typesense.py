@@ -33,14 +33,15 @@ current_typesense_schema = {
     "enable_nested_fields": False,
     "default_sorting_field": "sorting_date",
     "fields": [
-        {"name": "sorting_date", "type": "int32"},
         {"name": "title", "type": "string"},
         {"name": "id", "type": "string"},
+        {"name": "sorting_date", "type": "int32"},
+        {"name": "label_date", "type": "string",  "facet": True},
         {"name": "filename", "type": "string"},
         {"name": "fulltext", "type": "string"},
         {"name": "print_date", "type": "string"},
-        {"name": "printer", "type": "string"},
-        {"name": "printing_location", "type": "string"},
+        {"name": "printer", "type": "string",  "facet": True},
+        {"name": "printing_location", "type": "string", "facet": True},
     ],
 }
 
@@ -107,6 +108,7 @@ def upload_records(records):
         msg for msg in make_index if (msg != '"{\\"success\\":true}"' and msg != '""')
     ]
     if errors:
+        print(f"\n\n\nerrors while building ts-index!!\n\n\n")
         for err in errors:
             result = re.search(
                 r',\\\"error\\\":\\\"(.*)\\\",\\\"',
