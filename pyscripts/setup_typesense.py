@@ -36,7 +36,7 @@ current_typesense_schema = {
         {"name": "title", "type": "string"},
         {"name": "id", "type": "string"},
         {"name": "sorting_date", "type": "int32"},
-        {"name": "label_date", "type": "string",  "facet": True},
+        {"name": "label_date", "type": "int32", "facet": True},
         {"name": "filename", "type": "string"},
         {"name": "fulltext", "type": "string"},
         {"name": "print_date", "type": "string"},

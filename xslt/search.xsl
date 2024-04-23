@@ -22,16 +22,17 @@
                     <div id="searchContainer" class="row">
                         <div class="col-3">
                             <div id="searchbox"></div>
+                            <h4>Jahr</h4>
                             <div id="decade">
-                                <h4>Jahr</h4>
                             </div>
+                            <h4>Drucker</h4>
                             <div id="printer">
-                                <h4>Drucker</h4>
                             </div>
+                            <h4>Druckort</h4>
                             <div id="printing_location">
-                                <h4>Druckort</h4>
                             </div>
-                            <div id="sort-by">Sortierung</div>
+                            <h4>Sortierung</h4>
+                            <div id="sort-by"></div>
                             <div id="clear-refinements"></div>
                         </div>
                         <div class="col-8">
