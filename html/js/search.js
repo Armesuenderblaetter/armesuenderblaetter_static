@@ -1,7 +1,7 @@
 var project_collection_name = "flugblaetter_todesurteile";
 var typesense_host = "typesense.acdh-dev.oeaw.ac.at";
 var typesense_port = "443";
-var typesense_search_key = "U2da3YrdRT1jkBZXhbXJWK42rMt0Rf0b";
+var typesense_search_key = "Bp1ezRAZZC2wMVqH6Xc52cR5fBQdcJij";
 
 function makeDocLink(hit) {
   return hit.git_file_path;
