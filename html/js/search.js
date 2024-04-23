@@ -120,26 +120,11 @@ search.addWidgets([
   instantsearch.widgets.sortBy({
     container: "#sort-by",
     items: [
-      { label: "Standard", value: `${project_collection_name}`},
-      { label: "Titel", value: `${project_collection_name}/title`}
-      //{ label: "Datum", value: `${project_collection_name}/sorting_date` },
+      { label: "Jahr (absteigend)", value: "flugblaetter_todesurteile"},
+      { label: "Jahr (aufsteigend)", value: "flugblaetter_todesurteile/sort/sorting_date:asc"},
+      
     ],
   }),
-
-  // instantsearch.widgets.sortBy({
-  //   container: "#sort-by",
-  //   items: [
-  //     { label: "Datum", value: `${project_collection_name}/sorting_date`},
-  //     {
-  //       label: "Titel",
-  //       value: `${project_collection_name}/title:asc`,
-  //     },
-  //     /*{
-  //       label: "Titel",
-  //       value: `${project_collection_name}/sort/creation_date:asc, bv_doc_id_num:asc, doc_internal_orderval:asc`,
-  //     },*/
-  //   ],
-  // }),
 
   instantsearch.widgets.configure({
     hitsPerPage: 20,
