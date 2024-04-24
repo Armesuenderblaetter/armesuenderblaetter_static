@@ -20,3 +20,12 @@ div#searchContainer div.col-3>div{
 div#current-refinements {
     padding-bottom: 1.5rem;
 }
+
+tr td {
+    vertical-align: top;
+}
+
+tr,
+td {
+    border: none;
+}
