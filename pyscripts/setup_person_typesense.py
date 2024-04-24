@@ -13,23 +13,27 @@ json_ts_index_path = "./json/persons.json"
 current_typesense_schema = {
     "name": typesense_collection_name,
     "enable_nested_fields": False,
-    #"default_sorting_field": "sorting_date",
+    "default_sorting_field": "sorter",
     "fields": [
+        {"name": "sorter", "type": "int32"},
         {"name": "global_id", "type": "string"},
         {"name": "forename", "type": "string"},
         {"name": "surname", "type": "string"},
+        {"name": "fullname", "type": "string"},
         {"name": "birth_place", "type": "string", "facet": True},
         {"name": "sex", "type": "string", "facet": True},
-        {"name": "age", "type": "string", "facet": True},
-        {"name": "type", "type": "string","facet": True},
-        {"name": "marriage_status", "type": "string","facet": True},
-        {"name": "faith", "type": "string","facet": True},
-        {"name": "occupation", "type": "string","facet": True},
+        {"name": "age", "type": "string", "facet": False},
+        {"name": "decade_age", "type": "string", "facet": True},
+        {"name": "type", "type": "string", "facet": True},
+        {"name": "marriage_status", "type": "string", "facet": True},
+        {"name": "faith", "type": "string", "facet": True},
+        {"name": "occupation", "type": "string", "facet": True},
         {"name": "offences", "type": "string[]", "facet": True},
         {"name": "execution", "type": "string[]", "facet": True},
         {"name": "punishments", "type": "string[]", "facet": True}
     ]
 }
+
 
 def load_json(path):
     json_data = None
@@ -41,6 +45,7 @@ def load_json(path):
 def create_records():
     docindex_json = load_json(json_ts_index_path)
     return list(docindex_json.values())
+
 
 def setup_collection():
     print(f"setting up collection '{typesense_collection_name}'")
