@@ -1,4 +1,5 @@
 #! /bin/bash
+# this rebuilds all the data & recreates all the index stuff
 secrets_path=".typesense_sec"
 if [ -f "$secrets_path" ]
 then
@@ -12,5 +13,7 @@ else
 fi
 pip install -r requirements.txt
 ./fetch_data.sh
+sleep 3
 python ./pyscripts/setup_typesense.py
+python ./pyscripts/setup_person_typesense.py
 ant
