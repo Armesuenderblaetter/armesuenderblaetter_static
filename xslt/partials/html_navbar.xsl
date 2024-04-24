@@ -35,7 +35,7 @@
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Register</a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" href="listperson.html">Personen</a>
+                                        <a class="dropdown-item" href="person_search.html">Personensuche</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="listplace.html">Orte</a>
