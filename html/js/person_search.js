@@ -46,19 +46,19 @@ search.addWidgets([
   instantsearch.widgets.searchBox({
     container: "#searchbox",
     autofocus: true,
-    cssClasses: {
+    /*cssClasses: {
       form: "form-inline",
       input: "form-control col-md-11",
       submit: "btn",
       reset: "btn",
-    },
+    },*/
   }),
 
   instantsearch.widgets.hits({
     container: "#hits",
-    cssClasses: {
+    /*cssClasses: {
       item: "w-20 border border-light rounded m-2 p-2 d-flex flex-column hover-shadow",
-    },
+    },*/
     templates: {
       empty: "Keine Resultate für <q>{{ query }}</q>",
       item(hit, { html, components }) {
@@ -132,48 +132,25 @@ search.addWidgets([
     templates: {
       resetLabel: "Filter zurücksetzen",
     },
-    cssClasses: {
+    /*cssClasses: {
       button: "btn",
-    },
+    },*/
   }),
 
   instantsearch.widgets.currentRefinements({
     container: "#current-refinements",
-    cssClasses: {
+    /*cssClasses: {
       delete: "btn",
       label: "badge",
-    },
+    },*/
   }),
 
-  // instantsearch.widgets.sortBy({
-  //   container: "#sort-by",
-  //   items: [
-  //     { label: "Jahr (absteigend)", value: "flugblaetter_todesurteile" },
-  //     {
-  //       label: "Jahr (aufsteigend)",
-  //       value: "flugblaetter_todesurteile/sort/sorting_date:asc",
-  //     },
-  //   ],
-  // }),
 
   instantsearch.widgets.configure({
     hitsPerPage: 20,
     attributesToSnippet: ["fullname"],
   }),
 
-  // instantsearch.widgets.rangeInput({
-  //   container: "#decade",
-  //   attribute: "label_date",
-  //   templates: {
-  //     separatorText: "bis",
-  //     submitText: "Suchen",
-  //   },
-  //   cssClasses: {
-  //     form: "form-inline",
-  //     input: "form-control",
-  //     submit: "btn",
-  //   },
-  // }),
 
   instantsearch.widgets.refinementList({
     container: "#name_list",
@@ -182,26 +159,26 @@ search.addWidgets([
     showMore: true,
     limit: 5,
     showMoreLimit: 1000,
-    cssClasses: {
+    /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
       count: "badge ml-2 badge-secondary hideme",
       label: "d-flex align-items-center text-capitalize",
       checkbox: "mr-2",
-    },
+    },*/
   }),
 
   instantsearch.widgets.refinementList({
     container: "#sex",
     attribute: "sex",
     searchable: false,
-    cssClasses: {
+    /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
       count: "badge ml-2 badge-secondary hideme",
       label: "d-flex align-items-center text-capitalize",
       checkbox: "mr-2",
-    },
+    },*/
   }),
 
   instantsearch.widgets.refinementList({
@@ -211,65 +188,65 @@ search.addWidgets([
     showMore: true,
     limit: 5,
     showMoreLimit: 1000,
-    cssClasses: {
+    /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
       count: "badge ml-2 badge-secondary hideme",
       label: "d-flex align-items-center text-capitalize",
       checkbox: "mr-2",
-    },
+    },*/
   }),
 
   instantsearch.widgets.refinementList({
     container: "#decade_age",
     attribute: "decade_age",
     searchable: false,
-    cssClasses: {
+    /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
       count: "badge ml-2 badge-secondary hideme",
       label: "d-flex align-items-center text-capitalize",
       checkbox: "mr-2",
-    },
+    },*/
   }),
 
   instantsearch.widgets.refinementList({
     container: "#type",
     attribute: "type",
     searchable: false,
-    cssClasses: {
+    /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
       count: "badge ml-2 badge-secondary hideme",
       label: "d-flex align-items-center text-capitalize",
       checkbox: "mr-2",
-    },
+    },*/
   }),
 
   instantsearch.widgets.refinementList({
     container: "#marriage_status",
     attribute: "marriage_status",
     searchable: false,
-    cssClasses: {
+    /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
       count: "badge ml-2 badge-secondary hideme",
       label: "d-flex align-items-center text-capitalize",
       checkbox: "mr-2",
-    },
+    },*/
   }),
 
   instantsearch.widgets.refinementList({
     container: "#faith",
     attribute: "faith",
     searchable: false,
-    cssClasses: {
+    /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
       count: "badge ml-2 badge-secondary hideme",
       label: "d-flex align-items-center text-capitalize",
       checkbox: "mr-2",
-    },
+    },*/
   }),
 
   instantsearch.widgets.refinementList({
@@ -279,13 +256,13 @@ search.addWidgets([
     showMore: true,
     limit: 5,
     showMoreLimit: 1000,
-    cssClasses: {
+    /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
       count: "badge ml-2 badge-secondary hideme",
       label: "d-flex align-items-center text-capitalize",
       checkbox: "mr-2",
-    },
+    },*/
   }),
 
   instantsearch.widgets.refinementList({
@@ -295,13 +272,13 @@ search.addWidgets([
     showMore: true,
     limit: 5,
     showMoreLimit: 1000,
-    cssClasses: {
+    /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
       count: "badge ml-2 badge-secondary hideme",
       label: "d-flex align-items-center text-capitalize",
       checkbox: "mr-2",
-    },
+    },*/
   }),
 
   instantsearch.widgets.refinementList({
@@ -311,13 +288,13 @@ search.addWidgets([
     showMore: true,
     limit: 5,
     showMoreLimit: 1000,
-    cssClasses: {
+    /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
       count: "badge ml-2 badge-secondary hideme",
       label: "d-flex align-items-center text-capitalize",
       checkbox: "mr-2",
-    },
+    },*/
   }),
 
   instantsearch.widgets.refinementList({
@@ -327,13 +304,13 @@ search.addWidgets([
     showMore: true,
     limit: 5,
     showMoreLimit: 1000,
-    cssClasses: {
+    /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
       count: "badge ml-2 badge-secondary hideme",
       label: "d-flex align-items-center text-capitalize",
       checkbox: "mr-2",
-    },
+    },*/
   }),
 ]);
 
