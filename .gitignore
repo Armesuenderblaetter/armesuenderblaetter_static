@@ -1,5 +1,5 @@
 # project specific
-data/indices
+data
 .typesense_sec
 json/
 html/*
