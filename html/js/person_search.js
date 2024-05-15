@@ -156,16 +156,13 @@ search.addWidgets([
     container: "#name_list",
     attribute: "fullname",
     searchable: true,
-    showMore: true,
-    limit: 5,
-    showMoreLimit: 1000,
-    /*cssClasses: {
-      showMore: "btn btn-secondary btn-sm align-content-center",
-      list: "list-unstyled",
-      count: "badge ml-2 badge-secondary hideme",
-      label: "d-flex align-items-center text-capitalize",
-      checkbox: "mr-2",
-    },*/
+    cssClasses: {
+      // showMore: "btn btn-secondary btn-sm align-content-center",
+      list: "facet-list-scroll",
+      // count: "badge ml-2 badge-secondary hideme",
+      // label: "d-flex align-items-center text-capitalize",
+      // checkbox: "mr-2",
+    },
   }),
 
   instantsearch.widgets.refinementList({
@@ -185,9 +182,9 @@ search.addWidgets([
     container: "#birth_place",
     attribute: "birth_place",
     searchable: true,
-    showMore: true,
-    limit: 5,
-    showMoreLimit: 1000,
+    cssClasses: {
+      list: "facet-list-scroll",
+    },
     /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
@@ -253,9 +250,9 @@ search.addWidgets([
     container: "#occupation",
     attribute: "occupation",
     searchable: true,
-    showMore: true,
-    limit: 5,
-    showMoreLimit: 1000,
+    cssClasses: {
+      list: "facet-list-scroll",
+    },
     /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
@@ -269,9 +266,9 @@ search.addWidgets([
     container: "#offences",
     attribute: "offences",
     searchable: true,
-    showMore: true,
-    limit: 5,
-    showMoreLimit: 1000,
+    cssClasses: {
+      list: "facet-list-scroll",
+    },
     /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
@@ -285,9 +282,9 @@ search.addWidgets([
     container: "#execution",
     attribute: "execution",
     searchable: true,
-    showMore: true,
-    limit: 5,
-    showMoreLimit: 1000,
+    cssClasses: {
+      list: "facet-list-scroll",
+    },
     /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
@@ -301,9 +298,9 @@ search.addWidgets([
     container: "#punishments",
     attribute: "punishments",
     searchable: true,
-    showMore: true,
-    limit: 5,
-    showMoreLimit: 1000,
+    cssClasses: {
+      list: "facet-list-scroll",
+    },
     /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",

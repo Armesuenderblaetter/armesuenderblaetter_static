@@ -13,7 +13,7 @@ div#searchContainer>div {
     border-radius: 15px;
 }
 
-div#searchContainer div.col-3>div{
+div#searchContainer div.col-3>div {
     padding-bottom: 2rem;
 }
 
@@ -30,6 +30,15 @@ td {
     border: none;
 }
 
-/* \ul.ais-CurrentRefinements-list {
-    
-} */
+
+div ul.ais-RefinementList-list {
+    padding: 0.5rem;
+}
+
+.facet-list-scroll {
+    overflow: hidden;
+    overflow-y: scroll;
+    height: 11rem;
+    border: solid rgb(204, 204, 204) .1rem;
+    border-radius: 0.3rem;
+}

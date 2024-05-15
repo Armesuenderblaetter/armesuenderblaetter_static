@@ -34,19 +34,19 @@ search.addWidgets([
   instantsearch.widgets.searchBox({
     container: "#searchbox",
     autofocus: true,
-    cssClasses: {
+    /*cssClasses: {
       form: "form-inline",
       input: "form-control col-md-11",
       submit: "btn",
       reset: "btn",
-    },
+    },*/
   }),
 
   instantsearch.widgets.hits({
     container: "#hits",
-    cssClasses: {
+    /*cssClasses: {
       item: "w-20 border border-light rounded m-2 p-2 d-flex flex-column hover-shadow",
-    },
+    },*/
     templates: {
       empty: "Keine Resultate für <q>{{ query }}</q>",
       item(hit, { html, components }) {
@@ -103,17 +103,17 @@ search.addWidgets([
     templates: {
       resetLabel: "Filter zurücksetzen",
     },
-    cssClasses: {
+    /*cssClasses: {
       button: "btn",
-    },
+    },*/
   }),
 
   instantsearch.widgets.currentRefinements({
     container: "#current-refinements",
-    cssClasses: {
+    /*cssClasses: {
       delete: "btn",
       label: "badge",
-    },
+    },*/
   }),
 
 
@@ -138,39 +138,40 @@ search.addWidgets([
       separatorText: "bis",
       submitText: "Suchen",
     },
-    cssClasses: {
+    /*cssClasses: {
       form: "form-inline",
       input: "form-control",
       submit: "btn",
-    },
+    },*/
   }),
 
   instantsearch.widgets.refinementList({
     container: "#printer",
     attribute: "printer",
     searchable: true,
-    showMore: true,
-    limit: 3,
-    cssClasses: {
+    /*cssClasses: {
+      list: "facet-list-scroll",
+    },*/
+    /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
       count: "badge ml-2 badge-secondary hideme",
       label: "d-flex align-items-center text-capitalize",
       checkbox: "mr-2",
-    },
+    },*/
   }),
 
   instantsearch.widgets.refinementList({
     container: "#printing_location",
     attribute: "printing_location",
     searchable: true,
-    cssClasses: {
+    /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
       count: "badge ml-2 badge-secondary hideme",
       label: "d-flex align-items-center text-capitalize",
       checkbox: "mr-2",
-    },
+    },*/
   }),
 ]);
 
