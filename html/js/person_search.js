@@ -66,7 +66,7 @@ search.addWidgets([
         let execution = return_html_list(hit.execution)
         let punishments = return_html_list(hit.punishments)
         return `
-          <a class="perslink" href="${hit.id + ".html"}">
+          <a class="perslink" href="persons/${hit.global_id + ".html"}">
             <head style="display: block">
               ${hit.fullname}
             </head>
