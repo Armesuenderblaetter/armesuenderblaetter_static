@@ -71,7 +71,7 @@ search.addWidgets([
               ${hit.fullname}
             </head>
           </a>
-          <a class="doclink" href="${hit.file_identifier}.html">Dokument</a>
+          <a class="doclink" href="${hit.file_identifier}.html"></a>
           <div class="col align-items-center">
             <div class="col">
               <table class="table table-sm">
