@@ -38,7 +38,8 @@ div ul.ais-RefinementList-list {
 .facet-list-scroll {
     overflow: hidden;
     overflow-y: scroll;
-    height: 11rem;
+    min-height: fit-content;
+    max-height: 11rem;
     border: solid rgb(204, 204, 204) .1rem;
     border-radius: 0.3rem;
 }
