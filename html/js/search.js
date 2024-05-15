@@ -149,6 +149,8 @@ search.addWidgets([
     container: "#printer",
     attribute: "printer",
     searchable: true,
+    showMore: true,
+    limit: 3,
     cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",

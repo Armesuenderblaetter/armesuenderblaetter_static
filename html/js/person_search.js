@@ -66,11 +66,12 @@ search.addWidgets([
         let execution = return_html_list(hit.execution)
         let punishments = return_html_list(hit.punishments)
         return `
-          <a href="${hit.id + ".html"}">
+          <a class="perslink" href="${hit.id + ".html"}">
             <head style="display: block">
               ${hit.fullname}
             </head>
           </a>
+          <a class="doclink" href="${hit.file_identifier}.html">Dokument</a>
           <div class="col align-items-center">
             <div class="col">
               <table class="table table-sm">
@@ -175,6 +176,22 @@ search.addWidgets([
   // }),
 
   instantsearch.widgets.refinementList({
+    container: "#name_list",
+    attribute: "fullname",
+    searchable: true,
+    showMore: true,
+    limit: 5,
+    showMoreLimit: 1000,
+    cssClasses: {
+      showMore: "btn btn-secondary btn-sm align-content-center",
+      list: "list-unstyled",
+      count: "badge ml-2 badge-secondary hideme",
+      label: "d-flex align-items-center text-capitalize",
+      checkbox: "mr-2",
+    },
+  }),
+
+  instantsearch.widgets.refinementList({
     container: "#sex",
     attribute: "sex",
     searchable: false,
@@ -191,6 +208,9 @@ search.addWidgets([
     container: "#birth_place",
     attribute: "birth_place",
     searchable: true,
+    showMore: true,
+    limit: 5,
+    showMoreLimit: 1000,
     cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
@@ -256,6 +276,9 @@ search.addWidgets([
     container: "#occupation",
     attribute: "occupation",
     searchable: true,
+    showMore: true,
+    limit: 5,
+    showMoreLimit: 1000,
     cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
@@ -269,6 +292,9 @@ search.addWidgets([
     container: "#offences",
     attribute: "offences",
     searchable: true,
+    showMore: true,
+    limit: 5,
+    showMoreLimit: 1000,
     cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
@@ -282,6 +308,9 @@ search.addWidgets([
     container: "#execution",
     attribute: "execution",
     searchable: true,
+    showMore: true,
+    limit: 5,
+    showMoreLimit: 1000,
     cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
@@ -295,6 +324,9 @@ search.addWidgets([
     container: "#punishments",
     attribute: "punishments",
     searchable: true,
+    showMore: true,
+    limit: 5,
+    showMoreLimit: 1000,
     cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
