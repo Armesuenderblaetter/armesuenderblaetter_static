@@ -19,7 +19,7 @@ current_typesense_schema = {
         {"name": "global_id", "type": "string"},
         {"name": "forename", "type": "string"},
         {"name": "surname", "type": "string"},
-        {"name": "fullname", "type": "string"},
+        {"name": "fullname", "type": "string", "facet": True},
         {"name": "birth_place", "type": "string", "facet": True},
         {"name": "sex", "type": "string", "facet": True},
         {"name": "age", "type": "string", "facet": False},
@@ -30,7 +30,8 @@ current_typesense_schema = {
         {"name": "occupation", "type": "string", "facet": True},
         {"name": "offences", "type": "string[]", "facet": True},
         {"name": "execution", "type": "string[]", "facet": True},
-        {"name": "punishments", "type": "string[]", "facet": True}
+        {"name": "punishments", "type": "string[]", "facet": True},
+        {"name": "file_identifier", "type": "string", "facet": False},
     ]
 }
 

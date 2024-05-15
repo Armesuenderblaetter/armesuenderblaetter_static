@@ -23,6 +23,7 @@
                         <div class="col-3">
                             <h4>Name</h4>
                             <div id="searchbox"></div>
+                            <div id="name_list"/>
                             <h4>Geschlecht</h4>
                             <div id="sex"/>
                             <h4>Alter</h4>
