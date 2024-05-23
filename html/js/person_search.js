@@ -155,6 +155,7 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#name_list",
     attribute: "fullname",
+    limit: 1000,
     searchable: true,
     cssClasses: {
       // showMore: "btn btn-secondary btn-sm align-content-center",
@@ -181,6 +182,7 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#birth_place",
     attribute: "birth_place",
+    limit: 1000,
     searchable: true,
     cssClasses: {
       list: "facet-list-scroll",
@@ -281,6 +283,7 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#execution",
     attribute: "execution",
+    limit: 1000,
     searchable: true,
     cssClasses: {
       list: "facet-list-scroll",
@@ -297,6 +300,7 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#punishments",
     attribute: "punishments",
+    limit: 1000,
     searchable: true,
     cssClasses: {
       list: "facet-list-scroll",

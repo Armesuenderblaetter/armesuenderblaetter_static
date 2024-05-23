@@ -148,10 +148,11 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#printer",
     attribute: "printer",
+    limit: 1000,
     searchable: true,
-    /*cssClasses: {
+    cssClasses: {
       list: "facet-list-scroll",
-    },*/
+    },
     /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
@@ -164,6 +165,7 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#printing_location",
     attribute: "printing_location",
+    limit: 1000,
     searchable: true,
     /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
