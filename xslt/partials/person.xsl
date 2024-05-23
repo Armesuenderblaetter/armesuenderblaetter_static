@@ -83,7 +83,7 @@
                         </th>
                         <td>
                             <ul>
-                                <xsl:for-each select="./tei:listEvent[@type='offences']/tei:ref">
+                                <xsl:for-each select="./tei:listEvent[@type='offences']/tei:rs">
                                     <li>
                                         <a href="{@target}">
                                             Vergehen x
@@ -94,16 +94,16 @@
                         </td>
                     </tr>
                 </xsl:if>
-                <xsl:if test=".//tei:ref[@type='punishment' or @type='execution']">
+                <xsl:if test=".//tei:rs[@type='punishment' or @type='execution']">
                     <tr>
                         <th>
                             Bestrafung
                         </th>
                         <td>
                             <ul>
-                                <xsl:for-each select=".//tei:ref[@type='punishment' or @type='execution']">
+                                <xsl:for-each select=".//tei:rs[@type='punishment' or @type='execution']">
                                     <li>
-                                        <a href="{@target}">
+                                        <a href="{@ref}">
                                             <xsl:choose>
                                                 <xsl:when test="@type='execution'">
                                                     Hinrichtung
@@ -126,10 +126,10 @@
                         </th>
                         <td>
                             <ul>
-                                <xsl:for-each select="./tei:listEvent/tei:event">
+                                <xsl:for-each select="./tei:noteGrp/tei:note[@type='mentions']">
                                     <li>
-                                        <a href="{replace(./tei:linkGrp/tei:link/@target, '.xml', '.html')}">
-                                            <xsl:value-of select="./tei:p/tei:title"/>
+                                        <a href="{replace(@target, '.xml', '.html')}">
+                                            <xsl:value-of select="text()"/>
                                         </a>
                                     </li>
                                 </xsl:for-each>

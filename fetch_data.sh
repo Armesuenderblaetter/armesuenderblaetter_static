@@ -7,4 +7,3 @@ echo "fetching transkriptions"
 ) && cp -r ../flugblaetter_data/out/xml/editions $data_dir &&
 cp -r ../flugblaetter_data/out/xml/indices $data_dir
 cp -r ../flugblaetter_data/out/json .
-
