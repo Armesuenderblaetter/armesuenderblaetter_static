@@ -1,0 +1,45 @@
+name: Build and publish
+
+on: 
+  workflow_dispatch
+
+jobs:
+  build_html:
+    name: Publish Edition as GitHub Pages Website
+    runs-on: ubuntu-latest
+    env:
+      ANT_OPTS: -Xmx5g
+      GITLAB_SOURCE_TOKEN: ${{ secrets.GITLAB_DATA_DOWNLOAD_TOKEN }}
+      GITHUB_ACCESS_TOKEN: ${{ secrets.GITHB_ACCESS_TOKEN }}
+      GITHUB_ACCESS_TOKEN_NAME: ${{ secrets.GITHB_ACCESS_TOKEN_NAME }}
+      GH_USERNAME: ${{ secrets.GH_USERNAME }}
+      GH_USERMAIL: ${{ secrets.GH_USERMAIL }}
+      TYPESENSE_API_KEY: ${{ secrets.TYPESENSE_API_KEY }}
+      TYPESENSE_SRCH_KEY: ${{ secrets.TYPESENSE_SRCH_KEY }}
+      TYPESENSE_COL_NAME: ${{ secrets.TYPESENSE_COL_NAME }}
+    steps:
+    - name: Perform Checkout
+      uses: actions/checkout@v4
+    - name: Install Saxon, Ant and Python
+      run: |
+        apt-get update && apt-get install openjdk-11-jre-headless ant -y --no-install-recommend
+        ./shellscripts/script.sh
+        pip install -r requirements.txt
+    - name: clone
+      run: |
+        git config --global user.email "${GH_USERMAIL}"
+        git config --global user.name "${GH_USERNAME}"
+        git config --global credential.helper cache
+        mkdir data
+        git clone https://${GITHUB_ACCESS_TOKEN_NAME}:${GITHUB_ACCESS_TOKEN}@github.com/Flugblatter/flugblaetter_data_ouput.git data
+        ./main_workflow.sh
+    - name: Build
+      run: |
+        ant
+    - name: push html to target repo
+      run: |
+        cp -r html data
+        cd data
+        git add .
+        git commit -m "$(date) new data"
+        git push
