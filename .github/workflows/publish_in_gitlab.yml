@@ -1,4 +1,4 @@
-name: Build and publish
+name: build page and push to data out
 
 on: 
   workflow_dispatch
