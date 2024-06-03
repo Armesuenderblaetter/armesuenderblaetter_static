@@ -1,4 +1,4 @@
-name: build page and push to data out
+name: build page and push on gitlab
 
 on: 
   workflow_dispatch
