@@ -10,6 +10,8 @@ jobs:
     env:
       ANT_OPTS: -Xmx5g
       GITLAB_SOURCE_TOKEN: ${{ secrets.GITLAB_DATA_DOWNLOAD_TOKEN }}
+      GITLAB_TARGET_TOKEN: ${{ secrets.GITLAB_TARGET_TOKEN }}
+      GITLAB_TARGET_TOKEN_NAME: ${{ secrets.GITLAB_TARGET_TOKEN_NAME }}
       GITHUB_ACCESS_TOKEN: ${{ secrets.GITHB_ACCESS_TOKEN }}
       GITHUB_ACCESS_TOKEN_NAME: ${{ secrets.GITHB_ACCESS_TOKEN_NAME }}
       GH_USERNAME: ${{ secrets.GH_USERNAME }}
@@ -25,21 +27,26 @@ jobs:
         apt-get update && apt-get install openjdk-11-jre-headless ant -y --no-install-recommend
         ./shellscripts/script.sh
         pip install -r requirements.txt
-    - name: clone
+    - name: clone data output repo
       run: |
         git config --global user.email "${GH_USERMAIL}"
         git config --global user.name "${GH_USERNAME}"
         git config --global credential.helper cache
-        mkdir data
-        git clone https://${GITHUB_ACCESS_TOKEN_NAME}:${GITHUB_ACCESS_TOKEN}@github.com/Flugblatter/flugblaetter_data_ouput.git data
-        ./main_workflow.sh
+        if [[ -d data ]]; then rm -r data; fi
+        mkdir data_repo
+        git clone https://${GITHUB_ACCESS_TOKEN_NAME}:${GITHUB_ACCESS_TOKEN}@github.com/Flugblatter/flugblaetter_data_ouput.git data_repo
+        ./setup_build.sh
     - name: Build
       run: |
         ant
+    - name: clone target repo
+      run: |
+        mkdir target
+        git clone "https://${GITLAB_TARGET_TOKEN_NAME}:${GITLAB_TARGET_TOKEN}@gitlab.oeaw.ac.at/acdh-ch/todesurteile/flugblaetter-static-page.git" target
     - name: push html to target repo
       run: |
-        cp -r html data
-        cd data
-        git add .
-        git commit -m "$(date) new data"
+        cp -r html target/
+        cd target
+        git add html
+        git commit -m "$(date) new html data"
         git push
