@@ -56,7 +56,7 @@ search.addWidgets([
               ${hit.title}
             </head>
           </a>
-          <div class="col align-items-center">
+          <div class="col align-items-baseline">
             <div class="col">
               <table class="table table-sm">
                 <!--<tr>
@@ -157,7 +157,7 @@ search.addWidgets([
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
       count: "badge ml-2 badge-secondary hideme",
-      label: "d-flex align-items-center text-capitalize",
+      label: "d-flex align-items-baseline text-capitalize",
       checkbox: "mr-2",
     },*/
   }),
@@ -171,7 +171,7 @@ search.addWidgets([
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
       count: "badge ml-2 badge-secondary hideme",
-      label: "d-flex align-items-center text-capitalize",
+      label: "d-flex align-items-baseline text-capitalize",
       checkbox: "mr-2",
     },*/
   }),
