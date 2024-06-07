@@ -85,7 +85,7 @@
                             <ul>
                                 <xsl:for-each select="./tei:listEvent[@type='offences']/tei:rs">
                                     <li>
-                                        <a href="{@target}">
+                                        <a href="{@ref}">
                                             Vergehen x
                                         </a>
                                     </li>
