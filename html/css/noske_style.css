@@ -1,0 +1,25 @@
+.noske-hits-head th{
+    text-align: right;
+    padding: .5rem 1rem .5rem 0;
+    border-bottom: solid black 2px;
+    border-right: solid black 2px;
+    vertical-align: bottom;
+}
+
+.noske-hits-td {
+    padding-right: 1rem;
+    vertical-align: bottom;
+    background-color: red;
+}
+
+.noske-hits-kwic {
+    background-color: blueviolet;
+}
+
+.noske-hits-left {
+    background-color: green;
+}
+
+.noske-hits-right {
+    background-color: yellow;
+}

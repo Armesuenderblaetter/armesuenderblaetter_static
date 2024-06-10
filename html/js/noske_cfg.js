@@ -1,6 +1,5 @@
-import { NoskeSearch } from "https://cdn.jsdelivr.net/npm/acdh-noske-search@0.0.7/dist/index.js";
+import { NoskeSearch } from "https://cdn.jsdelivr.net/npm/acdh-noske-search@0.0.8/dist/index.js";
 const search = new NoskeSearch({ container: "noske-search" });
-console.log("initialisiert");
 search.search({
   debug: true,
   client: {
@@ -13,20 +12,46 @@ search.search({
   hits: {
     id: "noske-hits",
     css: {
-      table: "table-auto",
+      table: "noske-hits-table",
+      div: "noske-hits-div",
+      table: "noske-hits-table",
+      thead: "noske-hits-head",
+      trHead: "noske-hits-trHead",
+      th: "noske-hits-th",
+      tbody: "noske-hits-tbody",
+      trBody: "noske-hits-trBody",
+      td: "noske-hits-td",
+      kwic: "noske-hits-kwic",
+      left: "noske-hits-left",
+      right: "noske-hits-right",
     },
   },
   pagination: {
     id: "noske-pagination",
+    css: {
+      div: "noske-pagination-div",
+      select: "noske-pagination-select",
+    },
   },
   searchInput: {
     id: "noske-input",
+    placeholder: "suchen",
+    css: {
+      div: "noske-search-div",
+      select: "noske-search-select",
+      input: "noske-search-input",
+    },
   },
   stats: {
     id: "noske-stats",
+    css: {
+      div: "stats-div",
+      label: "stats-label",
+    },
   },
   config: {
-    customUrl: "kdsjf",
-  }
+    customUrl: "",
+    urlparam: ".html"
+  },
 });
-console.log("search created");
+search.minQueryLength=1;
