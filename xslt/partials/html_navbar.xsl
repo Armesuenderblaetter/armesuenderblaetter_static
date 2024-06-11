@@ -32,19 +32,13 @@
                             </li>
 
                             <li class="nav-item dropdown disabled">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Register</a>
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Einstiege</a>
                                 <ul class="dropdown-menu">
                                     <li>
                                         <a class="dropdown-item" href="person_search.html">Personensuche</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="listplace.html">Orte</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="listorg.html">Organisationen</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="listbibl.html">Werke</a>
+                                        <a class="dropdown-item" href="nosketch.html">Nosketch</a>
                                     </li>
                                 </ul>
                             </li>
