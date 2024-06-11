@@ -51,7 +51,6 @@ search.search({
   },
   config: {
     customUrl: "",
-    urlparam: ".html"
   },
 });
 search.minQueryLength=1;

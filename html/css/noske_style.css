@@ -1,25 +1,58 @@
+/* noske table */
+h1 {
+    padding-bottom: 1rem;
+}
+
+.noske-hits-table {
+    background-color: aliceblue;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
 .noske-hits-head th{
-    text-align: right;
-    padding: .5rem 1rem .5rem 0;
-    border-bottom: solid black 2px;
-    border-right: solid black 2px;
-    vertical-align: bottom;
+    text-align: center;
+    padding: .5rem;
+    background-color: darkgrey;
+    color: white;
+    /* border-bottom: solid black 2px;
+    border-right: solid black 2px; */
 }
 
 .noske-hits-td {
-    padding-right: 1rem;
-    vertical-align: bottom;
-    background-color: red;
+    padding-left: 1rem;
+}
+
+.noske-hits-td:first-child {
+    padding-left: 1rem;
 }
 
 .noske-hits-kwic {
-    background-color: blueviolet;
+    text-align: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .noske-hits-left {
-    background-color: green;
+    padding-right: 0;
+    padding-left: 1rem;
+    text-align: left;
 }
 
 .noske-hits-right {
-    background-color: yellow;
+    padding-left: 0;
+    text-align: right;
+    padding-right: 1rem;
+}
+
+.noske-hits-table tr:last-child td {
+    padding-bottom: 2rem;   
+}
+
+/* pagination */
+
+#noske-pagination {
+    display: flex;
+    align-items: end;
+    justify-content: right;
 }
