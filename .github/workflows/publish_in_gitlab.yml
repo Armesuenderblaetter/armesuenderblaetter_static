@@ -1,4 +1,4 @@
-name: build page and push on gitlab
+name: build page and push at gitlab
 
 on: 
   workflow_dispatch
@@ -42,10 +42,16 @@ jobs:
       run: |
         mkdir target
         git clone "https://${GITLAB_TARGET_TOKEN_NAME}:${GITLAB_TARGET_TOKEN}@gitlab.oeaw.ac.at/acdh-ch/todesurteile/flugblaetter-static-page.git" target
-    - name: push html to target repo
+    - name: push html to target repo if necessary
       run: |
-        cp -r html target/
-        cd target
-        git add html
-        git commit -m "$(date) new html data"
-        git push
+        status=`git status`
+        if [[ $status == *"git add"* ]]; then
+          echo "changes detected"
+            cp -r html target/
+            cd target
+            git add html
+            git commit -m "$(date) new html data"
+            git push
+        else
+          echo "nothing to push"
+        fi
