@@ -36,17 +36,24 @@ h1 {
 .noske-hits-left {
     padding-right: 0;
     padding-left: 1rem;
-    text-align: left;
+    text-align: right;
 }
 
 .noske-hits-right {
     padding-left: 0;
-    text-align: right;
+    text-align: left;
     padding-right: 1rem;
 }
 
 .noske-hits-table tr:last-child td {
     padding-bottom: 2rem;   
+}
+
+.noske-hits-kwic a {
+    font-weight: bold;
+    text-shadow: 0px 0px 0.5rem  rgb(50, 159, 255);
+    color: black;
+    text-decoration: none;
 }
 
 /* pagination */
