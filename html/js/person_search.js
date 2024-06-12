@@ -197,6 +197,23 @@ search.addWidgets([
   }),
 
   instantsearch.widgets.refinementList({
+    container: "#execution_places",
+    attribute: "execution_places",
+    limit: 1000,
+    searchable: true,
+    cssClasses: {
+      list: "facet-list-scroll",
+    },
+    /*cssClasses: {
+      showMore: "btn btn-secondary btn-sm align-content-center",
+      list: "list-unstyled",
+      count: "badge ml-2 badge-secondary hideme",
+      label: "d-flex align-items-center text-capitalize",
+      checkbox: "mr-2",
+    },*/
+  }),
+
+  instantsearch.widgets.refinementList({
     container: "#decade_age",
     attribute: "decade_age",
     searchable: false,

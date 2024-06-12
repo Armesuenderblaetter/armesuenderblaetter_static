@@ -30,6 +30,7 @@
                             <div id="decade_age"/>
                             <h4>Geburtsort</h4>
                             <div id="birth_place"/>
+
                             <h4>Stand</h4>
                             <div id="type"/>
                             <h4>Familienstand</h4>
@@ -42,6 +43,8 @@
                             <div id="offences"/>
                             <h4>Hinrichtung</h4>
                             <div id="execution"/>
+                            <h4>Hinrichtungsort</h4>
+                            <div id="execution_places"/>
                             <h4>Bestrafungen</h4>
                             <div id="punishments"/>
                             <div id="sort-by"></div>
