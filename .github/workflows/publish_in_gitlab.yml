@@ -35,7 +35,7 @@ jobs:
         mkdir data_repo
         git clone https://${GITHUB_ACCESS_TOKEN_NAME}:${GITHUB_ACCESS_TOKEN}@github.com/Flugblatter/flugblaetter_data_ouput.git data_repo
         data_dir="./data/"
-        mkdir $data_dir
+        if [! -d $data_dir]; then mkdir $data_dir; fi
         cp -r data_repo/xml/editions $data_dir
         cp -r data_repo/xml/indices $data_dir
         cp -r data_repo/json .
