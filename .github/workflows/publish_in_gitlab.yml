@@ -40,7 +40,7 @@ jobs:
     - name: setup typesense
       run: |
         ls -la json
-        grep -B 2 -A 2 -R "archives" ./json
+        grep -R "archives" ./json | wc -l
         python ./pyscripts/setup_typesense.py
         python ./pyscripts/setup_person_typesense.py
     - name: Build

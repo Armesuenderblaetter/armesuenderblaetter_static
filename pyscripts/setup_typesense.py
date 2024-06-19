@@ -55,8 +55,20 @@ def load_json(path):
 
 
 def create_records():
+    print(f"loading from {json_ts_index_path}")
     docindex_json = load_json(json_ts_index_path)
-    return list(docindex_json.values())
+    entries = list(docindex_json.values())
+    fields = [f["name"] for f in current_typesense_schema["fields"]]
+    errors = []
+    for e in entries:
+        for f in fields:
+            if not f in e:
+                errors.append(f"missing {f} in {e['id']}")
+    if errors:
+        for e in errors:
+            print(e)
+        raise ValueError
+    return entries
 
 
 def create_records_bak(punishments_by_id: dict):
