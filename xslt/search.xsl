@@ -31,6 +31,9 @@
                             <h4>Druckort</h4>
                             <div id="printing_location">
                             </div>
+                            <h4>Archive</h4>
+                            <div id="archives">
+                            </div>
                             <h4>Sortierung</h4>
                             <div id="sort-by"></div>
                             <div id="clear-refinements"></div>
