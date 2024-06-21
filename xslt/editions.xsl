@@ -5,15 +5,14 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns:local="http://dse-static.foo.bar"
     version="2.0" exclude-result-prefixes="xsl tei xs local">
-    
     <xsl:output encoding="UTF-8" media-type="text/html" method="html" version="5.0" indent="yes" omit-xml-declaration="yes"/>
-    
     
     <xsl:import href="./partials/shared.xsl"/>
     <xsl:import href="./partials/html_navbar.xsl"/>
     <xsl:import href="./partials/html_head.xsl"/>
     <xsl:import href="./partials/html_footer.xsl"/>
     <xsl:import href="./partials/aot-options.xsl"/>
+    <xsl:import href="./partials/osd-container.xsl"/>
 
     <xsl:variable name="prev">
         <xsl:value-of select="replace(tokenize(data(tei:TEI/@prev), '/')[last()], '.xml', '.html')"/>
@@ -33,10 +32,7 @@
 
 
     <xsl:template match="/">
-
-    
         <html class="h-100">
-    
             <head>
                 <xsl:call-template name="html_head">
                     <xsl:with-param name="html_title" select="$doc_title"></xsl:with-param>
@@ -51,8 +47,6 @@
                 <xsl:call-template name="nav_bar"/>
                 <main class="flex-shrink-0">
                     <div class="container">
-
-
                         <div class="row">
                             <div class="col-md-2 col-lg-2 col-sm-12">
                                 <xsl:if test="ends-with($prev,'.html')">
@@ -92,10 +86,16 @@
                                 <xsl:call-template name="annotation-options"></xsl:call-template>
                             </div>
                         </div>
-                        
-                            <xsl:apply-templates select=".//tei:body"></xsl:apply-templates>
-                        
-
+                        <div class="edition-content row">
+                            <div id="facsimiles" class="col-6">
+                                <div id="container_facs_1">
+                                    <xsl:call-template name="osd-container"/>
+                                </div>
+                            </div>
+                            <div id="editon-text" class="col-6">
+                                <xsl:apply-templates select="//tei:body"/>
+                            </div>
+                        </div>
                         <p style="text-align:center;">
                             <xsl:for-each select=".//tei:note[not(./tei:p)]">
                                 <div class="footnotes" id="{local:makeId(.)}">
@@ -127,21 +127,11 @@
                     </xsl:for-each>
                 </main>
                 <xsl:call-template name="html_footer"/>
-                <script src="https://unpkg.com/de-micro-editor@0.2.6/dist/de-editor.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"/>
+                <script src="/js/osd_scroll.js"/>
+                <script src="https://unpkg.com/de-micro-editor@0.3.4/dist/de-editor.min.js"></script>
                 <script type="text/javascript" src="js/run.js"></script>
-                
             </body>
         </html>
     </xsl:template>
-
-    <xsl:template match="tei:p">
-        <p id="{local:makeId(.)}" class="yes-index">
-            <xsl:apply-templates/>
-        </p>
-    </xsl:template>
-    <xsl:template match="tei:div">
-        <div id="{local:makeId(.)}">
-            <xsl:apply-templates/>
-        </div>
-    </xsl:template>  
 </xsl:stylesheet>

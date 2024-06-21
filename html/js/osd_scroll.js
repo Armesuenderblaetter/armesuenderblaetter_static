@@ -8,9 +8,15 @@ get container wrapper of osd viewer
 // var container = document.getElementById("container_facs_2");
 // container.style.display = "none";
 var height = screen.height;
-var container = document.getElementById("container_facs_1");
-var wrapper = document.getElementsByClassName("facsimiles")[0];
+var container = document.getElementById("OSD-images");
+var wrapper = document.getElementById("facsimiles");
 
+// iiif stuff
+var iiif_server_base_path = "https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/"
+var iiif_attribs = "/full/max/0/default.jpg"
+function get_iif_link(filename) {
+    return `${iiif_server_base_path}${filename}${iiif_attribs}`
+}
 /*
 ##################################################################
 check if osd viewer is visible or not
@@ -22,20 +28,20 @@ height is always the screen height minus some offset
 if (!wrapper.classList.contains("fade")) {
     container.style.height = `${String(height / 2)}px`;
     // set osd wrapper container width
-    var container = document.getElementById("section");
+    var container = document.getElementById("editon-text");
     if (container !== null) {
         var width = container.clientWidth;
     }
-    var container = document.getElementById("viewer");
+    var container = document.getElementById("OSD-images");
     container.style.width = `${String(width - 25)}px`;
 } else {
     container.style.height = `${String(height / 2)}px`;
     // set osd wrapper container width
-    var container = document.getElementById("section");
+    var container = document.getElementById("editon-text");
     if (container !== null) {
         var width = container.clientWidth;
     }
-    var container = document.getElementById("viewer");
+    var container = document.getElementById("OSD-images");
     container.style.width = `${String(width / 2)}px`;
 }
 
@@ -50,7 +56,7 @@ var tileSources = [];
 var img = element[0].getAttribute("source");
 var imageURL = {
     type: 'image',
-    url: img
+    url: get_iif_link(img)
 };
 tileSources.push(imageURL);
 
@@ -60,7 +66,7 @@ initialize osd
 ##################################################################
 */
 var viewer = OpenSeadragon({
-    id: 'container_facs_1',
+    id: 'OSD-images',
     prefixUrl: 'https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.0.0/images/',
     sequenceMode: true,
     showNavigator: true,
@@ -121,7 +127,10 @@ function to trigger image load and remove events
 function loadNewImage(new_item) {
     if (new_item) {
         // source attribute hold image item id without url
-        var new_image = new_item.getAttribute("source");
+        var new_image = get_iif_link(
+            new_item.getAttribute("source")
+        );
+        console.log(new_image);
         var old_image = viewer.world.getItemAt(0);
         if (old_image) {
             // get url from current/old image and replace the image id with
@@ -155,18 +164,21 @@ scrolls to next or prev span element with class pb (pagebreak)
 ##################################################################
 */
 var element_a = document.getElementsByClassName('anchor-pb');
+console.log(element_a)
 var prev = document.querySelector("div[title='Previous page']");
 var next = document.querySelector("div[title='Next page']");
 prev.style.opacity = 1;
 next.style.opacity = 1;
 prev.addEventListener("click", () => {
     if (idx == 0) {
+        console.log(idx);
         element_a[idx].scrollIntoView();
     } else {
         element_a[prev_idx].scrollIntoView();
     }
 });
 next.addEventListener("click", () => {
+    console.log(idx);
     element_a[idx].scrollIntoView();
 });
 
