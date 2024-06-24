@@ -26,23 +26,25 @@ height is always the screen height minus some offset
 ##################################################################
 */
 if (!wrapper.classList.contains("fade")) {
-    container.style.height = `${String(height / 2)}px`;
+    container.style.height = `${String(height / 1.5)}px`;
     // set osd wrapper container width
     var container = document.getElementById("editon-text");
     if (container !== null) {
         var width = container.clientWidth;
     }
     var container = document.getElementById("OSD-images");
-    container.style.width = `${String(width - 25)}px`;
+    // container.style.width = `${String(width - 25)}px`;
+    container.style.width = "auto";
 } else {
-    container.style.height = `${String(height / 2)}px`;
+    container.style.height = `${String(height / 1.5)}px`;
     // set osd wrapper container width
     var container = document.getElementById("editon-text");
     if (container !== null) {
         var width = container.clientWidth;
     }
     var container = document.getElementById("OSD-images");
-    container.style.width = `${String(width / 2)}px`;
+    // container.style.width = `${String(width / 2)}px`;
+    container.style.width = "auto";
 }
 
 /*
@@ -139,16 +141,21 @@ function loadNewImage(new_item) {
             viewer.addSimpleImage({
                 url: new_image,
                 success: function(event) {
-                    function ready() {
-                        setTimeout(() => {
-                            viewer.world.removeItem(viewer.world.getItemAt(0));
-                        }, 200)
-                    }
+                    // function ready() {
+                    //     setTimeout(() => {
+                    //         viewer.world.removeItem(viewer.world.getItemAt(0));
+                    //         console.log("removed old image");
+                    //     }, 200)
+                    // }
                     // test if item was loaded and trigger function to remove previous item
                     if (event.item) {
                         // .getFullyLoaded()
-                        ready();
+                        // ready();
+                        viewer.world.removeItem(viewer.world.getItemAt(0));
+                        console.log(event);
                     } else {
+                        console.log("Something wrong?");
+                        console.log(event);
                         event.item.addOnceHandler('fully-loaded-change', ready());
                     }
                 }

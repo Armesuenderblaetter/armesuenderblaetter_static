@@ -43,3 +43,13 @@ div ul.ais-RefinementList-list {
     border: solid rgb(204, 204, 204) .1rem;
     border-radius: 0.3rem;
 }
+
+#editon-text {
+    padding-bottom: 75vh;
+}
+
+#container_facs_1 {
+    position: sticky;
+    top: 0;
+    width: 100%;
+}

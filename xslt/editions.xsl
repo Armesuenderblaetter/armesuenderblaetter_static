@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:tei="http://www.tei-c.org/ns/1.0"
@@ -6,7 +7,6 @@
     xmlns:local="http://dse-static.foo.bar"
     version="2.0" exclude-result-prefixes="xsl tei xs local">
     <xsl:output encoding="UTF-8" media-type="text/html" method="html" version="5.0" indent="yes" omit-xml-declaration="yes"/>
-    
     <xsl:import href="./partials/shared.xsl"/>
     <xsl:import href="./partials/html_navbar.xsl"/>
     <xsl:import href="./partials/html_head.xsl"/>
@@ -129,8 +129,8 @@
                 <xsl:call-template name="html_footer"/>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"/>
                 <script src="/js/osd_scroll.js"/>
-                <script src="https://unpkg.com/de-micro-editor@0.3.4/dist/de-editor.min.js"></script>
-                <script type="text/javascript" src="js/run.js"></script>
+                <!-- <script src="https://unpkg.com/de-micro-editor@0.3.4/dist/de-editor.min.js"></script>
+                <script type="text/javascript" src="js/run.js"></script> -->
             </body>
         </html>
     </xsl:template>
