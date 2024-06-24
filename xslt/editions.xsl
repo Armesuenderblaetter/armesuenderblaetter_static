@@ -128,9 +128,9 @@
                 </main>
                 <xsl:call-template name="html_footer"/>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"/>
-                <script src="/js/osd_scroll.js"/>
-                <!-- <script src="https://unpkg.com/de-micro-editor@0.3.4/dist/de-editor.min.js"></script>
-                <script type="text/javascript" src="js/run.js"></script> -->
+                <script src="js/osd_scroll.js"/>
+                <script src="https://unpkg.com/de-micro-editor@0.3.4/dist/de-editor.min.js"></script>
+                <script type="text/javascript" src="js/run.js"></script>
             </body>
         </html>
     </xsl:template>
