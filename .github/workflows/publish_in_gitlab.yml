@@ -43,6 +43,9 @@ jobs:
         grep -R "archives" ./json | wc -l
         python ./pyscripts/setup_typesense.py
         python ./pyscripts/setup_person_typesense.py
+    - name: denormalize
+      run: |
+        ./shellscripts/denormalize_indices.sh
     - name: Build
       run: |
         ant
