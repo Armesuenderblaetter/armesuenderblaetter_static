@@ -13,7 +13,6 @@
     <xsl:import href="./partials/html_footer.xsl"/>
     <xsl:import href="./partials/aot-options.xsl"/>
     <xsl:import href="./partials/osd-container.xsl"/>
-
     <xsl:variable name="prev">
         <xsl:value-of select="replace(tokenize(data(tei:TEI/@prev), '/')[last()], '.xml', '.html')"/>
     </xsl:variable>
@@ -29,8 +28,17 @@
     <xsl:variable name="doc_title">
         <xsl:value-of select=".//tei:titleStmt/tei:title[1]/text()"/>
     </xsl:variable>
-
-
+    <!-- <xsl:template match="//tei:figure/figDesc"> -->
+        <!-- <div class="icon_desc"> -->
+            <!-- <xsl:value-of select="./text()"/> -->
+        <!-- </div> -->
+    <!-- </xsl:template> -->
+    <xsl:template match="//text()[following-sibling::*[1][local-name()='pc' and normalize-space() != '/' and normalize-space() != '(']]">
+        <xsl:value-of select="normalize-space(.)"/>
+    </xsl:template>
+    <xsl:template match="//text()[preceding-sibling::*[1][local-name()='pc' and normalize-space()='(']]">
+        <xsl:value-of select="normalize-space(.)"/>
+    </xsl:template>
     <xsl:template match="/">
         <html class="h-100">
             <head>
