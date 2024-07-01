@@ -100,9 +100,7 @@
                         </div>
                         <div class="edition-content row">
                             <div id="facsimiles" class="col-6">
-                                <div id="container_facs_1">
-                                    <xsl:call-template name="osd-container"/>
-                                </div>
+                                <xsl:call-template name="osd-container"/>
                             </div>
                             <div id="editon-text" class="col-6">
                                 <xsl:apply-templates select="//tei:body"/>

@@ -48,11 +48,12 @@ div ul.ais-RefinementList-list {
     padding-bottom: 75vh;
 }
 
-#container_facs_1 {
+#sticky-OSD-wrapper {
     position: sticky;
     top: 0;
     width: 100%;
 }
+
 
 div.icon_desc {
     padding: 1rem;

@@ -1,50 +1,123 @@
 /*
 ##################################################################
-get container holding images urls as child elements
-get container for osd viewer
-get container wrapper of osd viewer
+get container holding the transcribed text
+get container in which the osd viewer renders its div
 ##################################################################
 */
-// var container = document.getElementById("container_facs_2");
-// container.style.display = "none";
-var height = screen.height;
-var container = document.getElementById("OSD-images");
-var wrapper = document.getElementById("facsimiles");
+// string vars: input / cfg section
 
-// iiif stuff
-var iiif_server_base_path = "https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/"
-var iiif_attribs = "/full/max/0/default.jpg"
-function get_iif_link(filename) {
-    return `${iiif_server_base_path}${filename}${iiif_attribs}`
-}
+const OSD_container_spawnpoint_id = "OSD-container-spawnpoint";
+const iiif_server_base_path =
+  "https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/";
+const iiif_attribs = "/full/max/0/default.jpg";
+const page_break_marker_classname = "pb";
+const page_break_marker_image_attribute = "source";
 /*
-##################################################################
-check if osd viewer is visible or not
-if true get width from sibling container
-if false get with from sibling container divided by half
-height is always the screen height minus some offset
-##################################################################
+Change theses values to negative percentates/px if you want to narrow/expand
+the region of the viewport whicht triggers a reload.
+One possibly irritating behavior can be, that clicking on prev/next button 
+scrolls the pb element outside the screen region that triggers reload. If this 
+region is being empty, when the debounced function is running, no new image will 
+be loaded. Expand the region that triggers reload in this case or increase the
+top scroll offset of the targeted bp elements
 */
-if (!wrapper.classList.contains("fade")) {
-    container.style.height = `${String(height / 1.5)}px`;
-    // set osd wrapper container width
-    var container = document.getElementById("editon-text");
-    if (container !== null) {
-        var width = container.clientWidth;
+const top_viewport_threshold = "0px";
+const bottom_viewport_threshold = "-65%";
+// this is the options object for the intersection observer
+const io_options = {
+  rootMargin: `${top_viewport_threshold} 0% ${bottom_viewport_threshold} 0%`,
+};
+
+// get relevant elements/values
+const OSD_container_spawnpoint = document.getElementById(
+  OSD_container_spawnpoint_id
+);
+// const transcript_container = document.getElementById(transcript_container_id)
+const height = screen.height;
+
+// helper functions
+// iiif stuff
+function get_iif_link(filename) {
+  return `${iiif_server_base_path}${filename}${iiif_attribs}`;
+}
+
+function isVisible(el) {
+  var style = window.getComputedStyle(el);
+  return style.display !== "none";
+}
+
+function isInViewport(element) {
+  // Get the bounding client rectangle position in the viewport
+  var bounding = element.getBoundingClientRect();
+  if (
+    bounding.top >= 0 &&
+    bounding.left >= 0 &&
+    bounding.bottom <=
+      (window.innerHeight || document.documentElement.clientHeight) &&
+    bounding.right <=
+      (window.innerWidth || document.documentElement.clientWidth)
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// simple implementation of debounce
+// prevents loading a lot of images when
+// scrolling fast through the page
+// without setting unnecessary heuristic timeouts
+function debounce(callback, wait) {
+  let timeoutId = null;
+  return (...args) => {
+    window.clearTimeout(timeoutId);
+    timeoutId = window.setTimeout(() => {
+      callback(...args);
+    }, wait);
+  };
+}
+
+function scroll_prev() {
+  if (previous_pb_index == -1) {
+    pb_elements[0].scrollIntoView();
+  } else {
+    pb_elements[previous_pb_index].scrollIntoView();
+  }
+}
+
+function scroll_next() {
+  if (next_pb_index > max_index) {
+    pb_elements[max_index].scrollIntoView();
+  } else {
+    pb_elements[next_pb_index].scrollIntoView();
+  }
+}
+
+// since the page loading process is sometimes hard to predict
+// it might happen that the loading the page with an url anchor param
+// doesn't trigger the intersectionobserver callback
+// to prevent any hassle the following functions handle the inital scrolling
+// if such param is present in url
+
+function load_initial_image() {
+  // depending on the margins you set for you intersection observer
+  // and the position of you lb elements on the page the initial image
+  //   might not be in the observerd zone when the page is loaded, such that
+  //   no image is loaded when the page is loaded. Try removing the conditional
+  //   check for a window hash in this function if you encounter this problem
+  if (window.location.hash) {
+    let first_pb_element_in_viewport = undefined;
+    for (let pb_element of pb_elements) {
+      if (isInViewport(pb_element)) {
+        first_pb_element_in_viewport = pb_element;
+        break;
+      }
     }
-    var container = document.getElementById("OSD-images");
-    // container.style.width = `${String(width - 25)}px`;
-    container.style.width = "auto";
-} else {
-    container.style.height = `${String(height / 1.5)}px`;
-    // set osd wrapper container width
-    var container = document.getElementById("editon-text");
-    if (container !== null) {
-        var width = container.clientWidth;
+    if (viewer.world.getItemCount() > 1) {
+      viewer.world.removeItem(viewer.world.getItemAt(1));
     }
-    var container = document.getElementById("OSD-images");
-    // container.style.width = `${String(width / 2)}px`;
-    container.style.width = "auto";
+    handle_new_image(first_pb_element_in_viewport);
+  }
 }
 
 /*
@@ -53,188 +126,129 @@ get all image urls stored in span el class tei-xml-images
 creates an array for osd viewer with static images
 ##################################################################
 */
-var element = document.getElementsByClassName('pb');
-var tileSources = [];
-var img = element[0].getAttribute("source");
-var imageURL = {
-    type: 'image',
-    url: get_iif_link(img)
-};
-tileSources.push(imageURL);
+var pb_elements = document.getElementsByClassName(page_break_marker_classname);
+var pb_elements_array = Array.from(pb_elements);
 
 /*
 ##################################################################
 initialize osd
 ##################################################################
 */
-var viewer = OpenSeadragon({
-    id: 'OSD-images',
-    prefixUrl: 'https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.0.0/images/',
-    sequenceMode: true,
-    showNavigator: true,
-    tileSources: tileSources
-});
-/*
-##################################################################
-remove container holding the images url
-##################################################################
-*/
-// setTimeout(function() {
-//     document.getElementById("container_facs_2").remove();
-// }, 500);
 
+let initial_osd_visible = isVisible(OSD_container_spawnpoint);
+if (initial_osd_visible) {
+  OSD_container_spawnpoint.style.height = `${String(height / 1.5)}px`;
+  OSD_container_spawnpoint.style.width = "auto";
+}
+var viewer = OpenSeadragon({
+  id: OSD_container_spawnpoint_id,
+  prefixUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.0.0/images/",
+  sequenceMode: true,
+  showNavigator: true,
+  constrainDuringPan: true,
+  visibilityRatio: 1,
+  showNavigationControl: true,
+  showSequenceControl: true,
+});
+
+// if anybody can explain to me, why I need that function
+// even though I defined a callback in the image loader, removing the old
+// image, I would be really happy or at least a little bit
+viewer.world.addHandler("add-item", () => {
+  while (viewer.world.getItemCount() > 1) {
+    console.log(viewer.world.getItemCount());
+    viewer.world.removeItem(viewer.world.getItemAt(0));
+  }
+  console.log(viewer.world.getItemCount());
+});
 /*
 ##################################################################
 index and previous index for click navigation in osd viewer
 locate index of anchor element
 ##################################################################
 */
-var idx = 0;
-var prev_idx = -1;
 
-/*
-##################################################################
-triggers on scroll and switches osd viewer image base on 
-viewport position of next and previous element with class pb
-pb = pagebreaks
-##################################################################
-*/
-window.addEventListener("scroll", function(event) {
-    // elements in view
-    var esiv = [];
-    for (let el of element) {
-        if (isInViewportAll(el)) {
-            esiv.push(el);
-        }
-    }
-    if (esiv.length != 0) {
-        // first element in view
-        var eiv = esiv[0];
-        // get idx of element
-        var eiv_idx = Array.from(element).findIndex((el) => el === eiv);
-        idx = eiv_idx + 1;
-        prev_idx = eiv_idx - 1
-        // test if element is in viewport position to load correct image
-        if (isInViewport(element[eiv_idx])) {
-            loadNewImage(element[eiv_idx]);
-        }
-    }
-});
-
-/*
-##################################################################
-function to trigger image load and remove events
-##################################################################
-*/
-function loadNewImage(new_item) {
-    if (new_item) {
-        // source attribute hold image item id without url
-        var new_image = get_iif_link(
-            new_item.getAttribute("source")
-        );
-        console.log(new_image);
-        var old_image = viewer.world.getItemAt(0);
-        if (old_image) {
-            // get url from current/old image and replace the image id with
-            // new id of image to be loaded
-            // access osd viewer and add simple image and remove current image
-            viewer.addSimpleImage({
-                url: new_image,
-                success: function(event) {
-                    // function ready() {
-                    //     setTimeout(() => {
-                    //         viewer.world.removeItem(viewer.world.getItemAt(0));
-                    //         console.log("removed old image");
-                    //     }, 200)
-                    // }
-                    // test if item was loaded and trigger function to remove previous item
-                    if (event.item) {
-                        // .getFullyLoaded()
-                        // ready();
-                        viewer.world.removeItem(viewer.world.getItemAt(0));
-                        console.log(event);
-                    } else {
-                        console.log("Something wrong?");
-                        console.log(event);
-                        event.item.addOnceHandler('fully-loaded-change', ready());
-                    }
-                }
-            });
-        }
-    }
-}
-
-/*
-##################################################################
-accesses osd viewer prev and next button to switch image and
-scrolls to next or prev span element with class pb (pagebreak)
-##################################################################
-*/
-var element_a = document.getElementsByClassName('anchor-pb');
-console.log(element_a)
+var next_pb_index = 0;
+var previous_pb_index = -1;
+const max_index = pb_elements.length - 1;
 var prev = document.querySelector("div[title='Previous page']");
 var next = document.querySelector("div[title='Next page']");
 prev.style.opacity = 1;
 next.style.opacity = 1;
-prev.addEventListener("click", () => {
-    if (idx == 0) {
-        console.log(idx);
-        element_a[idx].scrollIntoView();
-    } else {
-        element_a[prev_idx].scrollIntoView();
-    }
-});
-next.addEventListener("click", () => {
-    console.log(idx);
-    element_a[idx].scrollIntoView();
-});
 
-/*
-##################################################################
-function to check if element is close to top of window viewport
-##################################################################
-*/
-function isInViewport(element) {
-    // Get the bounding client rectangle position in the viewport
-    var bounding = element.getBoundingClientRect();
-    // Checking part. Here the code checks if el is close to top of viewport.
-    // console.log("Top");
-    // console.log(bounding.top);
-    // console.log("Bottom");
-    // console.log(bounding.bottom);
-    if (
-        bounding.top <= 180 &&
-        bounding.bottom <= 210 &&
-        bounding.top >= 0 &&
-        bounding.bottom >= 0
-    ) {
-        return true;
-    } else {
-        return false;
+/* These two values define the size of the part
+of the viewport that should trigger an image reload
+whenever it gets enterd by a pb element. Negative values
+make that zone smaller, positive expand it.*/
+function handle_new_image(current_pb_element) {
+  let current_pb_index = pb_elements_array.findIndex(
+    (el) => el === current_pb_element
+  );
+  next_pb_index = current_pb_index + 1;
+  previous_pb_index = current_pb_index - 1;
+  new_image_url = get_iif_link(
+    current_pb_element.getAttribute(page_break_marker_image_attribute)
+  );
+  old_image = viewer.world.getItemAt(0);
+  load_new_image_with_check(new_image_url, old_image);
+}
+
+function load_new_image_with_check(new_image_url, old_image) {
+  viewer.addSimpleImage({
+    url: new_image_url,
+    success: function (event) {
+      function ready() {
+        if (viewer.world.getItemCount() > 1 && old_image) {
+          viewer.world.removeItem(old_image);
+        }
+      }
+      // test if item was loaded and trigger function to remove previous item
+      if (event.item) {
+        ready();
+      } else {
+        event.item.addOnceHandler("fully-loaded-change", ready());
+      }
+    },
+  });
+}
+
+
+/*this function is the callback for the intersection observer
+it gets called whenever an element leaves or enters the defined 
+section of the viewport*/
+var last_loaded_entry = "";
+function handle_visible_lbs(entries, observer) {
+  entries.forEach((entry) => {
+    var intersecting = entries.filter((entry) => entry.isIntersecting == true);
+    if (intersecting.length > 0) {
+      first_intersecting_entry = intersecting[0];
+      if (first_intersecting_entry != last_loaded_entry) {
+        handle_new_image(first_intersecting_entry.target);
+        last_loaded_entry = first_intersecting_entry;
+      }
     }
+  });
 }
 
 /*
-##################################################################
-function to check if element is anywhere in window viewport
-##################################################################
+ call some stuff
 */
-function isInViewportAll(element) {
-    // Get the bounding client rectangle position in the viewport
-    var bounding = element.getBoundingClientRect();
-    // Checking part. Here the code checks if el is close to top of viewport.
-    // console.log("Top");
-    // console.log(bounding.top);
-    // console.log("Bottom");
-    // console.log(bounding.bottom);
-    if (
-        bounding.top >= 0 &&
-        bounding.left >= 0 &&
-        bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
-    ) {
-        return true;
-    } else {
-        return false;
-    }
+const debounced_lb_handler = debounce(handle_visible_lbs, 1000);
+// create the observer, its default scope (root element) is the viewport,
+// but you could change it eg. to body etc.
+let viewportObserver = new IntersectionObserver(handle_visible_lbs, io_options);
+// give the observer some lbs to observer
+pb_elements_array.forEach((entry) => {
+  viewportObserver.observe(entry);
+});
+prev.addEventListener("click", () => {
+  scroll_prev();
+});
+next.addEventListener("click", () => {
+  scroll_next();
+});
+
+if (initial_osd_visible) {
+  load_initial_image();
 }
