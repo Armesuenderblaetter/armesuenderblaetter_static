@@ -63,3 +63,27 @@ div.icon_desc {
     margin: .5rem 0 .5rem .5rem;
     font-size: small;
 }
+
+span.pb.nearly_no_content {
+    display: inline-block;
+    height: 8rem;
+    border: 1rem solid black;
+}
+
+span.pb.nearly_no_content {
+    display: inline-block;
+    height: 8rem;
+    border: 1rem solid black;
+}
+
+span.pb.nearly_no_content {
+    display: block;
+    height: 8rem;
+    border: 1rem solid black;
+}
+/* span.pb.nearly_no_content::after {
+
+    display:block;
+    height: 8rem;
+    border: 1rem solid black;
+} */

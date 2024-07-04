@@ -43,6 +43,16 @@
         <xsl:value-of select="normalize-space(.)"/>
     </xsl:template>
 
+    <xsl:template match="tei:titlePage">
+        <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="tei:titlePart">
+        <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="tei:docImprint">
+        <xsl:apply-templates/>
+    </xsl:template>
+
     <xsl:template match="/">
         <html class="h-100">
             <head>
@@ -103,7 +113,8 @@
                                 <xsl:call-template name="osd-container"/>
                             </div>
                             <div id="editon-text" class="col-6">
-                                <xsl:apply-templates select="//tei:body"/>
+                                <xsl:apply-templates select="//tei:text/tei:*[not(local-name()='fs' or local-name()='back')]"/>
+                                <!-- <xsl:apply-templates select="//tei:body"/> -->
                             </div>
                         </div>
                         <p style="text-align:center;">
@@ -128,7 +139,6 @@
                                 </div>
                             </xsl:for-each>
                         </p>
-
                     </div>
                     <xsl:for-each select="//tei:back">
                         <div class="tei-back">
