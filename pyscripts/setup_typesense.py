@@ -33,6 +33,7 @@ current_typesense_schema = {
     "enable_nested_fields": False,
     "default_sorting_field": "sorting_date",
     "fields": [
+        {"name": "thumbnail", "type": "string"},
         {"name": "title", "type": "string"},
         {"name": "id", "type": "string"},
         {"name": "sorting_date", "type": "int32"},
