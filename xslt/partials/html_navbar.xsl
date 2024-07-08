@@ -35,13 +35,13 @@
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Einstiege</a>
                                 <ul class="dropdown-menu">
                                     <li class="nav-item">
-                                        <a title="Suche" class="nav-link" href="search.html">Dokumentensuche</a>
+                                        <a class="dropdown-item" title="Dokumentensuche" href="search.html">Dokumentensuche</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="person_search.html">Personensuche</a>
+                                        <a class="dropdown-item" title="Personensuche" href="person_search.html">Personensuche</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="nosketch.html">Nosketch</a>
+                                        <a class="dropdown-item" title="Nosketch" href="nosketch.html">Nosketch</a>
                                     </li>
                                 </ul>
                             </li>
