@@ -15,33 +15,66 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Projekt</a>
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Edition</a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" href="about.html">Über das Projekt</a>
+                                        <a class="dropdown-item" href="imprint.html">Armesünderblätter</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="imprint.html">Impressum</a>
+                                        <a class="dropdown-item" href="imprint.html">Ziele</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="imprint.html">Übersicht</a>
                                     </li>
                                 </ul>
                             </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link" href="toc.html">Editionseinheiten</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Dokumentation</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="imprint.html">Erschließung</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="imprint.html">Nutzung</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="imprint.html">Daten</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Suche</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="search.html">Personensuche</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="person_search.html">Volltextsuche</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="nosketch.html">Linguistische Suche</a>
+                                    </li>
+                                </ul>
                             </li>
 
                             <li class="nav-item dropdown disabled">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Einstiege</a>
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Über das Projekt</a>
                                 <ul class="dropdown-menu">
                                     <li class="nav-item">
-                                        <a class="dropdown-item" title="Dokumentensuche" href="search.html">Dokumentensuche</a>
+                                        <a class="dropdown-item" href="imprint.html">Team</a>
                                     </li>
-                                    <li>
-                                        <a class="dropdown-item" title="Personensuche" href="person_search.html">Personensuche</a>
+                                    <li class="nav-item">
+                                        <a class="dropdown-item" href="imprint.html">Kontakt</a>
                                     </li>
-                                    <li>
-                                        <a class="dropdown-item" title="Nosketch" href="nosketch.html">Nosketch</a>
+                                    <li class="nav-item">
+                                        <a class="dropdown-item" href="imprint.html">Litertatur</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="dropdown-item" href="imprint.html">Impressum</a>
                                     </li>
                                 </ul>
                             </li>
