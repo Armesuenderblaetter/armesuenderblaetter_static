@@ -26,7 +26,7 @@
                                         <a class="dropdown-item" href="imprint.html">Ziele</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="imprint.html">Übersicht</a>
+                                        <a class="dropdown-item" href="toc.html">Übersicht</a>
                                     </li>
                                 </ul>
                             </li>
@@ -71,7 +71,7 @@
                                         <a class="dropdown-item" href="imprint.html">Kontakt</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="dropdown-item" href="imprint.html">Litertatur</a>
+                                        <a class="dropdown-item" href="imprint.html">Literatur</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="dropdown-item" href="imprint.html">Impressum</a>
