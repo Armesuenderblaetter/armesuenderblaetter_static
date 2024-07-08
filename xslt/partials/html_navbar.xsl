@@ -34,6 +34,9 @@
                             <li class="nav-item dropdown disabled">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Einstiege</a>
                                 <ul class="dropdown-menu">
+                                    <li class="nav-item">
+                                        <a title="Suche" class="nav-link" href="search.html">Dokumentensuche</a>
+                                    </li>
                                     <li>
                                         <a class="dropdown-item" href="person_search.html">Personensuche</a>
                                     </li>
@@ -41,10 +44,6 @@
                                         <a class="dropdown-item" href="nosketch.html">Nosketch</a>
                                     </li>
                                 </ul>
-                            </li>
-
-                            <li class="nav-item">
-                                <a title="Suche" class="nav-link" href="search.html">Suche</a>
                             </li>
                         </ul>
                     </div>
