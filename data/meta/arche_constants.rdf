@@ -5,7 +5,7 @@
       <acdh:DefaultLang>de</acdh:DefaultLang>
    </acdh:Constanst>
    <acdh:TopCollection rdf:about="https://id.acdh.oeaw.ac.at/flugblaetter_static">
-      <acdh:hasTitle xml:lang="de">Flugblätter Todesurteile</acdh:hasTitle>
+      <acdh:hasTitle xml:lang="de">Armesünderblätter</acdh:hasTitle>
       <acdh:hasDescription xml:lang="de">Projektbeschreibung</acdh:hasDescription>
       <acdh:hasContact rdf:resource="xxx"/>
       <acdh:hasMetadataCreator rdf:resource="xxx"/>

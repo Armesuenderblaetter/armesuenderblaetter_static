@@ -16,7 +16,7 @@
 
     <xsl:template match="/">
         <xsl:variable name="doc_title">
-            <xsl:value-of select='"Flugblätter"'/>
+            <xsl:value-of select='"Armesünderblätter"'/>
         </xsl:variable>
 
     
