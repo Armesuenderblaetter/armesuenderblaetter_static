@@ -30,6 +30,13 @@ const search = instantsearch({
   routing: true,
 });
 
+const iiif_server_base_path =
+  "https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/";
+const iiif_attribs = "/full/max/0/default.jpg";
+function get_iif_link(filename) {
+  return `${iiif_server_base_path}${filename}${iiif_attribs}`;
+}
+
 search.addWidgets([
   instantsearch.widgets.searchBox({
     container: "#searchbox",
@@ -50,6 +57,12 @@ search.addWidgets([
     templates: {
       empty: "Keine Resultate für <q>{{ query }}</q>",
       item(hit, { html, components }) {
+        console.log(
+          get_iif_link
+          (
+            hit.thumbnail
+          )
+        );
         return html`
           <a href="${hit.id + ".html"}">
             <head style="display: block">
