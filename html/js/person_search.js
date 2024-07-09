@@ -8,15 +8,15 @@ function makeDocLink(hit) {
 }
 function return_html_list(arr) {
   if (arr.length == 0) {
-    return "–"
+    return "–";
   }
-  let ul = "<ul>"
+  let ul = "<ul>";
   for (i = 0; i < arr.length; ++i) {
     let li = `<li>${arr[i]}</li>`;
-    ul = ul+li
+    ul = ul + li;
   }
-  ul = ul+"</ul>"
-  return ul
+  ul = ul + "</ul>";
+  return ul;
 }
 
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
@@ -62,16 +62,15 @@ search.addWidgets([
     templates: {
       empty: "Keine Resultate für <q>{{ query }}</q>",
       item(hit, { html, components }) {
-        let offences = return_html_list(hit.offences)
-        let execution = return_html_list(hit.execution)
-        let punishments = return_html_list(hit.punishments)
+        let offences = return_html_list(hit.offences);
+        let execution = return_html_list(hit.execution);
+        let punishments = return_html_list(hit.punishments);
         return `
-          <a class="perslink" href="${hit.global_id + ".html"}">
-            <head style="display: block">
+          <a href="${hit.global_id}.html">
+            <h5 style="display: block; padding-bottom: 1rem; font-size: 1.2rem;">
               ${hit.fullname}
-            </head>
+            </h5>
           </a>
-          <a class="doclink" href="${hit.file_identifier}.html"></a>
           <div class="col align-items-center">
             <div class="col">
               <table class="table table-sm">
@@ -103,18 +102,6 @@ search.addWidgets([
                   <td><em>Beruf</em></td>
                   <td>${hit.occupation}</td>
                 </tr>
-                <tr>
-                  <td><em>Verbrechen</em></td>
-                  <td>${offences}</td>
-                </tr>
-                <tr>
-                  <td><em>Hinrichtung</em></td>
-                  <td>${execution}</td>
-                </tr>
-                <tr>
-                  <td><em>Bestrafungen</em></td>
-                  <td>${punishments}</td>
-                </tr>
               </table>
             </div>
           </div>
@@ -122,6 +109,18 @@ search.addWidgets([
       },
     },
   }),
+  // <tr>
+  //   <td><em>Verbrechen</em></td>
+  //   <td>${offences}</td>
+  // </tr>
+  // <tr>
+  //   <td><em>Hinrichtung</em></td>
+  //   <td>${execution}</td>
+  // </tr>
+  // <tr>
+  //   <td><em>Bestrafungen</em></td>
+  //   <td>${punishments}</td>
+  // </tr>
 
   instantsearch.widgets.pagination({
     container: "#pagination",
@@ -145,12 +144,10 @@ search.addWidgets([
     },*/
   }),
 
-
   instantsearch.widgets.configure({
     hitsPerPage: 20,
     attributesToSnippet: ["fullname"],
   }),
-
 
   instantsearch.widgets.refinementList({
     container: "#name_list",

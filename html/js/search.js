@@ -60,9 +60,9 @@ search.addWidgets([
         console.log(get_iif_link(hit.thumbnail));
         return html`
           <a href="${hit.id}.html">
-            <head style="display: block; padding-bottom: 1rem;">
+            <h5 style="display: block; padding-bottom: 1rem; font-size: 1.2rem;">
               ${hit.title}
-            </head>
+            </h5>
           </a>
           <div class="row align-items-baseline">
             <a href="${hit.id}.html">
