@@ -32,7 +32,7 @@ const search = instantsearch({
 
 const iiif_server_base_path =
   "https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/";
-const iiif_attribs = "/full/max/0/default.jpg";
+const iiif_attribs = "/full/260,/0/default.jpg";
 function get_iif_link(filename) {
   return `${iiif_server_base_path}${filename}${iiif_attribs}`;
 }
@@ -57,25 +57,25 @@ search.addWidgets([
     templates: {
       empty: "Keine Resultate für <q>{{ query }}</q>",
       item(hit, { html, components }) {
-        console.log(
-          get_iif_link
-          (
-            hit.thumbnail
-          )
-        );
+        console.log(get_iif_link(hit.thumbnail));
         return html`
-          <a href="${hit.id + ".html"}">
-            <head style="display: block">
+          <a href="${hit.id}.html">
+            <head style="display: block; padding-bottom: 1rem;">
               ${hit.title}
             </head>
           </a>
-          <div class="col align-items-baseline">
-            <div class="col">
+          <div class="row align-items-baseline">
+            <a href="${hit.id}.html">
+              <div class="col">
+                <img
+                  src="${get_iif_link(hit.thumbnail)}"
+                  alt="Deckblatt/Erste Seite des Armesünderblattes"
+                  style="height: 21rem; width: auto;"
+                />
+              </div>
+            </a>
+            <div class="col" style="padding-top: 1rem;">
               <table class="table table-sm">
-                <!--<tr>
-                      <td><em>Datum</em></td>
-                      <td>${hit.sorting_date}</td>
-                    </tr>-->
                 <tr>
                   <td><em>Jahr</em></td>
                   <td>${hit.label_date}</td>
@@ -107,6 +107,60 @@ search.addWidgets([
     },
   }),
 
+  // instantsearch.widgets.hits({
+  //   container: "#hits",
+  //   /*cssClasses: {
+  //     item: "w-20 border border-light rounded m-2 p-2 d-flex flex-column hover-shadow",
+  //   },*/
+  //   templates: {
+  //     empty: "Keine Resultate für <q>{{ query }}</q>",
+  //     item(hit, { html, components }) {
+  //       console.log(get_iif_link(hit.thumbnail));
+  //       return html`
+  //         <a href="${hit.id + ".html"}">
+  //           <head style="display: block">
+  //             ${hit.title}
+  //           </head>
+  //         </a>
+  //         <div class="col align-items-baseline">
+  //           <div class="col">
+  //             <table class="table table-sm">
+  //               <tr>
+  //                 <td>
+  //                 <img src="${get_iif_link(hit.thumbnail)}" alt="Deckblatt/Erste Seite des Armesünderblattes">
+  //                 </td>
+  //               </tr>
+  //               <tr>
+  //                 <td><em>Jahr</em></td>
+  //                 <td>${hit.label_date}</td>
+  //               </tr>
+  //               <tr>
+  //                 <td><em>Drucker</em></td>
+  //                 <td>${hit.printer}</td>
+  //               </tr>
+  //               <tr>
+  //                 <td><em>Druckort</em></td>
+  //                 <td>${hit.printing_location}</td>
+  //               </tr>
+  //               <tr>
+  //                 <td><em>Druckdatum</em></td>
+  //                 <td>${hit.print_date}</td>
+  //               </tr>
+  //             </table>
+  //           </div>
+  //           <div class="col-md-12 p-0 m-0">
+  //             <p>
+  //               ${hit._snippetResult.fulltext.matchedWords.length > 0
+  //                 ? components.Snippet({ hit, attribute: "fulltext" })
+  //                 : ""}
+  //             </p>
+  //           </div>
+  //         </div>
+  //       `;
+  //     },
+  //   },
+  // }),
+
   instantsearch.widgets.pagination({
     container: "#pagination",
   }),
@@ -129,13 +183,14 @@ search.addWidgets([
     },*/
   }),
 
-
   instantsearch.widgets.sortBy({
     container: "#sort-by",
     items: [
-      { label: "Jahr (absteigend)", value: "flugblaetter_todesurteile"},
-      { label: "Jahr (aufsteigend)", value: "flugblaetter_todesurteile/sort/sorting_date:asc"},
-      
+      { label: "Jahr (absteigend)", value: "flugblaetter_todesurteile" },
+      {
+        label: "Jahr (aufsteigend)",
+        value: "flugblaetter_todesurteile/sort/sorting_date:asc",
+      },
     ],
   }),
 
