@@ -10,7 +10,7 @@ const OSD_container_spawnpoint_id = "OSD-container-spawnpoint";
 const iiif_server_base_path =
   "https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/";
 const iiif_attribs = "/full/max/0/default.jpg";
-const page_break_marker_classname = "pb";
+const page_break_marker_classname = "pb primary";
 const page_break_marker_image_attribute = "source";
 /*
 Change theses values to negative percentates/px if you want to narrow/expand
@@ -22,7 +22,7 @@ be loaded. Expand the region that triggers reload in this case or increase the
 top scroll offset of the targeted bp elements
 */
 const top_viewport_threshold = "0px";
-const bottom_viewport_threshold = "-65%";
+const bottom_viewport_threshold = "-90%";
 // this is the options object for the intersection observer
 const io_options = {
   rootMargin: `${top_viewport_threshold} 0% ${bottom_viewport_threshold} 0%`,
