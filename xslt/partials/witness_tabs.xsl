@@ -34,7 +34,7 @@
             <xsl:call-template name="secondary-wit"/>
         </ul>
         <div class="tab-content">
-        <xsl:for-each select="//tei:witness">
+            <xsl:for-each select="//tei:witness">
                 <xsl:variable name="wit_id">
                     <xsl:value-of select="@xml:id"/>
                 </xsl:variable>
@@ -70,7 +70,15 @@
                             </tr>
                         </tbody>
                     </table>
-
+                    <xsl:if test="@type='secondary'">
+                        <xsl:for-each select="//tei:pb[@edRef=concat('#', $wit_id)]">
+                            <img 
+                                src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$wit_id}/full/260,/0/default.jpg"
+                                alt="Seite des Flugblatts"
+                                style="height: 9rem; width: auto;"
+                            />
+                        </xsl:for-each>
+                    </xsl:if>
                 </div>
             </xsl:for-each>
         </div>

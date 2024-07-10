@@ -36,6 +36,18 @@
             <xsl:value-of select="./@n"/>
         </span>
     </xsl:template>
+    <xsl:template match="tei:pb[@type='secondary']">
+        <xsl:variable name="facs">
+            <xsl:value-of select="@facs"/>
+        </xsl:variable>
+        <span class="pb secondary" source="{@facs}">
+            <xsl:attribute name="edRef">
+                <xsl:value-of select="@edRef"/>
+            </xsl:attribute>
+            <xsl:value-of select="./@n"/>
+        </span>
+    </xsl:template>
+
     <xsl:template match="tei:unclear">
         <abbr title="unclear">
             <xsl:apply-templates/>
