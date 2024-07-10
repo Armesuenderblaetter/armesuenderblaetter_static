@@ -72,8 +72,11 @@
                     </table>
                     <xsl:if test="@type='secondary'">
                         <xsl:for-each select="//tei:pb[@edRef=concat('#', $wit_id)]">
+                            <xsl:variable name="facs">
+                                <xsl:value-of select="@facs"/>
+                            </xsl:variable>
                             <img 
-                                src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$wit_id}/full/260,/0/default.jpg"
+                                src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/260,/0/default.jpg"
                                 alt="Seite des Flugblatts"
                                 style="height: 9rem; width: auto;"
                             />
