@@ -11,12 +11,11 @@
                 Textzeuge <xsl:value-of select="$p_wit_id"/>
                 </button>
             </li>
-            <xsl:message>jsjsjsjsjsjsjsj</xsl:message>
+
         </xsl:for-each>
     </xsl:template>
     <xsl:template name="secondary-wit">
         <xsl:for-each select="//tei:witness[@type='secondary']">
-            <xsl:message>hello</xsl:message>
             <xsl:variable name="s_wit_id">
                 <xsl:value-of select="@xml:id"/>
             </xsl:variable>
@@ -34,17 +33,18 @@
             <xsl:call-template name="primary-wit"/>
             <xsl:call-template name="secondary-wit"/>
         </ul>
-        <!-- <xsl:for-each select="//tei:witness">
+        <div class="tab-content">
+        <xsl:for-each select="//tei:witness">
                 <xsl:variable name="wit_id">
                     <xsl:value-of select="@xml:id"/>
                 </xsl:variable>
                 <div id="{$wit_id}-meta-data" role="tabpanel" aria-labelledby="#{$wit_id}-tab">
                     <xsl:attribute name="class">
-                        <xsl:value-of select="class='tab-pane fade'"/>
+                        <xsl:value-of select="'tab-pane fade'"/>
                     </xsl:attribute>
                     <xsl:if test="@type='primary'">
                         <xsl:attribute name="class">
-                            <xsl:value-of select="class='tab-pane fade show active'"/>
+                            <xsl:value-of select="'tab-pane fade show active'"/>
                         </xsl:attribute>
                     </xsl:if>
                     <table>
@@ -70,8 +70,10 @@
                             </tr>
                         </tbody>
                     </table>
+
                 </div>
-            </xsl:for-each> -->
+            </xsl:for-each>
+        </div>
     </xsl:template>
 
 </xsl:stylesheet>
