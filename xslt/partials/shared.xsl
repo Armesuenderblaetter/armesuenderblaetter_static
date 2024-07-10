@@ -7,7 +7,7 @@
         </xsl:variable>
         <xsl:value-of select="concat(name($currentNode), '__', $nodeCurrNr)"/>
     </xsl:function>
-    <xsl:template match="tei:pb">
+    <xsl:template match="tei:pb[@type='primary']">
         <!-- 
             this is necessary cause empty pages have to little height to 
             trigger scrolling, so i need to create a hight via css, ergo 
@@ -17,30 +17,24 @@
             excluded images from all sources but one to determine the amount of
             text between them
         -->
-        <xsl:if test="@edRef='#oenb' or (preceding-sibling::*[1][local-name()!='pb'] and following-sibling::*[1][local-name()!='pb'])">
-            <xsl:variable name="doc_archive">
-                <xsl:value-of select="@edRef"/>
-            </xsl:variable>
-            <span class="anchor-pb"></span>
-            <xsl:variable name="facs">
-                <xsl:value-of select="@facs"/>
-            </xsl:variable>
-            <xsl:variable name="emptypage">
-                <xsl:for-each-group select="//tei:text//text()|//tei:text//tei:pb[@edRef='$doc_archive']" group-starting-with=".[local-name()='pb'and @edRef='$doc_archive']">
-                    <xsl:if test="current-group()[1][local-name()='pb' and @facs=$facs]">
-                        <xsl:value-of select="string-length(string-join(current-group())) lt 160"/>
-                    </xsl:if>
-                </xsl:for-each-group>
-            </xsl:variable>
-            <span class="pb" source="{@facs}">
-                <xsl:if test="string($emptypage) = 'true'">
-                    <xsl:attribute name="class">
-                        <xsl:value-of select="'pb nearly_no_content'"/>
-                    </xsl:attribute>
+        <xsl:variable name="facs">
+            <xsl:value-of select="@facs"/>
+        </xsl:variable>
+        <xsl:variable name="emptypage">
+            <xsl:for-each-group select="//tei:text//text()|//tei:text//tei:pb[@type='primary']" group-starting-with=".[local-name()='pb'and @type='primary']">
+                <xsl:if test="current-group()[1][local-name()='pb' and @facs=$facs]">
+                    <xsl:value-of select="string-length(string-join(current-group())) lt 160"/>
                 </xsl:if>
-                <xsl:value-of select="./@n"/>
-            </span>
-        </xsl:if>
+            </xsl:for-each-group>
+        </xsl:variable>
+        <span class="pb primary" source="{@facs}">
+            <xsl:if test="string($emptypage) = 'true'">
+                <xsl:attribute name="class">
+                    <xsl:value-of select="'pb nearly_no_content primary'"/>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:value-of select="./@n"/>
+        </span>
     </xsl:template>
     <xsl:template match="tei:unclear">
         <abbr title="unclear">
