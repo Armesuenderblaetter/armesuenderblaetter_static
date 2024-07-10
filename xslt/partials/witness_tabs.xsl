@@ -75,15 +75,51 @@
                             <xsl:variable name="facs">
                                 <xsl:value-of select="@facs"/>
                             </xsl:variable>
-                            <img 
-                                src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/260,/0/default.jpg"
-                                alt="Seite des Flugblatts"
-                                style="height: 9rem; width: auto;"
-                            />
+                            <a href="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/max/0/default.jpg">
+                                <img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/260,/0/default.jpg" alt="Seite des Flugblatts" style="height: 9rem; width: auto;" />
+                            </a>
+                            <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_{$facs}">
+                                <img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/260,/0/default.jpg" alt="Seite des Flugblatts" style="height: 9rem; width: auto;" />
+                            </button>
+                            <div class="modal fade" id="modal_{$facs}" tabindex="-1" role="dialog" aria-labelledby="modal_{$facs}_title" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modal_{$facs}_title">test</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true"></span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/max/0/default.jpg" alt="Seite des Flugblatts" style="height: 40rem; width: auto;" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
                         </xsl:for-each>
                     </xsl:if>
                 </div>
             </xsl:for-each>
+        </div>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+    Launch demo modal
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </xsl:template>
 
