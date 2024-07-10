@@ -117,6 +117,18 @@ function load_initial_image() {
       viewer.world.removeItem(viewer.world.getItemAt(1));
     }
     handle_new_image(first_pb_element_in_viewport);
+  } else {
+    let first_pb_element_in_viewport = undefined;
+    for (let pb_element of pb_elements) {
+      if (isInViewport(pb_element)) {
+        first_pb_element_in_viewport = pb_element;
+        break;
+      }
+    }
+    if (viewer.world.getItemCount() > 1) {
+      viewer.world.removeItem(viewer.world.getItemAt(1));
+    }
+    handle_new_image(first_pb_element_in_viewport);
   }
 }
 
@@ -157,10 +169,8 @@ var viewer = OpenSeadragon({
 // image, I would be really happy or at least a little bit
 viewer.world.addHandler("add-item", () => {
   while (viewer.world.getItemCount() > 1) {
-    console.log(viewer.world.getItemCount());
     viewer.world.removeItem(viewer.world.getItemAt(0));
   }
-  console.log(viewer.world.getItemCount());
 });
 /*
 ##################################################################
@@ -176,7 +186,7 @@ var prev = document.querySelector("div[title='Previous page']");
 var next = document.querySelector("div[title='Next page']");
 prev.style.opacity = 1;
 next.style.opacity = 1;
-
+var last_img_url = ""
 /* These two values define the size of the part
 of the viewport that should trigger an image reload
 whenever it gets enterd by a pb element. Negative values
@@ -188,29 +198,34 @@ function handle_new_image(current_pb_element) {
   next_pb_index = current_pb_index + 1;
   previous_pb_index = current_pb_index - 1;
   new_image_url = get_iif_link(
-    current_pb_element.getAttribute(page_break_marker_image_attribute)
+    current_pb_element.getAttribute(
+      page_break_marker_image_attribute
+    )
   );
   old_image = viewer.world.getItemAt(0);
   load_new_image_with_check(new_image_url, old_image);
 }
 
 function load_new_image_with_check(new_image_url, old_image) {
-  viewer.addSimpleImage({
-    url: new_image_url,
-    success: function (event) {
-      function ready() {
-        if (viewer.world.getItemCount() > 1 && old_image) {
-          viewer.world.removeItem(old_image);
+  if (last_img_url != new_image_url){
+    last_img_url = new_image_url;
+    viewer.addSimpleImage({
+      url: new_image_url,
+      success: function (event) {
+        function ready() {
+          if (viewer.world.getItemCount() > 1 && old_image) {
+            viewer.world.removeItem(old_image);
+          }
         }
-      }
-      // test if item was loaded and trigger function to remove previous item
-      if (event.item) {
-        ready();
-      } else {
-        event.item.addOnceHandler("fully-loaded-change", ready());
-      }
-    },
-  });
+        // test if item was loaded and trigger function to remove previous item
+        if (event.item) {
+          ready();
+        } else {
+          event.item.addOnceHandler("fully-loaded-change", ready());
+        }
+      },
+    });
+  }
 }
 
 
@@ -249,6 +264,6 @@ next.addEventListener("click", () => {
   scroll_next();
 });
 
-if (initial_osd_visible) {
+if (isVisible(OSD_container_spawnpoint)) {
   load_initial_image();
 }
