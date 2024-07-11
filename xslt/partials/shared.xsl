@@ -7,6 +7,14 @@
         </xsl:variable>
         <xsl:value-of select="concat(name($currentNode), '__', $nodeCurrNr)"/>
     </xsl:function>
+    <xsl:template match="tei:w[tei:app]">
+        <span>
+            <xsl:attribute name="id">
+                <xsl:value-of select="@xml:id"/>
+            </xsl:attribute>
+            <xsl:apply-templates/>
+        </span>
+    </xsl:template>
     <xsl:template match="tei:pb[@type='primary']">
         <!-- 
             this is necessary cause empty pages have to little height to 

@@ -29,7 +29,7 @@
         </xsl:for-each>
     </xsl:template>
     <xsl:template match="tei:listWit" name="witness_tabs">
-        <ul class="nav nav-tabs" role="tablist">
+        <ul class="nav nav-tabs" id="witness_overview" role="tablist">
             <xsl:call-template name="primary-wit"/>
             <xsl:call-template name="secondary-wit"/>
         </ul>
