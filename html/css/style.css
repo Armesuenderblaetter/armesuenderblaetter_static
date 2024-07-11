@@ -81,9 +81,24 @@ span.pb.nearly_no_content {
     height: 8rem;
     border: 1rem solid black;
 }
+
 /* span.pb.nearly_no_content::after {
 
     display:block;
     height: 8rem;
     border: 1rem solid black;
 } */
+
+.modal-dialog {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10040;
+    width: fit-content;
+    margin: auto;
+}
+
+.modal-content {
+    width: fit-content; 
+    max-width: 90vw;
+}

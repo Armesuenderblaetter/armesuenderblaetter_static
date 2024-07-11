@@ -75,33 +75,41 @@
                             <xsl:variable name="facs">
                                 <xsl:value-of select="@facs"/>
                             </xsl:variable>
-                            <a href="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/max/0/default.jpg">
-                                <img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/260,/0/default.jpg" alt="Seite des Flugblatts" style="height: 9rem; width: auto;" />
-                            </a>
-                            <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_{$facs}">
-                                <img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/260,/0/default.jpg" alt="Seite des Flugblatts" style="height: 9rem; width: auto;" />
-                            </button>
-                            <div class="modal fade" id="modal_{$facs}" tabindex="-1" role="dialog" aria-labelledby="modal_{$facs}_title" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="modal_{$facs}_title">test</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true"></span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/max/0/default.jpg" alt="Seite des Flugblatts" style="height: 40rem; width: auto;" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> -->
+                            <xsl:variable name="facs_id">
+                                <xsl:value-of select="substring-before(@facs, '.')"/>
+                            </xsl:variable>
+                            <span data-bs-toggle="modal" data-bs-target="#full_{$facs_id}">
+                                <img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/260,/0/default.jpg" alt="Seite des Flugblatts" style="height: 7rem; width: auto;" />
+                            </span>
                         </xsl:for-each>
                     </xsl:if>
                 </div>
             </xsl:for-each>
         </div>
-
     </xsl:template>
+
+    <xsl:template name="place_fullimages">
+        <xsl:for-each select="//tei:pb[@type='secondary']">
+            <xsl:variable name="facs_id">
+                <xsl:value-of select="substring-before(@facs, '.')"/>
+            </xsl:variable>
+            <xsl:variable name="facs">
+                <xsl:value-of select="@facs"/>
+            </xsl:variable>
+            <div class="modal fade" id="full_{$facs_id}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/max/0/default.jpg" alt="Seite des Flugblatts"/>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xsl:for-each>
+    </xsl:template>
+
 
 </xsl:stylesheet>

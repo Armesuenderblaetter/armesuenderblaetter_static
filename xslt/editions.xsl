@@ -139,6 +139,7 @@
                             </xsl:for-each>
                         </p>
                     </div>
+                    <xsl:call-template name="place_fullimages"/>
                     <xsl:for-each select="//tei:back">
                         <div class="tei-back">
                             <xsl:apply-templates/>
