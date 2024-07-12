@@ -44,7 +44,7 @@ div ul.ais-RefinementList-list {
     border-radius: 0.3rem;
 }
 
-#editon-text {
+#edition-text {
     padding-bottom: 75vh;
 }
 
@@ -107,7 +107,7 @@ span.image_preview img {
     width: auto;
 }
 
-#editon-text *{
+#edition-text *{
     max-width: 30rem;
     background-color: red;
 }

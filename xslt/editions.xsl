@@ -109,7 +109,7 @@
                             <div id="facsimiles" class="col-6">
                                 <xsl:call-template name="osd-container"/>
                             </div>
-                            <div id="editon-text" class="col-6">
+                            <div id="edition-text" class="col-6">
                                 <xsl:apply-templates
                                     select="//tei:text/tei:*[not(local-name() = 'fs' or local-name() = 'back')]"/>
                             </div>
