@@ -8,12 +8,17 @@
         <xsl:value-of select="concat(name($currentNode), '__', $nodeCurrNr)"/>
     </xsl:function>
     <xsl:template match="tei:w[tei:app]">
-        <span>
-            <xsl:attribute name="id">
-                <xsl:value-of select="@xml:id"/>
-            </xsl:attribute>
-            <xsl:apply-templates/>
-        </span>
+        <xsl:variable name="w_id">
+            <xsl:value-of select="@xml:id"/>
+        </xsl:variable>
+        <a class="variant_anchor" href="#app_{$w_id}">
+            <span class="variant_anchor">
+                <xsl:attribute name="id">
+                    <xsl:value-of select="@xml:id"/>
+                </xsl:attribute>
+                <xsl:value-of select=".//tei:lem//text()[not(ancestor::tei:sic)]"/>
+            </span>
+        </a>
     </xsl:template>
     <xsl:template match="tei:pb[@type='primary']">
         <!-- 

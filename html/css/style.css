@@ -102,3 +102,29 @@ span.pb.nearly_no_content {
     width: fit-content; 
     max-width: 90vw;
 }
+
+span.variant_anchor{
+    background-color:lightgrey;
+    scroll-padding-top: 2rem;
+    border-radius: 6px;
+    padding: 0.1rem 0.2rem;
+}
+
+span.variant_anchor:target{
+    background-color: grey;
+}
+
+a.variant_anchor{
+    color: inherit;
+    text-decoration: inherit;
+}
+
+p.app:target * {
+    background-color: lightgrey;
+
+}
+
+p.app a {
+    text-decoration: inherit;
+    color: inherit;
+}
