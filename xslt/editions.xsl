@@ -112,7 +112,6 @@
                             <div id="editon-text" class="col-6">
                                 <xsl:apply-templates
                                     select="//tei:text/tei:*[not(local-name() = 'fs' or local-name() = 'back')]"/>
-                                <!-- <xsl:apply-templates select="//tei:body"/> -->
                             </div>
                         </div>
                         <div class="footnotes">

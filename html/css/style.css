@@ -106,3 +106,8 @@ span.image_preview img {
     height: 7rem;
     width: auto;
 }
+
+#editon-text *{
+    max-width: 30rem;
+    background-color: red;
+}
