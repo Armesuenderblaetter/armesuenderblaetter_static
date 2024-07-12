@@ -69,22 +69,9 @@ span.pb.nearly_no_content {
     height: 16rem;
 }
 
-.modal-dialog {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 10040;
-    width: fit-content;
-    margin: auto;
-}
-
-.modal-content {
-    width: fit-content; 
-    max-width: 90vw;
-}
-
 .modal-body img {
     display: block;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
 }

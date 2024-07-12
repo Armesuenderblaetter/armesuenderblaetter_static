@@ -78,8 +78,8 @@
                             <xsl:variable name="facs_id">
                                 <xsl:value-of select="substring-before(@facs, '.')"/>
                             </xsl:variable>
-                            <span data-bs-toggle="modal" data-bs-target="#full_{$facs_id}">
-                                <img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/260,/0/default.jpg" alt="Seite des Flugblatts" style="height: 7rem; width: auto;" />
+                            <span data-bs-toggle="modal" data-bs-target="#full_{$facs_id}" class="image_preview">
+                                <img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/260,/0/default.jpg" alt="Seite des Flugblatts"/>
                             </span>
                         </xsl:for-each>
                     </xsl:if>
@@ -97,7 +97,7 @@
                 <xsl:value-of select="@facs"/>
             </xsl:variable>
             <div class="modal fade" id="full_{$facs_id}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-body">
                             <img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/max/0/default.jpg" alt="Seite des Flugblatts"/>
