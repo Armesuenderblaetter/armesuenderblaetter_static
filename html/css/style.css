@@ -65,29 +65,9 @@ div.icon_desc {
 }
 
 span.pb.nearly_no_content {
-    display: inline-block;
-    height: 8rem;
-    border: 1rem solid black;
-}
-
-span.pb.nearly_no_content {
-    display: inline-block;
-    height: 8rem;
-    border: 1rem solid black;
-}
-
-span.pb.nearly_no_content {
     display: block;
-    height: 8rem;
-    border: 1rem solid black;
+    height: 16rem;
 }
-
-/* span.pb.nearly_no_content::after {
-
-    display:block;
-    height: 8rem;
-    border: 1rem solid black;
-} */
 
 .modal-dialog {
     position: absolute;
@@ -101,6 +81,12 @@ span.pb.nearly_no_content {
 .modal-content {
     width: fit-content; 
     max-width: 90vw;
+}
+
+.modal-body img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 span.variant_anchor{
@@ -127,4 +113,9 @@ p.app:target * {
 p.app a {
     text-decoration: inherit;
     color: inherit;
+}
+
+span.image_preview img {
+    height: 7rem;
+    width: auto;
 }
