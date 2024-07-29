@@ -157,7 +157,7 @@ var viewer = OpenSeadragon({
   prefixUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.0.0/images/",
   sequenceMode: true,
-  showNavigator: true,
+  showNavigator: false,
   constrainDuringPan: true,
   visibilityRatio: 1,
   showNavigationControl: true,

@@ -18,7 +18,7 @@ var viewer = OpenSeadragon({
     prefixUrl: 'https://cdnjs.cloudflare.com/ajax/libs/openseadragon/2.4.1/images/',
     sequenceMode: true,
     showReferenceStrip: true,
-    showNavigator: true,
+    showNavigator: false,
     imageLoaderLimit: 10,
     tileSources: tileSources
 });
