@@ -76,18 +76,18 @@ span.pb.nearly_no_content {
     margin-right: auto;
 }
 
-span.variant_anchor{
+a.variant_anchor_link{
     background-color:lightgrey;
     scroll-padding-top: 2rem;
     border-radius: 6px;
     padding: 0.1rem 0.2rem;
 }
 
-span.variant_anchor:target{
+a.variant_anchor_link:target{
     background-color: grey;
 }
 
-a.variant_anchor{
+a.variant_anchor_link{
     color: inherit;
     text-decoration: inherit;
 }
@@ -109,4 +109,26 @@ span.image_preview img {
 
 #edition-text *{
     max-width: 30rem;
+}
+
+span.catch {
+    width: 100%;
+    display: block;
+    color: grey;
+    text-align: right;
+}
+
+span.layer_counter {
+    width: 100%;
+    display: block;
+    color: grey;
+    text-align: center;
+}
+
+span.pageNum {
+    width: 100%;
+    display: block;
+    color: darkgrey;
+    text-align: left;
+    padding-left: 1rem;
 }

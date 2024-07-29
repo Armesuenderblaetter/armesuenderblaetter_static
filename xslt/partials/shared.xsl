@@ -7,19 +7,41 @@
         </xsl:variable>
         <xsl:value-of select="concat(name($currentNode), '__', $nodeCurrNr)"/>
     </xsl:function>
-    <xsl:template match="tei:w[tei:app]">
+
+    <xsl:template match="tei:w/tei:app[tei:lem]/tei:rdg"/>
+
+
+    <xsl:template match="tei:w/tei:app[not(tei:lem)]">
         <xsl:variable name="w_id">
-            <xsl:value-of select="@xml:id"/>
+            <xsl:value-of select="ancestor::tei:w[1]/@xml:id"/>
         </xsl:variable>
-        <a class="variant_anchor" href="#app_{$w_id}">
-            <span class="variant_anchor">
+        <a class="variant_anchor_link" href="#app_{$w_id}">
                 <xsl:attribute name="id">
-                    <xsl:value-of select="@xml:id"/>
+                    <xsl:value-of select="$w_id"/>
                 </xsl:attribute>
-                <xsl:value-of select=".//tei:lem//text()[not(ancestor::tei:sic)]"/>
-            </span>
+                <xsl:text>#~#</xsl:text>
+                <xsl:apply-templates/>
         </a>
     </xsl:template>
+
+    <xsl:template match="tei:w/tei:app/tei:lem">
+        <xsl:variable name="w_id">
+            <xsl:value-of select="ancestor::tei:w[1]/@xml:id"/>
+        </xsl:variable>
+        <a class="variant_anchor_link" href="#app_{$w_id}">
+                <xsl:attribute name="id">
+                    <xsl:value-of select="$w_id"/>
+                </xsl:attribute>
+                <xsl:apply-templates/>
+        </a>
+    </xsl:template>
+
+    <!-- 
+    <xsl:value-of select=".//tei:lem//text()[not(ancestor::tei:sic)]"/> -->
+
+    <!-- copied from b-vg-->
+
+
     <xsl:template match="tei:pb[@type='primary']">
         <!-- 
             this is necessary cause empty pages have to little height to 
@@ -47,8 +69,10 @@
                 </xsl:attribute>
             </xsl:if>
             <xsl:value-of select="./@n"/>
+            <hr/>
         </span>
     </xsl:template>
+
     <xsl:template match="tei:pb[@type='secondary']">
         <xsl:variable name="facs">
             <xsl:value-of select="@facs"/>
@@ -125,6 +149,21 @@
             </xsl:when>
         </xsl:choose>
     </xsl:template>
+
+    <xsl:template match="tei:fw">
+        <xsl:choose>
+            <xsl:when test="@type='catch'">
+                <span class="catch"><xsl:apply-templates/></span>
+            </xsl:when>
+            <xsl:when test="@type='footnote'">
+                <span class="layer_counter"><xsl:apply-templates/></span>
+            </xsl:when>
+            <xsl:when test="@type='pageNum'">
+                <span class="page_number"><xsl:apply-templates/></span>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:template>
+    
 
     <xsl:template match="tei:hi">
         <span>
