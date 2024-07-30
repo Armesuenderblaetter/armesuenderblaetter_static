@@ -111,7 +111,8 @@
                             </div>
                             <div id="edition-text" class="col-6">
                                 <xsl:apply-templates
-                                    select="//tei:text/tei:*[not(local-name() = 'fs' or local-name() = 'back')]"/>
+                                    select="//tei:text/tei:*[not(local-name() = 'fs' or local-name() = 'back')]"
+                                />
                             </div>
                         </div>
                         <div class="footnotes">
@@ -137,39 +138,46 @@
                                                 </span>
                                             </a>
                                         </xsl:element>
-                                        <xsl:apply-templates/>
+                                        <xsl:apply-templates select="./tei:rdg" mode="app"/>
                                     </div>
                                 </xsl:for-each>
                             </p>
                         </div>
                         <div class="variants">
-                            <xsl:for-each select="//tei:app[count(./tei:rdg) gt 0 and count(./tei:lem) gt 0]">
-                                <xsl:variable name="w_id">
-                                    <xsl:value-of select="parent::tei:w/@xml:id"/>
+                            <xsl:for-each select="//tei:app">
+                                <xsl:variable name="num">
+                                    <xsl:number level="any"/>
                                 </xsl:variable>
-                                <p class="app" id="app_{$w_id}">
-                                    <a href="#{$w_id}">
+                                <xsl:variable name="app_id">
+                                    <xsl:value-of select="concat('app_', $num)"/>
+                                </xsl:variable>
+                                <xsl:variable name="var_id">
+                                    <xsl:value-of select="concat('var_', $num)"/>
+                                </xsl:variable>
+                                <p class="app" id="{$app_id}">
+                                    <a href="#{$var_id}">
                                         <span class="lemma">
-                                            <xsl:value-of
-                                                select="concat(./tei:lem/normalize-space(), '] ')"/>
+                                            <xsl:choose>
+                                                <xsl:when test="./tei:lem">
+                                                  <xsl:apply-templates select="./tei:lem" mode="app"
+                                                  />
+                                                </xsl:when>
+                                                <xsl:otherwise>
+                                                  <xsl:text> ] </xsl:text>
+                                                </xsl:otherwise>
+                                            </xsl:choose>
                                         </span>
                                     </a>
-                                    <xsl:for-each select="./tei:rdg">
-                                        <span class="variant">
-                                            <xsl:variable name="witness_name">
-                                                <xsl:value-of select="substring-after(@wit, '#')"/>
-                                            </xsl:variable>
-                                            <xsl:message>
-                                                <xsl:value-of select="$witness_name"/></xsl:message>
-                                            <xsl:variable name="image_name">
-                                                <xsl:value-of select=".//preceding::tei:pb[@edRef=concat('#', $witness_name)][1]/@facs"/>
-                                            </xsl:variable>
-                                            <a href="#witness_overview">
-                                                <xsl:value-of select="$witness_name"/>
-                                            </a><xsl:text>:</xsl:text>
-                                            <a href="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$image_name}/full/max/0/default.jpg"><xsl:value-of select=".//text()"/></a>
-                                        </span>
-                                    </xsl:for-each>
+                                    <xsl:choose>
+                                        <xsl:when test="count(./tei:rdg)=0">
+                                            <span class="editor_comment">
+                                                <xsl:text>fehlt in anderen Zeugen</xsl:text>
+                                            </span>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:apply-templates select="./tei:rdg" mode="app"/>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
                                 </p>
                             </xsl:for-each>
                         </div>
@@ -181,7 +189,6 @@
                         </div>
                     </xsl:for-each>
                 </main>
-
                 <xsl:call-template name="html_footer"/>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"/>
                 <script src="js/osd_scroll.js"/>

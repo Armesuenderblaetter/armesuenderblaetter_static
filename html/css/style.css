@@ -84,7 +84,7 @@ a.variant_anchor_link{
 }
 
 a.variant_anchor_link:target{
-    background-color: grey;
+    background-color: grey!important;
 }
 
 a.variant_anchor_link{
@@ -93,7 +93,7 @@ a.variant_anchor_link{
 }
 
 p.app:target * {
-    background-color: lightgrey;
+    background-color: lightgrey!important;
 
 }
 
@@ -125,10 +125,28 @@ span.layer_counter {
     text-align: center;
 }
 
-span.pageNum {
+span.page_number {
     width: 100%;
     display: block;
     color: darkgrey;
     text-align: left;
     padding-left: 1rem;
 }
+
+* + hr.section_divider {
+    padding-bottom: 1.5rem;
+}
+
+hr.section_divider{
+    width: 10rem;
+    margin: auto;
+    padding-bottom: 1.5rem;
+    border-top: solid .3rem;
+}
+
+hr.section_divider + hr.section_divider {
+    width: 10rem;
+    margin: auto;
+    border-top: solid .3rem;
+}
+
