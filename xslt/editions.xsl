@@ -170,8 +170,14 @@
                                     </a>
                                     <xsl:choose>
                                         <xsl:when test="count(./tei:rdg)=0">
+                                            <xsl:variable name="witname">
+                                                <xsl:value-of select="substring-after(./tei:lem/@wit, '#')"/>
+                                            </xsl:variable>
                                             <span class="editor_comment">
-                                                <xsl:text>fehlt in anderen Zeugen</xsl:text>
+                                                <xsl:text>nur in </xsl:text>
+                                                <a href="#witness_overview">                                                    
+                                                    <xsl:value-of select="$witname"/>
+                                                </a>
                                             </span>
                                         </xsl:when>
                                         <xsl:otherwise>

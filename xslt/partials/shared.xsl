@@ -9,6 +9,7 @@
         </xsl:variable>
         <xsl:value-of select="concat(name($currentNode), '__', $nodeCurrNr)"/>
     </xsl:function>
+    <xsl:strip-space elements="fw"/>
     <xsl:template name="lstrip">
         <xsl:variable name="stripped_string">
             <xsl:value-of select="normalize-space()"/>
@@ -19,7 +20,7 @@
         <xsl:variable name="stripped_string">
             <xsl:value-of select="normalize-space()"/>
         </xsl:variable>
-        <xsl:value-of select="concat( ' ', $stripped_string, substring-after(., $stripped_string))"/>
+        <xsl:value-of select="concat(' ', $stripped_string, substring-after(., $stripped_string))"/>
     </xsl:template>
     <xsl:template name="rstrip">
         <xsl:variable name="stripped_string">
@@ -31,7 +32,8 @@
         <xsl:variable name="stripped_string">
             <xsl:value-of select="normalize-space()"/>
         </xsl:variable>
-        <xsl:value-of select="concat(substring-before(., $stripped_string), $stripped_string, ' ')"/>
+        <xsl:value-of select="concat(substring-before(., $stripped_string), $stripped_string, ' ')"
+        />
     </xsl:template>
     <xsl:template match="tei:app[tei:lem]">
         <xsl:variable name="num">
@@ -55,7 +57,10 @@
             <xsl:text> </xsl:text>
         </a>
     </xsl:template>
-    <xsl:template match="tei:lem"/>
+    <!--<xsl:template match="tei:app//text()[normalize-space()=''] | tei:choice//text()[normalize-space()=''] | tei:fw//text()[normalize-space()='']" mode="app"/>-->
+    <xsl:template match="text()" mode="app">
+        <xsl:value-of select="normalize-space(.)"/>
+    </xsl:template>
     <xsl:template match="tei:lem" mode="app">
         <xsl:apply-templates mode="app"/>
         <xsl:text>] </xsl:text>
@@ -76,7 +81,7 @@
             </a>
             <a
                 href="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$image_name}/full/max/0/default.jpg">
-                <xsl:apply-templates mode="rdg"/>
+                <xsl:apply-templates mode="app"/>
             </a>
         </span>
     </xsl:template>
@@ -148,14 +153,29 @@
             <hr/>
         </span>
     </xsl:template>
-    
-    <xsl:template match="text()[preceding-sibling::node()[1][local-name()='app' and count(./tei:lem)=0]] | text()[preceding-sibling::*[1][local-name()='app' and not( ./tei:lem/node()[self::text() and normalize-space()!='']) and count(tei:lem/*[local-name()!='pc'])=0]]">
-<!--        <xsl:text>###l###</xsl:text>-->
-        <xsl:call-template name="one_withespace_left"></xsl:call-template>
+    <xsl:template match="tei:pb[@type = 'secondary']">
+        <xsl:variable name="facs">
+            <xsl:value-of select="@facs"/>
+        </xsl:variable>
+        <span class="pb secondary" source="{@facs}">
+            <xsl:attribute name="edRef">
+                <xsl:value-of select="@edRef"/>
+            </xsl:attribute>
+            <xsl:value-of select="./@n"/>
+        </span>
     </xsl:template>
-    <xsl:template match="text()[following-sibling::node()[1][local-name()='app' and count(./tei:lem)=0]] | text()[following-sibling::*[1][local-name()='app' and not( ./tei:lem/node()[self::text() and normalize-space()!='']) and count(tei:lem/*[local-name()!='pc'])=0]]">
-        <xsl:call-template name="one_withespace_right"></xsl:call-template>
-        <!--<xsl:text>###r###</xsl:text>-->
+    <xsl:template match="tei:pb" mode="app">
+        <xsl:text> | </xsl:text>
+    </xsl:template>
+    <xsl:template
+        match="text()[preceding-sibling::node()[1][local-name() = 'app' and count(./tei:lem) = 0]] | text()[preceding-sibling::*[1][local-name() = 'app' and not(./tei:lem/node()[self::text() and normalize-space() != '']) and count(tei:lem/*[local-name() != 'pc']) = 0]]">
+        <xsl:text> </xsl:text>
+        <xsl:call-template name="one_withespace_left"/>
+    </xsl:template>
+    <xsl:template
+        match="text()[following-sibling::node()[1][local-name() = 'app' and count(./tei:lem) = 0]] | text()[following-sibling::*[1][local-name() = 'app' and not(./tei:lem/node()[self::text() and normalize-space() != '']) and count(tei:lem/*[local-name() != 'pc']) = 0]]">
+        <xsl:call-template name="one_withespace_right"/>
+        <xsl:text> </xsl:text>
     </xsl:template>
     <xsl:template match="tei:choice" mode="app">
         <xsl:apply-templates mode="app"/>
@@ -170,20 +190,6 @@
     </xsl:template>
     <xsl:template match="tei:corr" mode="app">
         <xsl:apply-templates mode="app"/>
-    </xsl:template>
-    <xsl:template match="tei:pb[@type = 'secondary']">
-        <xsl:variable name="facs">
-            <xsl:value-of select="@facs"/>
-        </xsl:variable>
-        <span class="pb secondary" source="{@facs}">
-            <xsl:attribute name="edRef">
-                <xsl:value-of select="@edRef"/>
-            </xsl:attribute>
-            <xsl:value-of select="./@n"/>
-        </span>
-    </xsl:template>
-    <xsl:template match="tei:pb" mode="app">
-        <xsl:text> | </xsl:text>
     </xsl:template>
     <xsl:template match="tei:unclear">
         <abbr title="unclear">
@@ -266,39 +272,89 @@
             </xsl:when>
         </xsl:choose>
     </xsl:template>
-    <xsl:template match="tei:hi">
-        <span>
-            <xsl:choose>
-                <xsl:when test="@rendition = '#em'">
-                    <xsl:attribute name="class">
-                        <xsl:text>italic</xsl:text>
-                    </xsl:attribute>
-                </xsl:when>
-                <xsl:when test="@rendition = '#italic'">
-                    <xsl:attribute name="class">
-                        <xsl:text>italic</xsl:text>
-                    </xsl:attribute>
-                </xsl:when>
-                <xsl:when test="@rendition = '#smallcaps'">
-                    <xsl:attribute name="class">
-                        <xsl:text>smallcaps</xsl:text>
-                    </xsl:attribute>
-                </xsl:when>
-                <xsl:when test="@rendition = '#bold'">
-                    <xsl:attribute name="class">
-                        <xsl:text>bold</xsl:text>
-                    </xsl:attribute>
-                </xsl:when>
-                <xsl:when test="@rendition = '#aq'">
-                    <xsl:attribute name="class">
-                        <xsl:text>antiqua</xsl:text>
-                    </xsl:attribute>
-                </xsl:when>
-            </xsl:choose>
+    <xsl:template match="tei:fw" mode="app">
+        <xsl:choose>
+            <xsl:when test="@type = 'catch'">
+                <span class="app-catch">
+                    <xsl:apply-templates mode="app"/>
+                </span>
+            </xsl:when>
+            <xsl:when test="@type = 'footnote'">
+                <span class="app-layer_counter">
+                    <xsl:apply-templates mode="app"/>
+                </span>
+            </xsl:when>
+            <xsl:when test="@type = 'pageNum'">
+                <span class="app-page_number">
+                    <xsl:apply-templates mode="app"/>
+                </span>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:template>
+    <xsl:template match="tei:hi" mode="#all">
+        <xsl:variable name="rendering">
+<!--            <xsl:choose>
+                <xsl:when test="@rendition = '#em'">italic</xsl:when>
+                <xsl:when test="@rendition = '#italic'">italic</xsl:when>
+                <xsl:when test="@rendition = '#smallcaps'">smallcaps</xsl:when>
+                <xsl:when test="@rendition = '#bold'">bold</xsl:when>
+                <xsl:when test="@rendition = '#aq'">antiqua</xsl:when>
+            </xsl:choose>-->
+            <xsl:call-template name="rendition_2_class"/>
+        </xsl:variable>
+        <span class="{$rendering}">
             <xsl:apply-templates/>
         </span>
     </xsl:template>
-    <xsl:template match="tei:milestone[@rendition='#hr']">
+    <xsl:template name="rendition_2_class">
+        <xsl:if test="@rendition">
+            <xsl:for-each select="tokenize(@rendition, '\s*#')">
+                <xsl:choose>
+                    <xsl:when test=". = 'c'">
+                        <!--zentriert-->
+                        <xsl:text>text_align_center </xsl:text>
+                    </xsl:when>
+                    <xsl:when test=". = 'aq'">
+                        <!--Antiqua-Schrift-->
+                        <xsl:text>antiqua </xsl:text>
+                    </xsl:when>
+                    <xsl:when test=". = 'in'">
+                        <!--Erste Buchstabe ist eine inititale-->
+                        <xsl:text>majuscule </xsl:text>
+                    </xsl:when>
+                    <xsl:when test=". = 'i'">
+                        <!--Kursivdruck-->
+                        <xsl:text>italic </xsl:text>
+                    </xsl:when>
+                    <xsl:when test=". = 'g'">
+                        <!--Gesperrt-->
+                        <xsl:text>spaced </xsl:text>
+                    </xsl:when>
+                    <xsl:when test=". = 'et'">
+                        <!--Einzug-->
+                        <xsl:text>indent </xsl:text>
+                    </xsl:when>
+                    <xsl:when test=". = 'ot'">
+                        <!--hängender Einzug-->
+                        <xsl:text>hanging_indent </xsl:text>
+                    </xsl:when>
+                    <xsl:when test=". = 'sup'">
+                        <!--hochgestellt-->
+                        <xsl:text>superscript </xsl:text>
+                    </xsl:when>
+                    <xsl:when test=". = 'il'">
+                        <!--Element innerhalb einer Zeile-->
+                        <xsl:text>display_inline </xsl:text>
+                    </xsl:when>
+                    <xsl:when test=". = 'hr'">
+                        <xsl:text>section_divider </xsl:text>
+                        <!--Horizontale Linie-->
+                    </xsl:when>
+                </xsl:choose>
+            </xsl:for-each>
+        </xsl:if>
+    </xsl:template>
+    <xsl:template match="tei:milestone[@rendition = '#hr']">
         <hr class="section_divider"/>
     </xsl:template>
     <xsl:template match="tei:ref">

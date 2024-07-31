@@ -150,3 +150,39 @@ hr.section_divider + hr.section_divider {
     border-top: solid .3rem;
 }
 
+*.text_align_center {
+    text-align: center!important;
+}
+
+*.antiqua {
+    font-style: italic!important;
+}
+
+*.majuscule {
+    font-size: 150%!important;
+}
+
+*.italic {
+    font-style: bold!important;
+}
+
+*.spaced {
+    text-decoration: underline!important;
+}
+
+*.indent {
+    text-indent: 1rem!important;
+}
+
+*.hanging_indent {
+    text-indent: -1rem!important;
+}
+
+*.superscript {
+    vertical-align: top!important;
+    font-size: 70%;
+}
+
+*.display_inline {
+    display: inline!important;
+}
