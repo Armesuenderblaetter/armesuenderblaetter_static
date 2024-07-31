@@ -203,17 +203,17 @@ span.lemma::before {
 }
 
 *.app-page_number::before {
-    content: "(Seitenzählung:) ";
+    content: " (Seitenzählung:) ";
     font-family: var(--editor-font-family)!important;
     color: var(--editor-font-color)!important;
 }
 *.app-layer_counter::before {
-    content: "(Lagenzählung:) ";
+    content: " (Lagenzählung:) ";
     font-family: var(--editor-font-family)!important;
     color: var(--editor-font-color)!important;
 }
 *.app-catch::before {
-    content: "(Kustode:) ";
+    content: " (Kustode:) ";
     font-family: var(--editor-font-family)!important;
     color: var(--editor-font-color)!important;
 }
@@ -232,4 +232,8 @@ div.variants p.app {
 }
 html {
     scroll-padding-top: 2rem;
+}
+
+span.corr {
+    display: none;
 }

@@ -58,9 +58,9 @@
         </a>
     </xsl:template>
     
-    <xsl:template match="text()" mode="app">
+<!--    <xsl:template match="text()" mode="app">
         <xsl:value-of select="normalize-space(.)"/>
-    </xsl:template>
+    </xsl:template>-->
     <xsl:template match="tei:lem" mode="app">
         <xsl:apply-templates mode="app"/>
         <xsl:text>] </xsl:text>
@@ -87,11 +87,12 @@
     </xsl:template>
     
     <!--watch me suffer from these whitespaces-->
+    <xsl:template match="tei:app[not(count(tei:lem/tei:w) gt 1)]//text()[normalize-space()=''] | tei:choice//text()[normalize-space()=''] | tei:fw//text()[normalize-space()='']" mode="app"/>
     <!--variants only concerning interpunctation-->
     <!--variants only concerning fw elements-->
     <!--<xsl:template match="tei:app/tei:rdg[ancestor::tei:app//tei:lem/tei:w and not(ancestor::tei:w)]"/>
     <xsl:template match="tei:app/tei:rdg[not(ancestor::tei:app//tei:lem/tei:w) and not(ancestor::tei:w)]"/> -->
-    <!--<xsl:template match="tei:app//text()[normalize-space()=''] | tei:choice//text()[normalize-space()=''] | tei:fw//text()[normalize-space()='']" mode="app"/>-->
+    <!---->
     <!-- <xsl:template match="*[following-sibling::*[1][local-name()='app']]">
         <xsl:apply-templates/>
         <xsl:text>#here1#</xsl:text>
@@ -99,36 +100,11 @@
     <xsl:template match="*/descendant::*[1][local-name()='app']">
         <xsl:apply-templates/>
         <xsl:text>#here1#</xsl:text>
-    </xsl:template>
-
-    <xsl:template match="tei:app"/> -->
-    <!-- <xsl:template match="tei:w/tei:app/tei:rdg"/>
+    </xsl:template>-->
+    <!--
     <xsl:template match="tei:app/tei:rdg[ancestor::tei:app//tei:lem/tei:w and not(ancestor::tei:w)]"/>
     <xsl:template match="tei:app/tei:rdg[not(ancestor::tei:app//tei:lem/tei:w) and not(ancestor::tei:w)]"/> -->
-    <!-- <xsl:template match="tei:w/tei:app[not(tei:lem)]">
-        <xsl:variable name="w_id">
-            <xsl:value-of select="ancestor::tei:w[1]/@xml:id"/>
-        </xsl:variable>
-        <a class="variant_anchor_link" href="#app_{$w_id}">
-                <xsl:attribute name="id">
-                    <xsl:value-of select="$w_id"/>
-                </xsl:attribute>
-                <xsl:text> </xsl:text>
-                <xsl:apply-templates/>
-        </a>
-    </xsl:template>
-
-    <xsl:template match="tei:w/tei:app/tei:lem">
-        <xsl:variable name="w_id">
-            <xsl:value-of select="ancestor::tei:w[1]/@xml:id"/>
-        </xsl:variable>
-        <a class="variant_anchor_link" href="#app_{$w_id}">
-                <xsl:attribute name="id">
-                    <xsl:value-of select="$w_id"/>
-                </xsl:attribute>
-                <xsl:apply-templates/>
-        </a>
-    </xsl:template> -->
+  
     
     <xsl:template match="tei:pb[@type = 'primary']">
         <!-- 
@@ -191,14 +167,27 @@
     <xsl:template match="tei:choice">
         <xsl:apply-templates/>
     </xsl:template>
-    <xsl:template match="tei:sic"/>
+<!--    <xsl:template match="tei:sic"/>
     <xsl:template match="tei:sic" mode="app"/>
     <xsl:template match="tei:corr">
         <xsl:apply-templates/>
     </xsl:template>
     <xsl:template match="tei:corr" mode="app">
         <xsl:apply-templates mode="app"/>
+    </xsl:template>-->
+    <xsl:template match="tei:corr">
+        <span class="corr"><xsl:apply-templates/></span>
     </xsl:template>
+    <xsl:template match="tei:corr" mode="app">
+        <span class="corr"><xsl:apply-templates mode="app"/></span>
+    </xsl:template>
+    <xsl:template match="tei:sic">
+        <span class="sic"><xsl:apply-templates/></span>
+    </xsl:template>
+    <xsl:template match="tei:sic" mode="app">
+        <span class="sic"><xsl:apply-templates mode="app"/></span>
+    </xsl:template>
+    
     <xsl:template match="tei:unclear">
         <abbr title="unclear">
             <xsl:apply-templates/>
@@ -301,18 +290,19 @@
     </xsl:template>
     <xsl:template match="tei:hi" mode="#all">
         <xsl:variable name="rendering">
-<!--            <xsl:choose>
-                <xsl:when test="@rendition = '#em'">italic</xsl:when>
-                <xsl:when test="@rendition = '#italic'">italic</xsl:when>
-                <xsl:when test="@rendition = '#smallcaps'">smallcaps</xsl:when>
-                <xsl:when test="@rendition = '#bold'">bold</xsl:when>
-                <xsl:when test="@rendition = '#aq'">antiqua</xsl:when>
-            </xsl:choose>-->
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
         <span class="{$rendering}">
             <xsl:apply-templates/>
         </span>
+    </xsl:template>
+    <xsl:template match="tei:head" mode="#all">
+        <xsl:variable name="rendering">
+            <xsl:call-template name="rendition_2_class"/>
+        </xsl:variable>
+        <h4 class="{$rendering}">
+            <xsl:apply-templates/>
+        </h4>
     </xsl:template>
     <xsl:template name="rendition_2_class">
         <xsl:if test="@rendition">
