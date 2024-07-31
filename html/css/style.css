@@ -1,3 +1,9 @@
+:root {
+    --editor-font-family: serif;
+    --editor-font-color: grey;
+  }
+
+
 div#searchPage {
     padding: 2rem;
 }
@@ -150,6 +156,10 @@ hr.section_divider + hr.section_divider {
     border-top: solid .3rem;
 }
 
+span.lemma::before {
+    content: "↑ ";
+}
+
 *.text_align_center {
     text-align: center!important;
 }
@@ -185,4 +195,34 @@ hr.section_divider + hr.section_divider {
 
 *.display_inline {
     display: inline!important;
+}
+
+*.editor_comment {
+    font-family: var(--editor-font-family)!important;
+    color: var(--editor-font-color)!important;
+}
+
+*.app-page_number::after {
+    content: " (Seitenzählung)";
+    font-family: var(--editor-font-family)!important;
+    color: var(--editor-font-color)!important;
+}
+
+div.variants {
+    width: 100%;
+    column-count: 3;
+    background-color: aliceblue;
+    padding: 1rem;
+    border-top: 0.3rem solid black;
+    border-radius: 0.1rem;
+    /* display: flex;
+    position: relative;
+    background-color: red;
+    flex-direction: column;
+    flex-wrap: wrap; */
+}
+
+div.variants p.app {
+    width: 100%;
+    padding-right: 2rem;
 }

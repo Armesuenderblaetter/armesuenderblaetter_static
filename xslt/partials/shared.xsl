@@ -75,7 +75,7 @@
                 <xsl:value-of
                     select=".//preceding::tei:pb[@edRef = concat('#', $witness_name)][1]/@facs"/>
             </xsl:variable>
-            <a href="#witness_overview">
+            <a href="#witness_overview" class="editor_comment">
                 <xsl:value-of select="$witness_name"/>
                 <xsl:text>: </xsl:text>
             </a>
