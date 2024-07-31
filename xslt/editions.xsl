@@ -33,14 +33,6 @@
             <xsl:value-of select="./text()"/>
         </div>
     </xsl:template>
-    <xsl:template
-        match="//text()[following-sibling::*[1][local-name() = 'pc' and normalize-space() != '/' and normalize-space() != '(']]">
-        <xsl:value-of select="normalize-space(.)"/>
-    </xsl:template>
-    <xsl:template
-        match="//text()[preceding-sibling::*[1][local-name() = 'pc' and normalize-space() = '(']]">
-        <xsl:value-of select="normalize-space(.)"/>
-    </xsl:template>
     <xsl:template match="tei:titlePage">
         <xsl:apply-templates/>
     </xsl:template>

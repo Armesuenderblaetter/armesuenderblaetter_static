@@ -84,13 +84,13 @@ span.pb.nearly_no_content {
 
 a.variant_anchor_link{
     background-color:lightgrey;
-    scroll-padding-top: 2rem;
     border-radius: 6px;
     padding: 0.1rem 0.2rem;
 }
 
 a.variant_anchor_link:target{
     background-color: grey!important;
+    scroll-padding-top: 2rem;
 }
 
 a.variant_anchor_link{
@@ -100,7 +100,7 @@ a.variant_anchor_link{
 
 p.app:target * {
     background-color: lightgrey!important;
-
+    scroll-padding-top: 2rem;
 }
 
 p.app a {
@@ -202,12 +202,21 @@ span.lemma::before {
     color: var(--editor-font-color)!important;
 }
 
-*.app-page_number::after {
-    content: " (Seitenzählung)";
+*.app-page_number::before {
+    content: "(Seitenzählung:) ";
     font-family: var(--editor-font-family)!important;
     color: var(--editor-font-color)!important;
 }
-
+*.app-layer_counter::before {
+    content: "(Lagenzählung:) ";
+    font-family: var(--editor-font-family)!important;
+    color: var(--editor-font-color)!important;
+}
+*.app-catch::before {
+    content: "(Kustode:) ";
+    font-family: var(--editor-font-family)!important;
+    color: var(--editor-font-color)!important;
+}
 div.variants {
     width: 100%;
     column-count: 3;
@@ -215,14 +224,12 @@ div.variants {
     padding: 1rem;
     border-top: 0.3rem solid black;
     border-radius: 0.1rem;
-    /* display: flex;
-    position: relative;
-    background-color: red;
-    flex-direction: column;
-    flex-wrap: wrap; */
 }
 
 div.variants p.app {
     width: 100%;
     padding-right: 2rem;
+}
+html {
+    scroll-padding-top: 2rem;
 }

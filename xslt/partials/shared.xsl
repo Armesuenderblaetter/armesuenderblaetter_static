@@ -57,7 +57,7 @@
             <xsl:text> </xsl:text>
         </a>
     </xsl:template>
-    <!--<xsl:template match="tei:app//text()[normalize-space()=''] | tei:choice//text()[normalize-space()=''] | tei:fw//text()[normalize-space()='']" mode="app"/>-->
+    
     <xsl:template match="text()" mode="app">
         <xsl:value-of select="normalize-space(.)"/>
     </xsl:template>
@@ -85,6 +85,13 @@
             </a>
         </span>
     </xsl:template>
+    
+    <!--watch me suffer from these whitespaces-->
+    <!--variants only concerning interpunctation-->
+    <!--variants only concerning fw elements-->
+    <!--<xsl:template match="tei:app/tei:rdg[ancestor::tei:app//tei:lem/tei:w and not(ancestor::tei:w)]"/>
+    <xsl:template match="tei:app/tei:rdg[not(ancestor::tei:app//tei:lem/tei:w) and not(ancestor::tei:w)]"/> -->
+    <!--<xsl:template match="tei:app//text()[normalize-space()=''] | tei:choice//text()[normalize-space()=''] | tei:fw//text()[normalize-space()='']" mode="app"/>-->
     <!-- <xsl:template match="*[following-sibling::*[1][local-name()='app']]">
         <xsl:apply-templates/>
         <xsl:text>#here1#</xsl:text>
@@ -122,6 +129,7 @@
                 <xsl:apply-templates/>
         </a>
     </xsl:template> -->
+    
     <xsl:template match="tei:pb[@type = 'primary']">
         <!-- 
             this is necessary cause empty pages have to little height to 
