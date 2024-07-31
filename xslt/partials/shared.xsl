@@ -57,8 +57,7 @@
             <xsl:text> </xsl:text>
         </a>
     </xsl:template>
-    
-<!--    <xsl:template match="text()" mode="app">
+    <!--    <xsl:template match="text()" mode="app">
         <xsl:value-of select="normalize-space(.)"/>
     </xsl:template>-->
     <xsl:template match="tei:lem" mode="app">
@@ -85,9 +84,20 @@
             </a>
         </span>
     </xsl:template>
-    
     <!--watch me suffer from these whitespaces-->
-    <xsl:template match="tei:app[not(count(tei:lem/tei:w) gt 1)]//text()[normalize-space()=''] | tei:choice//text()[normalize-space()=''] | tei:fw//text()[normalize-space()='']" mode="app"/>
+    <xsl:template
+        match="text()[preceding-sibling::node()[1][local-name() = 'app' and count(./tei:lem) = 0]] | text()[preceding-sibling::*[1][local-name() = 'app' and not(./tei:lem/node()[self::text() and normalize-space() != '']) and count(tei:lem/*[local-name() != 'pc']) = 0]]">
+        <xsl:text> </xsl:text>
+        <xsl:call-template name="one_withespace_left"/>
+    </xsl:template>
+    <xsl:template
+        match="text()[following-sibling::node()[1][local-name() = 'app' and count(./tei:lem) = 0]] | text()[following-sibling::*[1][local-name() = 'app' and not(./tei:lem/node()[self::text() and normalize-space() != '']) and count(tei:lem/*[local-name() != 'pc']) = 0]]">
+        <xsl:call-template name="one_withespace_right"/>
+        <xsl:text> </xsl:text>
+    </xsl:template>
+    <xsl:template
+        match="tei:app[not(count(tei:lem/tei:w) gt 1)]//text()[normalize-space() = ''] | tei:choice//text()[normalize-space() = ''] | tei:fw//text()[normalize-space() = '']"
+        mode="app"/>
     <!--variants only concerning interpunctation-->
     <!--variants only concerning fw elements-->
     <!--<xsl:template match="tei:app/tei:rdg[ancestor::tei:app//tei:lem/tei:w and not(ancestor::tei:w)]"/>
@@ -104,8 +114,6 @@
     <!--
     <xsl:template match="tei:app/tei:rdg[ancestor::tei:app//tei:lem/tei:w and not(ancestor::tei:w)]"/>
     <xsl:template match="tei:app/tei:rdg[not(ancestor::tei:app//tei:lem/tei:w) and not(ancestor::tei:w)]"/> -->
-  
-    
     <xsl:template match="tei:pb[@type = 'primary']">
         <!-- 
             this is necessary cause empty pages have to little height to 
@@ -151,43 +159,32 @@
     <xsl:template match="tei:pb" mode="app">
         <xsl:text> | </xsl:text>
     </xsl:template>
-    <xsl:template
-        match="text()[preceding-sibling::node()[1][local-name() = 'app' and count(./tei:lem) = 0]] | text()[preceding-sibling::*[1][local-name() = 'app' and not(./tei:lem/node()[self::text() and normalize-space() != '']) and count(tei:lem/*[local-name() != 'pc']) = 0]]">
-        <xsl:text> </xsl:text>
-        <xsl:call-template name="one_withespace_left"/>
-    </xsl:template>
-    <xsl:template
-        match="text()[following-sibling::node()[1][local-name() = 'app' and count(./tei:lem) = 0]] | text()[following-sibling::*[1][local-name() = 'app' and not(./tei:lem/node()[self::text() and normalize-space() != '']) and count(tei:lem/*[local-name() != 'pc']) = 0]]">
-        <xsl:call-template name="one_withespace_right"/>
-        <xsl:text> </xsl:text>
-    </xsl:template>
     <xsl:template match="tei:choice" mode="app">
         <xsl:apply-templates mode="app"/>
     </xsl:template>
     <xsl:template match="tei:choice">
         <xsl:apply-templates/>
     </xsl:template>
-<!--    <xsl:template match="tei:sic"/>
-    <xsl:template match="tei:sic" mode="app"/>
     <xsl:template match="tei:corr">
-        <xsl:apply-templates/>
+        <span class="corr">
+            <xsl:apply-templates/>
+        </span>
     </xsl:template>
     <xsl:template match="tei:corr" mode="app">
-        <xsl:apply-templates mode="app"/>
-    </xsl:template>-->
-    <xsl:template match="tei:corr">
-        <span class="corr"><xsl:apply-templates/></span>
-    </xsl:template>
-    <xsl:template match="tei:corr" mode="app">
-        <span class="corr"><xsl:apply-templates mode="app"/></span>
+        <span class="corr">
+            <xsl:apply-templates mode="app"/>
+        </span>
     </xsl:template>
     <xsl:template match="tei:sic">
-        <span class="sic"><xsl:apply-templates/></span>
+        <span class="sic">
+            <xsl:apply-templates/>
+        </span>
     </xsl:template>
     <xsl:template match="tei:sic" mode="app">
-        <span class="sic"><xsl:apply-templates mode="app"/></span>
+        <span class="sic">
+            <xsl:apply-templates mode="app"/>
+        </span>
     </xsl:template>
-    
     <xsl:template match="tei:unclear">
         <abbr title="unclear">
             <xsl:apply-templates/>
@@ -205,6 +202,38 @@
     </xsl:template>
     <xsl:template match="tei:quote">
         <xsl:apply-templates/>
+    </xsl:template>
+    <xsl:template match="tei:q">
+        <xsl:variable name="rendering">
+            <xsl:call-template name="rendition_2_class"/>
+        </xsl:variable>
+        <span class="{$rendering} quote">
+        <xsl:apply-templates/>
+        </span>
+    </xsl:template>
+    <xsl:template match="tei:imprimatur">
+        <xsl:variable name="rendering">
+            <xsl:call-template name="rendition_2_class"/>
+        </xsl:variable>
+        <span class="{$rendering} imprimatur">
+            <xsl:apply-templates/>
+        </span>
+    </xsl:template>
+    <xsl:template match="tei:docImprint">
+        <xsl:variable name="rendering">
+            <xsl:call-template name="rendition_2_class"/>
+        </xsl:variable>
+        <span class="{$rendering} imprint">
+            <xsl:apply-templates/>
+        </span>
+    </xsl:template>
+    <xsl:template match="tei:closer">
+        <xsl:variable name="rendering">
+            <xsl:call-template name="rendition_2_class"/>
+        </xsl:variable>
+        <div class="{$rendering} closer">
+            <xsl:apply-templates/>
+        </div>
     </xsl:template>
     <xsl:template match="tei:date">
         <span class="date">
@@ -244,7 +273,10 @@
     <xsl:template match="tei:item">
         <xsl:choose>
             <xsl:when test="parent::tei:list[@type = 'unordered'] | ancestor::tei:body">
-                <li>
+                <xsl:variable name="rendering">
+                    <xsl:call-template name="rendition_2_class"/>
+                </xsl:variable>
+                <li class="{$rendering}">
                     <xsl:apply-templates/>
                 </li>
             </xsl:when>
@@ -361,18 +393,45 @@
         </a>
     </xsl:template>
     <xsl:template match="tei:lg">
-        <p>
+        <xsl:variable name="rendering">
+            <xsl:call-template name="rendition_2_class"/>
+        </xsl:variable>
+        <p class="{$rendering} versegroup">
             <xsl:apply-templates/>
         </p>
     </xsl:template>
     <xsl:template match="tei:l">
-        <xsl:apply-templates/>
+        <xsl:variable name="rendering">
+            <xsl:call-template name="rendition_2_class"/>
+        </xsl:variable>
+        <span class="{$rendering} verse">
+            <xsl:apply-templates/>
+        </span>
         <br/>
     </xsl:template>
     <xsl:template match="tei:p">
-        <p>
+        <xsl:variable name="rendering">
+            <xsl:call-template name="rendition_2_class"/>
+        </xsl:variable>
+        <p class="{$rendering}">
             <xsl:apply-templates/>
         </p>
+    </xsl:template>
+    <xsl:template match="tei:titlePart">
+        <xsl:variable name="rendering">
+            <xsl:call-template name="rendition_2_class"/>
+        </xsl:variable>
+        <span class="{$rendering} title_part">
+            <xsl:apply-templates/>
+        </span>
+    </xsl:template>
+    <xsl:template match="tei:pubPlace">
+        <xsl:variable name="rendering">
+            <xsl:call-template name="rendition_2_class"/>
+        </xsl:variable>
+        <span class="{$rendering}">
+            <xsl:apply-templates/>
+        </span>
     </xsl:template>
     <xsl:template match="tei:table">
         <xsl:element name="table">
@@ -820,7 +879,10 @@
         <xsl:variable name="selfLink">
             <xsl:value-of select="concat(data(@xml:id), '.html')"/>
         </xsl:variable>
-        <div class="modal fade" id="{@xml:id}" data-bs-keyboard="false" tabindex="-1"
+        <xsl:variable name="rendering">
+            <xsl:call-template name="rendition_2_class"/>
+        </xsl:variable>
+        <div class="{$rendering} modal fade" id="{@xml:id}" data-bs-keyboard="false" tabindex="-1"
             aria-labelledby="{./tei:title[@type='main']}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
