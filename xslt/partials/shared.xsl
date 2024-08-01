@@ -286,19 +286,32 @@
         </xsl:choose>
     </xsl:template>
     <xsl:template match="tei:fw">
+        <xsl:variable name="rendering">
+            <xsl:call-template name="rendition_2_class"/>
+        </xsl:variable>
         <xsl:choose>
             <xsl:when test="@type = 'catch'">
-                <span class="catch">
+                <span class="catch {$rendering}">
                     <xsl:apply-templates/>
                 </span>
             </xsl:when>
-            <xsl:when test="@type = 'footnote'">
-                <span class="layer_counter">
+            <xsl:when test="@type = 'footer'">
+                <span class="layer_counter {$rendering}">
                     <xsl:apply-templates/>
                 </span>
             </xsl:when>
             <xsl:when test="@type = 'pageNum'">
-                <span class="page_number">
+                <span class="page_number {$rendering}">
+                    <xsl:apply-templates/>
+                </span>
+            </xsl:when>
+            <xsl:when test="@type = 'sig'">
+                <span class="sig {$rendering}">
+                    <xsl:apply-templates/>
+                </span>
+            </xsl:when>
+            <xsl:when test="@type = 'footnote'">
+                <span class="footnote {$rendering}">
                     <xsl:apply-templates/>
                 </span>
             </xsl:when>

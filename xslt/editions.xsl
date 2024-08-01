@@ -109,8 +109,8 @@
                         </div>
                         <div class="footnotes">
                             <p style="text-align:center;">
-                                <xsl:for-each select=".//tei:note[not(./tei:p)]">
-                                    <div class="footnotes" id="{local:makeId(.)}">
+                                <xsl:for-each select="//tei:note">
+                                    <div class="footnote" id="{local:makeId(.)}">
                                         <xsl:element name="a">
                                             <xsl:attribute name="name">
                                                 <xsl:text>fn</xsl:text>
@@ -130,7 +130,8 @@
                                                 </span>
                                             </a>
                                         </xsl:element>
-                                        <xsl:apply-templates select="./tei:rdg" mode="app"/>
+                                        <!--<xsl:apply-templates select="./tei:rdg" mode="app"/>-->
+                                        <xsl:apply-templates/>
                                     </div>
                                 </xsl:for-each>
                             </p>
