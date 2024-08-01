@@ -85,13 +85,13 @@ span.pb.nearly_no_content {
 a.variant_anchor_link {
     background-color: lightgrey;
     border-radius: 6px;
-    padding: 0.1rem 0.2rem;
+    padding: 0.1rem 0.1rem;
 }
 
 a.variant_anchor_link {
     background-color: lightgrey;
     border-radius: 6px;
-    padding: 0.1rem 0.2rem;
+    padding: 0.1rem 0.1rem;
 }
 
 a.variant_anchor_link:target {
@@ -124,14 +124,17 @@ span.empty_lemma::after {
     content: "\00a0";
 }
 
-p.app:target * {
+p.app:target {
     background-color: lightgrey !important;
     scroll-padding-top: 2rem;
+    border-radius: 5px;
+    width: fit-content;
 }
 
 p.app a {
     text-decoration: inherit;
     color: inherit;
+    border-radius: 0;
 }
 
 span.image_preview img {
@@ -265,16 +268,57 @@ div.variants {
 }
 
 div.variants p.app {
-    width: 100%;
-    padding-right: 2rem;
+    margin-right: 2rem;
+    padding-right: 0.3rem;
 }
 
 html {
     scroll-padding-top: 2rem;
 }
 
+
+span.sic {
+    border-bottom: 0.2rem dotted red;
+    border-radius: 0px;
+    padding: 0.15rem;
+    padding-bottom: 0.05rem;
+    z-index: 200;
+}
+
 span.corr {
     display: none;
+}
+
+span.sic:hover + span.corr {
+    border: 0.1rem solid black;
+    border-radius: 5px;
+    display: block;
+    position: absolute;
+    background-color: aliceblue!important;
+    z-index: 10000;
+    padding: 0.3rem;
+}
+
+span.sic + span.corr:hover {
+    border: 0.1rem dotted black;
+    border-radius: 5px;
+    display: block;
+    position: absolute;
+    background-color: aliceblue!important;
+    z-index: 10000;
+    padding: 0.3rem;
+}
+
+span.corr:hover::before {
+    content: "Korrigiert zu: ";
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
+}
+
+span.sic:hover + span.corr::before {
+    content: "Korrigiert zu: ";
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
 }
 
 *.text_align_center span.lb::after,
