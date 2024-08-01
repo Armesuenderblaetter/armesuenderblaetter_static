@@ -1,7 +1,7 @@
 :root {
     --editor-font-family: serif;
     --editor-font-color: grey;
-  }
+}
 
 
 div#searchPage {
@@ -82,33 +82,33 @@ span.pb.nearly_no_content {
     margin-right: auto;
 }
 
-a.variant_anchor_link{
-    background-color:lightgrey;
+a.variant_anchor_link {
+    background-color: lightgrey;
     border-radius: 6px;
     padding: 0.1rem 0.2rem;
 }
 
-a.variant_anchor_link{
-    background-color:lightgrey;
+a.variant_anchor_link {
+    background-color: lightgrey;
     border-radius: 6px;
     padding: 0.1rem 0.2rem;
 }
 
-a.variant_anchor_link:target{
-    background-color: grey!important;
+a.variant_anchor_link:target {
+    background-color: grey !important;
     scroll-padding-top: 2rem;
 }
 
-a.variant_anchor_link{
+a.variant_anchor_link {
     color: inherit;
     text-decoration: inherit;
 }
 
-a.variant_anchor_link.block_lemma{
+a.variant_anchor_link.block_lemma {
     display: block;
 }
 
-span.empty_lemma a.variant_anchor_link::after{
+span.empty_lemma a.variant_anchor_link::after {
     /* content: "↓"; */
     content: "\00a0";
 }
@@ -125,7 +125,7 @@ span.empty_lemma::after {
 }
 
 p.app:target * {
-    background-color: lightgrey!important;
+    background-color: lightgrey !important;
     scroll-padding-top: 2rem;
 }
 
@@ -139,7 +139,7 @@ span.image_preview img {
     width: auto;
 }
 
-#edition-text *{
+#edition-text * {
     max-width: 30rem;
 }
 
@@ -165,18 +165,18 @@ span.page_number {
     padding-left: 1rem;
 }
 
-* + hr.section_divider {
+*+hr.section_divider {
     padding-bottom: 1.5rem;
 }
 
-hr.section_divider{
+hr.section_divider {
     width: 10rem;
     margin: auto;
     padding-bottom: 1.5rem;
     border-top: solid .3rem;
 }
 
-hr.section_divider + hr.section_divider {
+hr.section_divider+hr.section_divider {
     width: 10rem;
     margin: auto;
     border-top: solid .3rem;
@@ -187,67 +187,72 @@ span.lemma::before {
 }
 
 *.text_align_center {
-    text-align: center!important;
+    display: inline-block;
+    width: 100%;
+    text-align: center !important;
+    align-content: center !important;
 }
 
 *.antiqua {
-    font-style: italic!important;
+    font-style: italic !important;
 }
 
 *.majuscule {
-    font-size: 150%!important;
+    font-size: 150% !important;
 }
 
 *.italic {
-    font-style: bold!important;
+    font-style: bold !important;
 }
 
 *.spaced {
-    text-decoration: underline!important;
+    text-decoration: underline !important;
 }
 
 *.indent {
-    text-indent: 1rem!important;
+    text-indent: 1rem !important;
 }
 
 *.hanging_indent {
-    text-indent: -1rem!important;
+    text-indent: -1rem !important;
 }
 
 *.superscript {
-    vertical-align: top!important;
+    vertical-align: top !important;
     font-size: 70%;
 }
 
 *.display_inline {
-    display: inline!important;
+    display: inline !important;
 }
 
 *.editor_comment {
-    font-family: var(--editor-font-family)!important;
-    color: var(--editor-font-color)!important;
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
 }
 
 *.app-section_divider::before {
     content: " (Spiegelstrich) ";
-    font-family: var(--editor-font-family)!important;
-    color: var(--editor-font-color)!important;
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
 }
 
 *.app-page_number::before {
     content: " (Seitenzählung:) ";
-    font-family: var(--editor-font-family)!important;
-    color: var(--editor-font-color)!important;
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
 }
+
 *.app-layer_counter::before {
     content: " (Lagenzählung:) ";
-    font-family: var(--editor-font-family)!important;
-    color: var(--editor-font-color)!important;
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
 }
+
 *.app-catch::before {
     content: " (Kustode:) ";
-    font-family: var(--editor-font-family)!important;
-    color: var(--editor-font-color)!important;
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
 }
 
 div.variants {
@@ -263,6 +268,7 @@ div.variants p.app {
     width: 100%;
     padding-right: 2rem;
 }
+
 html {
     scroll-padding-top: 2rem;
 }
@@ -271,8 +277,18 @@ span.corr {
     display: none;
 }
 
-*.text_align_center span.lb,
-span.verse + span.lb 
-{
-    display: block;
+*.text_align_center span.lb::after,
+span.verse+span.lb::after {
+    content: "\a";
+    white-space: pre;
+}
+
+
+div.footnotes {
+    width: 100%;
+    column-count: 3;
+    background-color: aliceblue;
+    padding: 1rem;
+    border-top: 0.3rem solid black;
+    border-radius: 0.1rem;
 }

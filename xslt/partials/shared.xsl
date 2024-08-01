@@ -436,6 +436,11 @@
             <xsl:apply-templates/>
         </p>
     </xsl:template>
+    
+    <xsl:template match="tei:titlePage">
+        <xsl:apply-templates/>
+    </xsl:template>
+
     <xsl:template match="tei:titlePart">
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>

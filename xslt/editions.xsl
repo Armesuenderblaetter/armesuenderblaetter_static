@@ -33,12 +33,6 @@
             <xsl:value-of select="./text()"/>
         </div>
     </xsl:template>
-    <xsl:template match="tei:titlePage">
-        <xsl:apply-templates/>
-    </xsl:template>
-    <xsl:template match="tei:titlePart">
-        <xsl:apply-templates/>
-    </xsl:template>
     <xsl:template match="tei:docImprint">
         <xsl:apply-templates/>
     </xsl:template>
@@ -108,33 +102,30 @@
                             </div>
                         </div>
                         <div class="footnotes">
-                            <p style="text-align:center;">
-                                <xsl:for-each select="//tei:note">
-                                    <div class="footnote" id="{local:makeId(.)}">
-                                        <xsl:element name="a">
-                                            <xsl:attribute name="name">
-                                                <xsl:text>fn</xsl:text>
+                            <xsl:for-each select="//tei:note">
+                                <div class="footnote" id="{local:makeId(.)}">
+                                    <xsl:element name="a">
+                                        <xsl:attribute name="name">
+                                            <xsl:text>fn</xsl:text>
+                                            <xsl:number level="any" format="1" count="tei:note"/>
+                                        </xsl:attribute>
+                                        <a>
+                                            <xsl:attribute name="href">
+                                                <xsl:text>#fna_</xsl:text>
                                                 <xsl:number level="any" format="1" count="tei:note"
                                                 />
                                             </xsl:attribute>
-                                            <a>
-                                                <xsl:attribute name="href">
-                                                  <xsl:text>#fna_</xsl:text>
-                                                  <xsl:number level="any" format="1"
-                                                  count="tei:note"/>
-                                                </xsl:attribute>
-                                                <span
-                                                  style="font-size:7pt;vertical-align:super; margin-right: 0.4em">
-                                                  <xsl:number level="any" format="1"
-                                                  count="tei:note"/>
-                                                </span>
-                                            </a>
-                                        </xsl:element>
-                                        <!--<xsl:apply-templates select="./tei:rdg" mode="app"/>-->
-                                        <xsl:apply-templates/>
-                                    </div>
-                                </xsl:for-each>
-                            </p>
+                                            <span
+                                                style="font-size:7pt;vertical-align:super; margin-right: 0.4em">
+                                                <xsl:number level="any" format="1" count="tei:note"
+                                                />
+                                            </span>
+                                        </a>
+                                    </xsl:element>
+                                    <!--<xsl:apply-templates select="./tei:rdg" mode="app"/>-->
+                                    <xsl:apply-templates/>
+                                </div>
+                            </xsl:for-each>
                         </div>
                         <xsl:if test="count(//tei:app) != 0">
                             <div class="variants">
