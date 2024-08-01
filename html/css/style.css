@@ -202,6 +202,12 @@ span.lemma::before {
     color: var(--editor-font-color)!important;
 }
 
+*.app-section_divider::before {
+    content: " (Spiegelstrich) ";
+    font-family: var(--editor-font-family)!important;
+    color: var(--editor-font-color)!important;
+}
+
 *.app-page_number::before {
     content: " (Seitenzählung:) ";
     font-family: var(--editor-font-family)!important;

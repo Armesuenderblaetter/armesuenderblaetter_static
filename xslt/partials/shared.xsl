@@ -9,7 +9,8 @@
         </xsl:variable>
         <xsl:value-of select="concat(name($currentNode), '__', $nodeCurrNr)"/>
     </xsl:function>
-    <xsl:strip-space elements="fw"/>
+    <!--<xsl:strip-space elements="fw"/>-->
+    <xsl:strip-space elements="*"/>
     <xsl:template name="lstrip">
         <xsl:variable name="stripped_string">
             <xsl:value-of select="normalize-space()"/>
@@ -85,7 +86,44 @@
         </span>
     </xsl:template>
     <!--watch me suffer from these whitespaces-->
+    <!-- add whitespace after tei:w -->
+    <xsl:template match="tei:w" mode="#all">
+        <xsl:apply-templates/>
+        <xsl:variable name="relevant_interpunctuation_after">
+            <xsl:value-of
+                select="count((./following::*[normalize-space() != ''])[1][local-name() = 'pc' and (@pos = ('$,', '$.') or normalize-space() = (')', ':'))])"
+            />
+        </xsl:variable>
+        <xsl:if test="$relevant_interpunctuation_after != 1">
+            <xsl:text> </xsl:text>
+        </xsl:if>
+    </xsl:template>
+    <!-- add whitespace after tei:pc -->
+    <xsl:template match="tei:pc" mode="#all">
+        <xsl:apply-templates/>
+        <xsl:if test="normalize-space()!=('(')">
+            <xsl:text> </xsl:text>
+        </xsl:if>
+    </xsl:template>
+    <!--1. handle them normal ones around interpunctuation-->
+    <!--@pos can be 
+        $(
+        $,
+        $.
+        FM
+        XY
+    -->
+    <!--1.a) delete whitespace before ;:):-->
+    <!--    <xsl:template
+        match="text()[normalize-space() = '' and following-sibling::*[1][local-name() = 'pc' and @pos = ('$,', '$.')]]"/>
     <xsl:template
+        match="text()[normalize-space() = '' and following-sibling::*[1][local-name() = 'pc' and @pos='$(' and normalize-space(')')]]"/>-->
+    <!--1.b) add whitespace before ( / -->
+    <!--    <xsl:template
+        match="tei:pc[normalize-space()=('(', '/')]">
+        <xsl:text> </xsl:text><xsl:value-of select="normalize-space()"/>
+    </xsl:template>-->
+    <!--    <xsl:template
         match="text()[preceding-sibling::node()[1][local-name() = 'app' and count(./tei:lem) = 0]] | text()[preceding-sibling::*[1][local-name() = 'app' and not(./tei:lem/node()[self::text() and normalize-space() != '']) and count(tei:lem/*[local-name() != 'pc']) = 0]]">
         <xsl:text> </xsl:text>
         <xsl:call-template name="one_withespace_left"/>
@@ -94,10 +132,10 @@
         match="text()[following-sibling::node()[1][local-name() = 'app' and count(./tei:lem) = 0]] | text()[following-sibling::*[1][local-name() = 'app' and not(./tei:lem/node()[self::text() and normalize-space() != '']) and count(tei:lem/*[local-name() != 'pc']) = 0]]">
         <xsl:call-template name="one_withespace_right"/>
         <xsl:text> </xsl:text>
-    </xsl:template>
-    <xsl:template
+    </xsl:template>-->
+    <!--    <xsl:template
         match="tei:app[not(count(tei:lem/tei:w) gt 1)]//text()[normalize-space() = ''] | tei:choice//text()[normalize-space() = ''] | tei:fw//text()[normalize-space() = '']"
-        mode="app"/>
+        mode="app"/>-->
     <!--variants only concerning interpunctation-->
     <!--variants only concerning fw elements-->
     <!--<xsl:template match="tei:app/tei:rdg[ancestor::tei:app//tei:lem/tei:w and not(ancestor::tei:w)]"/>
@@ -208,7 +246,7 @@
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
         <span class="{$rendering} quote">
-        <xsl:apply-templates/>
+            <xsl:apply-templates/>
         </span>
     </xsl:template>
     <xsl:template match="tei:imprimatur">
@@ -386,6 +424,9 @@
     </xsl:template>
     <xsl:template match="tei:milestone[@rendition = '#hr']">
         <hr class="section_divider"/>
+    </xsl:template>
+    <xsl:template match="tei:milestone[@rendition = '#hr']" mode="app">
+        <span class="app-section_divider"/>
     </xsl:template>
     <xsl:template match="tei:ref">
         <a class="ref {@type}" href="{@target}">
