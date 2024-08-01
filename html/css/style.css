@@ -98,6 +98,22 @@ a.variant_anchor_link{
     text-decoration: inherit;
 }
 
+span.empty_lemma a.variant_anchor_link::after{
+    /* content: "↓"; */
+    content: "\00a0";
+}
+
+span.empty_lemma {
+    word-wrap: normal;
+    display: inline-block;
+    text-indent: 0;
+}
+
+span.empty_lemma::after {
+    background-color: inherit;
+    content: "\00a0";
+}
+
 p.app:target * {
     background-color: lightgrey!important;
     scroll-padding-top: 2rem;
@@ -223,6 +239,7 @@ span.lemma::before {
     font-family: var(--editor-font-family)!important;
     color: var(--editor-font-color)!important;
 }
+
 div.variants {
     width: 100%;
     column-count: 3;

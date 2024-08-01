@@ -51,16 +51,16 @@
         <xsl:variable name="num">
             <xsl:number level="any"/>
         </xsl:variable>
-        <a class="variant_anchor_link" href="#app_{$num}">
-            <xsl:attribute name="id">
-                <xsl:value-of select="concat('var_', $num)"/>
-            </xsl:attribute>
-            <xsl:text> </xsl:text>
-        </a>
+        <span class="empty_lemma">
+            <a class="variant_anchor_link" href="#app_{$num}">
+                <xsl:attribute name="id">
+                    <xsl:value-of select="concat('var_', $num)"/>
+                </xsl:attribute>
+                <xsl:text> </xsl:text>
+            </a>
+        </span>
+<!--        <span class="empty_lemma_spacer"/>-->
     </xsl:template>
-    <!--    <xsl:template match="text()" mode="app">
-        <xsl:value-of select="normalize-space(.)"/>
-    </xsl:template>-->
     <xsl:template match="tei:lem" mode="app">
         <xsl:apply-templates mode="app"/>
         <xsl:text>] </xsl:text>
@@ -101,57 +101,10 @@
     <!-- add whitespace after tei:pc -->
     <xsl:template match="tei:pc" mode="#all">
         <xsl:apply-templates/>
-        <xsl:if test="normalize-space()!=('(')">
+        <xsl:if test="normalize-space() != ('(', '/')">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
-    <!--1. handle them normal ones around interpunctuation-->
-    <!--@pos can be 
-        $(
-        $,
-        $.
-        FM
-        XY
-    -->
-    <!--1.a) delete whitespace before ;:):-->
-    <!--    <xsl:template
-        match="text()[normalize-space() = '' and following-sibling::*[1][local-name() = 'pc' and @pos = ('$,', '$.')]]"/>
-    <xsl:template
-        match="text()[normalize-space() = '' and following-sibling::*[1][local-name() = 'pc' and @pos='$(' and normalize-space(')')]]"/>-->
-    <!--1.b) add whitespace before ( / -->
-    <!--    <xsl:template
-        match="tei:pc[normalize-space()=('(', '/')]">
-        <xsl:text> </xsl:text><xsl:value-of select="normalize-space()"/>
-    </xsl:template>-->
-    <!--    <xsl:template
-        match="text()[preceding-sibling::node()[1][local-name() = 'app' and count(./tei:lem) = 0]] | text()[preceding-sibling::*[1][local-name() = 'app' and not(./tei:lem/node()[self::text() and normalize-space() != '']) and count(tei:lem/*[local-name() != 'pc']) = 0]]">
-        <xsl:text> </xsl:text>
-        <xsl:call-template name="one_withespace_left"/>
-    </xsl:template>
-    <xsl:template
-        match="text()[following-sibling::node()[1][local-name() = 'app' and count(./tei:lem) = 0]] | text()[following-sibling::*[1][local-name() = 'app' and not(./tei:lem/node()[self::text() and normalize-space() != '']) and count(tei:lem/*[local-name() != 'pc']) = 0]]">
-        <xsl:call-template name="one_withespace_right"/>
-        <xsl:text> </xsl:text>
-    </xsl:template>-->
-    <!--    <xsl:template
-        match="tei:app[not(count(tei:lem/tei:w) gt 1)]//text()[normalize-space() = ''] | tei:choice//text()[normalize-space() = ''] | tei:fw//text()[normalize-space() = '']"
-        mode="app"/>-->
-    <!--variants only concerning interpunctation-->
-    <!--variants only concerning fw elements-->
-    <!--<xsl:template match="tei:app/tei:rdg[ancestor::tei:app//tei:lem/tei:w and not(ancestor::tei:w)]"/>
-    <xsl:template match="tei:app/tei:rdg[not(ancestor::tei:app//tei:lem/tei:w) and not(ancestor::tei:w)]"/> -->
-    <!---->
-    <!-- <xsl:template match="*[following-sibling::*[1][local-name()='app']]">
-        <xsl:apply-templates/>
-        <xsl:text>#here1#</xsl:text>
-    </xsl:template>
-    <xsl:template match="*/descendant::*[1][local-name()='app']">
-        <xsl:apply-templates/>
-        <xsl:text>#here1#</xsl:text>
-    </xsl:template>-->
-    <!--
-    <xsl:template match="tei:app/tei:rdg[ancestor::tei:app//tei:lem/tei:w and not(ancestor::tei:w)]"/>
-    <xsl:template match="tei:app/tei:rdg[not(ancestor::tei:app//tei:lem/tei:w) and not(ancestor::tei:w)]"/> -->
     <xsl:template match="tei:pb[@type = 'primary']">
         <!-- 
             this is necessary cause empty pages have to little height to 
