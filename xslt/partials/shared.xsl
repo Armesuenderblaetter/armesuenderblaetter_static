@@ -40,12 +40,24 @@
         <xsl:variable name="num">
             <xsl:number level="any"/>
         </xsl:variable>
-        <a class="variant_anchor_link" href="#app_{$num}">
-            <xsl:attribute name="id">
-                <xsl:value-of select="concat('var_', $num)"/>
-            </xsl:attribute>
-            <xsl:apply-templates select="./tei:lem/node()"/>
-        </a>
+        <xsl:choose>
+            <xsl:when test="not(.//tei:w) and not(ancestor::tei:w)">
+                    <a class="variant_anchor_link block_lemma" href="#app_{$num}">
+                        <xsl:attribute name="id">
+                            <xsl:value-of select="concat('var_', $num)"/>
+                        </xsl:attribute>
+                        <xsl:apply-templates select="./tei:lem/node()"/>
+                    </a>
+            </xsl:when>
+            <xsl:otherwise>
+                <a class="variant_anchor_link" href="#app_{$num}">
+                    <xsl:attribute name="id">
+                        <xsl:value-of select="concat('var_', $num)"/>
+                    </xsl:attribute>
+                    <xsl:apply-templates select="./tei:lem/node()"/>
+                </a>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     <xsl:template match="tei:app[not(tei:lem)]">
         <xsl:variable name="num">
@@ -59,7 +71,7 @@
                 <xsl:text> </xsl:text>
             </a>
         </span>
-<!--        <span class="empty_lemma_spacer"/>-->
+        <!--        <span class="empty_lemma_spacer"/>-->
     </xsl:template>
     <xsl:template match="tei:lem" mode="app">
         <xsl:apply-templates mode="app"/>
@@ -232,7 +244,7 @@
         </span>
     </xsl:template>
     <xsl:template match="tei:lb">
-        <br/>
+        <span class="lb"/>
     </xsl:template>
     <xsl:template match="tei:note">
         <xsl:element name="a">
@@ -401,7 +413,7 @@
         <span class="{$rendering} verse">
             <xsl:apply-templates/>
         </span>
-        <br/>
+        <span class="lb"/>
     </xsl:template>
     <xsl:template match="tei:p">
         <xsl:variable name="rendering">

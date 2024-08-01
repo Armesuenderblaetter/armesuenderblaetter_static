@@ -88,6 +88,12 @@ a.variant_anchor_link{
     padding: 0.1rem 0.2rem;
 }
 
+a.variant_anchor_link{
+    background-color:lightgrey;
+    border-radius: 6px;
+    padding: 0.1rem 0.2rem;
+}
+
 a.variant_anchor_link:target{
     background-color: grey!important;
     scroll-padding-top: 2rem;
@@ -96,6 +102,10 @@ a.variant_anchor_link:target{
 a.variant_anchor_link{
     color: inherit;
     text-decoration: inherit;
+}
+
+a.variant_anchor_link.block_lemma{
+    display: block;
 }
 
 span.empty_lemma a.variant_anchor_link::after{
@@ -259,4 +269,10 @@ html {
 
 span.corr {
     display: none;
+}
+
+*.text_align_center span.lb,
+span.verse + span.lb 
+{
+    display: block;
 }
