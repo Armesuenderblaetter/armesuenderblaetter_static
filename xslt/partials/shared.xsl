@@ -41,7 +41,15 @@
             <xsl:number level="any"/>
         </xsl:variable>
         <xsl:choose>
-            <xsl:when test="not(.//tei:w or .//tei:pc) and not(ancestor::tei:w)">
+            <xsl:when test="./tei:lem[normalize-space()=.//*[local-name()='fw' and @type='catch']/normalize-space()]">
+                <a class="variant_anchor_link block_lemma catch" href="#app_{$num}">
+                    <xsl:attribute name="id">
+                        <xsl:value-of select="concat('var_', $num)"/>
+                    </xsl:attribute>
+                    <xsl:apply-templates select="./tei:lem/node()"/>
+                </a>
+            </xsl:when>
+            <xsl:when test="(not(.//tei:w or .//tei:pc) and not(ancestor::tei:w))">
                 <a class="variant_anchor_link block_lemma" href="#app_{$num}">
                     <xsl:attribute name="id">
                         <xsl:value-of select="concat('var_', $num)"/>

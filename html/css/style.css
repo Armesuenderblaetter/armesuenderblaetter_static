@@ -98,12 +98,20 @@ a.variant_anchor_link {
 
 a.variant_anchor_link:target {
     background-color: grey !important;
-    scroll-padding-top: 2rem;
+}
+a.variant_anchor_link:target>*{
+    background-color: grey !important;
+    color: black!important;
 }
 
 a.variant_anchor_link.block_lemma {
     display: block;
     width: fit-content;
+}
+
+a.variant_anchor_link.block_lemma.catch {
+    position: relative;
+    right: -100%;
 }
 
 span.empty_lemma a.variant_anchor_link::after {
@@ -130,10 +138,22 @@ span.image_preview img {
 
 
 span.catch {
-    width: 100%;
+    width: fit-content;
     display: block;
     color: grey;
-    text-align: right;
+    text-align: left;
+    position: relative;
+    right: -100%;
+}
+
+a.variant_anchor_link.block_lemma.catch>span.catch {
+    width: fit-content;
+    display: block;
+    color: grey;
+    text-align: left;
+    position: relative;
+    right: 0;
+    text-indent: 0;
 }
 
 span.layer_counter {
@@ -272,7 +292,6 @@ div.variants p.app {
 
 p.app:target {
     background-color: var(--variant-marker-color) !important;
-    scroll-padding-top: 2rem;
     border-radius: 5px;
 }
 
