@@ -102,11 +102,13 @@
     <xsl:template match="tei:w" mode="#all">
         <xsl:apply-templates/>
         <xsl:variable name="relevant_interpunctuation_after">
-            <xsl:value-of
-                select="count((./following::*[normalize-space() != ''])[1][local-name() = 'pc' and (@pos = ('$,', '$.') or normalize-space() = (')', ':'))])"
-            />
+            <xsl:if test="not(following-sibling::*[1][tei:app[not(tei:lem)]])">
+                <xsl:value-of
+                    select="count((./following::*[text()[normalize-space() != '']])[1][local-name() = 'pc' and (@pos = ('$,', '$.') or normalize-space() = (')', ':'))])"
+                />
+            </xsl:if>
         </xsl:variable>
-        <xsl:if test="$relevant_interpunctuation_after != 1">
+        <xsl:if test="$relevant_interpunctuation_after != '1'">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>

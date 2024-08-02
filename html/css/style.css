@@ -1,6 +1,7 @@
 :root {
     --editor-font-family: serif;
     --editor-font-color: grey;
+    --variant-marker-color: rgb(203, 231, 255);
 }
 
 
@@ -15,7 +16,7 @@ div#searchContainer {
 div#searchContainer>div {
     padding: 1rem;
     margin: 1rem;
-    border: solid lightgrey 3px;
+    border: solid var(--variant-marker-color) 3px;
     border-radius: 15px;
 }
 
@@ -51,13 +52,10 @@ div ul.ais-RefinementList-list {
 }
 
 #edition-text {
+    margin-left: 3rem;
     padding-bottom: 75vh;
     max-width: 30rem;
 }
-
-/* #edition-text * {
-    width: 100%;
-} */
 
 #sticky-OSD-wrapper {
     position: sticky;
@@ -88,13 +86,13 @@ span.pb.nearly_no_content {
 }
 
 a.variant_anchor_link {
-    background-color: lightgrey;
+    background-color: var(--variant-marker-color);
     border-radius: 6px;
     padding: 0.1rem 0.1rem;
 }
 
 a.variant_anchor_link {
-    background-color: lightgrey;
+    background-color: var(--variant-marker-color);
     border-radius: 6px;
     padding: 0.1rem 0.1rem;
 }
@@ -111,6 +109,7 @@ a.variant_anchor_link {
 
 a.variant_anchor_link.block_lemma {
     display: block;
+    width: fit-content;
 }
 
 span.empty_lemma a.variant_anchor_link::after {
@@ -130,7 +129,7 @@ span.empty_lemma::after {
 }
 
 p.app:target {
-    background-color: lightgrey !important;
+    background-color: var(--variant-marker-color) !important;
     scroll-padding-top: 2rem;
     border-radius: 5px;
     width: fit-content;
@@ -164,12 +163,23 @@ span.layer_counter {
 }
 
 span.page_number {
-    width: 100%;
+    width: fit-content;
     display: block;
+    position: relative;
     color: darkgrey;
     text-align: left;
-    padding-left: 1rem;
+    margin-left: 1rem;
 }
+
+/* span.page_number {
+    width: fit-content;
+    display: block;
+    position: relative;
+    color: darkgrey;
+    text-align: right;
+    align-content: right;
+    left: -2rem;
+} */
 
 *+hr.section_divider {
     padding-bottom: 1.5rem;
