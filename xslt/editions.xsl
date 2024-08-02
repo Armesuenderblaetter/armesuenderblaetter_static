@@ -101,6 +101,7 @@
                                 />
                             </div>
                         </div>
+                        <xsl:if test="count(//tei:note) != 0">
                         <div class="footnotes">
                             <xsl:for-each select="//tei:note">
                                 <div class="footnote" id="{local:makeId(.)}">
@@ -127,6 +128,7 @@
                                 </div>
                             </xsl:for-each>
                         </div>
+                        </xsl:if>
                         <xsl:if test="count(//tei:app) != 0">
                             <div class="variants">
                                 <xsl:for-each select="//tei:app">

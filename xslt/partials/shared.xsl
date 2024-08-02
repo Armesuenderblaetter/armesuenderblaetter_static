@@ -42,12 +42,12 @@
         </xsl:variable>
         <xsl:choose>
             <xsl:when test="not(.//tei:w) and not(ancestor::tei:w)">
-                    <a class="variant_anchor_link block_lemma" href="#app_{$num}">
-                        <xsl:attribute name="id">
-                            <xsl:value-of select="concat('var_', $num)"/>
-                        </xsl:attribute>
-                        <xsl:apply-templates select="./tei:lem/node()"/>
-                    </a>
+                <a class="variant_anchor_link block_lemma" href="#app_{$num}">
+                    <xsl:attribute name="id">
+                        <xsl:value-of select="concat('var_', $num)"/>
+                    </xsl:attribute>
+                    <xsl:apply-templates select="./tei:lem/node()"/>
+                </a>
             </xsl:when>
             <xsl:otherwise>
                 <a class="variant_anchor_link" href="#app_{$num}">
@@ -134,7 +134,9 @@
             <xsl:for-each-group select="//tei:text//text() | //tei:text//tei:pb[@type = 'primary']"
                 group-starting-with=".[local-name() = 'pb' and @type = 'primary']">
                 <xsl:if test="current-group()[1][local-name() = 'pb' and @facs = $facs]">
-                    <xsl:value-of select="string-length(string-join(current-group())) lt 160"/>
+                    <xsl:if test="current-group()//tei:titlePage">
+                        <xsl:value-of select="string-length(string-join(current-group())) lt 100"/>
+                    </xsl:if>
                 </xsl:if>
             </xsl:for-each-group>
         </xsl:variable>
@@ -436,11 +438,9 @@
             <xsl:apply-templates/>
         </p>
     </xsl:template>
-    
     <xsl:template match="tei:titlePage">
         <xsl:apply-templates/>
     </xsl:template>
-
     <xsl:template match="tei:titlePart">
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
