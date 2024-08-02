@@ -52,7 +52,12 @@ div ul.ais-RefinementList-list {
 
 #edition-text {
     padding-bottom: 75vh;
+    max-width: 30rem;
 }
+
+/* #edition-text * {
+    width: 100%;
+} */
 
 #sticky-OSD-wrapper {
     position: sticky;
@@ -142,9 +147,7 @@ span.image_preview img {
     width: auto;
 }
 
-#edition-text * {
-    max-width: 30rem;
-}
+
 
 span.catch {
     width: 100%;
@@ -174,7 +177,7 @@ span.page_number {
 
 hr.section_divider {
     width: 10rem;
-    margin: auto;
+    margin: auto!important;
     padding-bottom: 1.5rem;
     border-top: solid .3rem;
 }
