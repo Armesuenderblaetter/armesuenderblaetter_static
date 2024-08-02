@@ -167,10 +167,12 @@
         <xsl:text> | </xsl:text>
     </xsl:template>
     <xsl:template match="tei:choice" mode="app">
-        <xsl:apply-templates mode="app"/>
+        <xsl:apply-templates mode="app" select="./tei:corr"/>
+        <xsl:apply-templates mode="app" select="./tei:sic"/>
     </xsl:template>
     <xsl:template match="tei:choice">
-        <xsl:apply-templates/>
+        <xsl:apply-templates select="./tei:corr"/>
+        <xsl:apply-templates select="./tei:sic"/>
     </xsl:template>
     <xsl:template match="tei:corr">
         <span class="corr">
