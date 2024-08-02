@@ -92,22 +92,13 @@ a.variant_anchor_link {
     background-color: var(--variant-marker-color);
     border-radius: 6px;
     padding: 0.1rem 0.1rem;
-}
-
-a.variant_anchor_link {
-    background-color: var(--variant-marker-color);
-    border-radius: 6px;
-    padding: 0.1rem 0.1rem;
+    color: inherit;
+    text-decoration: inherit;
 }
 
 a.variant_anchor_link:target {
     background-color: grey !important;
     scroll-padding-top: 2rem;
-}
-
-a.variant_anchor_link {
-    color: inherit;
-    text-decoration: inherit;
 }
 
 a.variant_anchor_link.block_lemma {
@@ -129,19 +120,6 @@ span.empty_lemma {
 span.empty_lemma::after {
     background-color: inherit;
     content: "\00a0";
-}
-
-p.app:target {
-    background-color: var(--variant-marker-color) !important;
-    scroll-padding-top: 2rem;
-    border-radius: 5px;
-    width: fit-content;
-}
-
-p.app a {
-    text-decoration: inherit;
-    color: inherit;
-    border-radius: 0;
 }
 
 span.image_preview img {
@@ -284,11 +262,25 @@ div.variants {
 }
 
 div.variants p.app {
-    margin-right: 2rem;
-    padding-right: 0.3rem;
+    text-indent: -1.2rem;
+    display: block;
+    break-inside: avoid-column;
+    width: 100%;
+    padding: 0.2rem 1rem 0.2rem 1rem;
+    margin: auto;
 }
 
+p.app:target {
+    background-color: var(--variant-marker-color) !important;
+    scroll-padding-top: 2rem;
+    border-radius: 5px;
+}
 
+p.app a {
+    text-decoration: inherit;
+    color: inherit;
+    border-radius: 0;
+}
 span.corr {
     border-bottom: 0.2rem dotted red;
     border-radius: 0px;

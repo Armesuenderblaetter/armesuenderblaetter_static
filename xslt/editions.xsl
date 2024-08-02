@@ -102,77 +102,118 @@
                             </div>
                         </div>
                         <xsl:if test="count(//tei:note) != 0">
-                        <div class="footnotes">
-                            <xsl:for-each select="//tei:note">
-                                <div class="footnote" id="{local:makeId(.)}">
-                                    <xsl:element name="a">
-                                        <xsl:attribute name="name">
-                                            <xsl:text>fn</xsl:text>
-                                            <xsl:number level="any" format="1" count="tei:note"/>
-                                        </xsl:attribute>
-                                        <a>
-                                            <xsl:attribute name="href">
-                                                <xsl:text>#fna_</xsl:text>
+                            <div class="footnotes">
+                                <xsl:for-each select="//tei:note">
+                                    <div class="footnote" id="{local:makeId(.)}">
+                                        <xsl:element name="a">
+                                            <xsl:attribute name="name">
+                                                <xsl:text>fn</xsl:text>
                                                 <xsl:number level="any" format="1" count="tei:note"
                                                 />
                                             </xsl:attribute>
-                                            <span
-                                                style="font-size:7pt;vertical-align:super; margin-right: 0.4em">
-                                                <xsl:number level="any" format="1" count="tei:note"
-                                                />
-                                            </span>
-                                        </a>
-                                    </xsl:element>
-                                    <!--<xsl:apply-templates select="./tei:rdg" mode="app"/>-->
-                                    <xsl:apply-templates/>
-                                </div>
-                            </xsl:for-each>
-                        </div>
+                                            <a>
+                                                <xsl:attribute name="href">
+                                                  <xsl:text>#fna_</xsl:text>
+                                                  <xsl:number level="any" format="1"
+                                                  count="tei:note"/>
+                                                </xsl:attribute>
+                                                <span
+                                                  style="font-size:7pt;vertical-align:super; margin-right: 0.4em">
+                                                  <xsl:number level="any" format="1"
+                                                  count="tei:note"/>
+                                                </span>
+                                            </a>
+                                        </xsl:element>
+                                        <!--<xsl:apply-templates select="./tei:rdg" mode="app"/>-->
+                                        <xsl:apply-templates/>
+                                    </div>
+                                </xsl:for-each>
+                            </div>
                         </xsl:if>
                         <xsl:if test="count(//tei:app) != 0">
                             <div class="variants">
-                                <xsl:for-each select="//tei:app">
+                                <xsl:for-each select="//tei:app | //tei:pb[@type = 'secondary' and not(preceding-sibling::*[1][self::tei:pb and @type = 'primary']) and not(following-sibling::*[1][self::tei:pb and @type = 'primary']) and not(ancestor::tei:app)]">
                                     <xsl:variable name="num">
                                         <xsl:number level="any"/>
                                     </xsl:variable>
-                                    <xsl:variable name="app_id">
-                                        <xsl:value-of select="concat('app_', $num)"/>
+                                    <xsl:variable name="is_pb_var">
+                                        <xsl:value-of select="self::tei:pb"/>
                                     </xsl:variable>
-                                    <xsl:variable name="var_id">
-                                        <xsl:value-of select="concat('var_', $num)"/>
-                                    </xsl:variable>
-                                    <p class="app" id="{$app_id}">
-                                        <a href="#{$var_id}">
-                                            <span class="lemma">
-                                                <xsl:choose>
-                                                  <xsl:when test="./tei:lem">
-                                                  <xsl:apply-templates select="./tei:lem" mode="app"
-                                                  />
-                                                  </xsl:when>
-                                                  <xsl:otherwise>
-                                                  <xsl:text> ] </xsl:text>
-                                                  </xsl:otherwise>
-                                                </xsl:choose>
-                                            </span>
-                                        </a>
-                                        <xsl:choose>
-                                            <xsl:when test="count(./tei:rdg) = 0">
-                                                <xsl:variable name="witname">
+                                    <xsl:if test="$is_pb_var or self::tei:app">
+                                        <xsl:variable name="app_id">
+                                            <xsl:choose>
+                                                <xsl:when test="self::tei:app">
+                                                  <xsl:value-of select="concat('app_', $num)"/>
+                                                </xsl:when>
+                                                <xsl:when test="$is_pb_var">
+                                                  <xsl:value-of select="concat('app_pb_', $num)"/>
+                                                </xsl:when>
+                                            </xsl:choose>
+                                        </xsl:variable>
+                                        <xsl:variable name="var_id">
+                                            <xsl:choose>
+                                                <xsl:when test="self::tei:app">
+                                                  <xsl:value-of select="concat('var_', $num)"/>
+                                                </xsl:when>
+                                                <xsl:when test="$is_pb_var">
+                                                  <xsl:value-of select="concat('var_pb_', $num)"/>
+                                                </xsl:when>
+                                            </xsl:choose>
+                                        </xsl:variable>
+                                        <p class="app" id="{$app_id}">
+                                            <a href="#{$var_id}">
+                                                <span class="lemma">
+                                                  <xsl:choose>
+                                                    <xsl:when test="./tei:lem">
+                                                      <xsl:apply-templates select="./tei:lem" mode="app"
+                                                      />
+                                                    </xsl:when>
+                                                    <xsl:otherwise>
+                                                      <xsl:text> ] </xsl:text>
+                                                    </xsl:otherwise>
+                                                  </xsl:choose>
+                                                </span>
+                                            </a>
+                                            <xsl:choose>
+                                                <xsl:when test="self::tei:pb">
+                                                    <xsl:variable name="witname">
+                                                        <xsl:value-of
+                                                            select="substring-after(@edRef, '#')"/>
+                                                    </xsl:variable>
+                                                    <span class="editor_comment">
+                                                        <a href="#witness_overview">
+                                                            <xsl:value-of select="$witname"/>
+                                                            <xsl:text>: </xsl:text>
+                                                        </a>
+                                                        <xsl:variable name="image_name">
+                                                            <xsl:value-of
+                                                                select="@facs"/>
+                                                        </xsl:variable>
+                                                        <a
+                                                            href="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$image_name}/full/max/0/default.jpg">
+                                                            <span class="editor_comment"><xsl:text>Seitenwechsel</xsl:text></span>
+                                                        </a>
+                                                    </span>
+                                                </xsl:when>
+                                                <xsl:when test="count(./tei:rdg) = 0">
+                                                  <xsl:variable name="witname">
                                                   <xsl:value-of
                                                   select="substring-after(./tei:lem/@wit, '#')"/>
-                                                </xsl:variable>
-                                                <span class="editor_comment">
+                                                  </xsl:variable>
+                                                  <span class="editor_comment">
                                                   <xsl:text>nur in </xsl:text>
                                                   <a href="#witness_overview">
                                                   <xsl:value-of select="$witname"/>
                                                   </a>
-                                                </span>
-                                            </xsl:when>
-                                            <xsl:otherwise>
-                                                <xsl:apply-templates select="./tei:rdg" mode="app"/>
-                                            </xsl:otherwise>
-                                        </xsl:choose>
-                                    </p>
+                                                  </span>
+                                                </xsl:when>
+                                                <xsl:otherwise>
+                                                  <xsl:apply-templates select="./tei:rdg" mode="app"
+                                                  />
+                                                </xsl:otherwise>
+                                            </xsl:choose>
+                                        </p>
+                                    </xsl:if>
                                 </xsl:for-each>
                             </div>
                         </xsl:if>

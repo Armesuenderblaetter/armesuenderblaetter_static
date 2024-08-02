@@ -71,7 +71,6 @@
                 <xsl:text> </xsl:text>
             </a>
         </span>
-        <!--        <span class="empty_lemma_spacer"/>-->
     </xsl:template>
     <xsl:template match="tei:lem" mode="app">
         <xsl:apply-templates mode="app"/>
@@ -153,7 +152,20 @@
         </span>
     </xsl:template>
     <xsl:template match="tei:pb[@type = 'secondary']">
-        <xsl:variable name="facs">
+        <xsl:if test="@type = 'secondary' and not(preceding-sibling::*[1][self::tei:pb and @type = 'primary']) and not(following-sibling::*[1][self::tei:pb and @type = 'primary']) and not(ancestor::tei:app)">
+            <xsl:variable name="num">
+                <xsl:number level="any"/>
+            </xsl:variable>
+            <span class="empty_lemma">
+                <a class="variant_anchor_link" href="#app_pb_{$num}">
+                    <xsl:attribute name="id">
+                        <xsl:value-of select="concat('var_pb_', $num)"/>
+                    </xsl:attribute>
+                    <xsl:text> </xsl:text>
+                </a>
+            </span>
+        </xsl:if>
+        <!--<xsl:variable name="facs">
             <xsl:value-of select="@facs"/>
         </xsl:variable>
         <span class="pb secondary" source="{@facs}">
@@ -161,7 +173,7 @@
                 <xsl:value-of select="@edRef"/>
             </xsl:attribute>
             <xsl:value-of select="./@n"/>
-        </span>
+        </span>-->
     </xsl:template>
     <xsl:template match="tei:pb" mode="app">
         <xsl:text> | </xsl:text>
