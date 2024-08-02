@@ -2,6 +2,7 @@
     --editor-font-family: serif;
     --editor-font-color: grey;
     --variant-marker-color: rgb(203, 231, 255);
+    --catch-offset-right: -75%;
 }
 
 html {
@@ -111,7 +112,7 @@ a.variant_anchor_link.block_lemma {
 
 a.variant_anchor_link.block_lemma.catch {
     position: relative;
-    right: -100%;
+    right: var(--catch-offset-right);
 }
 
 span.empty_lemma a.variant_anchor_link::after {
@@ -143,7 +144,7 @@ span.catch {
     color: grey;
     text-align: left;
     position: relative;
-    right: -100%;
+    right: var(--catch-offset-right);
 }
 
 a.variant_anchor_link.block_lemma.catch>span.catch {
