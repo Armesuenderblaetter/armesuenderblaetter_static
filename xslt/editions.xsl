@@ -103,7 +103,7 @@
                         </div>
                         <xsl:if test="count(//tei:note) != 0">
                             <div class="footnotes">
-                                <xsl:for-each select="//tei:note">
+                                <xsl:for-each select="//tei:body//tei:note">
                                     <div class="footnote" id="{local:makeId(.)}">
                                         <xsl:element name="a">
                                             <xsl:attribute name="name">
