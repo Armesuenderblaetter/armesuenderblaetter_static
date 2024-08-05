@@ -143,7 +143,7 @@
             <xsl:for-each-group select="//tei:text//text() | //tei:text//tei:pb[@type = 'primary']"
                 group-starting-with=".[local-name() = 'pb' and @type = 'primary']">
                 <xsl:if test="current-group()[1][local-name() = 'pb' and @facs = $facs]">
-                    <xsl:if test="current-group()//tei:titlePage">
+                    <xsl:if test="not(current-group()//tei:titlePage)">
                         <xsl:value-of select="string-length(string-join(current-group())) lt 100"/>
                     </xsl:if>
                 </xsl:if>
