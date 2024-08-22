@@ -52,7 +52,10 @@
                                     </xsl:variable>
                                     <tr>
                                         <td>
-                                            <a id="$id">
+                                            <a>
+                                                <xsl:attribute name="id">
+                                                    <xsl:value-of select="$id"/>
+                                                </xsl:attribute>
                                                 <xsl:choose>
                                                     <xsl:when test="./tei:desc/tei:desc">
                                                         <xsl:value-of select="normalize-space(./tei:desc/tei:desc/text())"/> 

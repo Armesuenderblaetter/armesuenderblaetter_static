@@ -423,3 +423,7 @@ a.personview::before {
 ul#witness_overview.nav.nav-tabs li.nav-item button.nav-link {
     font-weight: bold;
 }
+
+*:target {
+    background-color: aqua;
+}
