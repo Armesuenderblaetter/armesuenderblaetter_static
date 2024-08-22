@@ -115,7 +115,7 @@
                     <li>
                         <a class="personview">
                             <xsl:attribute name="href">
-                                <xsl:value-of select="concat('/', @xml:id, '.html')"/>
+                                <xsl:value-of select="concat(@xml:id, '.html')"/>
                             </xsl:attribute>
                             <span>
                                 <xsl:choose>
