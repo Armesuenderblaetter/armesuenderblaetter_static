@@ -2,8 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tei="http://www.tei-c.org/ns/1.0" version="2.0" exclude-result-prefixes="xsl tei xs">
 
     <xsl:template match="tei:person" name="person_detail">
-        <table class="table entity-table">
-            <tbody>
+        <dl>
                 <xsl:choose>
                     <xsl:when test="boolean(./tei:sex/@value='m')">
                         <dt>
@@ -129,7 +128,6 @@
                         </ul>
                     </dd>
                 </xsl:if>
-            </tbody>
-        </table>
+            </dl>
     </xsl:template>
 </xsl:stylesheet>
