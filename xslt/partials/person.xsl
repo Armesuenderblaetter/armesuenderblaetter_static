@@ -6,136 +6,128 @@
             <tbody>
                 <xsl:choose>
                     <xsl:when test="boolean(./tei:sex/@value='m')">
-                        <tr>
-                            <th>
+                        <dt>
                     Gechlecht
-                            </th>
-                            <td>
+                        </dt>
+                        <dd>
                                 männlich
-                            </td>
-                        </tr>
+                        </dd>
                     </xsl:when>
                     <xsl:when test="boolean(./tei:sex/@value='f')">
-                        <tr>
-                            <th>
+                        <dt>
                     Gechlecht
-                            </th>
-                            <td>
+                        </dt>
+                        <dd>
                                 weiblich
-                            </td>
-                        </tr>
+                        </dd>
                     </xsl:when>
                     <xsl:otherwise>
-                        <tr>
-                            <th>
+                        <dt>
                     Gechlecht
-                            </th>
-                            <td>
+                        </dt>
+                        <dd>
                                 k. A.
-                            </td>
-                        </tr>
+                        </dd>
                     </xsl:otherwise>
                 </xsl:choose>
                 <xsl:if test="./tei:age">
-                    <tr>
-                        <th>
+                    <dt>
                             Alter
-                        </th>
-                        <td>
-                            <xsl:value-of select="./tei:age"/>
-                        </td>
-                    </tr>
+                    </dt>
+                    <dd>
+                        <xsl:value-of select="./tei:age"/>
+                    </dd>
                 </xsl:if>
                 <xsl:if test="./tei:birth">
-                    <tr>
-                        <th>
+                    <dt>
                         Geburtsort
-                        </th>
-                        <td>
+                    </dt>
+                    <dd>
+                        <xsl:variable name="place_string">
                             <xsl:value-of select="normalize-space(string-join(./tei:birth/tei:placeName/*))"/>
-                        </td>
-                    </tr>
+                        </xsl:variable>
+                        <xsl:choose>
+                            <xsl:when test="contains($place_string, 'k.A.') or contains($place_string, 'k. A.')">
+                                <xsl:text>k. A.</xsl:text>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="$place_string"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+
+
+                    </dd>
                 </xsl:if>
                 <xsl:if test="./tei:faith">
-                    <tr>
-                        <th>
+                    <dt>
                         Konfession
-                        </th>
-                        <td>
-                            <xsl:value-of select="./tei:faith"/>
-                        </td>
-                    </tr>
+                    </dt>
+                    <dd>
+                        <xsl:value-of select="./tei:faith"/>
+                    </dd>
                 </xsl:if>
                 <xsl:if test="./tei:occupation">
-                    <tr>
-                        <th>
+                    <dt>
                             Beruf
-                        </th>
-                        <td>
-                            <xsl:value-of select="./tei:occupation"/>
-                        </td>
-                    </tr>
+                    </dt>
+                    <dd>
+                        <xsl:value-of select="./tei:occupation"/>
+                    </dd>
                 </xsl:if>
                 <xsl:if test="./tei:listEvent[@type='offences']/*">
-                    <tr>
-                        <th>
+                    <dt>
                                 Vergehen
-                        </th>
-                        <td>
-                            <ul>
-                                <xsl:for-each select="./tei:listEvent[@type='offences']/tei:rs">
-                                    <li>
-                                        <a href="./offences.html{@ref}">
+                    </dt>
+                    <dd>
+                        <ul>
+                            <xsl:for-each select="./tei:listEvent[@type='offences']/tei:rs">
+                                <li>
+                                    <a href="./offences.html{@ref}">
                                             Vergehen x
-                                        </a>
-                                    </li>
-                                </xsl:for-each>
-                            </ul>
-                        </td>
-                    </tr>
+                                    </a>
+                                </li>
+                            </xsl:for-each>
+                        </ul>
+                    </dd>
                 </xsl:if>
                 <xsl:if test=".//tei:rs[@type='punishment' or @type='execution']">
-                    <tr>
-                        <th>
+                    <dt>
                             Bestrafung
-                        </th>
-                        <td>
-                            <ul>
-                                <xsl:for-each select=".//tei:rs[@type='punishment' or @type='execution']">
-                                    <li>
-                                        <a href="./punishments.html{@ref}">
-                                            <xsl:choose>
-                                                <xsl:when test="@type='execution'">
+                    </dt>
+                    <dd>
+                        <ul>
+                            <xsl:for-each select=".//tei:rs[@type='punishment' or @type='execution']">
+                                <li>
+                                    <a href="./punishments.html{@ref}">
+                                        <xsl:choose>
+                                            <xsl:when test="@type='execution'">
                                                     Hinrichtung
-                                                </xsl:when>
-                                                <xsl:otherwise>
+                                            </xsl:when>
+                                            <xsl:otherwise>
                                                     Bestrafung
-                                                </xsl:otherwise>
-                                            </xsl:choose>
-                                        </a>
-                                    </li>
-                                </xsl:for-each>
-                            </ul>
-                        </td>
-                    </tr>
+                                            </xsl:otherwise>
+                                        </xsl:choose>
+                                    </a>
+                                </li>
+                            </xsl:for-each>
+                        </ul>
+                    </dd>
                 </xsl:if>
                 <xsl:if test="./tei:listEvent">
-                    <tr>
-                        <th>
+                    <dt>
                         Erwähnt in
-                        </th>
-                        <td>
-                            <ul>
-                                <xsl:for-each select="./tei:noteGrp/tei:note[@type='mentions']">
-                                    <li>
-                                        <a href="{replace(@target, '.xml', '.html')}">
-                                            <xsl:value-of select="text()"/>
-                                        </a>
-                                    </li>
-                                </xsl:for-each>
-                            </ul>
-                        </td>
-                    </tr>
+                    </dt>
+                    <dd>
+                        <ul>
+                            <xsl:for-each select="./tei:noteGrp/tei:note[@type='mentions']">
+                                <li>
+                                    <a href="{replace(@target, '.xml', '.html')}">
+                                        <xsl:value-of select="text()"/>
+                                    </a>
+                                </li>
+                            </xsl:for-each>
+                        </ul>
+                    </dd>
                 </xsl:if>
             </tbody>
         </table>
