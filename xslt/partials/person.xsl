@@ -103,7 +103,7 @@
                             <ul>
                                 <xsl:for-each select=".//tei:rs[@type='punishment' or @type='execution']">
                                     <li>
-                                        <a href="{@ref}">
+                                        <a href="./punishments.html{@ref}">
                                             <xsl:choose>
                                                 <xsl:when test="@type='execution'">
                                                     Hinrichtung
