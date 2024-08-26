@@ -121,7 +121,7 @@
                                 <xsl:choose>
                                     <xsl:when test="@role = 'delinquent'">
                                         <xsl:value-of
-                                            select="concat(.//tei:persName/tei:forename, ' ', .//tei:persName/tei:surname, ' (Delinquent)')"
+                                            select="concat(.//tei:persName/tei:forename, ' ', .//tei:persName/tei:surname, ' (DelinquentIn)')"
                                         />
                                     </xsl:when>
                                     <xsl:otherwise>
