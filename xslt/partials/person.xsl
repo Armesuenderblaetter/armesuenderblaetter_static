@@ -8,7 +8,7 @@
     <xsl:template name="get_offence_label">
         <xsl:param name="current_id"/>
         <xsl:for-each
-            select="doc('/home/zorg/Dokumente/ltw/flublätter/flugblaetter_static/data/indices/offences.xml')//tei:event[@xml:id=$current_id]">
+            select="doc('../../data/indices/offences.xml')//tei:event[@xml:id=$current_id]">
             <xsl:choose>
                 <xsl:when test="./tei:desc/tei:desc">
                     <xsl:value-of select="normalize-space(./tei:desc/tei:desc/text())"/>
