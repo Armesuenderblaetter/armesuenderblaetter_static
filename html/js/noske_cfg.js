@@ -1,4 +1,4 @@
-import { NoskeSearch } from "https://cdn.jsdelivr.net/npm/acdh-noske-search@0.0.8/dist/index.js";
+import { NoskeSearch } from "./noske.js";
 const search = new NoskeSearch({ container: "noske-search" });
 search.search({
   debug: true,
