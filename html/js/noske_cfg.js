@@ -50,7 +50,8 @@ search.search({
     },
   },
   config: {
-    customUrl: "/todesurteile/flugblaetter-static-page/",
+    // customUrl: "/todesurteile/flugblaetter-static-page/",
+    customUrl: "./",
   },
 });
 search.minQueryLength=1;
