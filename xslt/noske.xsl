@@ -22,12 +22,13 @@
                         <xsl:value-of select="$doc_title"/>
                     </h1>
                     <div id="noske-search">
-                        <div id="noske-stats"> </div>
+                        <div id="custom-noske-input"> </div>
                     </div>
                     <div>
                         <div>
-                            <div id="noske-hits"/>
-                            <div id="noske-pagination"/>
+                            <div id="custom-noske-hits"/>
+                            <div id="custom-noske-pagination"/>
+                            <div id="custom-noske-stats"> </div>
                         </div>
                     </div>
                 </div>
