@@ -32,7 +32,7 @@
                         </div>
                     </div>
                 </div>
-                <script type="module" src="js/noske_cfg.js"/>
+                <script type="module" src="js/noske/noske_cfg.js"/>
                 <xsl:call-template name="html_footer"/>
             </body>
         </html>
