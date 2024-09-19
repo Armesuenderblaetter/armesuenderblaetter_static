@@ -52,7 +52,7 @@ search.search({
     },
   },
   config: {
-    customUrl: "./*.html",
+    customUrl: "./",
     urlparam: "wlmaxitems=1",
   },
 });
