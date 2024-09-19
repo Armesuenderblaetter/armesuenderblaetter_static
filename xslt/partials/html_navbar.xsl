@@ -56,7 +56,12 @@
                                         <a class="dropdown-item" href="search.html">Volltextsuche</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="nosketch.html">Linguistische Suche</a>
+                                        <!-- <a class="dropdown-item" href="nosketch.html">Linguistische Suche</a> -->
+                                        <a class="dropdown-item" 
+                                            href="./nosketch.html?corpname=flugblaetter&amp;q=q%3Cdoc%3E+%5Blemma%3D%22.*%22%5D&amp;viewmode=kwic&amp;attrs=word%2Clemma%2Cpos%2Cvocab%2Cid&amp;format=json&amp;structs=doc%2Chead%2Cp%2Clg%2Cl%2CplaceName%2Cquote%2Cbibl%2CpersName%2Cdate%2Ccit%2Cg&amp;kwicrightctx=100%23&amp;kwicleftctx=100%23&amp;refs=doc.id%2Cdoc.date%2C+doc.name&amp;pagesize=20&amp;fromp=1&amp;selectQueryValue=url"
+                                        >
+                                            Linguistische Suche
+                                        </a>
                                     </li>
                                 </ul>
                             </li>
