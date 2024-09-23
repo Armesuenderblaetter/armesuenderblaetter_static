@@ -9,8 +9,7 @@ search.search({
     corpname: "flugblaetter",
     attrs: "word,lemma,pos,vocab,id",
     structs: "doc,head,p,lg,l,placeName,quote,bibl,persName,date,cit,g",
-    // refs: "doc.id,doc.date, doc.name",
-    refs: "doc.id,doc.title",
+    refs: "doc.id,l.id,p.id,placeName.id,persName.id,date.id,doc.title,doc.delinquent_sexes,doc.attrs,lg.type"
   },
   hits: {
     id: "custom-noske-hits",

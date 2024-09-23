@@ -21,6 +21,9 @@
                     <h1>
                         <xsl:value-of select="$doc_title"/>
                     </h1>
+                    <div>
+                        <a href="https://flugblaetter-noske.acdh-dev.oeaw.ac.at/crystal/#open">Erweiterte Suche in Crystal</a>
+                    </div>
                     <div id="noske-search">
                         <div id="custom-noske-input"> </div>
                     </div>

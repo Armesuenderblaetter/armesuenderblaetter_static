@@ -63,3 +63,8 @@ h1 {
     align-items: end;
     justify-content: right;
 }
+
+a {
+    color: darkgrey;
+    text-decoration: none;
+}
