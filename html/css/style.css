@@ -122,8 +122,9 @@ span.token:hover {
     background-color: aliceblue!important;
 }
 span.token:hover::before{
-    white-space: pre;
+    text-align: left;
     content: 'Lemma: 'attr(lemma)'\A'"POS: "attr(pos)"\Avocabulary: "attr(vocab);
+    white-space: pre;
     border: 0.1rem dotted black;
     border-radius: 5px;
     display: inline;
