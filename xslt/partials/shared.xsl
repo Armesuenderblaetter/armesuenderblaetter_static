@@ -103,9 +103,19 @@
     <!-- add whitespace after tei:w -->
     <xsl:template match="tei:w" mode="#all">
         <span class="token">
+            <xsl:variable name="target_f_id">
+                <xsl:value-of select="substring-after(./@ana, '#')"/>
+            </xsl:variable>
+            <xsl:variable name="vocab">
+                <xsl:value-of select="//tei:fs[@xml:id = $target_f_id]/tei:f[@name='dictref']/text()"/>
+            </xsl:variable>
             <xsl:attribute name="lemma">
                 <xsl:value-of select="@lemma"/>
             </xsl:attribute>
+            <xsl:attribute name="pos">
+                <xsl:value-of select="@pos"/>
+            </xsl:attribute>
+            <xsl:attribute name="vocab" select="$vocab"/>
             <xsl:apply-templates/>
         </span>
         <xsl:variable name="relevant_interpunctuation_after">

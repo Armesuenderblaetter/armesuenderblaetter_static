@@ -115,6 +115,27 @@ a.variant_anchor_link.block_lemma.catch {
     right: var(--catch-offset-right);
 }
 
+span.token {
+    position: relative;
+}
+span.token:hover {
+    background-color: aliceblue!important;
+}
+span.token:hover::before{
+    white-space: pre;
+    content: 'Lemma: 'attr(lemma)'\A'"POS: "attr(pos)"\Avocabulary: "attr(vocab);
+    border: 0.1rem dotted black;
+    border-radius: 5px;
+    display: inline;
+    position: absolute;
+    background-color: aliceblue!important;
+    z-index: 10000;
+    padding: 0.3rem;
+    margin: .2rem;
+    left: 100%;
+    top: 50%;
+}
+
 span.empty_lemma a.variant_anchor_link::after {
     /* content: "↓"; */
     content: "\00a0";
