@@ -109,12 +109,8 @@
             <xsl:variable name="vocab">
                 <xsl:value-of select="//tei:fs[@xml:id = $target_f_id]/tei:f[@name='dictref']/text()"/>
             </xsl:variable>
-            <xsl:attribute name="lemma">
-                <xsl:value-of select="@lemma"/>
-            </xsl:attribute>
-            <xsl:attribute name="pos">
-                <xsl:value-of select="@pos"/>
-            </xsl:attribute>
+            <xsl:attribute name="lemma" select="@lemma"/>
+            <xsl:attribute name="pos" select="@pos"/>
             <xsl:attribute name="vocab" select="$vocab"/>
             <xsl:apply-templates/>
         </span>
@@ -163,8 +159,9 @@
                 </xsl:attribute>
             </xsl:if>
             <xsl:value-of select="./@n"/>
-            <hr/>
+            
         </span>
+        <hr/>
     </xsl:template>
     <xsl:template match="tei:pb[@type = 'secondary']">
         <xsl:if test="@type = 'secondary' and not(preceding-sibling::*[1][self::tei:pb and @type = 'primary']) and not(following-sibling::*[1][self::tei:pb and @type = 'primary']) and not(ancestor::tei:app)">
@@ -180,15 +177,6 @@
                 </a>
             </span>
         </xsl:if>
-        <!--<xsl:variable name="facs">
-            <xsl:value-of select="@facs"/>
-        </xsl:variable>
-        <span class="pb secondary" source="{@facs}">
-            <xsl:attribute name="edRef">
-                <xsl:value-of select="@edRef"/>
-            </xsl:attribute>
-            <xsl:value-of select="./@n"/>
-        </span>-->
     </xsl:template>
     <xsl:template match="tei:pb" mode="app">
         <xsl:text> | </xsl:text>
