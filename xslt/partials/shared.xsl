@@ -103,6 +103,9 @@
     <!-- add whitespace after tei:w -->
     <xsl:template match="tei:w" mode="#all">
         <span class="token">
+            <xsl:attribute name="id">
+                <xsl:value-of select="@xml:id"/>
+            </xsl:attribute>
             <xsl:variable name="target_f_id">
                 <xsl:value-of select="substring-after(./@ana, '#')"/>
             </xsl:variable>
@@ -443,6 +446,9 @@
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
         <span class="{$rendering} verse">
+            <xsl:attribute name="id">
+                <xsl:value-of select="@xml:id"/>
+            </xsl:attribute>
             <xsl:apply-templates/>
         </span>
         <span class="lb"/>
@@ -452,6 +458,9 @@
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
         <p class="{$rendering}">
+            <xsl:attribute name="id">
+                <xsl:value-of select="@xml:id"/>
+            </xsl:attribute>
             <xsl:apply-templates/>
         </p>
     </xsl:template>
