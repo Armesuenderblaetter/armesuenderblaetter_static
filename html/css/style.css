@@ -128,9 +128,28 @@ a.variant_anchor_link.block_lemma.catch {
 span.token {
     position: relative;
 }
+
+span.sic span.token+span.token::before {
+    content: "\a";
+    white-space: pre;
+    background-color: red;
+}
+/* span.sic span.token::after {
+    background-color: red;
+    font-family: var(--editor-font-family) !important;
+    font-style: normal;
+    text-indent: 0;
+    text-align: left;
+    color: var(--editor-font-color) !important;
+    font-size: 1rem!important;
+    content: 'Lemma: 'attr(lemma)'\A'"POS: "attr(pos)"\Avocabulary: "attr(vocab);
+    white-space: pre;
+} */
+
 span.token:hover {
     background-color: aliceblue!important;
 }
+span.sic span.token::after,
 span.token:hover::before{
     /* reset text properties */
     font-family: var(--editor-font-family) !important;
@@ -362,11 +381,19 @@ span.corr + span.sic:hover {
     background-color: aliceblue!important;
     z-index: 10000;
     padding: 0.3rem;
+    font-style: normal;
+    text-indent: 0;
+    text-align: left;
+    font-size: 1rem!important;
 }
 
 span.corr:hover + span.sic::before,
 span.sic:hover::before {
     content: "Korrigiert aus: ";
+    font-style: normal;
+    text-indent: 0;
+    text-align: left;
+    font-size: 1rem!important;
     font-family: var(--editor-font-family) !important;
     color: var(--editor-font-color) !important;
 }
