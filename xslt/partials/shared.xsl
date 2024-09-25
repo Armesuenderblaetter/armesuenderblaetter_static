@@ -130,7 +130,7 @@
             <xsl:value-of select="' '"/>
         </xsl:if>
     </xsl:template>
-    <xsl:template match="tei:pb[@type = 'primary']">
+     <xsl:template match="tei:pb[@type = 'primary']">
         <!-- 
             this is necessary cause empty pages have to little height to 
             trigger scrolling, so i need to create a hight via css, ergo 
@@ -159,9 +159,7 @@
                 </xsl:attribute>
             </xsl:if>
             <xsl:value-of select="./@n"/>
-            
         </span>
-        <hr/>
     </xsl:template>
     <xsl:template match="tei:pb[@type = 'secondary']">
         <xsl:if test="@type = 'secondary' and not(preceding-sibling::*[1][self::tei:pb and @type = 'primary']) and not(following-sibling::*[1][self::tei:pb and @type = 'primary']) and not(ancestor::tei:app)">

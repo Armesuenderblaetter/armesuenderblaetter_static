@@ -82,6 +82,16 @@ span.pb.nearly_no_content {
     height: 16rem;
 }
 
+span.pb.primary {
+    display: block;
+    width: 100%;
+    margin: 1rem 0;
+    color: inherit;
+    border: 0;
+    border-bottom: var(--bs-border-width) solid;
+    opacity: .25;
+}
+
 .modal-body img {
     display: block;
     width: 100%;
