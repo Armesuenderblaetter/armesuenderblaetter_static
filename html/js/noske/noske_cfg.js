@@ -2,6 +2,14 @@
 // import { NoskeSearch } from "https://cdn.jsdelivr.net/npm/acdh-noske-search/dist/index.js";
 import { NoskeSearch } from "./noske.js";
 const search = new NoskeSearch({ container: "noske-search", autocomplete: false,  wordlistattr: ["word","lemma","pos","vocab","id"]});
+
+function return_url(line){
+  let attribs = line.kwic_attr.split("/");
+  let token_id = attribs[attribs.length-1];
+  let doc_id = line.refs.filter((ref) => ref.startsWith("doc.id"))[0].split("=")[1];
+  return `./${doc_id}.html#${token_id}`
+}
+
 search.search({
   debug: true,
   client: {
@@ -55,7 +63,8 @@ search.search({
   },
   config: {
     customUrl: "./",
-    urlparam: "wlmaxitems=1",
+    // urlparams: "wlmaxitems=1",
+    customUrlTransform: return_url,
   },
 });
 search.minQueryLength=1;
