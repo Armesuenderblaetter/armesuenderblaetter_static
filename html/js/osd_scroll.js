@@ -99,6 +99,18 @@ function scroll_next() {
 // to prevent any hassle the following functions handle the inital scrolling
 // if such param is present in url
 
+function get_pb_sibling(element){
+    let parent_childs = Array.from(element.parentElement.children);
+    console.log(parent_childs)
+    parent_childs = parent_childs.filter(c=>c.nodeType == 1 && c.classList.contains("pb") && c.classList.contains("primary"))
+    if (parent_childs.length != 0){
+      return parent_childs[0]
+    }
+    else {
+      return undefined
+    }
+  }
+
 function load_initial_image() {
   // depending on the margins you set for you intersection observer
   // and the position of you lb elements on the page the initial image
@@ -115,6 +127,18 @@ function load_initial_image() {
     }
     if (viewer.world.getItemCount() > 1) {
       viewer.world.removeItem(viewer.world.getItemAt(1));
+    }
+    if (first_pb_element_in_viewport === undefined || first_pb_element_in_viewport === null) {
+      let current_target_element = document.getElementById(
+        window.location.hash.substring(1)
+      );
+      target_el_parent = current_target_element.parentElement
+      if (target_el_parent){
+        first_pb_element_in_viewport = get_pb_sibling(target_el_parent)
+      }
+      if (first_pb_element_in_viewport === undefined || first_pb_element_in_viewport === null){
+        first_pb_element_in_viewport = pb_elements[0]
+      }
     }
     handle_new_image(first_pb_element_in_viewport);
   } else {

@@ -1,0 +1,926 @@
+
+{
+	"Lines": [
+		{
+			"toknum": 1033,
+			"hitlen": 1,
+			"Refs": [
+				"doc.id=fb_17590302_SebastianF",
+				"",
+				"p.id=fb_17590302_SebastianF_p_0004",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Sebastian F.",
+				"doc.delinquent_sexes=male",
+				"",
+				""
+			],
+			"Tbl_refs": [
+				"doc.id=fb_17590302_SebastianF",
+				"",
+				"p.id=fb_17590302_SebastianF_p_0004",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Sebastian F.",
+				"doc.delinquent_sexes=male",
+				"",
+				""
+			],
+			"Left": [
+				{
+					"str": "auf"
+				},
+				{
+					"str": "die"
+				},
+				{
+					"str": "gewöhnliche"
+				},
+				{
+					"str": "Richt=stadt"
+				},
+				{
+					"str": "geführet,"
+				}
+			],
+			"Kwic": [
+				{
+					"coll": 1,
+					"str": " und",
+					"attr": "/und/KON/Duden/tu_70_xTok_002156"
+				}
+			],
+			"Right": [
+				{
+					"str": "alda"
+				},
+				{
+					"str": "mit"
+				},
+				{
+					"str": "dem"
+				},
+				{
+					"str": "Schwert"
+				},
+				{
+					"str": "vom"
+				},
+				{
+					"str": "Leben"
+				},
+				{
+					"str": "zum"
+				},
+				{
+					"str": "Tod"
+				},
+				{
+					"str": "hingerichtet"
+				}
+			],
+			"Links": [],
+			"linegroup": "_",
+			"linegroup_id": 0
+		},
+		{
+			"toknum": 1065,
+			"hitlen": 1,
+			"Refs": [
+				"doc.id=fb_17590302_SebastianF",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Sebastian F.",
+				"doc.delinquent_sexes=male",
+				"",
+				""
+			],
+			"Tbl_refs": [
+				"doc.id=fb_17590302_SebastianF",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Sebastian F.",
+				"doc.delinquent_sexes=male",
+				"",
+				""
+			],
+			"Left": [
+				{
+					"str": "Abscheuen."
+				},
+				{
+					"str": "Gott"
+				},
+				{
+					"str": "seye"
+				},
+				{
+					"str": "seiner"
+				},
+				{
+					"str": "armen"
+				},
+				{
+					"str": "Seele"
+				},
+				{
+					"str": "gnädig,"
+				}
+			],
+			"Kwic": [
+				{
+					"coll": 1,
+					"str": " und",
+					"attr": "/und/KON/Duden/tu_70_xTok_002215"
+				}
+			],
+			"Right": [
+				{
+					"str": "barmherzig!"
+				},
+				{
+					"strc": "</doc><doc><p>"
+				},
+				{
+					"str": "ES"
+				},
+				{
+					"str": "ist"
+				},
+				{
+					"str": "diese"
+				},
+				{
+					"str": "Delinquentin"
+				},
+				{
+					"str": "sowol"
+				},
+				{
+					"str": "ihrer"
+				}
+			],
+			"Links": [],
+			"linegroup": "_",
+			"linegroup_id": 0
+		},
+		{
+			"toknum": 1105,
+			"hitlen": 1,
+			"Refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Tbl_refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Left": [
+				{
+					"str": ","
+				},
+				{
+					"str": "theils"
+				},
+				{
+					"str": "durch"
+				},
+				{
+					"str": "Verführung,"
+				},
+				{
+					"str": "in"
+				},
+				{
+					"str": "ein"
+				},
+				{
+					"str": "üppiges,"
+				}
+			],
+			"Kwic": [
+				{
+					"coll": 1,
+					"str": " und",
+					"attr": "/und/KON/Duden/tu_71_xTok_000226"
+				}
+			],
+			"Right": [
+				{
+					"str": "schändliches"
+				},
+				{
+					"str": "Leben"
+				},
+				{
+					"str": "verfallen,"
+				},
+				{
+					"str": "da"
+				},
+				{
+					"str": "sie"
+				},
+				{
+					"str": "zwar"
+				}
+			],
+			"Links": [],
+			"linegroup": "_",
+			"linegroup_id": 0
+		},
+		{
+			"toknum": 1137,
+			"hitlen": 1,
+			"Refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Tbl_refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Left": [
+				{
+					"str": "ganz"
+				},
+				{
+					"str": "sonderbaren"
+				},
+				{
+					"str": "Neigung"
+				},
+				{
+					"str": "zur"
+				},
+				{
+					"str": "Wollust,"
+				},
+				{
+					"str": "Frechheit,"
+				}
+			],
+			"Kwic": [
+				{
+					"coll": 1,
+					"str": " und",
+					"attr": "/und/KON/Duden/tu_71_xTok_000287"
+				}
+			],
+			"Right": [
+				{
+					"str": "boshaften"
+				},
+				{
+					"str": "Arglistigkeit,"
+				},
+				{
+					"str": "folgbar"
+				},
+				{
+					"str": "in"
+				},
+				{
+					"str": "allweeg"
+				},
+				{
+					"str": "an"
+				},
+				{
+					"str": "ihr"
+				}
+			],
+			"Links": [],
+			"linegroup": "_",
+			"linegroup_id": 0
+		},
+		{
+			"toknum": 1166,
+			"hitlen": 1,
+			"Refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Tbl_refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Left": [
+				{
+					"str": "dieselbe"
+				},
+				{
+					"str": "sogleich"
+				},
+				{
+					"str": "auf"
+				},
+				{
+					"str": "den"
+				},
+				{
+					"str": "Müßig=gang"
+				},
+				{
+					"str": "sich"
+				},
+				{
+					"str": "verleget,"
+				}
+			],
+			"Kwic": [
+				{
+					"coll": 1,
+					"str": " und",
+					"attr": "/und/KON/Duden/tu_71_xTok_000345"
+				}
+			],
+			"Right": [
+				{
+					"str": "insonderheit"
+				},
+				{
+					"str": "denen"
+				},
+				{
+					"str": "gemeinen"
+				},
+				{
+					"str": "Soldaten"
+				},
+				{
+					"str": "nicht"
+				},
+				{
+					"str": "nur"
+				},
+				{
+					"str": "auf"
+				}
+			],
+			"Links": [],
+			"linegroup": "_",
+			"linegroup_id": 0
+		},
+		{
+			"toknum": 1237,
+			"hitlen": 1,
+			"Refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Tbl_refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Left": [
+				{
+					"str": ","
+				},
+				{
+					"str": "dann"
+				},
+				{
+					"str": "auch"
+				},
+				{
+					"str": "durch"
+				},
+				{
+					"str": "wiederholte"
+				},
+				{
+					"str": "Diebstähle,"
+				}
+			],
+			"Kwic": [
+				{
+					"coll": 1,
+					"str": " und",
+					"attr": "/und/KON/Duden/tu_71_xTok_000476"
+				}
+			],
+			"Right": [
+				{
+					"str": "endlich"
+				},
+				{
+					"str": "gar"
+				},
+				{
+					"str": "durch"
+				},
+				{
+					"str": "ruchlose"
+				},
+				{
+					"str": "Raub="
+				},
+				{
+					"str": "und"
+				},
+				{
+					"str": "Mord=thathen"
+				}
+			],
+			"Links": [],
+			"linegroup": "_",
+			"linegroup_id": 0
+		},
+		{
+			"toknum": 1243,
+			"hitlen": 1,
+			"Refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Tbl_refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Left": [
+				{
+					"str": "Diebstähle,"
+				},
+				{
+					"str": "und"
+				},
+				{
+					"str": "endlich"
+				},
+				{
+					"str": "gar"
+				},
+				{
+					"str": "durch"
+				},
+				{
+					"str": "ruchlose"
+				},
+				{
+					"str": "Raub="
+				}
+			],
+			"Kwic": [
+				{
+					"coll": 1,
+					"str": " und",
+					"attr": "/und/KON/Duden/tu_71_xTok_000488"
+				}
+			],
+			"Right": [
+				{
+					"str": "Mord=thathen"
+				},
+				{
+					"str": "höchst"
+				},
+				{
+					"str": "sträflichen"
+				},
+				{
+					"str": "an"
+				},
+				{
+					"str": "sich"
+				},
+				{
+					"str": "gebracht;"
+				}
+			],
+			"Links": [],
+			"linegroup": "_",
+			"linegroup_id": 0
+		},
+		{
+			"toknum": 1277,
+			"hitlen": 1,
+			"Refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Tbl_refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Left": [
+				{
+					"str": "Verehligung"
+				},
+				{
+					"str": "mit"
+				},
+				{
+					"str": "ihr"
+				},
+				{
+					"str": "zu"
+				},
+				{
+					"str": "verleiten,"
+				},
+				{
+					"str": "für"
+				},
+				{
+					"str": "eine"
+				},
+				{
+					"str": "behaust="
+				}
+			],
+			"Kwic": [
+				{
+					"coll": 1,
+					"str": " und",
+					"attr": "/und/KON/Duden/tu_71_xTok_000554"
+				}
+			],
+			"Right": [
+				{
+					"str": "wol=bemittelte"
+				},
+				{
+					"str": "Mühlers=tochter"
+				},
+				{
+					"str": "von"
+				},
+				{
+					"str": "Kottingbrun"
+				}
+			],
+			"Links": [],
+			"linegroup": "_",
+			"linegroup_id": 0
+		},
+		{
+			"toknum": 1355,
+			"hitlen": 1,
+			"Refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Tbl_refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Left": [
+				{
+					"str": "von"
+				},
+				{
+					"str": "derselben"
+				},
+				{
+					"str": "ausgeborgten"
+				},
+				{
+					"str": "Kleidungen,"
+				}
+			],
+			"Kwic": [
+				{
+					"coll": 1,
+					"str": " und",
+					"attr": "/und/KON/Duden/tu_71_xTok_000704"
+				}
+			],
+			"Right": [
+				{
+					"str": "für"
+				},
+				{
+					"str": "sie"
+				},
+				{
+					"str": "R."
+				},
+				{
+					"str": "ausgelegten"
+				},
+				{
+					"str": "Reise=unkösten"
+				},
+				{
+					"str": "um"
+				},
+				{
+					"str": "14."
+				},
+				{
+					"str": "fl."
+				}
+			],
+			"Links": [],
+			"linegroup": "_",
+			"linegroup_id": 0
+		},
+		{
+			"toknum": 1403,
+			"hitlen": 1,
+			"Refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Tbl_refs": [
+				"doc.id=fb_17590322_MariaAnnaR",
+				"",
+				"p.id=fb_17590322_MariaAnnaR_p_0001",
+				"",
+				"",
+				"",
+				"doc.title=Todesurteil Maria Anna R.",
+				"doc.delinquent_sexes=female",
+				"",
+				""
+			],
+			"Left": [
+				{
+					"str": "anwiederumen"
+				},
+				{
+					"str": "2."
+				},
+				{
+					"str": "fl."
+				},
+				{
+					"str": "39."
+				},
+				{
+					"str": "Kr."
+				},
+				{
+					"str": "Werts"
+				},
+				{
+					"str": "zuruck"
+				},
+				{
+					"str": "erhalten,"
+				}
+			],
+			"Kwic": [
+				{
+					"coll": 1,
+					"str": " und",
+					"attr": "/und/KON/Duden/tu_71_xTok_000800"
+				}
+			],
+			"Right": [
+				{
+					"str": "folgbar"
+				},
+				{
+					"str": "nur"
+				},
+				{
+					"str": "noch"
+				},
+				{
+					"str": "einen"
+				},
+				{
+					"str": "Verlust"
+				},
+				{
+					"str": "von"
+				},
+				{
+					"str": "1."
+				},
+				{
+					"str": "fl."
+				},
+				{
+					"str": "35."
+				},
+				{
+					"str": "Kr."
+				}
+			],
+			"Links": [],
+			"linegroup": "_",
+			"linegroup_id": 0
+		}
+	],
+	"fromp": 4,
+	"concsize": 98,
+	"concordance_size_limit": 0,
+	"Sort_idx": [],
+	"righttoleft": false,
+	"Aligned_rtl": [],
+	"numofcolls": 0,
+	"finished": 1,
+	"fullsize": 98,
+	"relsize": 28463.55,
+	"q": [
+		"q\"und\""
+	],
+	"Desc": [
+		{
+			"op": "Query",
+			"arg": "\"und\"",
+			"nicearg": "und",
+			"rel": 28463.55,
+			"size": 98,
+			"tourl": "q=q%22und%22"
+		}
+	],
+	"port": 0,
+	"gdex_scores": [],
+	"sc_strcts": [
+		[
+			"doc",
+			"doc"
+		],
+		[
+			"head",
+			"head"
+		],
+		[
+			"p",
+			"p"
+		],
+		[
+			"lg",
+			"lg"
+		],
+		[
+			"l",
+			"l"
+		],
+		[
+			"placeName",
+			"placeName"
+		],
+		[
+			"quote",
+			"quote"
+		],
+		[
+			"bibl",
+			"bibl"
+		],
+		[
+			"persName",
+			"persName"
+		],
+		[
+			"date",
+			"date"
+		],
+		[
+			"cit",
+			"cit"
+		],
+		[
+			"g",
+			"g"
+		]
+	],
+	"api_version": "open-5.71.15",
+	"manatee_version": "2.36.7-open-2.225.8",
+	"request": {
+		"corpname": "flugblaetter",
+		"kwicleftctx": "45#",
+		"format": "json",
+		"attrs": "word,lemma,pos,vocab,id",
+		"pagesize": "10",
+		"fromp": "4",
+		"kwicrightctx": "45#",
+		"refs": "doc.id,l.id,p.id,placeName.id,persName.id,date.id,doc.title,doc.delinquent_sexes,doc.attrs,lg.type",
+		"viewmode": "kwic",
+		"structs": "doc,head,p,lg,l,placeName,quote,bibl,persName,date,cit,g",
+		"q": "q\"und\""
+	}
+}
