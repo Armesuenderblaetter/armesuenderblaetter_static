@@ -54,6 +54,14 @@ jobs:
       run: |
         mkdir target
         git clone "https://${GITLAB_TARGET_TOKEN_NAME}:${GITLAB_TARGET_TOKEN}@gitlab.oeaw.ac.at/acdh-ch/todesurteile/flugblaetter-static-page.git" target
+    - name: copy json to html-dir
+      run: |
+        if [ -d ./html/json ]
+          then rm -rf ./html/json
+        fi
+        mkdir -p ./html/json
+        cp json/punishments.json ./html/json/
+        cp json/offences.json ./html/json/
     - name: push html to target repo if necessary
       run: |
         status=`git status`

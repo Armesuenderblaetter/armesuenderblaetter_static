@@ -91,11 +91,14 @@
                                 </xsl:for-each>
                             </tbody>
                         </table>
-                        <xsl:call-template name="tabulator_dl_buttons"/>
+                        <!-- <xsl:call-template name="tabulator_dl_buttons"/> -->
                     </div>
                 </main>
                 <xsl:call-template name="html_footer"/>
-                <xsl:call-template name="tabulator_js"/>
+                <!-- <xsl:call-template name="tabulator_js"/> -->
+                <link href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css" rel="stylesheet"/>
+                <script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+                <script type="text/javascript" src="./js/tabulator/punishments.js"></script>
             </body>
         </html>
     </xsl:template>
