@@ -16,6 +16,7 @@ jobs:
       run: |
         apt-get update && apt-get install openjdk-11-jre-headless ant -y --no-install-recommend
         ./shellscripts/script.sh
+        python -m pip config set global.break-system-packages true
         pip install -r requirements.txt
     - name: Build
       run: |
