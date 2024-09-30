@@ -1,15 +1,19 @@
 let jsonurl = '../../json/punishments.json';
+let table_id = "offences"
 fetch(jsonurl).then(response => {
     return response.json();
   }).then(data => {
     console.log(data);
-    buildTable(data)
+    // let tabulator_table = buildTable(data)
   }).catch(err => {
     console.log(err);
   });
 
 function buildTable(tabledata){
-    var table = new Tabulator("#offences", {
+    // clear default html table
+    let html_table = document.getElementById(table_id);
+    html_table.innerHTML = '';
+    var tabulator_table = new Tabulator(`#${table_id}`, {
         data:tabledata,           //load row data from array
         layout:"fitColumns",      //fit columns to width of table
         responsiveLayout:"hide",  //hide columns that don't fit on the table
@@ -35,5 +39,5 @@ function buildTable(tabledata){
         //     {title:"Driver", field:"car", width:90,  hozAlign:"center", formatter:"tickCross", sorter:"boolean", editor:true},
         // ],
     });
-    return table;
+    return tabulator_table;
 };
