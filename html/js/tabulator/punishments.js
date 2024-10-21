@@ -8,17 +8,14 @@ function getRowByCellValue(cellName, cellValue, table) {
 fetch(jsonurl).then(response => {
     return response.json();
   }).then(data => {
-    console.log(data);
     let tabulator_table = buildTable(data)
     tabulator_table.on("renderComplete", function(){
-      console.log(tabulator_table)
       if(window.location.hash) {
         uid = window.location.hash.replace("#", "")
-        console.log(uid)
-        console.log(tabulator_table)
         row = getRowByCellValue("id", uid, tabulator_table)
-        tabulator_table.scrollToRow(row, "top");
-        console.log(row)
+        tabulator_table.scrollToRow(row, "top").then(function(){
+          row.getElement().style.backgroundColor="#bbb";
+        });
       }
     });
   }).catch(err => {
@@ -41,9 +38,7 @@ function buildTable(raw_tabledata){
     var tabulator_table = new Tabulator(`#${table_id}`, {
         data:tabledata,
         layout:"fitColumns",
-        height:"40rem",
-        // pagination:true, //enable.
-        // paginationSize:10, // this option can take any positive integer value
+        height:"50rem",
         columns:[
             {title:"ID", field:"id"},
             {title:"Typ", field:"type"},
