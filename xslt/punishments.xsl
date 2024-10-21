@@ -96,8 +96,8 @@
                 </main>
                 <xsl:call-template name="html_footer"/>
                 <!-- <xsl:call-template name="tabulator_js"/> -->
-                <link href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css" rel="stylesheet"/>
-                <script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+                <link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css" rel="stylesheet"/>
+                <script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
                 <script type="text/javascript" src="./js/tabulator/punishments.js"></script>
             </body>
         </html>
