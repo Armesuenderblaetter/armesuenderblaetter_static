@@ -1,10 +1,10 @@
+#!/usr/bin/env python
 import json
 from typesense.api_call import ObjectNotFound
 from acdh_cfts_pyutils import TYPESENSE_CLIENT as client
 import re
 # from acdh_tei_pyutils.tei import TeiReader
 # from tqdm import tqdm
-
 
 page_base_url = ""
 typesense_collection_name = "flugblaetter_todesurteile"
@@ -63,7 +63,7 @@ def create_records():
     errors = []
     for e in entries:
         for f in fields:
-            if not f in e:
+            if f not in e:
                 errors.append(f"missing {f} in {e['id']}")
     if errors:
         for e in errors:
@@ -76,29 +76,30 @@ def create_records_bak(punishments_by_id: dict):
     document_records = []
     docindex_json = load_json(json_ts_index_path)
     for id, doc_info in docindex_json.items():
-        trial_results = [ punishments_by_id[e_id] for e_id in doc_info["contains_events"] if "trial_result" in e_id ]
+        trial_results = [punishments_by_id[e_id] for e_id in doc_info["contains_events"] if "trial_result" in e_id]
         execution = [trial_result for trial_result in trial_results if trial_result["type"] == "execution"]
         if len(execution) == 1:
             execution = execution[0]
         elif len(execution) == 0:
             # z.B.
-            # 303_annot_tei/17970000_JohannMüllner-JgnazMenz-GeorgDürnböck-ThomasSchedel.xml 
-            #input(f"doc {id} contains no execution")
+            # 303_annot_tei/17970000_JohannMüllner-JgnazMenz-GeorgDürnböck-ThomasSchedel.xml
+            # input(f"doc {id} contains no execution")
             pass
         else:
             # z.B.
             # fb_17780827_JohannH_MichaelH
-            #input(f"doc {id} contains more then one execution")
+            # input(f"doc {id} contains more then one execution")
             execution = trial_results[-1]
         document_record = {
             "title": doc_info["title"],
-            "execution_date" : int(re.sub("-", "", execution["date"][0])) if execution else 17490000,
-            "identifier" : doc_info["id"],
-            "filename" : doc_info["filename"],
-            "fulltext" : doc_info["fulltext"],
+            "execution_date": int(re.sub("-", "", execution["date"][0])) if execution else 17490000,
+            "identifier": doc_info["id"],
+            "filename": doc_info["filename"],
+            "fulltext": doc_info["fulltext"],
         }
         document_records.append(document_record)
     return document_records
+
 
 def setup_collection():
     print(f"setting up collection '{typesense_collection_name}'")
@@ -122,7 +123,7 @@ def upload_records(records):
         msg for msg in make_index if (msg != '"{\\"success\\":true}"' and msg != '""')
     ]
     if errors:
-        print(f"\n\n\nerrors while building ts-index!!\n\n\n")
+        print("\n\n\nerrors while building ts-index!!\n\n\n")
         for err in errors:
             result = re.search(
                 r',\\\"error\\\":\\\"(.*)\\\",\\\"',
