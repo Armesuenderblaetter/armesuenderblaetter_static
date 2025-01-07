@@ -66,14 +66,12 @@
                                                 select=".//tei:titleStmt/tei:title[1]/text()"/>
                                         </td>
                                         <td>
-                                            <xsl:value-of
-                                                select='.//tei:event[@type="offence"]/tei:desc/tei:date[first()]/text()' />
                                             <xsl:attribute name="tabulator-data-sort">
-                                                <xsl:value-of select='.//tei:event[@type="offence"]/tei:desc/tei:date[first()]/@when'/>
+                                                <xsl:value-of select='.//tei:event[@type="offence"][1]/tei:desc/tei:date[1]/@when'/>
                                             </xsl:attribute>
-                                        <td>
+					<xsl:value-of select='.//tei:event[@type="offence"][1]/tei:desc/tei:date[1]/text()' />
                                         </td>
-                                            </xsl:attribute>
+                                        <td>
                                             <xsl:value-of select="tokenize($full_path, '/')[last()]"
                                             />
                                         </td>
