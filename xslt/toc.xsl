@@ -67,7 +67,7 @@
                                         </td>
                                         <td>
                                             <xsl:attribute name="tabulator-data-sort">
-                                                <xsl:value-of select='.//tei:event[@type="offence"][1]/tei:desc/tei:date[1]/@when'/>
+                                                <xsl:value-of select='(.//tei:event[@type="offence"]/tei:desc/tei:date)[1]/@when'/>
                                             </xsl:attribute>
 					                        <xsl:value-of select='(.//tei:event[@type="offence"]/tei:desc/tei:date)[1]/text()' />
                                         </td>
