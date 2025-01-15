@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import json
 from typesense.api_call import ObjectNotFound
 from acdh_cfts_pyutils import TYPESENSE_CLIENT as client
@@ -71,7 +72,7 @@ def upload_records(records):
         msg for msg in make_index if (msg != '"{\\"success\\":true}"' and msg != '""')
     ]
     if errors:
-        print(f"\n\n\nerrors while building ts-index!!\n\n\n")
+        print("\n\n\nerrors while building ts-index!!\n\n\n")
         for err in errors:
             result = re.search(
                 r',\\\"error\\\":\\\"(.*)\\\",\\\"',

@@ -40,6 +40,7 @@
                                 <tr>
                                     <th scope="col" width="20" tabulator-formatter="html" tabulator-headerSort="false" tabulator-download="false">#</th>
                                     <th scope="col" tabulator-headerFilter="input">Titel</th>
+                                    <th scope="col" tabulator-headerFilter="input">Datum</th>
                                     <th scope="col" tabulator-headerFilter="input">Dateinname</th>
                                 </tr>
                             </thead>
@@ -63,6 +64,20 @@
                                         <td>
                                             <xsl:value-of
                                                 select=".//tei:titleStmt/tei:title[1]/text()"/>
+                                        </td>
+                                        <xsl:variable name="eventDate" select="(.//tei:event[@type='execution' or @type='verdict']/tei:desc/tei:date)[1]" />
+                                        <td>
+                                            <xsl:attribute name="tabulator-data-sort">
+                                                <xsl:value-of select="(.//tei:event[@type='execution' or @type='verdict' or @type='offence' or not(@type='execution' or @type='verdict' or @type='offence') or not(type)]/tei:desc/tei:date)[1]" />
+                                            </xsl:attribute>
+                                            <xsl:choose>
+                                                <xsl:when test="$eventDate">
+                                                    <xsl:value-of select="$eventDate/text()" />
+                                                </xsl:when>
+                                                <xsl:otherwise>
+                                                    <xsl:text>k.A.</xsl:text>
+                                                </xsl:otherwise>
+                                            </xsl:choose>
                                         </td>
                                         <td>
                                             <xsl:value-of select="tokenize($full_path, '/')[last()]"
