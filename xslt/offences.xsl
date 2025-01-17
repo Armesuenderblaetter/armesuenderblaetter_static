@@ -36,7 +36,7 @@
                             <xsl:value-of select="$doc_title"/>
                         </h1>
 
-                        <table class="table" id="myTable">
+                        <table class="table" id="offences">
                             <thead>
                                 <tr>
                                     <th scope="col" tabulator-headerFilter="input">Beschreibung</th>
