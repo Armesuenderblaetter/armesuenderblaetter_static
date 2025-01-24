@@ -1,5 +1,5 @@
-let jsonurl = 'json/punishments.json';
-let table_id = "offences"
+let jsonurl = '../../json/punishments.json';
+let table_id = "punishments"
 
 function getRowByCellValue(cellName, cellValue, table) {
   return table.getRows().find(row => { return row.getCell(cellName).getValue() == cellValue; })
