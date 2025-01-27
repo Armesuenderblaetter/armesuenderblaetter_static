@@ -1,4 +1,4 @@
-let jsonurl = '../../json/punishments.json';
+let jsonurl = 'json/punishments.json';
 let table_id = "punishments"
 
 function getRowByCellValue(cellName, cellValue, table) {
