@@ -20,7 +20,7 @@
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Edition</a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" href="imprint.html">Armesünderblätter</a>
+                                        <a class="dropdown-item" href="about.html">Armesünderblätter</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="imprint.html">Ziele</a>
