@@ -28,6 +28,10 @@
                                     <li>
                                         <a class="dropdown-item" href="toc.html">Übersicht</a>
                                     </li>
+                                    <li>
+                                        <a class="dropdown-item" href="punishments.html">Strafen</a>
+                                    </li>
+
                                 </ul>
                             </li>
 
