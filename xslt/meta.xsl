@@ -40,9 +40,9 @@
         </html>
     </xsl:template>
 
-    <xsl:template match="tei:p">
+    <!-- <xsl:template match="tei:p">
         <p id="{generate-id()}"><xsl:apply-templates/></p>
-    </xsl:template>
+    </xsl:template> -->
     <xsl:template match="tei:div">
         <div id="{generate-id()}"><xsl:apply-templates/></div>
     </xsl:template>
