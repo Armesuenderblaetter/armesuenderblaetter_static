@@ -291,6 +291,7 @@ span.lemma::before {
 
 *.hanging_indent {
     text-indent: -1rem !important;
+    padding-left: 1rem !important;
 }
 
 *.superscript {

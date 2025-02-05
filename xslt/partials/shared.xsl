@@ -503,6 +503,14 @@
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
+     <xsl:template match="tei:link">
+        <xsl:element name="a">
+            <xsl:attribute name="href">
+                <xsl:value-of select="@target"/>
+             </xsl:attribute>
+            <xsl:value-of select="@target"/>
+        </xsl:element>
+    </xsl:template>
     <xsl:template match="tei:rs">
         <xsl:choose>
             <xsl:when test="count(tokenize(@ref, ' ')) > 1">
