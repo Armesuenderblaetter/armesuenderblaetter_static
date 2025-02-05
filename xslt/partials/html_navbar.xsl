@@ -79,7 +79,7 @@
                                         <a class="dropdown-item" href="imprint.html">Kontakt</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="dropdown-item" href="imprint.html">Literatur</a>
+                                        <a class="dropdown-item" href="publications.html">Publikationen</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="dropdown-item" href="imprint.html">Impressum</a>
