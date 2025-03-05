@@ -23,7 +23,7 @@
                                         <a class="dropdown-item" href="about.html">Armesünderblätter</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="imprint.html">Ziele</a>
+                                        <a class="dropdown-item" href="goals.html">Ziele</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="toc.html">Übersicht</a>
@@ -39,13 +39,13 @@
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Dokumentation</a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" href="imprint.html">Erschließung</a>
+                                        <a class="dropdown-item" href="edition.html">Erschließung</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="imprint.html">Nutzung</a>
+                                        <a class="dropdown-item" href="usage.html">Nutzung</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="imprint.html">Daten</a>
+                                        <a class="dropdown-item" href="data.html">Daten</a>
                                     </li>
                                 </ul>
                             </li>
@@ -73,10 +73,10 @@
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Über das Projekt</a>
                                 <ul class="dropdown-menu">
                                     <li class="nav-item">
-                                        <a class="dropdown-item" href="imprint.html">Team</a>
+                                        <a class="dropdown-item" href="team.html">Team</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="dropdown-item" href="imprint.html">Kontakt</a>
+                                        <a class="dropdown-item" href="contact.html">Kontakt</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="dropdown-item" href="publications.html">Publikationen</a>
