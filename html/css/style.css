@@ -446,3 +446,10 @@ dl {
 dd {
     padding: .2rem 0rem 1rem 10rem;
 }
+
+@media screen and (max-width: 767px) {
+	.mobile-align-right {
+		 text-align: right;
+	}
+
+}

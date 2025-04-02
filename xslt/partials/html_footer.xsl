@@ -11,12 +11,12 @@
                     <div class="row">
                         <div class="col-md-2 col-12 text-left">
                             <div class="row">
-                                <div class="col-md-12 col-2" style="margin-bottom: 2em; margin-right:1em;">
+                                <div class="col-md-12 col-6" style="margin-bottom: 2em;">
                                     <a href="https://www.oeaw.ac.at/acdh">
                                         <img src="images/logo_acdh.png" width="60" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
                                     </a>
                                 </div>
-                                <div class="col-md-12 col-2"  style="padding-right:auto;">
+                                <div class="col-md-12 col-6 mobile-align-right"  style="padding-left:auto;">
                                     <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
                                         <img src="images/logo_oeaw.png" width="80" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
                                     </a>
