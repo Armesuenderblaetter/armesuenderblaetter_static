@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="#all" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" exclude-result-prefixes="#all" version="2.0">
     <xsl:template match="/" name="html_footer">
         <footer class="footer mt-auto py-3 bg-body-tertiary">
             <div class="wrapper" id="wrapper-footer-full">
@@ -11,19 +9,22 @@
                         <hr/>
                     </div>
                     <div class="row">
-                        <div class="col-lg-1 col-md-auto col-sm-2 col-xs-6 ml-auto text-center">
-                            <div class="py-3">
-                                <a href="https://www.oeaw.ac.at/acdh">
-                                    <img src="images/logo_acdh.png" width="40" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
-                                </a>
-                            </div>
-                            <div class="py-3">
-                                <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
-                                    <img src="images/logo_oeaw.png" width="60" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
-                                </a>
+                        <div class="col-md-2 col-12 text-left">
+                            <div class="row">
+                                <div class="col-md-12 col-2" style="margin-bottom: 2em; margin-right:1em;">
+                                    <a href="https://www.oeaw.ac.at/acdh">
+                                        <img src="images/logo_acdh.png" width="60" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
+                                    </a>
+                                </div>
+                                <div class="col-md-12 col-2"  style="padding-right:auto;">
+                                    <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
+                                        <img src="images/logo_oeaw.png" width="80" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
+                                    </a>
+                                </div>
+                                 <!-- <div class="col-md-0 col-6" /> -->
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-3 col-sm-3 texts">
+                        <div class="col-md-10 col-12 texts">
                             <p>
                            ACDH-CH OEAW<br/>
                            Austrian Centre for Digital Humanities and Cultural Heritage<br/>
@@ -35,7 +36,7 @@
                         <p class="link-in-footer">
                             <i class="bi bi-telephone" aria-hidden="true"/>
                             <span class="visually-hidden">Telefon</span>&#160;<a href="tel:+431515812200">+43 1 51581-2200</a>
-                            <br/>
+                            <xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
                             <i class="bi bi-envelope-at" aria-hidden="true" />
                             <span class="visually-hidden">E-Mail</span>&#160;<a href="mailto:acdh-ch-helpdesk@oeaw.ac.at">acdh-ch-helpdesk@oeaw.ac.at</a>
                         </p>
@@ -53,6 +54,6 @@
     </footer>
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/openseadragon@4.1/build/openseadragon/openseadragon.min.js"/>
+    <script src="https://cdn.jsdelivr.net/npm/openseadragon@4.1/build/openseadragon/openseadragon.min.js"></script>
 </xsl:template>
 </xsl:stylesheet>
