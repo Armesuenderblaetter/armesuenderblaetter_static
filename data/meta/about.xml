@@ -1,47 +1,30 @@
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
-            <titleStmt>
-                <title type="main">Über das Projekt</title>
-                <title type="sub">Armesünderblätter</title>
-            </titleStmt>
-            <publicationStmt>
-                <p>Über das Projekt</p>
-            </publicationStmt>
-            <sourceDesc>
-                <p>Born digital</p>
-            </sourceDesc>
+           <titleStmt>
+              <title type="main">Über das Projekt</title>
+              <title type="sub">Armesünderblätter</title>
+           </titleStmt>
+           <publicationStmt>
+              <p>Publication Information</p>
+           </publicationStmt>
+           <sourceDesc>
+              <p>Information about the source</p>
+           </sourceDesc>
         </fileDesc>
     </teiHeader>
     <text>
         <body>
-            <div type="body">
-            <p> Dieses Projekt widmet sich sogenannten ‚Armesünderblättern‘, die im 18. Jahrhundert anlässlich von Hinrichtungen in Wien gedruckt und verbreitet worden sind. Die 180 erhaltenen Flugblätter werden erstmals als Sammlung in einer forschungsorientierten Web-Applikation gezeigt und sowohl
-                unter philologischen als auch historischen Forschungsaspekten mit digitalen Methoden erschlossen. Die digitale Transformation der fragilen Einzelblätter besteht in der Erstellung von verlässlichen Volltexten und deren mehrdimensionaler Annotation im TEI/XML-Format, wobei insbesondere
-                strukturelle, inhaltliche, typographische und sprachliche Aspekte kodiert werden. Die digitale Repräsentation der Armesünderblätter - als Edition und als Korpus – basiert auf dem am ACDH-CH entwickelten Framework Static Cookie Cutter. Dessen Funktionaltäten bieten mehrere
-                Zugriffsoptionen auf die Faksimiles und die mit Wissen angereicherten Texte: Die einfache und erweiterte Volltextsuche sowie die auf Metadaten basierende Abfrage lassen heutige Leser*innen neue Zugänge zu diesen zeitentfernten Flugblättern finden. Die an den aktuellen
-                Forschungserkenntnissen orientierte Webapplikation vermittelt philologisch und kulturhistorisch geprüftes Wissen über Hinrichtungen in Wien und trägt damit wesentlich dazu bei, Botschaften der Armesünderblätter heute wieder annähernd zu verstehen.
-            </p>
-            </div>
-            <div type="bibliography">
-            <head>Publikationen</head>
-            <list>
-                <item>Resch, Claudia: „ACh! Wie hart fallt jetzt das scheiden“. Urlaublieder des 18. Jahrhunderts – digitale Aufbereitung und Annotation. In: <hi rendition="italic">Wiener Digitale Revue</hi> 2 2021. URL: <link target="https://journals.univie.ac.at/index.php/wdr/article/view/6087" /> (Accessed: 04/04/2024).</item>
-
-                <item>Resch, Claudia: Street Literature des 18. Jahrhunderts: Flugpublizistik als vernachlässigter Untersuchungsgegenstand sprach- und literaturwissenschaftlicher Forschung. In: Anna Havinga &amp; Bettina Lindner-Bornemann (Eds.), <hi rendition="italic">Deutscher Sprachgebrauch im 18.
-                        Jahrhundert. Sprachmentalität, Sprachwirklichkeit, Sprachreichtum</hi>. (Reihe Germanistische Bibliothek 71). Heidelberg: Universitätsverlag Winter 2022, 233–258.</item>
-
-                <item>Resch, Claudia: Zur digitalen Erschließung historischer Flugblätter: Die Todtes- vnd End-Urtheile des 18. Jahrhunderts als Korpus. In: Renata Szczepaniak, Lisa Dücker &amp; Stefan Hartmann (Eds.), <hi rendition="italic">Hexenverhörprotokolle als sprachhistorisches Korpus. Fallstudien
-                        zur Erschließung der frühneuzeitlichen Schriftsprache</hi> (Reihe Germanistische Linguistik 322). Berlin / Boston: de Gruyter 2020, 269–292.</item>
-
-                <item>Resch, Claudia, Schopper, Daniel, Wissik, Tanja &amp; Fasching, Daniela: Encoding Crime and Punishment: The Digital Processing of Early Modern Broadsheets from Vienna. In: <hi rendition="italic">Journal of the Text Encoding Initiative</hi> 11. Online since 17 October 2019. URL:
-                    journals.openedition.org/jtei/1925; DOI: <link target="https://doi.org/10.4000/jtei.1925" /> (Accessed: 04/04/2024).</item>
-
-                <item>Resch, Claudia &amp; Tanja Wissik: Rechtssprachliche Aspekte in historischen Flugblättern des 18. Jahrhunderts. <hi rendition="italic">Fachsprache</hi> 41 (2019), 41–60.</item>
-
-                <item>Fasching, Daniela, and Claudia Resch. 2018. Female Murderers and the Representation of Crime in Execution Broadsheets in 18th-Century Vienna. <hi rendition="italic">Law, Crime and History</hi> 8: 108-125.</item>
-            </list>
-            </div>
+           <p>
+               Scholarly Digital Editions sind eine revolutionäre Art, historische Texte und Dokumente in einem modernen und zugänglichen Format zu präsentieren. 
+               Diese Editionen verwenden digitale Technologien, um eine angereicherte und interaktive Version des Originaltexts darzustellen, die es Lesern ermöglicht, 
+               das Material auf neue Weise zu erkunden und zu nutzen. Sie bieten Wissenschaftlern ein mächtiges Werkzeug für Forschung und Analyse sowie eine Plattform, 
+               um ihre Arbeit einem breiteren Publikum zugänglich zu machen. Darüber hinaus können digitale Editionen eine genauere und zuverlässigere Version eines 
+               Textes bieten, indem sie fortschrittliche Techniken wie Bildverbesserung, Transkription und Textanalyse einsetzen. 
+               Da sich das Feld der digitalen Geisteswissenschaften weiterentwickelt, wird die Entwicklung von Scholarly Digital Editions immer wichtiger und wird 
+               voraussichtlich die Art und Weise revolutionieren, wie wir historische Texte und Dokumente studieren und verstehen.
+           </p>
         </body>
     </text>
-</TEI>
+  </TEI>
+  
