@@ -36,6 +36,14 @@ div#current-refinements {
     padding-bottom: 1.5rem;
 }
 
+#myTable {
+	display: none ;
+}
+
+.tabulator {
+	display: unset!important ;
+}
+
 tr td {
     vertical-align: top;
 }
