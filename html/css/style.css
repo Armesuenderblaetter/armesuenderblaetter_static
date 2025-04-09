@@ -5,6 +5,10 @@
     --catch-offset-right: -75%;
 }
 
+#myTable {
+	display: none ;
+}
+
 html {
     scroll-padding-top: 2rem;
 }
