@@ -26,8 +26,8 @@
                         </div>
                         <div class="col-md-10 col-12 texts">
                             <p>
-                           ACDH-CH OEAW<br/>
-                           Austrian Centre for Digital Humanities and Cultural Heritage<br/>
+                           ACDH-CH OEAW<xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
+                           Austrian Centre for Digital Humanities and Cultural Heritage<xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
                            Österreichische Akademie der Wissenschaften
                         </p>
                         <p>
