@@ -35,7 +35,22 @@
                         </div>
                     </div>
                 </div>
-                <script type="module" src="js/noske/noske_cfg.js"/>
+                <div class="instructions">
+                    <h2>Beispiele</h2>
+                    <h3>Einfache Suche</h3>
+                    <ul>
+                        <li>mit ihm.*</li>
+                    </ul>
+
+
+                    <h3>CQL Suche – Corpus Query Language</h3>
+                    <ul>
+                    <li><xsl:text>[lemma="er"]</xsl:text></li>
+                    <li><xsl:text>[pos="P.*"]</xsl:text></li>
+                    <li><xsl:text>[pos="N.*" &amp; lemma=".*richt.*"]</xsl:text></li>
+                    </ul>
+                </div>
+                <script type="module" src="js/noske/noske_cfg.js"></script>
                 <xsl:call-template name="html_footer"/>
             </body>
         </html>
