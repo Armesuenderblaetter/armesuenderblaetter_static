@@ -1,13 +1,22 @@
 
-import { NoskeSearch } from "https://cdn.jsdelivr.net/npm/acdh-noske-search/dist/index.js";
-// import { NoskeSearch } from "./noske.js";
+//import { NoskeSearch } from "https://cdn.jsdelivr.net/npm/acdh-noske-search/dist/index.js";
+import { NoskeSearch } from "./noske.js";
 const search = new NoskeSearch({ container: "noske-search", autocomplete: false,  wordlistattr: ["word","lemma","pos","vocab","id"]});
 
-function return_url(line){
+function return_url(line) {
+  if (!line.kwic_attr || !line.refs) {
+    console.error("Invalid line object:", line);
+    return "#";
+  }
   let attribs = line.kwic_attr.split("/");
-  let token_id = attribs[attribs.length-1];
-  let doc_id = line.refs.filter((ref) => ref.startsWith("doc.id"))[0].split("=")[1];
-  return `./${doc_id}.html#${token_id}`
+  let token_id = attribs[attribs.length - 1];
+  let doc_id_entry = line.refs.find((ref) => ref.startsWith("doc.id"));
+  if (!doc_id_entry) {
+    console.error("doc.id not found in refs:", line.refs);
+    return "#";
+  }
+  let doc_id = doc_id_entry.split("=")[1];
+  return `./${doc_id}.html#${token_id}`;
 }
 
 search.search({
@@ -24,6 +33,17 @@ search.search({
   },
   hits: {
     id: "custom-noske-hits",
+    labels: {
+      "doc.id": "Datei",
+      "l.id": "Zeile",
+      "p.id": "Seite",
+      "placeName.id": "Ort-id",
+      "persName.id": "Personen-id",
+      "date.id": "Datum",
+      "doc.title": "Titel",
+      "doc.delinquent_sexes": "Geschlecht",
+      "doc.attrs,lg.type": "Eigenheiten",
+    },
     css: {
       table: "noske-hits-table",
       div: "noske-hits-div",
