@@ -116,11 +116,11 @@
                                 <h3>🔹 Wildcard (Platzhalter)</h3>
                                 <ul>
                                     <li>
-                                        <code>[word="*urteil"]</code>
+                                        <code> [word=".*urt.*eil"]</code>
                                         <br/>
 → Wörter, die auf *urteil* enden.  
                                         <br/>
-                                        <em>Beispiel: *Todesurteil*</em>
+                                        <em>Beispiel: *Endurtheil* und *Todesurteil*</em>
                                     </li>
                                 </ul>
                             </div>
