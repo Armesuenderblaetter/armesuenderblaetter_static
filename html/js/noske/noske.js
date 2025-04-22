@@ -865,9 +865,14 @@ function B(r, e, t, s, o = !1, n = !1, i) {
 		  }).join("");
         let V = E.filter((w) => w.length > 0)
           .map(
-            (w) => `<td class="${i.css?.td || h.td}">${w.split("=")[1]}</td>`
-          )
-          .join("");
+            (w) => {
+				const [key, value] = w.split("=");
+				if (key === "doc.id") {
+				  return `<td class="${i.css?.td || h.td}"><a href="${value}.html">${value}</a></td>`;
+				}
+				return `<td class="${i.css?.td || h.td}">${value}</td>`;
+			  })
+			  .join("");
         if (n) var v = n(m);
         else {
           let w = J.filter((_) => !_.startsWith("doc") && _.length > 0)
