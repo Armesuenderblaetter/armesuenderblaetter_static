@@ -30,9 +30,6 @@
                             <div id="decade_age"/>
                             <h4>Geburtsort</h4>
                             <div id="birth_place"/>
-
-                            <h4>Stand</h4>
-                            <div id="type"/>
                             <h4>Familienstand</h4>
                             <div id="marriage_status"/>
                             <h4>Konfession</h4>
