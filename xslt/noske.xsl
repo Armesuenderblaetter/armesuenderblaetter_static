@@ -118,12 +118,13 @@
                                     <li>
                                         <code> [word=".*urt.*eil"]</code>
                                         <br/>
-→ Wörter, die auf *urteil* enden.  
+→ Wörter, die auf *-urteil* oder *-urt?eil* wie z.B auf *-urtheil* enden.  
                                         <br/>
                                         <em>Beispiel: *Endurtheil* und *Todesurteil*</em>
                                     </li>
                                 </ul>
                             </div>
+                            <a href="https://www.sketchengine.eu/documentation/corpus-querying/" alt="Offizielle Webseite von SketchEngine">Weitere Informationen</a>
                         </div>
                     </div>
                     <div>
