@@ -94,7 +94,7 @@
                                         <code>[lemma="sein" &amp; pos="P.*"]</code>
                                         <br/>→ Treffer ausschließlich für Formen des Pronomens *sein*. (Formen des Verbs *sein* sind z.B. ausgeschlossen) 
                                         <br/>
-                                        <em>Beispiel: *genommen* (von *nehmen*)</em>
+                                        <em>Beispiel: *seiner*, aber nicht *seye*</em>
                                     </li>
                                 </ul>
                             </div>
