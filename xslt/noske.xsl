@@ -118,7 +118,7 @@
                                     <li>
                                         <code> [word=".*urt.*eil"]</code>
                                         <br/>
-→ Wörter, die auf *-urteil* oder *-urt?eil* wie z.B auf *-urtheil* enden.  
+→ Wörter, die auf *-urteil* oder *-urt?eil* (z.B *-urtheil*) enden.  
                                         <br/>
                                         <em>Beispiel: *Endurtheil* und *Todesurteil*</em>
                                     </li>
