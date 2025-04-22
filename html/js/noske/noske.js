@@ -867,9 +867,16 @@ function B(r, e, t, s, o = !1, n = !1, i) {
           .map(
             (w) => {
 				const [key, value] = w.split("=");
-				if (key === "doc.id") {
-				  return `<td class="${i.css?.td || h.td}"><a href="${value}.html">${value}</a></td>`;
+				if (key === "p.id") {
+					// Extract the number after _p_0* using regex
+					const match = value.match(/_p_0*(\d+)$/);
+					const pageNum = match ? match[1] : value;
+					return `<td class="${i.css?.td || h.td}">${pageNum}</td>`;
 				}
+				if (key === "doc.id") {
+					const pidEntry = E.find(e => e.startsWith("p.id="));
+					const pid = pidEntry ? pidEntry.split("=")[1] : "";
+					return `<td class="${i.css?.td || h.td}"><a href="${value}.html#${pid}">${value}</a></td>`;				}
 				return `<td class="${i.css?.td || h.td}">${value}</td>`;
 			  })
 			  .join("");
