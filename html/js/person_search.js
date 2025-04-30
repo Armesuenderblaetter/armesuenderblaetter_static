@@ -86,10 +86,10 @@ search.addWidgets([
                   <td><em>Geburtsort</em></td>
                   <td>${hit.birth_place}</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                   <td><em>Stand</em></td>
                   <td>${hit.type}</td>
-                </tr>
+                </tr> -->
                 <tr>
                   <td><em>Familienstand</em></td>
                   <td>${hit.marriage_status}</td>
@@ -223,10 +223,10 @@ search.addWidgets([
     },*/
   }),
 
-  instantsearch.widgets.refinementList({
-    container: "#type",
-    attribute: "type",
-    searchable: false,
+  //instantsearch.widgets.refinementList({
+  // container: "#type",
+  //  attribute: "type",
+  //  searchable: false,
     /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
@@ -234,7 +234,7 @@ search.addWidgets([
       label: "d-flex align-items-center text-capitalize",
       checkbox: "mr-2",
     },*/
-  }),
+  //}),
 
   instantsearch.widgets.refinementList({
     container: "#marriage_status",
