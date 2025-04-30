@@ -6,18 +6,6 @@ var typesense_search_key = "Bp1ezRAZZC2wMVqH6Xc52cR5fBQdcJij";
 function makeDocLink(hit) {
   return hit.git_file_path;
 }
-function return_html_list(arr) {
-  if (arr.length == 0) {
-    return "–";
-  }
-  let ul = "<ul>";
-  for (i = 0; i < arr.length; ++i) {
-    let li = `<li>${arr[i]}</li>`;
-    ul = ul + li;
-  }
-  ul = ul + "</ul>";
-  return ul;
-}
 
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   server: {
@@ -42,6 +30,33 @@ const search = instantsearch({
   routing: true,
 });
 
+const iiif_server_base_path =
+  "https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/";
+const iiif_attribs = "/full/260,/0/default.jpg";
+function get_iif_link(filename, place) {
+  const placeMap = {
+    "Österreichische Nationalbibliothek": "oenb",
+    "Wiener Museum": "wmW",
+    "Wienbibliothek im Rathaus": "wb"
+  };
+  let placecleaned = placeMap[place] || ""; 
+  let cleaned = filename.replace(/^fb_/, "");
+  return iiif_server_base_path + cleaned + "_a_" + placecleaned + ".jp2" + iiif_attribs;
+}
+
+function return_html_list(arr) {
+  if (arr.length == 0) {
+    return "–";
+  }
+  let ul = "<ul>";
+  for (i = 0; i < arr.length; ++i) {
+    let li = `<li>${arr[i]}</li>`;
+    ul = ul + li;
+  }
+  ul = ul + "</ul>";
+  return ul;
+}
+
 search.addWidgets([
   instantsearch.widgets.searchBox({
     container: "#searchbox",
@@ -65,6 +80,7 @@ search.addWidgets([
         let offences = return_html_list(hit.offences);
         let execution = return_html_list(hit.execution);
         let punishments = return_html_list(hit.punishments);
+        console.log(hit) ; 
         return `
           <a href="${hit.global_id}.html">
             <h5 style="display: block; padding-bottom: 1rem; font-size: 1.2rem;">
@@ -72,6 +88,15 @@ search.addWidgets([
             </h5>
           </a>
           <div class="col align-items-center">
+           <a href="${hit.id}.html">
+              <div class="col">
+                <img
+                  src="${get_iif_link(hit.file_identifier, hit.archives[0])}"
+                  alt="Deckblatt/Erste Seite des Armesünderblattes"
+                  style="height: 21rem; width: auto;"
+                />
+              </div>
+            </a>
             <div class="col">
               <table class="table table-sm">
                 <tr>

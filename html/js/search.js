@@ -48,7 +48,6 @@ search.addWidgets([
       reset: "btn",
     },*/
   }),
-
   instantsearch.widgets.hits({
     container: "#hits",
     /*cssClasses: {
@@ -57,6 +56,7 @@ search.addWidgets([
     templates: {
       empty: "Keine Resultate für <q>{{ query }}</q>",
       item(hit, { html, components }) {
+        console.log(hit) ; 
         console.log(get_iif_link(hit.thumbnail));
         return html`
           <a href="${hit.id}.html">
