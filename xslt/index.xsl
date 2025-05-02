@@ -18,10 +18,7 @@
         <xsl:variable name="doc_title">
             <xsl:value-of select='"Armesünderblätter"'/>
         </xsl:variable>
-
-    
         <html class="h-100">
-    
             <head>
                 <xsl:call-template name="html_head">
                     <xsl:with-param name="html_title" select="$doc_title"></xsl:with-param>
@@ -29,10 +26,19 @@
             </head>            
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
+                <div class="row banner"/>
                 <main class="flex-shrink-0">
                     <div class="container">
                         <h1><xsl:value-of select="$project_short_title"/></h1>
-                        <!-- <h2><xsl:value-of select="$project_title"/></h2> -->
+                        <xsl:apply-templates select=".//tei:body" />
+                        <p>
+                            <a>
+                                <xsl:attribute name="href">
+                                    <xsl:value-of select="'toc.html'"/>
+                                </xsl:attribute>
+                                Weiter…
+                            </a>
+                        </p>
                     </div>
                 </main>
                 <xsl:call-template name="html_footer"/>
