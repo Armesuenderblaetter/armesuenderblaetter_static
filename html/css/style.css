@@ -15,7 +15,7 @@ html {
 
 .row.banner {
 	background: url('../images/banner.jpg') repeat-x;
-	min-height: 17vh;
+	min-height: 20vh;
     width: 100% ;
 	margin: 0;
 }
@@ -88,6 +88,13 @@ div ul.ais-RefinementList-list {
 }
 
 
+.navbar {
+    background-color: #c7c3bb!important;
+}
+
+.navbar * {
+    background-color: #c7c3bb;
+}
 div.icon_desc {
     padding: 1rem;
     background-color: rgb(180, 180, 180);
