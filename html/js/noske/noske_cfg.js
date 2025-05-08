@@ -26,7 +26,7 @@ search.search({
     corpname: "flugblaetter",
     attrs: "word,lemma,pos,vocab,id",
     structs: "doc,head,p,lg,l,placeName,quote,bibl,persName,date,cit,g",
-    refs: "doc.id,l.id,p.id,placeName.id,persName.id,date.id,doc.title,doc.delinquent_sexes,doc.attrs,lg.type",
+    refs: "doc.id,l.id,p.id,placeName.id,persName.id,date.id,doc.title,doc.attrs,lg.type",
     kwicrightctx: "45#",
     kwicleftctx: "45#",
     pagesize: 10,
@@ -41,8 +41,7 @@ search.search({
       "persName.id": "Personen-id",
       "date.id": "Datum",
       "doc.title": "Titel",
-      "doc.delinquent_sexes": "Geschlecht",
-      "doc.attrs,lg.type": "Eigenheiten",
+      "lg.type": "Eigenheiten",
     },
     css: {
       table: "noske-hits-table",

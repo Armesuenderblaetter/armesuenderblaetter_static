@@ -844,9 +844,9 @@ function B(r, e, t, s, o = !1, n = !1, i) {
 		</div>
 		`;
   let u = document.querySelector("#hits-table-body");
-  var c = `<th class="${i.css?.th || h.th}">Left KWIC</th>
-							<th class="${i.css?.th || h.th}">Context</th>
-							<th class="${i.css?.th || h.th}">Right KWIC</th>`,
+  var c = `<th class="${i.css?.th || h.th}">Linker Kotext</th>
+							<th class="${i.css?.th || h.th}">Stichwort</th>
+							<th class="${i.css?.th || h.th}">Rechter Kotext</th>`,
     f = "";
   let x = r
       .map((m) => {
@@ -859,11 +859,11 @@ function B(r, e, t, s, o = !1, n = !1, i) {
           J = O(E, !1),
           j = s.endsWith("/") ? s : s + "/";
 		  const labels = i.labels || {};
-		  f = E.filter(w => w.length > 0).map(w => {
-			const key = w.split("=")[0];
-			return `<th class="${i.css?.th || h.th}">${labels[key] || key}</th>`;
-		  }).join("");
-        let V = E.filter((w) => w.length > 0)
+		  f = E.filter(w => w.length > 0 && !w.startsWith("doc.delinquent_sexes=")).map(w => {
+        const key = w.split("=")[0];
+        return `<th class="${i.css?.th || h.th}">${labels[key] || key}</th>`;
+      }).join("");
+        let V = E.filter((w) => w.length > 0  && !w.startsWith("doc.delinquent_sexes="))
           .map(
             (w) => {
 				const [key, value] = w.split("=");
