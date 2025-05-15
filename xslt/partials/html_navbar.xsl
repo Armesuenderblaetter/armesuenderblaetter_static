@@ -3,12 +3,13 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:tei="http://www.tei-c.org/ns/1.0"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="#all" version="2.0">
+    <xsl:variable name="fraktur_title" select="'Armeſünderblätter'"/>
     <xsl:template match="/" name="nav_bar">
         <header>
             <nav class="navbar navbar-expand-lg bg-body-tertiary">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="index.html">
-                        <xsl:value-of select="$project_short_title"/>
+                    <a class="navbar-brand fraktur" href="index.html">
+                        <xsl:value-of select="$fraktur_title"/>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -91,5 +92,6 @@
                 </div>
             </nav>
         </header>
+        <script src="https://use.edgefonts.net/unifrakturmaguntia.js" />
     </xsl:template>
 </xsl:stylesheet>

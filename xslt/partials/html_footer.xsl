@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" exclude-result-prefixes="#all" version="2.0">
+    <xsl:param name="showBanner" select="''"/>
     <xsl:template match="/" name="html_footer">
         <footer class="footer mt-auto py-3 bg-body-tertiary">
+            <div>
+            <xsl:attribute name="class">
+                <xsl:text>row banner </xsl:text>
+                <xsl:value-of select="$showBanner"/>
+            </xsl:attribute>
+        </div>
             <div class="wrapper" id="wrapper-footer-full">
                 <div class="container" id="footer-full-content" tabindex="-1">
                     <div class="footer-separator">

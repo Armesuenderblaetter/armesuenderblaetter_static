@@ -9,6 +9,8 @@
     
     <xsl:output encoding="UTF-8" media-type="text/html" method="html" version="5.0" indent="yes" omit-xml-declaration="yes"/>
     
+    <xsl:param name="showBanner" select="'showBanner'"/>
+
 
     <xsl:import href="./partials/html_head.xsl"/>
     <xsl:import href="./partials/html_navbar.xsl"/>
@@ -26,7 +28,6 @@
             </head>            
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
-                <div class="row banner"/>
                 <main class="flex-shrink-0">
                     <div class="container">
                         <h1><xsl:value-of select="$project_short_title"/></h1>
