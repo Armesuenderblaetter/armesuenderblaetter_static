@@ -38,10 +38,9 @@
                         <table class="table" id="myTable">
                             <thead>
                                 <tr>
-                                    <th scope="col" width="20" tabulator-formatter="html" tabulator-headerSort="false" tabulator-download="false">#</th>
-                                    <th scope="col" tabulator-headerFilter="input">Titel</th>
+                                    <th scope="col" tabulator-headerFilter="input"  tabulator-formatter="html" tabulator-download="false" tabulator-headerSort="false" >Titel</th>
                                     <th scope="col" tabulator-headerFilter="input">Datum</th>
-                                    <th scope="col" tabulator-headerFilter="input">Dateinname</th>
+                                    <th scope="col" tabulator-headerFilter="input">Dateiname</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -58,12 +57,8 @@
                                                   select="replace(tokenize($full_path, '/')[last()], '.xml', '.html')"
                                                   />
                                                 </xsl:attribute>
-                                                <i class="bi bi-link-45deg"/>
+						 <xsl:value-of select=".//tei:titleStmt/tei:title[1]/text()"/>
                                             </a>
-                                        </td>
-                                        <td>
-                                            <xsl:value-of
-                                                select=".//tei:titleStmt/tei:title[1]/text()"/>
                                         </td>
                                         <xsl:variable name="eventDate" select="(.//tei:event[@type='execution' or @type='verdict']/tei:desc/tei:date)[1]" />
                                         <td>
