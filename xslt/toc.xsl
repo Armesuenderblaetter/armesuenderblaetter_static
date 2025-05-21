@@ -18,7 +18,7 @@
 
 
     <xsl:template match="/">
-        <xsl:variable name="doc_title" select="'Inhaltsverzeichnis'"/>
+        <xsl:variable name="doc_title" select="'Übersicht'"/>
 
 
     
@@ -34,7 +34,7 @@
             <xsl:call-template name="nav_bar"/>
                 <main>
                     <div class="container">
-                        <h1>Inhaltsverzeichnis</h1>
+                        <h1>Übersicht</h1>
                         <table class="table" id="myTable">
                             <thead>
                                 <tr>
