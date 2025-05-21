@@ -3,9 +3,9 @@
     --editor-font-color: grey;
     --variant-marker-color: rgb(203, 231, 255);
     --catch-offset-right: -75%;
-    --asb-banner-colour: #c7c3bb;
+    --asb-banner-colour: #ebe7de;
 }
-
+ebe7de
 #myTable {
 	display: none ;
 }
@@ -14,13 +14,34 @@ html {
     scroll-padding-top: 2rem;
 }
 
-.row.banner {
+.separator{
+    margin-top: auto!important;
+    min-width: 10vh; 
+}
+
+.showBanner {
 	background: url('../images/banner.jpg') repeat-x;
-	min-height: 20vh;
+    background-size: contain;
+	height: 15vh;
     width: 100% ;
 	margin: 0;
 }
 
+.footer{
+    margin-top: auto!important;
+    background-color: var(--asb-banner-colour)!important;
+}
+
+@font-face {
+    font-family: 'Fraktur';
+    font-style: normal;
+    font-weight: normal;
+    src: url('../fonts/UnifrakturMaguntia-Book.woff') ;
+  }
+
+.fraktur{
+    font-family: Fraktur; 
+}
 
 div#searchPage {
     padding: 2rem;
@@ -37,6 +58,9 @@ div#searchContainer>div {
     border-radius: 15px;
 }
 
+
+
+}
 div#searchContainer div.col-3>div {
     padding-bottom: 2rem;
 }
@@ -90,12 +114,15 @@ div ul.ais-RefinementList-list {
 
 
 .navbar {
-    background-color: #c7c3bb!important;
+    background-color: var(--asb-banner-colour)!important;
+    
 }
 
 .navbar * {
-    background-color: #c7c3bb;
+    background-color: var(--asb-banner-colour);
+    var(--asb-banner-colour)!important, rgba(var(--bs-tertiary-bg-rgb),var(--bs-bg-opacity)) !important ;
 }
+
 div.icon_desc {
     padding: 1rem;
     background-color: rgb(180, 180, 180);
