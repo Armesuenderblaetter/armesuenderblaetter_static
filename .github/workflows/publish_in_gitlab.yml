@@ -43,8 +43,9 @@ jobs:
       run: |
         ls -la json
         grep -R "archives" ./json | wc -l
-        python ./pyscripts/setup_typesense.py
-        python ./pyscripts/setup_person_typesense.py
+        ./pyscripts/reverse_name.py ./json/persons.json
+        ./pyscripts/setup_typesense.py
+        ./pyscripts/setup_person_typesense.py
     - name: denormalize
       run: |
         ./shellscripts/denormalize_indices.sh
