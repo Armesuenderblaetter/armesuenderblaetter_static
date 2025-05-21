@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet 
-    xmlns="http://www.w3.org/1999/xhtml"
+<xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:tei="http://www.tei-c.org/ns/1.0"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:local="http://dse-static.foo.bar"
-    version="2.0" exclude-result-prefixes="xsl tei xs local">
-    
+    xmlns:local="http://dse-static.foo.bar" version="2.0" exclude-result-prefixes="xsl tei xs local">
+
     <xsl:output encoding="UTF-8" media-type="text/html" method="html" version="5.0" indent="yes" omit-xml-declaration="yes"/>
-    
-    
+
+
     <xsl:import href="partials/html_navbar.xsl"/>
     <xsl:import href="partials/html_head.xsl"/>
     <xsl:import href="partials/html_footer.xsl"/>
@@ -21,53 +19,95 @@
         <xsl:variable name="doc_title" select="'Übersicht'"/>
 
 
-    
+
         <html class="h-100">
-    
+
             <head>
                 <xsl:call-template name="html_head">
                     <xsl:with-param name="html_title" select="$doc_title"></xsl:with-param>
                 </xsl:call-template>
             </head>
-            
+
             <body class="d-flex flex-column h-100">
-            <xsl:call-template name="nav_bar"/>
+                <xsl:call-template name="nav_bar"/>
                 <main>
                     <div class="container">
                         <h1>Übersicht</h1>
                         <table class="table" id="myTable">
                             <thead>
                                 <tr>
-                                    <th scope="col" tabulator-headerFilter="input"  tabulator-formatter="html" tabulator-download="false" tabulator-headerSort="false" >Titel</th>
+                                    <th scope="col" tabulator-headerFilter="input" tabulator-formatter="html" tabulator-download="false" tabulator-headerSort="false">Titel</th>
                                     <th scope="col" tabulator-headerFilter="input">Datum</th>
                                     <th scope="col" tabulator-headerFilter="input">Dateiname</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <xsl:for-each
-                                    select="collection('../data/editions?select=*.xml')//tei:TEI">
+                                <xsl:for-each select="collection('../data/editions?select=*.xml')[not(matches(document-uri(.), '/fb_'))]//tei:TEI">
                                     <xsl:variable name="full_path">
                                         <xsl:value-of select="document-uri(/)"/>
                                     </xsl:variable>
+
                                     <tr>
                                         <td>
                                             <a>
                                                 <xsl:attribute name="href">
-                                                  <xsl:value-of
-                                                  select="replace(tokenize($full_path, '/')[last()], '.xml', '.html')"
-                                                  />
+                                                    <xsl:value-of select="replace(tokenize($full_path, '/')[last()], '.xml', '.html')" />
                                                 </xsl:attribute>
-						 <xsl:value-of select=".//tei:titleStmt/tei:title[1]/text()"/>
+                                                <xsl:value-of select=".//tei:titleStmt/tei:title[1]/text()"/>
                                             </a>
                                         </td>
-                                        <xsl:variable name="eventDate" select="(.//tei:event[@type='execution' or @type='verdict']/tei:desc/tei:date)[1]" />
+                                        <xsl:variable name="eventDate">
+                                            <xsl:choose>
+                                                <xsl:when test=".//tei:event[@type='execution']/tei:desc/tei:date/text()">
+                                                    <xsl:value-of select="(.//tei:event[@type='execution']/tei:desc/tei:date/text())[1]" />
+                                                </xsl:when>
+                                                <xsl:when test=".//tei:event[@type='verdict']/tei:desc/tei:date/text()">
+                                                    <xsl:value-of select="(.//tei:event[@type='verdict']/tei:desc/tei:date/text())[1]" />
+                                                </xsl:when>
+                                                <xsl:when test=".//tei:event[@type='offence']/tei:desc/tei:date/text()">
+                                                    <xsl:value-of select="(.//tei:event[@type='offence']/tei:desc/tei:date/text())[1]" />
+                                                </xsl:when>
+                                                <xsl:when test=".//tei:event/tei:desc/tei:date/text()">
+                                                    <xsl:value-of select="(.//tei:event/tei:desc/tei:date/text())[1]" />
+                                                </xsl:when>
+                                                <xsl:otherwise>
+                                                    <xsl:value-of select="(.//tei:date/text())[1]" />
+                                                </xsl:otherwise>
+                                            </xsl:choose>
+                                        </xsl:variable>
+                                        <xsl:variable name="eventDateSort">
+                                            <xsl:choose>
+                                                <xsl:when test=".//tei:event[@type='execution']/tei:desc/tei:date/@when">
+                                                    <xsl:value-of select="(.//tei:event[@type='execution']/tei:desc/tei:date/@when)[1]" />
+                                                </xsl:when>
+                                                <xsl:when test=".//tei:event[@type='verdict']/tei:desc/tei:date/@when">
+                                                    <xsl:value-of select="(.//tei:event[@type='verdict']/tei:desc/tei:date/@when)[1]" />
+                                                </xsl:when>
+                                                <xsl:when test=".//tei:event[@type='offence']/tei:desc/tei:date/@when">
+                                                    <xsl:value-of select="(.//tei:event[@type='offence']/tei:desc/tei:date/@when)[1]" />
+                                                </xsl:when>
+                                                <xsl:when test=".//tei:event/tei:desc/tei:date/@when">
+                                                    <xsl:value-of select="(.//tei:event/tei:desc/tei:date/@when)[1]" />
+                                                </xsl:when>
+                                                <xsl:otherwise>
+                                                    <xsl:value-of select="(.//tei:date/@when)[1]" />
+                                                </xsl:otherwise>
+                                            </xsl:choose>
+                                        </xsl:variable>
                                         <td>
                                             <xsl:attribute name="tabulator-data-sort">
-                                                <xsl:value-of select="(.//tei:event[@type='execution' or @type='verdict' or @type='offence' or not(@type='execution' or @type='verdict' or @type='offence') or not(type)]/tei:desc/tei:date)[1]" />
+                                                <xsl:choose>
+                                                    <xsl:when test="$eventDateSort">
+                                                        <xsl:value-of select="$eventDateSort" />
+                                                    </xsl:when>
+                                                    <xsl:otherwise>
+                                                        <xsl:value-of select="'k.A.'" />
+                                                    </xsl:otherwise>
+                                                </xsl:choose>
                                             </xsl:attribute>
                                             <xsl:choose>
                                                 <xsl:when test="$eventDate">
-                                                    <xsl:value-of select="$eventDate/text()" />
+                                                    <xsl:value-of select="$eventDate" />
                                                 </xsl:when>
                                                 <xsl:otherwise>
                                                     <xsl:text>k.A.</xsl:text>
@@ -75,8 +115,7 @@
                                             </xsl:choose>
                                         </td>
                                         <td>
-                                            <xsl:value-of select="tokenize($full_path, '/')[last()]"
-                                            />
+                                            <xsl:value-of select="tokenize($full_path, '/')[last()]" />
                                         </td>
                                     </tr>
                                 </xsl:for-each>
