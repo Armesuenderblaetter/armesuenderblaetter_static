@@ -37,7 +37,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col" tabulator-headerFilter="input" tabulator-formatter="html" tabulator-download="false" tabulator-headerSort="false">Titel</th>
-                                    <th scope="col" tabulator-headerFilter="input">Datum</th>
+                                    <th scope="col" tabulator-data="eventDate" tabulator-headerFilter="input">Datum</th>
                                     <th scope="col" tabulator-headerFilter="input">Dateiname</th>
                                 </tr>
                             </thead>
@@ -75,7 +75,7 @@
                                                 </xsl:otherwise>
                                             </xsl:choose>
                                         </xsl:variable>
-                                        <xsl:variable name="eventDateSort">
+                                        <xsl:variable name="rawDate">
                                             <xsl:choose>
                                                 <xsl:when test=".//tei:event[@type='execution']/tei:desc/tei:date/@when">
                                                     <xsl:value-of select="(.//tei:event[@type='execution']/tei:desc/tei:date/@when)[1]" />
@@ -94,6 +94,30 @@
                                                 </xsl:otherwise>
                                             </xsl:choose>
                                         </xsl:variable>
+
+                                        <xsl:variable name="eventDateSort">
+                                            <xsl:choose>
+                                                <!-- yyyy -->
+                                                <xsl:when test="matches($rawDate, '^\d{4}$')">
+                                                    <xsl:value-of select="concat($rawDate, '-01-01')" />
+                                                </xsl:when>
+
+                                                <!-- yyyy-mm -->
+                                                <xsl:when test="matches($rawDate, '^\d{4}-\d{2}$')">
+                                                    <xsl:value-of select="concat($rawDate, '-01')" />
+                                                </xsl:when>
+
+                                                <!-- already yyyy-mm-dd -->
+                                                <xsl:when test="matches($rawDate, '^\d{4}-\d{2}-\d{2}$')">
+                                                    <xsl:value-of select="$rawDate" />
+                                                </xsl:when>
+
+                                                <!-- fallback -->
+                                                <xsl:otherwise>
+                                                    <xsl:text>0000-00-00</xsl:text>
+                                                </xsl:otherwise>
+                                            </xsl:choose>
+                                        </xsl:variable>
                                         <td>
                                             <xsl:attribute name="tabulator-data-sort">
                                                 <xsl:choose>
@@ -101,7 +125,7 @@
                                                         <xsl:value-of select="$eventDateSort" />
                                                     </xsl:when>
                                                     <xsl:otherwise>
-                                                        <xsl:value-of select="'k.A.'" />
+                                                        1900-01-01
                                                     </xsl:otherwise>
                                                 </xsl:choose>
                                             </xsl:attribute>
