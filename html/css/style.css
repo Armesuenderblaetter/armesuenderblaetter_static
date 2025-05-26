@@ -5,7 +5,7 @@
     --catch-offset-right: -75%;
     --asb-banner-colour: #e6e2d7;
 }
-ebe7de
+
 #myTable {
 	display: none ;
 }
@@ -40,7 +40,11 @@ html {
   }
 
 .fraktur{
-    font-family: Fraktur; 
+    font-family: Bold; 
+}
+
+.smallcaps {
+  font-variant: small-caps;
 }
 
 div#searchPage {
