@@ -81,7 +81,6 @@ search.addWidgets([
         let offences = return_html_list(hit.offences);
         let execution = return_html_list(hit.execution);
         let punishments = return_html_list(hit.punishments);
-        console.log(hit) ; 
         return `
           <a href="${hit.global_id}.html">
             <h5 style="display: block; padding-bottom: 1rem; font-size: 1.2rem;">
