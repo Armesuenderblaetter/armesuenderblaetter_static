@@ -38,7 +38,7 @@
                                 <tr>
                                     <th scope="col" tabulator-headerFilter="input" tabulator-formatter="html" tabulator-download="false" tabulator-headerSort="false">Titel</th>
                                     <th scope="col" tabulator-data="eventDate" tabulator-headerFilter="input">Datum</th>
-                                    <th scope="col" tabulator-headerFilter="input">Dateiname</th>
+                                    <!-- <th scope="col" tabulator-headerFilter="input">Dateiname</th> -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -141,9 +141,9 @@
                                                 </xsl:otherwise>
                                             </xsl:choose>
                                         </td>
-                                        <td>
+                                        <!-- <td>
                                             <xsl:value-of select="tokenize($full_path, '/')[last()]" />
-                                        </td>
+                                        </td> -->
                                     </tr>
                                 </xsl:for-each>
                             </tbody>
