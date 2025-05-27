@@ -61,17 +61,20 @@
                                                 <xsl:when test=".//tei:event[@type='execution']/tei:desc/tei:date/@when">
                                                     <xsl:value-of select="(.//tei:event[@type='execution']/tei:desc/tei:date/@when)[1]" />
                                                 </xsl:when>
-                                                <xsl:when test=".//tei:event[@type='verdict']/tei:desc/tei:date/text()">
-                                                    <xsl:value-of select="(.//tei:event[@type='verdict']/tei:desc/tei:date/text())[1]" />
+                                                <xsl:when test=".//tei:event[@type='verdict']/tei:desc/tei:date/@when">
+                                                    <xsl:value-of select="(.//tei:event[@type='verdict']/tei:desc/tei:date/@when)[1]" />
                                                 </xsl:when>
-                                                <xsl:when test=".//tei:event[@type='offence']/tei:desc/tei:date/text()">
-                                                    <xsl:value-of select="(.//tei:event[@type='offence']/tei:desc/tei:date/text())[1]" />
+                                                <xsl:when test=".//tei:event[@type='offence']/tei:desc/tei:date/@when">
+                                                    <xsl:value-of select="(.//tei:event[@type='offence']/tei:desc/tei:date/@when)[1]" />
                                                 </xsl:when>
                                                 <xsl:when test=".//tei:event/tei:desc/tei:date/@when">
                                                     <xsl:value-of select="(.//tei:event/tei:desc/tei:date/@when)[1]" />
                                                 </xsl:when>
+                                                <xsl:when test=".//tei:date/@when">
+                                                    <xsl:value-of select="(.//tei:date/@when)[1]" />
+                                                </xsl:when>
                                                 <xsl:otherwise>
-                                                    <xsl:value-of select="(.//tei:date/text())[1]" />
+                                                    <xsl:value-of select="substring(tokenize($full_path, '/')[last()], 1, 4)" />
                                                 </xsl:otherwise>
                                             </xsl:choose>
                                         </xsl:variable>
