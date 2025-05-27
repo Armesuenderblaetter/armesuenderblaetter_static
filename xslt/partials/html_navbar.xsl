@@ -92,6 +92,6 @@
                 </div>
             </nav>
         </header>
-        <script src="https://use.edgefonts.net/unifrakturmaguntia.js" />
+        <!-- <script src="https://use.edgefonts.net/unifrakturmaguntia.js" /> -->
     </xsl:template>
 </xsl:stylesheet>
