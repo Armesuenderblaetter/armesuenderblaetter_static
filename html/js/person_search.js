@@ -33,6 +33,7 @@ const search = instantsearch({
 const iiif_server_base_path =
   "https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/";
 const iiif_attribs = "/full/260,/0/default.jpg";
+
 function get_iif_link(filename, place) {
   const placeMap = {
     "Österreichische Nationalbibliothek": "oenb",
@@ -91,13 +92,12 @@ search.addWidgets([
            <a href="${hit.id}.html">
               <div class="col" >
                 <img
-                  src="${get_iif_link(hit.file_identifier, hit.archives[0])}"
+                  src="${iiif_server_base_path + hit.thumbnail + iiif_attribs}"
                   alt="Deckblatt/Erste Seite des Armesünderblattes"
-                  style="width:40%;height:auto;"
+                  style="width:%;height:auto;"
                 />
                 <!-- https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17660523_JosephSt_a_wb.jp2/full/260,/0/default.jpg
                 https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17660523_JosephSt_a_.jp2/full/260,/0/default.jpg --> 
-                ${get_iif_link(hit.file_identifier, hit.archives[0])}
               </div>
             </a>
             <div class="col">
