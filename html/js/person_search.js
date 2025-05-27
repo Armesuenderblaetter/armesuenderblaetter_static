@@ -93,10 +93,8 @@ search.addWidgets([
                 <img
                   src="${iiif_server_base_path + hit.thumbnail + iiif_attribs}"
                   alt="Deckblatt/Erste Seite des Armesünderblattes"
-                  style="width:%;height:auto;"
+                  style="width:40%;height:auto;"
                 />
-                <!-- https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17660523_JosephSt_a_wb.jp2/full/260,/0/default.jpg
-                https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17660523_JosephSt_a_.jp2/full/260,/0/default.jpg --> 
               </div>
             </a>
             <div class="col">
