@@ -42,7 +42,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <xsl:for-each select="collection('../data/editions?select=*.xml')[not(matches(document-uri(.), '/fb_'))]//tei:TEI">
+                                <!-- <xsl:for-each select="collection('../data/editions?select=*.xml')[not(matches(document-uri(.), '/fb_'))]//tei:TEI"> -->
+                                <xsl:for-each select="collection('../data/editions?select=*.xml')[matches(document-uri(.), '/fb_')]//tei:TEI">
                                     <xsl:variable name="full_path">
                                         <xsl:value-of select="document-uri(/)"/>
                                     </xsl:variable>
