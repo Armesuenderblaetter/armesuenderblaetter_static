@@ -4,6 +4,7 @@
     --variant-marker-color: rgb(203, 231, 255);
     --catch-offset-right: -75%;
     --asb-banner-colour: #e6e2d7;
+    --asb-background-colour: #b6b2a7;
 }
 
 #myTable {
@@ -64,7 +65,6 @@ div#searchContainer>div {
 
 
 
-}
 div#searchContainer div.col-3>div {
     padding-bottom: 2rem;
 }
@@ -551,3 +551,19 @@ dd {
 	}
 
 }
+
+
+.dropdown-item:active,  .dropdown-item:hover{
+    background-color: var(--asb-background-colour)!important;
+    color: black!important;
+}
+
+.dropdown-item:active {
+      font-weight: bold;
+}
+
+.dropdown-item:active,  .dropdown-item:hover{
+    background-color: var(--asb-background-colour)!important;
+    color: black!important;
+}
+
