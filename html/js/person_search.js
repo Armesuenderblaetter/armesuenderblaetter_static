@@ -93,7 +93,7 @@ search.addWidgets([
                 <img
                   src="${iiif_server_base_path + hit.thumbnail + iiif_attribs}"
                   alt="Deckblatt/Erste Seite des Armesünderblattes"
-                  style="width:40%;height:auto;"
+                  style="max-width:80%;height:auto;"
                 />
               </div>
             </a>
