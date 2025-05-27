@@ -11,6 +11,9 @@
     <xsl:import href="./partials/aot-options.xsl"/>
     <xsl:import href="./partials/osd-container.xsl"/>
     <xsl:import href="./partials/witness_tabs.xsl"/>
+    <xsl:variable name="full_path">                                                                                                                                                                                            
+        <xsl:value-of select="document-uri(/)"/>
+    </xsl:variable>
     <xsl:variable name="prev">
         <xsl:value-of select="replace(tokenize(data(tei:TEI/@prev), '/')[last()], '.xml', '.html')"
         />
@@ -20,7 +23,8 @@
         />
     </xsl:variable>
     <xsl:variable name="teiSource">
-        <xsl:value-of select="data(tei:TEI/@xml:id)"/>
+        <!-- <xsl:value-of select="replace(data(tei:TEI/@xml:id), '.html', '.xml')"/> -->
+        <xsl:value-of select="tokenize($full_path, '/')[last()]" />
     </xsl:variable>
     <xsl:variable name="link">
         <xsl:value-of select="replace($teiSource, '.xml', '.html')"/>
