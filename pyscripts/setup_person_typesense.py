@@ -36,6 +36,7 @@ current_typesense_schema = {
         {"name": "file_identifier", "type": "string", "facet": False},
         {"name": "archives", "type": "string[]", "facet": False},
         {"name": "id", "type": "string", "facet": False},
+        {"name": "thumbnail", "type": "string"},
     ]
 }
 
