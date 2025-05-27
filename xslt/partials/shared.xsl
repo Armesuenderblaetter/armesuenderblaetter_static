@@ -418,6 +418,11 @@
                         <xsl:text>section_divider </xsl:text>
                         <!--Horizontale Linie-->
                     </xsl:when>
+                    <xsl:when test=". = 'sc'">
+                        <xsl:text>smallcaps </xsl:text>
+                        <!--Horizontale Linie-->
+                    </xsl:when>
+
                 </xsl:choose>
             </xsl:for-each>
         </xsl:if>
