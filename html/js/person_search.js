@@ -89,12 +89,15 @@ search.addWidgets([
           </a>
           <div class="col align-items-center">
            <a href="${hit.id}.html">
-              <div class="col">
+              <div class="col" >
                 <img
                   src="${get_iif_link(hit.file_identifier, hit.archives[0])}"
                   alt="Deckblatt/Erste Seite des Armesünderblattes"
-                  style="height: 21rem; width: auto;"
+                  style="width:40%;height:auto;"
                 />
+                <!-- https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17660523_JosephSt_a_wb.jp2/full/260,/0/default.jpg
+                https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17660523_JosephSt_a_.jp2/full/260,/0/default.jpg --> 
+                ${get_iif_link(hit.file_identifier, hit.archives[0])}
               </div>
             </a>
             <div class="col">
