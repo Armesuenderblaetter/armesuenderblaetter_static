@@ -64,11 +64,13 @@
            $alt_doc//tei:date/@when,
            substring(tokenize($alt_path, '/')[last()], 1, 4)
           )[1]" />
-                                        <xsl:variable name="rawDate" select="($alt_doc//tei:event[@type='execution']/tei:desc/tei:date/@when, $alt_doc//tei:event[@type='verdict']/tei:desc/tei:date/@when, $alt_doc//tei:event[@type='offence']/tei:desc/tei:date/@when,
-           $alt_doc//tei:event/tei:desc/tei:date/@when,
-           $alt_doc//tei:date/@when,
+                                        <xsl:variable name="rawDate" select="($alt_doc//tei:event[@type='execution']/tei:desc/tei:date/text(), $alt_doc//tei:event[@type='verdict']/tei:desc/tei:date/text(), $alt_doc//tei:event[@type='offence']/tei:desc/tei:date/text(),
+           $alt_doc//tei:event/tei:desc/tei:date/text(),
+           $alt_doc//tei:date/@text(),
            substring(tokenize($alt_path, '/')[last()], 1, 4)
           )[1]" />
+          <xsl:variable name="filename" select="tokenize($full_path, '/')[last()]" />
+          <xsl:variable name="ymd" select="replace($filename, '^fb_(\d{4})(\d{2})(\d{2}).*$', '$1-$2-$3')" />
                                         <xsl:variable name="eventDateSort">
                                             <xsl:choose>
                                                 <!-- yyyy -->
@@ -85,7 +87,6 @@
                                                 <xsl:when test="matches($rawDate, '^\d{4}-\d{2}-\d{2}$')">
                                                     <xsl:value-of select="$rawDate" />
                                                 </xsl:when>
-
                                                 <!-- fallback -->
                                                 <xsl:otherwise>
                                                     <xsl:text>0000-00-00</xsl:text>
@@ -96,19 +97,26 @@
                                             <xsl:attribute name="tabulator-data-sort">
                                                 <xsl:choose>
                                                     <xsl:when test="$eventDateSort">
-                                                        <xsl:value-of select="$eventDateSort" />
+                                                        <xsl:value-of select="$ymd" />
                                                     </xsl:when>
                                                     <xsl:otherwise>
-                                                        1900-01-01
+                                                        <xsl:value-of select="$eventDateSort" />
                                                     </xsl:otherwise>
                                                 </xsl:choose>
                                             </xsl:attribute>
                                             <xsl:choose>
-                                                <xsl:when test="$eventDate">
-                                                    <xsl:value-of select="$eventDate" />
+                                                <xsl:when test="$ymd">
+                                                        <xsl:choose>
+                                                            <xsl:when test="matches($ymd, '^\d{4}-00-00$')">
+                                                                <xsl:value-of select="substring($ymd, 1, 4)" />
+                                                            </xsl:when>
+                                                            <xsl:otherwise>
+                                                                <xsl:value-of select="$ymd" />
+                                                            </xsl:otherwise>
+                                                        </xsl:choose>
                                                 </xsl:when>
                                                 <xsl:otherwise>
-                                                    <xsl:text>k.A.</xsl:text>
+                                                    <xsl:value-of select="$eventDate" />
                                                 </xsl:otherwise>
                                             </xsl:choose>
                                         </td>
