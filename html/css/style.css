@@ -4,6 +4,7 @@
     --variant-marker-color: rgb(203, 231, 255);
     --catch-offset-right: -75%;
     --asb-banner-colour: #e6e2d7;
+     --asb-link-colour: #767267;
     --asb-background-colour: #b6b2a7;
 }
 
@@ -196,7 +197,11 @@ span.pb.primary {
     text-decoration: none;
     cursor: pointer;
   }
-  
+
+a {
+    color: var(--asb-link-colour);
+}
+
 a.variant_anchor_link {
     background-color: var(--variant-marker-color);
     border-radius: 6px;
