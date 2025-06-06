@@ -87,17 +87,18 @@ search.addWidgets([
               ${hit.fullname}
             </h5>
           </a>
-          <div class="col align-items-center">
-           <a href="${hit.id}.html">
-              <div class="col" >
-                <img
-                  src="${iiif_server_base_path + hit.thumbnail + iiif_attribs}"
-                  alt="Deckblatt/Erste Seite des Armesünderblattes"
-                  style="max-width:80%;height:auto;"
-                />
-              </div>
-            </a>
-            <div class="col">
+          <div class="row">
+            <div class="col-md-12 col-3  align-items-center">
+              <a href="${hit.id}.html">
+                <div class="col" >
+                  <img
+                    src="${iiif_server_base_path + hit.thumbnail + iiif_attribs}"
+                    alt="Deckblatt/Erste Seite des Armesünderblattes"
+                    style="max-width:80%;height:auto;" />
+                </div>
+              </a>
+            </div>
+            <div class="col-md-12 col-8">
               <table class="table table-sm">
                 <tr>
                   <td><em>Geschlecht</em></td>
