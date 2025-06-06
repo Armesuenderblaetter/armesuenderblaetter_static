@@ -20,7 +20,7 @@
                         <xsl:value-of select="$doc_title"/>
                     </h1>
                     <div id="searchContainer" class="row">
-                        <div class="col-2">
+                        <div class="col-lg-2 col-12">
                             <h4>Name</h4>
                             <div id="searchbox"></div>
                             <div id="name_list"/>
@@ -47,7 +47,7 @@
                             <div id="sort-by"></div>
                             <div id="clear-refinements"></div>
                         </div>
-                        <div class="col-9">
+                        <div class="col-lg-9 col-12">
                             <div>
                                 <div class="d-flex flex-column align-items-center" id="current-refinements"></div>
                             </div>
