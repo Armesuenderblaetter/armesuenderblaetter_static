@@ -83,7 +83,7 @@ search.addWidgets([
         let punishments = return_html_list(hit.punishments);
         return `
           <a href="${hit.global_id}.html">
-            <h5 style="display: block; padding-bottom: 1rem; font-size: 1.2rem;">
+            <h5 style="display: block; padding-bottom: 1rem; font-size: 1.2rem">
               ${hit.fullname}
             </h5>
           </a>

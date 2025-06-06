@@ -31,11 +31,14 @@
                 <main class="flex-shrink-0">
                     <div class="container">
                         <h1><xsl:value-of select="$project_short_title"/></h1>
+                        <div class="image">
+                            <img src="images/vienna.png" alt="Cover Image" class="img-fluid"/>
+                        </div>
                         <xsl:apply-templates select=".//tei:body" />
                         <p>
                             <a>
                                 <xsl:attribute name="href">
-                                    <xsl:value-of select="'toc.html'"/>
+                                    <xsl:value-of select="'about.html'"/>
                                 </xsl:attribute>
                                 Weiter…
                             </a>
