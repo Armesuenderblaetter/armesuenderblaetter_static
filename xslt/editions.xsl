@@ -38,7 +38,7 @@
         </div>
     </xsl:template>
     <xsl:template match="/">
-        <html class="h-100">
+        <html class="h-100" lang="de">
             <head>
                 <xsl:call-template name="html_head">
                     <xsl:with-param name="html_title" select="$doc_title"/>

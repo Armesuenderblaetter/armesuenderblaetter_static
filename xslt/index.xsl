@@ -20,7 +20,7 @@
         <xsl:variable name="doc_title">
             <xsl:value-of select='"Armesünderblätter"'/>
         </xsl:variable>
-        <html class="h-100">
+        <html class="h-100" lang="de">
             <head>
                 <xsl:call-template name="html_head">
                     <xsl:with-param name="html_title" select="$doc_title"></xsl:with-param>

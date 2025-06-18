@@ -18,7 +18,7 @@
         <xsl:variable name="doc_title">
             <xsl:value-of select=".//tei:titleStmt/tei:title[1]/text()"/>
         </xsl:variable>
-        <html  class="h-100">
+        <html class="h-100" lang="de">
             
             <head>
                 <xsl:call-template name="html_head">
@@ -36,7 +36,7 @@
                             <xsl:value-of select="$doc_title"/>
                         </h1>
 
-                        <table class="table" id="offences">
+                        <table class="table" id="offences" tabulator-sorter="Datum">
                             <thead>
                                 <tr>
                                     <th scope="col" tabulator-headerFilter="input">Beschreibung</th>

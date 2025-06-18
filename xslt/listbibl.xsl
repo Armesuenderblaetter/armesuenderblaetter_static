@@ -18,7 +18,7 @@
         <xsl:variable name="doc_title">
             <xsl:value-of select=".//tei:titleStmt/tei:title[1]/text()"/>
         </xsl:variable>
-        <html  class="h-100">
+        <html class="h-100" lang="de">
 
             <head >
                 <xsl:call-template name="html_head">
@@ -86,7 +86,7 @@
             <xsl:variable name="filename" select="concat(./@xml:id, '.html')"/>
             <xsl:variable name="name" select="normalize-space(string-join(./tei:title[1]//text()))"></xsl:variable>
             <xsl:result-document href="{$filename}">
-                <html  class="h-100">
+                <html class="h-100" lang="de">
                     <head>
                         <xsl:call-template name="html_head">
                         <xsl:with-param name="html_title" select="$name"></xsl:with-param>
