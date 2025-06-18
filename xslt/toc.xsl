@@ -44,6 +44,18 @@
                             <tbody>
                                 <!-- <xsl:for-each select="collection('../data/editions?select=*.xml')[not(matches(document-uri(.), '/fb_'))]//tei:TEI"> -->
                                 <xsl:for-each select="collection('../data/editions?select=*.xml')[matches(document-uri(.), '/fb_')]//tei:TEI">
+                                    <xsl:sort
+    select="
+        let $filename := tokenize(document-uri(/), '/')[last()]
+        return
+            replace($filename,
+                '^fb_(\d{4})$', '$1-01-01')
+            => replace('^fb_(\d{4})(\d{2})$', '$1-$2-01')
+            => replace('^fb_(\d{4})(\d{2})(\d{2}).*$', '$1-$2-$3')
+    "
+    data-type="text"
+    order="ascending"
+/>
                                     <xsl:variable name="full_path">
                                         <xsl:value-of select="document-uri(/)"/>
                                     </xsl:variable>

@@ -3,9 +3,9 @@
     --editor-font-color: grey;
     --variant-marker-color: rgb(203, 231, 255);
     --catch-offset-right: -75%;
-    --asb-banner-colour: #e6e2d7;
-     --asb-link-colour: #767267;
-    --asb-background-colour: #b6b2a7;
+    --asb-banner-colour: #e6e2d6;
+     --asb-link-colour: #666257;
+    --asb-background-colour: #e6e2d6;
 }
 
 #myTable {
@@ -579,3 +579,38 @@ dd {
     color: black!important;
 }
 
+
+
+@media screen and (max-width: 1399) {
+    .ais-Hits-item {   
+        width: 30%!important;
+    }
+}  
+
+
+@media screen and (max-width: 1199) {
+    .ais-Hits-item {   
+        width: 45%!important;
+    }
+}  
+
+
+@media screen and (max-width: 991px) {
+    .ais-Hits-item
+    {   
+        width: 100% !important;
+    }   
+
+    .facettes {
+        height: fit-content !important ;
+    }
+}
+
+@media screen and (min-width: 640px) {
+    .ais-Panel-body {
+        display: contents!important ;
+    }   
+    .ais-Panel-header .ais-Panel-collapseButton{
+        display: none ;
+    }   
+}
