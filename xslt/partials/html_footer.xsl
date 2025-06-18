@@ -53,9 +53,8 @@
             </div>
         </div>
         <div class="footer-imprint-bar hide-reading" id="wrapper-footer-secondary" style="text-align:center; padding:0.4rem 0; font-size: 0.9rem;"> © 2025 OEAW | <a href="imprint.html">Impressum</a> |            <a href="{$github_url}">
-                <i class="bi bi-github" title="GitHub" alt="GitHub" aria-hidden="true">
+                <i class="bi bi-github" title="GitHub" alt="GitHub" aria-hidden="true" />
                     <span class="visually-hidden">GitHub</span>
-                </i>
             </a>
         </div>
     </footer>

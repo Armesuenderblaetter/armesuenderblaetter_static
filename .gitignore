@@ -5,6 +5,7 @@ json/
 html/*
 !html/css/
 !html/js/
+!html/fonts
 data/editions/
 *.html
 /saxon
