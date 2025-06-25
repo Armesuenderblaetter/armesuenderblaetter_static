@@ -4,8 +4,10 @@
     --variant-marker-color: rgb(203, 231, 255);
     --catch-offset-right: -75%;
     --asb-banner-colour: #e6e2d6;
-     --asb-link-colour: #666257;
+    --asb-link-colour: #565247;
     --asb-background-colour: #e6e2d6;
+    --asb-dropdown-link-colour: #565247;
+    --asb-link-visited-colour: #868277;
 }
 
 #myTable {
@@ -108,6 +110,7 @@ div ul.ais-RefinementList-list {
     overflow-y: scroll;
     min-height: fit-content;
     max-height: 11rem;
+    min-height: 0;
     border: solid rgb(204, 204, 204) .1rem;
     border-radius: 0.3rem;
 }
@@ -207,6 +210,15 @@ span.pb.primary {
 
 a {
     color: var(--asb-link-colour);
+}
+
+a:visited {
+    color: var(--asb-link-visited-colour);
+}
+
+a.navbar-brand {
+    color: var(--asb-link-colour);
+    font-weight: bold;
 }
 
 a.variant_anchor_link {
@@ -565,8 +577,12 @@ dd {
 }
 
 
-.dropdown-item:active,  .dropdown-item:hover{
+.dropdown-item{
     background-color: var(--asb-background-colour)!important;
+    color: var(--asb-dropdown-link-colour)!important;
+}
+
+.dropdown-item:active,  .dropdown-item:hover{
     color: black!important;
 }
 
@@ -574,10 +590,6 @@ dd {
       font-weight: bold;
 }
 
-.dropdown-item:active,  .dropdown-item:hover{
-    background-color: var(--asb-background-colour)!important;
-    color: black!important;
-}
 
 
 
