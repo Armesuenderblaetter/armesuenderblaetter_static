@@ -1,7 +1,8 @@
 :root {
     --editor-font-family: serif;
     --editor-font-color: grey;
-    --variant-marker-color: rgb(203, 231, 255);
+    /*  --variant-marker-color: rgb(203, 231, 255); */
+    --variant-marker-color: #868277 ;
     --catch-offset-right: -75%;
     --asb-banner-colour: #e6e2d6;
     --asb-link-colour: #565247;
@@ -209,11 +210,11 @@ span.pb.primary {
   }
 
 a {
-    color: var(--asb-link-colour);
+    color: var(--asb-link-colour)!important;
 }
 
 a:visited {
-    color: var(--asb-link-visited-colour);
+    color: var(--asb-link-visited-colour)!important;
 }
 
 a.navbar-brand {
@@ -569,6 +570,70 @@ dd {
     padding: .2rem 0rem 1rem 10rem;
 }
 
+.dropdown-item {
+    background-color: var(--asb-background-colour)!important;
+    color: var(--asb-dropdown-link-colour)!important;
+}
+
+.dropdown-item:active,  .dropdown-item:hover {
+    color: black!important;
+}
+
+.dropdown-item:active {
+      font-weight: bold;
+}
+
+.ais-Pagination-item--selected .ais-Pagination-link {
+    background-color:  var(--asb-link-colour) !important;
+    border-color:  var(--asb-link-colour) !important;
+    color: white!important ; 
+}
+
+.noske-hits-table {
+    background-color: white!important ;
+}
+
+.noske-hits-head th {
+    background-color: var(--asb-banner-colour)!important ;
+    color: black!important ;
+}
+
+.tabulator {
+    display: inline-block!important;
+}
+
+.tabulator.table:not(.thead-light) .tabulator-header, .tabulator.table:not(.thead-light) .tabulator-header .tabulator-col {
+background-color: var(--asb-banner-colour)!important ;
+}
+
+.tabulator-row {
+    border-bottom: unset!important ;
+   
+}
+
+
+
+.tabulator-row {
+    background-color: unset!important ;
+}
+
+/* MEDIA SPECIFIC */
+
+.tabulator-header , .tabulator-header *{
+    border: unset!important;
+    background-color:  var(--asb-banner-colour)!important ;
+    border: 0!important;
+}
+
+
+.tabulator-cell{
+    border: 0!important;
+}
+
+.button-group {
+    padding-bottom: 1rem ;
+}
+
 @media screen and (max-width: 767px) {
 	.mobile-align-right {
 		 text-align: right;
@@ -576,19 +641,6 @@ dd {
 
 }
 
-
-.dropdown-item{
-    background-color: var(--asb-background-colour)!important;
-    color: var(--asb-dropdown-link-colour)!important;
-}
-
-.dropdown-item:active,  .dropdown-item:hover{
-    color: black!important;
-}
-
-.dropdown-item:active {
-      font-weight: bold;
-}
 
 
 
