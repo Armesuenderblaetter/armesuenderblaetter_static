@@ -589,6 +589,18 @@ dd {
     color: white!important ; 
 }
 
+.ais-ClearRefinements {
+    text-align: center ;
+      padding: 1rem!important;
+}
+
+.ais-ClearRefinements-button {
+    background-color:  var(--asb-link-colour) !important;
+}
+.ais-Pagination {
+    padding-top: 1rem ;
+}
+
 .noske-hits-table {
     background-color: white!important ;
 }
