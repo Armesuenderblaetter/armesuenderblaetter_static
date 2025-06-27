@@ -513,7 +513,14 @@
             <xsl:attribute name="href">
                 <xsl:value-of select="@target"/>
              </xsl:attribute>
-            <xsl:value-of select="@target"/>
+	    <xsl:choose>
+                <xsl:when test="normalize-space(text())">
+                    <xsl:value-of select="."/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="@target"/>
+                </xsl:otherwise>
+            </xsl:choose>
         </xsl:element>
     </xsl:template>
     <xsl:template match="tei:rs">

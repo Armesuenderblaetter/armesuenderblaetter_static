@@ -25,22 +25,19 @@
 
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
-
                 <main>
                     <div class="container">
-
                         <h1>
                             <xsl:value-of select="$doc_title"/>
                         </h1>
-
-                        <table class="table" id="punishments">
+                        <table class="table" id="myTable">
                             <thead>
                                 <tr>
-                                    <th scope="col" tabulator-headerFilter="input">Typ</th>
-                                    <th scope="col" tabulator-headerFilter="input">Methode</th>
-                                    <th scope="col" tabulator-headerFilter="input">Datum</th>
-                                    <th scope="col" tabulator-headerFilter="input">Ort</th>
-                                    <th scope="col" tabulator-headerFilter="input">ID</th>
+                                    <th scope="col">Typ</th>
+                                    <th scope="col">Methode</th>
+                                    <th scope="col">Datum</th>
+                                    <th scope="col">Ort</th>
+                                    <th scope="col">ID</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -96,8 +93,9 @@
                 </main>
                 <xsl:call-template name="html_footer"/>
                 <!-- <xsl:call-template name="tabulator_js"/> -->
-                <link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css" rel="stylesheet"/>
-                <script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+                <link href="https://unpkg.com/tabulator-tables@6.3.1/dist/css/tabulator.min.css" rel="stylesheet"/>
+                <link href="https://unpkg.com/tabulator-tables@6.3.1/dist/css/tabulator_bootstrap5.min.css" rel="stylesheet" />
+                <script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.1/dist/js/tabulator.min.js"></script>
                 <script type="text/javascript" src="./js/tabulator/punishments.js"></script>
             </body>
         </html>

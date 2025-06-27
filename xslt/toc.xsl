@@ -36,8 +36,8 @@
                         <table class="table" id="myTable">
                             <thead>
                                 <tr>
-                                    <th scope="col" tabulator-headerFilter="input" tabulator-formatter="html" tabulator-download="false" tabulator-headerSort="false">Titel</th>
-                                    <th scope="col" tabulator-data="eventDate" tabulator-headerFilter="input">Datum</th>
+                                    <th scope="col">Titel</th>
+                                    <th scope="col">Datum</th>
                                     <!-- <th scope="col" tabulator-headerFilter="input">Dateiname</th> -->
                                 </tr>
                             </thead>

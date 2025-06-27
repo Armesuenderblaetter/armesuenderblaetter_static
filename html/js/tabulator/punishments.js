@@ -1,5 +1,5 @@
 let jsonurl = 'json/punishments.json';
-let table_id = "punishments"
+let table_id = "myTable"
 
 function getRowByCellValue(cellName, cellValue, table) {
   return table.getRows().find(row => { return row.getCell(cellName).getValue() == cellValue; })
@@ -38,15 +38,16 @@ function buildTable(raw_tabledata){
     var tabulator_table = new Tabulator(`#${table_id}`, {
         data:tabledata,
         layout:"fitColumns",
-        height:"50rem",
+        tooltips: true,
+        dataLoader: true,
         columns:[
-            {title:"ID", field:"id"},
-            {title:"Typ", field:"type"},
-            {title:"Beschreibung", field:"description"},
-            {title:"Datum", field:"date", formatter:"array", formatterParams:{delimiter: ", "}},
-            {title:"Orte", field:"place", formatter:"array", formatterParams:{delimiter: ", "}},
-            {title:"Methode", field:"methods", formatter:"array", formatterParams:{delimiter: ", "}},
-            {title:"Siehe auch", field:"file", formatter:make_link}
+            //{title:"ID", field:"id", show:false},
+            {title:"Typ", field:"type", headerFilter:"input"},
+            {title:"Beschreibung", field:"description", headerSort:"true", headerFilter:"input"},
+            {title:"Datum", field:"date", formatter:"array", formatterParams:{delimiter: ", "}, headerFilter:"input"},
+            {title:"Orte", field:"place", formatter:"array", formatterParams:{delimiter: ", "}, headerFilter:"input"},
+            {title:"Methode", field:"methods", formatter:"array", formatterParams:{delimiter: ", "}, headerSort:"true", headerFilter:"input"},
+            {title:"Siehe auch", field:"file", formatter:make_link, headerSort:"false"}
         ],
     });
     return tabulator_table;
