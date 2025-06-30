@@ -79,9 +79,17 @@ div#current-refinements {
 
 
 .tabulator {
-	display: unset!important ;
+	display: inline-block!important ;
+	max-height: 70rem ;
+	overflow-y: scroll!important ;
+    width: 100%!important;
+    border: 0!important;
+
 }
 
+.tabulator .tabulator-header {
+    border: 0!important;
+}
 
 table{
       table-layout:fixed;
@@ -610,9 +618,9 @@ dd {
     color: black!important ;
 }
 
-.tabulator {
+/* .tabulator {
     display: inline-block!important;
-}
+} */
 
 .tabulator.table:not(.thead-light) .tabulator-header, .tabulator.table:not(.thead-light) .tabulator-header .tabulator-col {
 background-color: var(--asb-banner-colour)!important ;
@@ -623,7 +631,10 @@ background-color: var(--asb-banner-colour)!important ;
    
 }
 
-
+.tabulator-arrow {
+    color: black!important;
+    border-bottom: 6px solid black!important;
+}
 
 .tabulator-row {
     background-color: unset!important ;
@@ -631,10 +642,9 @@ background-color: var(--asb-banner-colour)!important ;
 
 /* MEDIA SPECIFIC */
 
-.tabulator-header , .tabulator-header *{
-    border: unset!important;
-    background-color:  var(--asb-banner-colour)!important ;
-    border: 0!important;
+.tabulator-header * {
+    background-color:  var(--asb-banner-colour) ;
+    color: black; 
 }
 
 
@@ -642,6 +652,9 @@ background-color: var(--asb-banner-colour)!important ;
     border: 0!important;
 }
 
+.tabulator-header-filter * {
+    background-color: white!important;
+}
 .button-group {
     padding-bottom: 1rem ;
 }
