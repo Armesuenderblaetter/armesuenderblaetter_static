@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" exclude-result-prefixes="xsl tei xs">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:tei="http://www.tei-c.org/ns/1.0"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" exclude-result-prefixes="xsl tei xs">
 
     <xsl:output encoding="UTF-8" media-type="text/html" method="html" version="5.0" indent="yes" omit-xml-declaration="yes"/>
 
@@ -37,13 +39,16 @@
                                     <th scope="col">Methode</th>
                                     <th scope="col">Datum</th>
                                     <th scope="col">Ort</th>
-                                    <th scope="col">ID</th>
+                                    <th scope="col">Siehe auch</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <xsl:for-each select=".//tei:event[@type=('punishment', 'execution')]">
                                     <xsl:variable name="id">
                                         <xsl:value-of select="data(@xml:id)"/>
+                                    </xsl:variable>
+                                    <xsl:variable name="full_path">
+                                        <xsl:value-of select="document-uri(/)"/>
                                     </xsl:variable>
                                     <tr>
                                         <!-- Typ -->
@@ -73,8 +78,22 @@
                                             </ul>
                                         </td>
                                         <!-- Datum -->
-                                        <td>
+                                        <!-- <td>
                                             <xsl:value-of select="./tei:desc/tei:date/text()"/>
+                                        </td> -->
+                                        <xsl:variable name="fileName" select="tokenize($id, '/')[last()]" />
+                                        <xsl:variable name="dateStr" select="replace($fileName, '.*?(\d{8}).*', '$1')" />
+                                        <xsl:variable name="eventDate" select="(
+                ./tei:desc/tei:date/@when[normalize-space()],
+                concat(
+                  substring($dateStr, 1, 4), '-',   (: YYYY :)
+                  substring($dateStr, 5, 2), '-',   (: MM :)
+                  substring($dateStr, 7, 2)         (: DD :)
+                )
+              )[1]" />
+                                        <td>
+                                            <xsl:attribute name="tabulator-data-sort" select="$eventDate" />
+                                            <xsl:value-of select="$eventDate" />
                                         </td>
                                         <!-- Ort -->
                                         <td>
@@ -82,21 +101,28 @@
                                         </td>
                                         <!-- ID -->
                                         <td>
-                                            <xsl:value-of select="$id"/>
+                                            <a>
+                                                <xsl:attribute name="href" select="$id"/>
+                                            Dokument
+                                            </a>
                                         </td>
                                     </tr>
                                 </xsl:for-each>
                             </tbody>
                         </table>
+                        <xsl:call-template name="tabulator_dl_buttons"/>
                         <!-- <xsl:call-template name="tabulator_dl_buttons"/> -->
                     </div>
                 </main>
                 <xsl:call-template name="html_footer"/>
                 <!-- <xsl:call-template name="tabulator_js"/> -->
-                <link href="https://unpkg.com/tabulator-tables@6.3.1/dist/css/tabulator.min.css" rel="stylesheet"/>
+                <!--<link href="https://unpkg.com/tabulator-tables@6.3.1/dist/css/tabulator.min.css" rel="stylesheet"/>
                 <link href="https://unpkg.com/tabulator-tables@6.3.1/dist/css/tabulator_bootstrap5.min.css" rel="stylesheet" />
-                <script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.1/dist/js/tabulator.min.js"></script>
-                <script type="text/javascript" src="./js/tabulator/punishments.js"></script>
+                <script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.1/dist/js/tabulator.min.js"></script> -->
+                <!-- <script type="text/javascript" src="./js/tabulator/punishments.js"></script> -->
+                <xsl:call-template name="tabulator_js">
+                    <xsl:with-param name="tableconf" select="'punishments'"/>
+                </xsl:call-template>
             </body>
         </html>
     </xsl:template>

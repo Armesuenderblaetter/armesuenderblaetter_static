@@ -4,10 +4,18 @@
     exclude-result-prefixes="xs"
     version="2.0">
     <xsl:template match="/" name="tabulator_js">
+        <xsl:param name="tableconf"/>
         <link href="https://unpkg.com/tabulator-tables@6.3.1/dist/css/tabulator.min.css" rel="stylesheet" />
         <link href="https://unpkg.com/tabulator-tables@6.3.1/dist/css/tabulator_bootstrap5.min.css" rel="stylesheet" />
         <script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.1/dist/js/tabulator.min.js" />
-        <script src="./js/tabulator/toc.js" />
+        <xsl:choose>
+            <xsl:when test="$tableconf = 'punishments'">
+                <script src="./js/tabulator/punishments.js" />
+            </xsl:when>
+            <xsl:otherwise>
+                <script src="./js/tabulator/toc.js" />
+            </xsl:otherwise>
+        </xsl:choose>
         <script>
             var table = new Tabulator("#myTable", config);
             //trigger download of data.csv file

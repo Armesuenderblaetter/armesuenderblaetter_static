@@ -622,6 +622,11 @@ dd {
     display: inline-block!important;
 } */
 
+.tabulator-header .tabulator-header-contents .tabulator-headers .tabulator-col{
+    background-color: var(--asb-banner-colour) ;
+}
+
+
 .tabulator.table:not(.thead-light) .tabulator-header, .tabulator.table:not(.thead-light) .tabulator-header .tabulator-col {
 background-color: var(--asb-banner-colour)!important ;
 }
