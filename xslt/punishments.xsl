@@ -102,8 +102,10 @@
                                         <!-- ID -->
                                         <td>
                                             <a>
-                                                <xsl:attribute name="href" select="$id"/>
-                                            Dokument
+                                                <xsl:attribute name="href">
+                                                    <xsl:value-of select="replace($id, '^trial_result_(fb_.*)_[^_]+$', '$1.html')"/>
+                                                </xsl:attribute>
+                                                Dokument
                                             </a>
                                         </td>
                                     </tr>
