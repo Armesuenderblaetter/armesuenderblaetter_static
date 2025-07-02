@@ -57,7 +57,13 @@
                                                 <xsl:attribute name="id">
                                                     <xsl:value-of select="$id"/>
                                                 </xsl:attribute>
-                                                <xsl:value-of select="@type"/>
+                                                <xsl:choose>
+                                                    <xsl:when test="data(@xml:type) = 'execution'">Hinrichtung</xsl:when>
+                                                    <xsl:when test="data(@xml:type) = 'punishment'">Bestrafung</xsl:when>
+                                                    <xsl:otherwise>
+                                                        <xsl:value-of select="data(@xml:type)"/>
+                                                    </xsl:otherwise>
+                                                </xsl:choose>
                                             </a>
                                         </td>
                                         <!-- Methode -->
