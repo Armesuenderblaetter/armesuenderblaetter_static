@@ -11,6 +11,11 @@
     --asb-link-visited-colour: #868277;
 }
 
+
+.align-right{
+    text-align:right;
+}
+
 #myTable {
 	display: none ;
 }
