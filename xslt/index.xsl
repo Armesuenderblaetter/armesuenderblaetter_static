@@ -28,65 +28,65 @@
                 <xsl:call-template name="nav_bar"/>
                 <main class="flex-shrink-0">
                     <div class="container">
-                        <div class="row title"></div>
-                        <h1>
-                            <xsl:value-of select="$doc_title"/>
-                        </h1>
-                    </div>
-                    <div class="image">
-                        <img src="images/vienna.png" alt="Cover Image" class="img-fluid"/>
-                    </div>
-                    <xsl:apply-templates select=".//tei:body" />
-                    <p>
-                        <a>
-                            <xsl:attribute name="href">
-                                <xsl:value-of select="'about.html'"/>
-                            </xsl:attribute>
+                        <div class="row title">
+                            <h1>
+                                <xsl:value-of select="$doc_title"/>
+                            </h1>
+                        </div>
+                        <div class="image">
+                            <img src="images/vienna.png" alt="Cover Image" class="img-fluid"/>
+                        </div>
+                        <xsl:apply-templates select=".//tei:body" />
+                        <p>
+                            <a>
+                                <xsl:attribute name="href">
+                                    <xsl:value-of select="'about.html'"/>
+                                </xsl:attribute>
                                 Weiter…
-                        </a>
-                    </p>
-                </div>
-            </main>
-            <xsl:call-template name="html_footer"/>
-        </body>
-    </html>
-</xsl:template>
-<xsl:template match="tei:div//tei:head">
-    <h2 id="{generate-id()}">
-        <xsl:apply-templates/>
-    </h2>
-</xsl:template>
-
-<xsl:template match="tei:p">
-    <p id="{generate-id()}">
-        <xsl:apply-templates/>
-    </p>
-</xsl:template>
-
-<xsl:template match="tei:list">
-    <ul id="{generate-id()}">
-        <xsl:apply-templates/>
-    </ul>
-</xsl:template>
-
-<xsl:template match="tei:item">
-    <li id="{generate-id()}">
-        <xsl:apply-templates/>
-    </li>
-</xsl:template>
-<xsl:template match="tei:ref">
-    <xsl:choose>
-        <xsl:when test="starts-with(data(@target), 'http')">
-            <a>
-                <xsl:attribute name="href">
-                    <xsl:value-of select="@target"/>
-                </xsl:attribute>
-                <xsl:value-of select="."/>
-            </a>
-        </xsl:when>
-        <xsl:otherwise>
+                            </a>
+                        </p>
+                    </div>
+                </main>
+                <xsl:call-template name="html_footer"/>
+            </body>
+        </html>
+    </xsl:template>
+    <xsl:template match="tei:div//tei:head">
+        <h2 id="{generate-id()}">
             <xsl:apply-templates/>
-        </xsl:otherwise>
-    </xsl:choose>
-</xsl:template>
+        </h2>
+    </xsl:template>
+
+    <xsl:template match="tei:p">
+        <p id="{generate-id()}">
+            <xsl:apply-templates/>
+        </p>
+    </xsl:template>
+
+    <xsl:template match="tei:list">
+        <ul id="{generate-id()}">
+            <xsl:apply-templates/>
+        </ul>
+    </xsl:template>
+
+    <xsl:template match="tei:item">
+        <li id="{generate-id()}">
+            <xsl:apply-templates/>
+        </li>
+    </xsl:template>
+    <xsl:template match="tei:ref">
+        <xsl:choose>
+            <xsl:when test="starts-with(data(@target), 'http')">
+                <a>
+                    <xsl:attribute name="href">
+                        <xsl:value-of select="@target"/>
+                    </xsl:attribute>
+                    <xsl:value-of select="."/>
+                </a>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
 </xsl:stylesheet>
