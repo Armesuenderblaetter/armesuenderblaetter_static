@@ -29,9 +29,11 @@
                 <xsl:call-template name="nav_bar"/>
                 <main>
                     <div class="container">
-                        <h1>
-                            <xsl:value-of select="$doc_title"/>
-                        </h1>
+                        <div class="row title">
+                            <h1>
+                                <xsl:value-of select="$doc_title"/>
+                            </h1>
+                        </div>
                         <table class="table" id="myTable">
                             <thead>
                                 <tr>

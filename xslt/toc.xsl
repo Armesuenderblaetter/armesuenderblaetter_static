@@ -32,7 +32,9 @@
                 <xsl:call-template name="nav_bar"/>
                 <main>
                     <div class="container">
-                        <h1>Übersicht</h1>
+                        <div class="row title">
+                            <h1>Übersicht</h1>
+                        </div>
                         <table class="table" id="myTable">
                             <thead>
                                 <tr>
@@ -44,18 +46,14 @@
                             <tbody>
                                 <!-- <xsl:for-each select="collection('../data/editions?select=*.xml')[not(matches(document-uri(.), '/fb_'))]//tei:TEI"> -->
                                 <xsl:for-each select="collection('../data/editions?select=*.xml')[matches(document-uri(.), '/fb_')]//tei:TEI">
-                                    <xsl:sort
-    select="
+                                    <xsl:sort select="
         let $filename := tokenize(document-uri(/), '/')[last()]
         return
             replace($filename,
                 '^fb_(\d{4})$', '$1-01-01')
             => replace('^fb_(\d{4})(\d{2})$', '$1-$2-01')
             => replace('^fb_(\d{4})(\d{2})(\d{2}).*$', '$1-$2-$3')
-    "
-    data-type="text"
-    order="ascending"
-/>
+    " data-type="text" order="ascending" />
                                     <xsl:variable name="full_path">
                                         <xsl:value-of select="document-uri(/)"/>
                                     </xsl:variable>
@@ -81,8 +79,8 @@
            $alt_doc//tei:date/@text(),
            substring(tokenize($alt_path, '/')[last()], 1, 4)
           )[1]" />
-          <xsl:variable name="filename" select="tokenize($full_path, '/')[last()]" />
-          <xsl:variable name="ymd" select="replace($filename, '^fb_(\d{4})(\d{2})(\d{2}).*$', '$1-$2-$3')" />
+                                        <xsl:variable name="filename" select="tokenize($full_path, '/')[last()]" />
+                                        <xsl:variable name="ymd" select="replace($filename, '^fb_(\d{4})(\d{2})(\d{2}).*$', '$1-$2-$3')" />
                                         <xsl:variable name="eventDateSort">
                                             <xsl:choose>
                                                 <!-- yyyy -->
@@ -118,14 +116,14 @@
                                             </xsl:attribute>
                                             <xsl:choose>
                                                 <xsl:when test="$ymd">
-                                                        <xsl:choose>
-                                                            <xsl:when test="matches($ymd, '^\d{4}-00-00$')">
-                                                                <xsl:value-of select="substring($ymd, 1, 4)" />
-                                                            </xsl:when>
-                                                            <xsl:otherwise>
-                                                                <xsl:value-of select="$ymd" />
-                                                            </xsl:otherwise>
-                                                        </xsl:choose>
+                                                    <xsl:choose>
+                                                        <xsl:when test="matches($ymd, '^\d{4}-00-00$')">
+                                                            <xsl:value-of select="substring($ymd, 1, 4)" />
+                                                        </xsl:when>
+                                                        <xsl:otherwise>
+                                                            <xsl:value-of select="$ymd" />
+                                                        </xsl:otherwise>
+                                                    </xsl:choose>
                                                 </xsl:when>
                                                 <xsl:otherwise>
                                                     <xsl:value-of select="$eventDate" />

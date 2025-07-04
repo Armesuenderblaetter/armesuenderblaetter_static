@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tei="http://www.tei-c.org/ns/1.0"
-    version="2.0" exclude-result-prefixes="xsl tei xs">
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:tei="http://www.tei-c.org/ns/1.0" version="2.0" exclude-result-prefixes="xsl tei xs">
     <!-- <xsl:variable name="offence_index">
         <xsl:value-of select="document('/home/zorg/Dokumente/ltw/flublätter/flugblaetter_static/data/indices/offences.xml')"/>
     </xsl:variable> -->
     <xsl:template name="get_offence_label">
         <xsl:param name="current_id"/>
-        <xsl:for-each
-            select="doc('../../data/indices/offences.xml')//tei:event[@xml:id=$current_id]">
+        <xsl:for-each select="doc('../../data/indices/offences.xml')//tei:event[@xml:id=$current_id]">
             <xsl:choose>
                 <xsl:when test="./tei:desc/tei:desc">
                     <xsl:value-of select="normalize-space(./tei:desc/tei:desc/text())"/>
@@ -45,12 +44,10 @@
                 <dt> Geburtsort </dt>
                 <dd>
                     <xsl:variable name="place_string">
-                        <xsl:value-of
-                            select="normalize-space(string-join(./tei:birth/tei:placeName/*))"/>
+                        <xsl:value-of select="normalize-space(string-join(./tei:birth/tei:placeName/*))"/>
                     </xsl:variable>
                     <xsl:choose>
-                        <xsl:when
-                            test="contains($place_string, 'k.A.') or contains($place_string, 'k. A.')">
+                        <xsl:when test="contains($place_string, 'k.A.') or contains($place_string, 'k. A.')">
                             <xsl:text>k. A.</xsl:text>
                         </xsl:when>
                         <xsl:otherwise>

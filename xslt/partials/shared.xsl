@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:local="http://dse-static.foo.bar" exclude-result-prefixes="xs local" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:tei="http://www.tei-c.org/ns/1.0"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:local="http://dse-static.foo.bar" exclude-result-prefixes="xs local" version="2.0">
     <xsl:function name="local:makeId" as="xs:string">
         <xsl:param name="currentNode" as="node()"/>
         <xsl:variable name="nodeCurrNr">
@@ -133,11 +136,11 @@
             <xsl:value-of select="' '"/>
         </xsl:if>
     </xsl:template>
-     <xsl:template match="tei:pb[@type = 'primary']">
-        <!-- 
-            this is necessary cause empty pages have to little height to 
-            trigger scrolling, so i need to create a hight via css, ergo 
-            I need a class, but at the same moment there are sometimes 
+    <xsl:template match="tei:pb[@type = 'primary']">
+        <!--
+            this is necessary cause empty pages have to little height to
+            trigger scrolling, so i need to create a hight via css, ergo
+            I need a class, but at the same moment there are sometimes
             more then one image sources linked, so determining if the amount
             of text inbetween two pb elements is more difficult, I need to
             excluded images from all sources but one to determine the amount of
@@ -508,12 +511,12 @@
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
-     <xsl:template match="tei:link">
+    <xsl:template match="tei:link">
         <xsl:element name="a">
             <xsl:attribute name="href">
                 <xsl:value-of select="@target"/>
-             </xsl:attribute>
-	    <xsl:choose>
+            </xsl:attribute>
+            <xsl:choose>
                 <xsl:when test="normalize-space(text())">
                     <xsl:value-of select="."/>
                 </xsl:when>

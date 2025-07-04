@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tei="http://www.tei-c.org/ns/1.0"
-    version="2.0" exclude-result-prefixes="xsl tei xs">
-    
-    
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:tei="http://www.tei-c.org/ns/1.0" version="2.0" exclude-result-prefixes="xsl tei xs">
+
+
     <xsl:template match="tei:bibl" name="bibl_detail">
         <table class="table entity-table">
             <tbody>
                 <xsl:if test="./tei:author">
-                <tr>
-                    <th>
+                    <tr>
+                        <th>
                         Autor(en)
-                    </th>
-                    <td>
-                        <ul>
-                            <xsl:for-each select="./tei:author">
-                                <li>
-                                    <a href="{@xml:id}.html">
-                                        <xsl:value-of select="./tei:persName"/>
-                                    </a>
-                                </li>
-                            </xsl:for-each>
-                        </ul>
-                    </td>
-                </tr>
+                        </th>
+                        <td>
+                            <ul>
+                                <xsl:for-each select="./tei:author">
+                                    <li>
+                                        <a href="{@xml:id}.html">
+                                            <xsl:value-of select="./tei:persName"/>
+                                        </a>
+                                    </li>
+                                </xsl:for-each>
+                            </ul>
+                        </td>
+                    </tr>
                 </xsl:if>
                 <xsl:if test="./tei:date">
                     <tr>
