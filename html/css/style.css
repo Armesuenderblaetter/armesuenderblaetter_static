@@ -46,6 +46,9 @@ html {
     background-color: var(--asb-banner-colour)!important;
 }
 
+.footer-separator {
+    padding-top: 1rem;
+}
 
 .row.title {
     padding-top: 4rem ;
