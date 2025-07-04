@@ -18,7 +18,7 @@
 
     <xsl:template match="/">
         <xsl:variable name="doc_title">
-            <xsl:value-of select='"Armesünderblätter"'/>
+            <xsl:value-of select='"Armesünderblätter Online"'/>
         </xsl:variable>
         <html class="h-100" lang="de">
             <head>
