@@ -20,6 +20,10 @@
 	display: none ;
 }
 
+
+.mobile-show {
+    display: none;
+}
 html {
     scroll-padding-top: 2rem;
 }
@@ -677,7 +681,15 @@ background-color: var(--asb-banner-colour)!important ;
 	.mobile-align-right {
 		 text-align: right;
 	}
-
+.mobile-align-left {
+		 text-align: left;
+	}
+.mobile-hide {
+    display: none ;
+}
+.mobile-show {
+    display: inline-block ;
+}
 }
 
 

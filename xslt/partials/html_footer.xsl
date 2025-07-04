@@ -18,10 +18,17 @@
                     <div class="row">
                         <div class="col-md-2 col-12 text-left">
                             <div class="row">
-                                <div class="col-md-12 col-6" style="margin-bottom: 2em;">
-                                    <a href="https://www.oeaw.ac.at/acdh">
-                                        <img src="images/logo_acdh.png" width="90" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
-                                    </a>
+                                <div class="row col-12" style="margin-bottom: 2em; padding-righ:0px;">
+                                    <div class="col-md-12 col-6 logo">
+                                        <a href="https://www.oeaw.ac.at/acdh">
+                                            <img src="images/logo_acdh.png" width="90" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-0 col-6 logo mobile-show align-right" style="padding-right: 0px">
+                                        <a class="mobile-show" href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
+                                            <img src="images/logo_oeaw.png" width="120" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
+                                        </a>
+                                    </div>
                                 </div>
                                 <!-- <div class="col-md-0 col-6" /> -->
                             </div>
@@ -43,12 +50,10 @@
                                 <span class="visually-hidden">E-Mail</span>&#160;<a href="mailto:acdh-ch-helpdesk@oeaw.ac.at">acdh-ch-helpdesk@oeaw.ac.at</a>
                             </p>
                         </div>
-                        <div class="col-md-2 col-12 text-right">
-                             <div class="col-md-12 col-6 mobile-align-right align-right">
-                                    <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
-                                        <img src="images/logo_oeaw.png" width="120" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
-                                    </a>
-                                </div>
+                        <div class="col-md-2 col-0 text-right align-right mobile-hide">
+                            <a class="text-right" href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
+                                <img src="images/logo_oeaw.png" width="120" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
+                            </a>
                         </div>
                     </div>
                 </div>
