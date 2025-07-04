@@ -33,8 +33,8 @@
                         </div>
                         <div class="col-md-10 col-12 texts">
                             <p>
-                           ACDH-CH OEAW<xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
-                           Austrian Centre for Digital Humanities and Cultural Heritage<xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
+                           ACDH – ÖAW<xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
+                           Austrian Centre for Digital Humanities<xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
                            Österreichische Akademie der Wissenschaften
                             </p>
                             <p>
@@ -52,7 +52,7 @@
                     </div>
                 </div>
             </div>
-            <div class="footer-imprint-bar hide-reading" id="wrapper-footer-secondary" style="text-align:center; padding:0.4rem 0; font-size: 0.9rem;"> © 2025 OEAW | <a href="imprint.html">Impressum</a> |                <a href="{$github_url}">
+            <div class="footer-imprint-bar hide-reading" id="wrapper-footer-secondary" style="text-align:center; padding:0.4rem 0; font-size: 0.9rem;"> © 2025 ÖAW | <a href="imprint.html">Impressum</a> |                <a href="{$github_url}">
                     <i class="bi bi-github" title="GitHub" alt="GitHub" aria-hidden="true" />
                     <span class="visually-hidden">GitHub</span>
                 </a>
