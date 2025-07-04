@@ -23,15 +23,10 @@
                                         <img src="images/logo_acdh.png" width="60" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
                                     </a>
                                 </div>
-                                <div class="col-md-12 col-6 mobile-align-right" style="padding-left:auto;">
-                                    <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
-                                        <img src="images/logo_oeaw.png" width="80" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
-                                    </a>
-                                </div>
                                 <!-- <div class="col-md-0 col-6" /> -->
                             </div>
                         </div>
-                        <div class="col-md-10 col-12 texts">
+                        <div class="col-md-8 col-12 texts">
                             <p>
                            ACDH – ÖAW<xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
                            Austrian Centre for Digital Humanities<xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
@@ -48,7 +43,13 @@
                                 <span class="visually-hidden">E-Mail</span>&#160;<a href="mailto:acdh-ch-helpdesk@oeaw.ac.at">acdh-ch-helpdesk@oeaw.ac.at</a>
                             </p>
                         </div>
-                        <div class="col-lg-5 col-md-7 col-sm-7" />
+                        <div class="col-md-2 col-12 text-right">
+                             <div class="col-md-12 col-6 mobile-align-right" style="padding-left:auto;">
+                                    <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
+                                        <img src="images/logo_oeaw.png" width="80" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
+                                    </a>
+                                </div>
+                        </div>
                     </div>
                 </div>
             </div>
