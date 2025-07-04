@@ -30,7 +30,7 @@
                 <xsl:call-template name="nav_bar"/>
                 <main class="flex-shrink-0">
                     <div class="container">
-                        <h1><xsl:value-of select="$project_short_title"/></h1>
+                        <h1><xsl:value-of select="$doc_title"/></h1>
                         <div class="image">
                             <img src="images/vienna.png" alt="Cover Image" class="img-fluid"/>
                         </div>
