@@ -28,16 +28,14 @@
 
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
-                <main>
-                    <div class="container">
-                        <div class="row title">
-                            <h1>
-                                <xsl:value-of select="$doc_title"/>
-                            </h1>
-                        </div>
-                        <div class="body">
-                            <xsl:apply-templates select=".//tei:body"></xsl:apply-templates>
-                        </div>
+                <main class="flex-shrink-0 container">
+                    <div class="title">
+                        <h1>
+                            <xsl:value-of select="$doc_title"/>
+                        </h1>
+                    </div>
+                    <div class="body">
+                        <xsl:apply-templates select=".//tei:body"></xsl:apply-templates>
                     </div>
                 </main>
                 <xsl:call-template name="html_footer"/>

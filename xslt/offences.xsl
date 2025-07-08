@@ -28,59 +28,57 @@
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
 
-                <main>
-                    <div class="container">
-                        <div class="row title">
-                            <h1>
-                                <xsl:value-of select="$doc_title"/>
-                            </h1>
-                        </div>
-                        <div class="row body">
-                            <table class="table" id="offences" tabulator-sorter="Datum">
-                                <thead>
+                <main class="flex-shrink-0 container">
+                    <div class="title">
+                        <h1>
+                            <xsl:value-of select="$doc_title"/>
+                        </h1>
+                    </div>
+                    <div class="body">
+                        <table class="table" id="offences" tabulator-sorter="Datum">
+                            <thead>
+                                <tr>
+                                    <th scope="col" tabulator-headerFilter="input">Beschreibung</th>
+                                    <th scope="col" tabulator-headerFilter="input">Datum</th>
+                                    <th scope="col" tabulator-headerFilter="input">Ort</th>
+                                    <th scope="col" tabulator-headerFilter="input">ID</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <xsl:for-each select=".//tei:event[contains(@type, 'ffenc')]">
+                                    <xsl:variable name="id">
+                                        <xsl:value-of select="data(@xml:id)"/>
+                                    </xsl:variable>
                                     <tr>
-                                        <th scope="col" tabulator-headerFilter="input">Beschreibung</th>
-                                        <th scope="col" tabulator-headerFilter="input">Datum</th>
-                                        <th scope="col" tabulator-headerFilter="input">Ort</th>
-                                        <th scope="col" tabulator-headerFilter="input">ID</th>
+                                        <td>
+                                            <a>
+                                                <xsl:attribute name="id">
+                                                    <xsl:value-of select="$id"/>
+                                                </xsl:attribute>
+                                                <xsl:choose>
+                                                    <xsl:when test="./tei:desc/tei:desc">
+                                                        <xsl:value-of select="normalize-space(./tei:desc/tei:desc/text())"/>
+                                                    </xsl:when>
+                                                    <xsl:otherwise>
+                                                        <xsl:value-of select="normalize-space(./tei:desc/tei:list/item[1]/text())"/>
+                                                    </xsl:otherwise>
+                                                </xsl:choose>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <xsl:value-of select="./tei:desc/tei:date/text()"/>
+                                        </td>
+                                        <td>
+                                            <xsl:value-of select="./tei:desc/tei:placeName/text()"/>
+                                        </td>
+                                        <td>
+                                            <xsl:value-of select="$id"/>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    <xsl:for-each select=".//tei:event[contains(@type, 'ffenc')]">
-                                        <xsl:variable name="id">
-                                            <xsl:value-of select="data(@xml:id)"/>
-                                        </xsl:variable>
-                                        <tr>
-                                            <td>
-                                                <a>
-                                                    <xsl:attribute name="id">
-                                                        <xsl:value-of select="$id"/>
-                                                    </xsl:attribute>
-                                                    <xsl:choose>
-                                                        <xsl:when test="./tei:desc/tei:desc">
-                                                            <xsl:value-of select="normalize-space(./tei:desc/tei:desc/text())"/>
-                                                        </xsl:when>
-                                                        <xsl:otherwise>
-                                                            <xsl:value-of select="normalize-space(./tei:desc/tei:list/item[1]/text())"/>
-                                                        </xsl:otherwise>
-                                                    </xsl:choose>
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <xsl:value-of select="./tei:desc/tei:date/text()"/>
-                                            </td>
-                                            <td>
-                                                <xsl:value-of select="./tei:desc/tei:placeName/text()"/>
-                                            </td>
-                                            <td>
-                                                <xsl:value-of select="$id"/>
-                                            </td>
-                                        </tr>
-                                    </xsl:for-each>
-                                </tbody>
-                            </table>
-                            <xsl:call-template name="tabulator_dl_buttons"/>
-                        </div>
+                                </xsl:for-each>
+                            </tbody>
+                        </table>
+                        <xsl:call-template name="tabulator_dl_buttons"/>
                     </div>
                 </main>
                 <xsl:call-template name="html_footer"/>

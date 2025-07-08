@@ -30,12 +30,11 @@
 
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
-                <main>
-                    <div class="container">
-                        <div class="row title">
-                            <h1>Übersicht</h1>
-                        </div>
-                        <div class="row body">
+                <main class="container flex-shrink-0">
+                    <div class="title">
+                        <h1>Übersicht</h1>
+                    </div>
+                    <div class="body">
                         <table class="table" id="myTable">
                             <thead>
                                 <tr>
@@ -44,7 +43,7 @@
                                     <!-- <th scope="col" tabulator-headerFilter="input">Dateiname</th> -->
                                 </tr>
                             </thead>
-                            <tbody>
+                           <tbody>
                                 <!-- <xsl:for-each select="collection('../data/editions?select=*.xml')[not(matches(document-uri(.), '/fb_'))]//tei:TEI"> -->
                                 <xsl:for-each select="collection('../data/editions?select=*.xml')[matches(document-uri(.), '/fb_')]//tei:TEI">
                                     <xsl:sort select="
@@ -139,7 +138,6 @@
                             </tbody>
                         </table>
                         <xsl:call-template name="tabulator_dl_buttons"/>
-                        </div>
                     </div>
                 </main>
                 <xsl:call-template name="html_footer"/>

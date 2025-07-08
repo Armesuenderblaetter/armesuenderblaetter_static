@@ -9,10 +9,13 @@
     --asb-background-colour: #e6e2d6;
     --asb-dropdown-link-colour: #565247;
     --asb-link-visited-colour: #868277;
+    --asb-border-color: #868277 ;
 }
 
-.container {
+main {
     max-width: 1024px;
+    padding-bottom: 4rem;
+    padding-top: 4rem;
 }
 
 .align-right{
@@ -24,6 +27,13 @@
 }
 
 
+button {
+    max-width: 30px;
+}
+
+p {
+    margin: 0;
+}
 .mobile-show {
     display: none;
 }
@@ -62,9 +72,6 @@ html {
     margin-bottom: .75em;
 }
 
-.row.title {
-    padding-top: 4rem ;
-}
 @font-face {
     font-family: 'Fraktur';
     font-style: normal;
@@ -85,7 +92,6 @@ div#searchPage {
 }
 
 div#searchContainer {
-    padding: 2rem;
 }
 
 div#searchContainer>div {
@@ -115,13 +121,11 @@ div#current-refinements {
 
 }
 
-.tabulator .tabulator-header {
-    border: 0!important;
-}
+
 
 table{
-      table-layout:fixed;
-    border-collapse:collapse;
+    table-layout:fixed;
+    /* border-collapse:collapse; */
     padding: 0;
 }
 tr td {
@@ -643,7 +647,7 @@ dd {
 }
 
 .noske-hits-head th {
-    background-color: var(--asb-banner-colour)!important ;
+    background-color: white!important ; 
     color: black!important ;
 }
 
@@ -655,12 +659,12 @@ dd {
  }
 
 .tabulator-header .tabulator-header-contents .tabulator-headers .tabulator-col{
-    background-color: var(--asb-banner-colour) ;
+    /* background-color: var(--asb-banner-colour) ; */
 }
 
 
 .tabulator.table:not(.thead-light) .tabulator-header, .tabulator.table:not(.thead-light) .tabulator-header .tabulator-col {
-background-color: var(--asb-banner-colour)!important ;
+/* background-color: var(--asb-banner-colour)!important ; */
 }
 
 .tabulator-row {
@@ -678,10 +682,21 @@ background-color: var(--asb-banner-colour)!important ;
 }
 
 /* MEDIA SPECIFIC */
-
+.tabulator-header, .noske-hits-head {
+  border: solid var(--asb-link-colour) 3px!important;
+    border-radius: 15px!important;
+    background-color: white!important;
+    overflow: hidden; 
+}
 .tabulator-header * {
-    background-color:  var(--asb-banner-colour) ;
-    color: black; 
+    /* background-color:  var(--asb-banner-colour) ; */
+    color: black;
+}
+
+.tabulator-tableholder, .noske-hits-tbody {
+    margin-top: 1rem;
+ border: solid var(--asb-link-colour) 3px!important;
+    border-radius: 15px;
 }
 
 

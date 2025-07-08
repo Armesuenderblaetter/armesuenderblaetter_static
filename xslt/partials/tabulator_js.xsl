@@ -10,26 +10,13 @@
             <xsl:when test="$tableconf = 'punishments'">
                 <script src="./js/tabulator/punishments.js" />
             </xsl:when>
+            <xsl:when test="$tableconf = 'noske'">
+                <script src="./js/tabulator/noske.js" />
+            </xsl:when>
             <xsl:otherwise>
                 <script src="./js/tabulator/toc.js" />
             </xsl:otherwise>
         </xsl:choose>
-        <script>
-            var table = new Tabulator("#myTable", config);
-            //trigger download of data.csv file
-            document.getElementById("download-csv").addEventListener("click", function(){
-            table.download("csv", "data.csv");
-            });
-
-            //trigger download of data.json file
-            document.getElementById("download-json").addEventListener("click", function(){
-            table.download("json", "data.json");
-            });
-
-            //trigger download of data.html file
-            document.getElementById("download-html").addEventListener("click", function(){
-            table.download("html", "data.html", {style:true});
-            });
-        </script>
+        <script  type="module" src="js/tabulator/basic.js" />
     </xsl:template>
 </xsl:stylesheet>

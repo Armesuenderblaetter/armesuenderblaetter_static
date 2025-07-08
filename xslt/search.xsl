@@ -17,8 +17,8 @@
 
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
-                <div id="searchPage" class="container">
-                    <div class="row title">
+                <main id="searchPage" class="container flex-shrink-0">
+                    <div class="title">
                         <h1>
                             <xsl:value-of select="$doc_title"/>
                         </h1>
@@ -50,7 +50,7 @@
                             <div id="pagination"></div>
                         </div>
                     </div>
-                </div>
+                </main>
 
 
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/algolia-min.css"></link>

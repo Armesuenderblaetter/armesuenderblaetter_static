@@ -26,27 +26,25 @@
             </head>
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
-                <main class="flex-shrink-0">
-                    <div class="container">
-                        <div class="row title">
-                            <h1>
-                                <xsl:value-of select="$doc_title"/>
-                            </h1>
+                <main class="flex-shrink-0 container">
+                    <div class="title">
+                        <h1>
+                            <xsl:value-of select="$doc_title"/>
+                        </h1>
+                    </div>
+                    <div class="body">
+                        <div class="image">
+                            <img src="images/vienna.png" alt="Cover Image" class="img-fluid"/>
                         </div>
-                        <div class="body">
-                            <div class="image">
-                                <img src="images/vienna.png" alt="Cover Image" class="img-fluid"/>
-                            </div>
-                            <xsl:apply-templates select=".//tei:body" />
-                            <p>
-                                <a>
-                                    <xsl:attribute name="href">
-                                        <xsl:value-of select="'about.html'"/>
-                                    </xsl:attribute>
+                        <xsl:apply-templates select=".//tei:body" />
+                        <p>
+                            <a>
+                                <xsl:attribute name="href">
+                                    <xsl:value-of select="'about.html'"/>
+                                </xsl:attribute>
                                 Weiter…
-                                </a>
-                            </p>
-                        </div>
+                            </a>
+                        </p>
                     </div>
                 </main>
                 <xsl:call-template name="html_footer"/>

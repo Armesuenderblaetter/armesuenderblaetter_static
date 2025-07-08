@@ -48,55 +48,53 @@
             </head>
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
-                <main class="flex-shrink-0">
-                    <div class="container">
-                        <div class="row title">
-                            <div class="col-md-2 col-lg-2 col-sm-12">
-                                <xsl:if test="ends-with($prev, '.html')">
-                                    <h1>
-                                        <a>
-                                            <xsl:attribute name="href">
-                                                <xsl:value-of select="$prev"/>
-                                            </xsl:attribute>
-                                            <i class="bi bi-chevron-left" title="zurück"/>
-                                        </a>
-                                    </h1>
-                                </xsl:if>
-                            </div>
-                            <div class="col-md-8 col-lg-8 col-sm-12">
-                                <h1 align="center">
-                                    <xsl:value-of select="$doc_title"/>
-                                </h1>
-                                <xsl:call-template name="witness_tabs"/>
-                                <h3 align="center">
-                                    <a href="{$teiSource}">
-                                        <i class="bi bi-download" title="TEI/XML"/>
+                <main class="flex-shrink-0 container">
+                    <div class="row title">
+                        <div class="col-md-2 col-lg-2 col-sm-12">
+                            <xsl:if test="ends-with($prev, '.html')">
+                                <h1>
+                                    <a>
+                                        <xsl:attribute name="href">
+                                            <xsl:value-of select="$prev"/>
+                                        </xsl:attribute>
+                                        <i class="bi bi-chevron-left" title="zurück"/>
                                     </a>
-                                </h3>
-                            </div>
-                            <div class="col-md-2 col-lg-2 col-sm-12" style="text-align:right">
-                                <xsl:if test="ends-with($next, '.html')">
-                                    <h1>
-                                        <a>
-                                            <xsl:attribute name="href">
-                                                <xsl:value-of select="$next"/>
-                                            </xsl:attribute>
-                                            <i class="bi bi-chevron-right" title="weiter"/>
-                                        </a>
-                                    </h1>
-                                </xsl:if>
-                            </div>
-                            <!-- <div id="editor-widget">
+                                </h1>
+                            </xsl:if>
+                        </div>
+                        <div class="col-md-8 col-lg-8 col-sm-12">
+                            <h1 align="center">
+                                <xsl:value-of select="$doc_title"/>
+                            </h1>
+                            <xsl:call-template name="witness_tabs"/>
+                            <h3 align="center">
+                                <a href="{$teiSource}">
+                                    <i class="bi bi-download" title="TEI/XML"/>
+                                </a>
+                            </h3>
+                        </div>
+                        <div class="col-md-2 col-lg-2 col-sm-12" style="text-align:right">
+                            <xsl:if test="ends-with($next, '.html')">
+                                <h1>
+                                    <a>
+                                        <xsl:attribute name="href">
+                                            <xsl:value-of select="$next"/>
+                                        </xsl:attribute>
+                                        <i class="bi bi-chevron-right" title="weiter"/>
+                                    </a>
+                                </h1>
+                            </xsl:if>
+                        </div>
+                        <!-- <div id="editor-widget">
                                 <xsl:call-template name="annotation-options"/>
                             </div>-->
+                    </div>
+                    <div class="edition-content body">
+                        <div id="facsimiles" class="col-6">
+                            <xsl:call-template name="osd-container"/>
                         </div>
-                        <div class="edition-content row body">
-                            <div id="facsimiles" class="col-6">
-                                <xsl:call-template name="osd-container"/>
-                            </div>
-                            <div id="edition-text" class="col-6">
-                                <xsl:apply-templates select="//tei:text/tei:*[not(local-name() = 'fs' or local-name() = 'back')]" />
-                            </div>
+                        <div id="edition-text" class="col-6">
+                            <xsl:apply-templates select="//tei:text/tei:*[not(local-name() = 'fs' or local-name() = 'back')]" />
                         </div>
                     </div>
                 </main>

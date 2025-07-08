@@ -833,7 +833,7 @@ function B(r, e, t, s, o = !1, n = !1, i) {
   let a = document.querySelector(`#${t}`);
   a.innerHTML = `
 		<div class="${i.css?.div || h.div}">
-			<table class="${i.css?.table || h.table}">
+			<table class="${i.css?.table || h.table}" id="myTable">
 				<thead class="${i.css?.thead || h.thead}">
 				<tr class="${i.css?.trHead || h.trHead}" id="hits-header-row">
 				</tr>
@@ -931,7 +931,7 @@ var W = class {
     p(this, "kwicrightctx", "100#");
     p(this, "kwicleftctx", "100#");
     p(this, "refs", "doc.id");
-    p(this, "pagesize", 20);
+    p(this, "pagesize", 20000000);
     p(this, "fromp", 1);
     p(this, "container", "noske-search");
     p(
@@ -1014,7 +1014,8 @@ var W = class {
             y.push(...P);
           }
           setTimeout(() => {
-            H(y, n.id, u || this.autocompleteOptions);
+            const autocompleteOpts = u || this.autocompleteOptions || {id: "noske-autocomplete"};
+            H(y, n.id, autocompleteOpts);
           }, 400);
         } else return;
       else {
@@ -1041,7 +1042,8 @@ var W = class {
     }),
       f.addEventListener("focus", async () => {
         setTimeout(() => {
-          document.getElementById(u.id || "noske-autocomplete")?.remove();
+          const autocompleteOpts = u || this.autocompleteOptions || {id: "noske-autocomplete"};
+          document.getElementById(autocompleteOpts.id)?.remove();
         }, 200);
       }),
       x.addEventListener("click", async () => {
@@ -1065,7 +1067,8 @@ var W = class {
             await this.createPagination(1, t, s, o, n.id, i, a);
         }
         setTimeout(() => {
-          document.getElementById(u.id || "noske-autocomplete")?.remove();
+          const autocompleteOpts = u || this.autocompleteOptions || {id: "noske-autocomplete"};
+          document.getElementById(autocompleteOpts.id)?.remove();
         }, 200);
       }),
       (async () => {

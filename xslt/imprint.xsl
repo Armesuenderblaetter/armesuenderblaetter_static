@@ -27,20 +27,18 @@
 
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
-                <main class="flex-shrink-0">
-                    <div class="container">
-                        <div class="row title">
-                            <h1>
-                                <xsl:value-of select="$doc_title"/>
-                            </h1>
-                        </div>
-                        <div class="body">
-                            <xsl:for-each select=".//div">
-                                <xsl:copy>
-                                    <xsl:copy-of select="."/>
-                                </xsl:copy>
-                            </xsl:for-each>
-                        </div>
+                <main class="flex-shrink-0 container">
+                    <div class="title">
+                        <h1>
+                            <xsl:value-of select="$doc_title"/>
+                        </h1>
+                    </div>
+                    <div class="body">
+                        <xsl:for-each select=".//div">
+                            <xsl:copy>
+                                <xsl:copy-of select="."/>
+                            </xsl:copy>
+                        </xsl:for-each>
                     </div>
                 </main>
                 <xsl:call-template name="html_footer"/>
