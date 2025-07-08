@@ -17,13 +17,13 @@
 
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
-                <div id="searchPage">
+                <div id="searchPage" class="container">
                     <div class="row title">
                         <h1>
                             <xsl:value-of select="$doc_title"/>
                         </h1>
                     </div>
-                    <div id="searchContainer" class="row">
+                    <div id="searchContainer" class="row body">
                         <div class="col-3">
                             <div id="searchbox"></div>
                             <h4>Jahr</h4>

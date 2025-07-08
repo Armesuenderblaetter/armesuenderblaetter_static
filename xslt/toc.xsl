@@ -35,6 +35,7 @@
                         <div class="row title">
                             <h1>Übersicht</h1>
                         </div>
+                        <div class="row body">
                         <table class="table" id="myTable">
                             <thead>
                                 <tr>
@@ -138,6 +139,7 @@
                             </tbody>
                         </table>
                         <xsl:call-template name="tabulator_dl_buttons"/>
+                        </div>
                     </div>
                 </main>
                 <xsl:call-template name="html_footer"/>

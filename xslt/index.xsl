@@ -33,18 +33,20 @@
                                 <xsl:value-of select="$doc_title"/>
                             </h1>
                         </div>
-                        <div class="image">
-                            <img src="images/vienna.png" alt="Cover Image" class="img-fluid"/>
-                        </div>
-                        <xsl:apply-templates select=".//tei:body" />
-                        <p>
-                            <a>
-                                <xsl:attribute name="href">
-                                    <xsl:value-of select="'about.html'"/>
-                                </xsl:attribute>
+                        <div class="body">
+                            <div class="image">
+                                <img src="images/vienna.png" alt="Cover Image" class="img-fluid"/>
+                            </div>
+                            <xsl:apply-templates select=".//tei:body" />
+                            <p>
+                                <a>
+                                    <xsl:attribute name="href">
+                                        <xsl:value-of select="'about.html'"/>
+                                    </xsl:attribute>
                                 Weiter…
-                            </a>
-                        </p>
+                                </a>
+                            </p>
+                        </div>
                     </div>
                 </main>
                 <xsl:call-template name="html_footer"/>

@@ -17,50 +17,51 @@
 
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
-                <div id="searchPage">
-                    <div class="row title">
-                        <h1>
-                            <xsl:value-of select="$doc_title"/>
-                        </h1>
-                    </div>
-                    <div id="searchContainer" class="row">
-                        <div class="col-md-2 col-12">
-                            <h4>Name</h4>
-                            <div id="searchbox"></div>
-                            <div id="name_list"/>
-                            <h4>Geschlecht</h4>
-                            <div id="sex"/>
-                            <h4>Alter</h4>
-                            <div id="decade_age"/>
-                            <h4>Geburtsort</h4>
-                            <div id="birth_place"/>
-                            <h4>Familienstand</h4>
-                            <div id="marriage_status"/>
-                            <h4>Konfession</h4>
-                            <div id="faith"/>
-                            <h4>Beruf</h4>
-                            <div id="occupation"/>
-                            <h4>Vergehen</h4>
-                            <div id="offences"/>
-                            <h4>Hinrichtung</h4>
-                            <div id="execution"/>
-                            <h4>Hinrichtungsort</h4>
-                            <div id="execution_places"/>
-                            <h4>Bestrafungen</h4>
-                            <div id="punishments"/>
-                            <div id="sort-by"></div>
-                            <div id="clear-refinements"></div>
+                <main class="flex-shrink-0">
+                    <div id="searchPage" class="container">
+                        <div class="row title">
+                            <h1>
+                                <xsl:value-of select="$doc_title"/>
+                            </h1>
                         </div>
-                        <div class="col-md-9 col-12">
-                            <div>
-                                <div class="d-flex flex-column align-items-center" id="current-refinements"></div>
+                        <div id="searchContainer" class="row body">
+                            <div class="col-md-2 col-12">
+                                <h4>Name</h4>
+                                <div id="searchbox"></div>
+                                <div id="name_list"/>
+                                <h4>Geschlecht</h4>
+                                <div id="sex"/>
+                                <h4>Alter</h4>
+                                <div id="decade_age"/>
+                                <h4>Geburtsort</h4>
+                                <div id="birth_place"/>
+                                <h4>Familienstand</h4>
+                                <div id="marriage_status"/>
+                                <h4>Konfession</h4>
+                                <div id="faith"/>
+                                <h4>Beruf</h4>
+                                <div id="occupation"/>
+                                <h4>Vergehen</h4>
+                                <div id="offences"/>
+                                <h4>Hinrichtung</h4>
+                                <div id="execution"/>
+                                <h4>Hinrichtungsort</h4>
+                                <div id="execution_places"/>
+                                <h4>Bestrafungen</h4>
+                                <div id="punishments"/>
+                                <div id="sort-by"></div>
+                                <div id="clear-refinements"></div>
                             </div>
-                            <div id="hits"></div>
-                            <div id="pagination"></div>
+                            <div class="col-md-9 col-12">
+                                <div>
+                                    <div class="d-flex flex-column align-items-center" id="current-refinements"></div>
+                                </div>
+                                <div id="hits"></div>
+                                <div id="pagination"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
+                </main>
 
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/algolia-min.css"></link>
                 <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4.46.0"></script>

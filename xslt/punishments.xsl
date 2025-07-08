@@ -27,13 +27,13 @@
 
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
-                <main>
-                    <div class="container">
-                        <div class="row title">
-                            <h1>
-                                <xsl:value-of select="$doc_title"/>
-                            </h1>
-                        </div>
+                <main class="container">
+                    <div class="row title">
+                        <h1>
+                            <xsl:value-of select="$doc_title"/>
+                        </h1>
+                    </div>
+                    <div class="row body">
                         <table class="table" id="myTable">
                             <thead>
                                 <tr>

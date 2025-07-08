@@ -35,7 +35,9 @@
                                 <xsl:value-of select="$doc_title"/>
                             </h1>
                         </div>
-                        <xsl:apply-templates select=".//tei:body"></xsl:apply-templates>
+                        <div class="body">
+                            <xsl:apply-templates select=".//tei:body"></xsl:apply-templates>
+                        </div>
                     </div>
                 </main>
                 <xsl:call-template name="html_footer"/>

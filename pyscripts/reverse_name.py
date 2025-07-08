@@ -7,8 +7,10 @@ import os
 def add_archive():
     with open("json/documents.json", 'r', encoding='utf-8') as filename:
         data = json.load(filename)
+
     id_arch = {}
     for doc_id, doc_data in data.items():
+        print(doc_data)
         id_arch[doc_id] = doc_data["archives"]
     return id_arch
 

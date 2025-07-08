@@ -34,11 +34,13 @@
                                 <xsl:value-of select="$doc_title"/>
                             </h1>
                         </div>
-                        <xsl:for-each select=".//div">
-                            <xsl:copy>
-                                <xsl:copy-of select="."/>
-                            </xsl:copy>
-                        </xsl:for-each>
+                        <div class="body">
+                            <xsl:for-each select=".//div">
+                                <xsl:copy>
+                                    <xsl:copy-of select="."/>
+                                </xsl:copy>
+                            </xsl:for-each>
+                        </div>
                     </div>
                 </main>
                 <xsl:call-template name="html_footer"/>
