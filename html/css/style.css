@@ -122,6 +122,7 @@ div#current-refinements {
 table{
       table-layout:fixed;
     border-collapse:collapse;
+    padding: 0;
 }
 tr td {
     vertical-align: top;
@@ -649,6 +650,9 @@ dd {
 /* .tabulator {
     display: inline-block!important;
 } */
+ .tabulator-headers{
+    padding: 0!important;
+ }
 
 .tabulator-header .tabulator-header-contents .tabulator-headers .tabulator-col{
     background-color: var(--asb-banner-colour) ;
