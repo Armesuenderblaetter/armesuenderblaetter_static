@@ -11,6 +11,9 @@
     --asb-link-visited-colour: #868277;
 }
 
+.container {
+    max-width: 1024px;
+}
 
 .align-right{
     text-align:right;
