@@ -34,15 +34,15 @@
                             </div>
                         </div>
                         <div class="col-md-8 col-12 texts">
-                            <p>
+                            <p class="top-par">
                            ACDH – ÖAW<xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
                            Austrian Centre for Digital Humanities<xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
                            Österreichische Akademie der Wissenschaften
                             </p>
-                            <p>
+                            <p class="mid-par">
                            Bäckerstraße 13, 1010 Wien
                             </p>
-                            <p class="link-in-footer">
+                            <p class="link-in-footer bottom-par">
                                 <i class="bi bi-telephone" aria-hidden="true"/>
                                 <span class="visually-hidden">Telefon</span>&#160;<a href="tel:+431515812200">+43 1 51581-2200</a>
                                 <xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
@@ -58,7 +58,7 @@
                     </div>
                 </div>
             </div>
-            <div class="footer-imprint-bar hide-reading" id="wrapper-footer-secondary" style="text-align:center; padding:0.4rem 0; font-size: 0.9rem;"> © 2025 ÖAW | <a href="imprint.html">Impressum</a> |                <a href="{$github_url}">
+            <div class="footer-imprint-bar hide-reading" id="wrapper-footer-secondary" style="text-align:center; padding:0.4rem 0; font-size: x-small;"> © 2025 ÖAW | <a href="imprint.html">Impressum</a> |                <a href="{$github_url}">
                     <i class="bi bi-github" title="GitHub" alt="GitHub" aria-hidden="true" />
                     <span class="visually-hidden">GitHub</span>
                 </a>
