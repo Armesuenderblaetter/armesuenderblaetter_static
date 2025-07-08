@@ -50,6 +50,15 @@ html {
     padding-top: 1rem;
 }
 
+#footer-full-content * {
+    font-size: small;
+}
+
+.par{
+    margin-top: .75em;
+    margin-bottom: .75em;
+}
+
 .row.title {
     padding-top: 4rem ;
 }
