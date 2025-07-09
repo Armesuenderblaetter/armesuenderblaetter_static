@@ -11,12 +11,12 @@
                 <script type="text/javascript" src="./js/tabulator/punishments.js" />
             </xsl:when>
             <xsl:when test="$tableconf = 'noske'">
-                <script type="text/javascript" src="./js/tabulator/noske.js" />
+                <script type="application/javascript" src="./js/tabulator/noske.js" />
             </xsl:when>
             <xsl:otherwise>
-                <script type="text/javascript" src="./js/tabulator/toc.js" />
+                <script type="application/javascript" src="./js/tabulator/toc.js" />
             </xsl:otherwise>
         </xsl:choose>
-        <script  type="text/javascript" src="js/tabulator/basic.js" />
+        <script  type="application/javascript" src="js/tabulator/basic.js" />
     </xsl:template>
 </xsl:stylesheet>
