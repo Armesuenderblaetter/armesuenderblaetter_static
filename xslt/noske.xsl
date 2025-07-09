@@ -130,8 +130,8 @@
         </div>
     </div>
 </main>
-<script type="module" src="js/noske/noske_cfg.js"></script>
-<script type="module" src="js/modalbox.js"></script>
+<script type="application/javascript" src="js/noske/noske_cfg.js"></script>
+<script type="application/javascript" src="js/modalbox.js"></script>
 <xsl:call-template name="html_footer"/>
 <xsl:call-template name="tabulator_js">
     <xsl:with-param name="tableconf" select="'noske'"/>
