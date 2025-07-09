@@ -31,24 +31,24 @@ jobs:
       run: |
         data_dir="${{ github.workspace }}/data/"
         data_repo="${{ github.workspace }}/data_repo/"
+        rm -rf $data_repo  $data_dir
         git config --global user.email "${GH_USERMAIL}"
         git config --global user.name "${GH_USERNAME}"
         git config --global credential.helper cache
         mkdir -p $data_dir
         git clone https://${GITHUB_ACCESS_TOKEN_NAME}:${GITHUB_ACCESS_TOKEN}@github.com/Armesuenderblaetter/armesuenderblaetter_data_ouput.git data_repo
-        data_dir="${{ github.workspace }}/data/"
-    - name: DEBUG 1
+    - name: DEBUG data_repo
       run: |
         ls $data_repo
-    - name: DEBUG 2
-      run: |
-        ls $data_dir
     - name: Continue
       run: |
         cp -r $data_repo/xml/editions $data_dir
         cp -r $data_repo/xml/indices $data_dir
         cp -r $data_repo/json .
         cp -r $data_repo/meta $data_dir
+    - name: DEBUG data_dir
+      run: |
+        ls $data_dir
     - name: setup typesense
       run: |
         ls -la json
