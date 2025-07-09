@@ -6,6 +6,8 @@
     <delete>
         <fileset dir="${target}" includes="*.html"/>
     </delete>
+    <fileset id="toc.files" dir="./data/editions" includes="fb_*.xml"/>
+    <pathconvert property="toc.input.files" refid="toc.files" pathsep=" "/>
     <xslt in="${index}" out="${target}/index.html" style="./xslt/index.xsl">
         <factory name="net.sf.saxon.TransformerFactoryImpl"/>
         <classpath location="${basedir}/saxon/saxon9he.jar"/>
@@ -18,7 +20,7 @@
         <factory name="net.sf.saxon.TransformerFactoryImpl"/>
         <classpath location="${basedir}/saxon/saxon9he.jar"/>
     </xslt>
-    <xslt in="./data/editions/fb_*.xml" out="${target}/toc.html" style="./xslt/toc.xsl">
+    <xslt in="${index}" out="${target}/toc.html" style="./xslt/toc.xsl">
         <factory name="net.sf.saxon.TransformerFactoryImpl"/>
         <classpath location="${basedir}/saxon/saxon9he.jar"/>
     </xslt>
