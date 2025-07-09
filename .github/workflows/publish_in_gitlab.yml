@@ -34,12 +34,12 @@ jobs:
         git config --global user.name "${GH_USERNAME}"
         git config --global credential.helper cache
         mkdir data
-        ./shellscripts/dl_imprint.sh
         git clone https://${GITHUB_ACCESS_TOKEN_NAME}:${GITHUB_ACCESS_TOKEN}@github.com/Armesuenderblaetter/armesuenderblaetter_data_ouput.git data_repo
         cp -r data_repo/xml/editions/ data
         cp -r data_repo/xml/indices/ data
         cp -r data_repo/json .
         cp -r data_repo/meta/ data
+        ./shellscripts/dl_imprint.sh
     - name: DEBUG
       run: |
         ls data
