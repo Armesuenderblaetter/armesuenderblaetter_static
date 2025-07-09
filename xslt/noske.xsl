@@ -125,7 +125,7 @@
         </div>
         <div>
             <div id="custom-noske-hits"/>
-            <div id="custom-noske-pagination"/>
+             <div id="custom-noske-pagination"/>
             <div id="custom-noske-stats" />
         </div>
     </div>

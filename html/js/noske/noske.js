@@ -713,7 +713,6 @@ async function I(r, e) {
   let t = document.querySelector(`#${e.selectQueryId}`),
     s = e.urlparam ? "url" : t.value;
   var o = s === "simple" ? ue(r) : s === "url" ? r : `q${r}`;
-  // Force pagesize and fromp to fetch all results
   let n = await R.getConcordance({
     corpname: e.corpname,
     q: o,
@@ -724,8 +723,8 @@ async function I(r, e) {
     kwicrightctx: e.kwicrightctx,
     kwicleftctx: e.kwicleftctx,
     refs: e.refs,
-    pagesize: 1000000, // fetch as many as possible
-    fromp: 1,
+    pagesize: e.pagesize,
+    fromp: e.fromp,
   });
   s === "url" && (t.value = "cql");
   let i = new URLSearchParams(window.location.search);
@@ -739,8 +738,8 @@ async function I(r, e) {
     i.set("kwicrightctx", e.kwicrightctx),
     i.set("kwicleftctx", e.kwicleftctx),
     i.set("refs", e.refs),
-    i.set("pagesize", "1000000"),
-    i.set("fromp", "1"),
+    i.set("pagesize", e.pagesize.toString()),
+    i.set("fromp", e.fromp.toString()),
     i.set("selectQueryValue", "url"),
     window.history.pushState({}, "", `${window.location.pathname}?${i}`),
     n.Lines && n.Lines.length === 0
@@ -1036,9 +1035,8 @@ var W = class {
             selectQueryId: `${n?.id}-select`,
           });
           e && b !== null && console.log(b),
-            await this.transformResponse(b, t, s, o, i, a);
-            // Pagination removed
-            // await this.createPagination(1, t, s, o, n.id, i, a);
+            await this.transformResponse(b, t, s, o, i, a),
+            await this.createPagination(1, t, s, o, n.id, i, a);
         }
       }
     }),
@@ -1065,9 +1063,8 @@ var W = class {
             selectQueryId: `${n?.id}-select`,
           });
           e && y !== null && console.log(y),
-            await this.transformResponse(y, t, s, o, i, a);
-            // Pagination removed
-            // await this.createPagination(1, t, s, o, n.id, i, a);
+            await this.transformResponse(y, t, s, o, i, a),
+            await this.createPagination(1, t, s, o, n.id, i, a);
         }
         setTimeout(() => {
           const autocompleteOpts = u || this.autocompleteOptions || {id: "noske-autocomplete"};
@@ -1096,9 +1093,8 @@ var W = class {
             urlparam: !0,
           });
           e && b !== null && console.log(b),
-            await this.transformResponse(b, t, s, o, i, a);
-            // Pagination removed
-            // await this.createPagination(1, t, s, o, n.id, i, a);
+            await this.transformResponse(b, t, s, o, i, a),
+            await this.createPagination(1, t, s, o, n.id, i, a);
         }
       })();
   }
@@ -1154,64 +1150,62 @@ var W = class {
     else {
       let u = $(e),
         c = M(e),
-        f = t.attrs?.split(",");
-      // Remove pagination select and related logic
-      // let x = Math.ceil(c / (t?.pagesize || this.pagesize)),
-      //   l = document.querySelector(`#${o.id}-init`);
-      // (l.innerHTML = `<select id="${`${o.id}-select`}"
-      //     class="${o.css?.select || this.selectcss}">
-      //     ${Array.from(
-      //       { length: x },
-      //       (y, m) => `<option value="${m + 1}">${m + 1}</option>`
-      //     ).join("")}
-      //   </select>`),
-      B(
-        u,
-        f,
-        `${s.id}-init`,
-        n?.customUrl || this.customUrl,
-        n?.urlparam || this.urlparam,
-        n?.customUrlTransform || !1,
-        s
-      ),
-      c &&
-        this.transformStats(
-          {
-            id: i.id,
-            css: {
-              div: i.css?.div || this.statsDiv,
-              label: i.css?.label || this.statsLabel,
+        f = t.attrs?.split(","),
+        x = Math.ceil(c / (t?.pagesize || this.pagesize)),
+        l = document.querySelector(`#${o.id}-init`);
+      (l.innerHTML = `<select id="${`${o.id}-select`}"
+          class="${o.css?.select || this.selectcss}">
+          ${Array.from(
+            { length: x },
+            (y, m) => `<option value="${m + 1}">${m + 1}</option>`
+          ).join("")}
+        </select>`),
+        B(
+          u,
+          f,
+          `${s.id}-init`,
+          n?.customUrl || this.customUrl,
+          n?.urlparam || this.urlparam,
+          n?.customUrlTransform || !1,
+          s
+        ),
+        c &&
+          this.transformStats(
+            {
+              id: i.id,
+              css: {
+                div: i.css?.div || this.statsDiv,
+                label: i.css?.label || this.statsLabel,
+              },
             },
-          },
-          c,
-          i.label || this.statsLabelValue
-        );
+            c,
+            i.label || this.statsLabelValue
+          );
     }
   }
-  // Remove createPagination method entirely
-  // async createPagination(e = 1, t, s, o, n, i, a) {
-  //   let u = document.querySelector(`#${o.id}-select`);
-  //   u.addEventListener("change", async (c) => {
-  //     t.fromp = parseInt(c.target.value);
-  //     let f = document.querySelector(`input#${n}-input`).value,
-  //       x = await I(f, {
-  //         corpname: t.corpname,
-  //         viewmode: t.viewmode || this.viewmode,
-  //         attrs: t.attrs || this.attrs,
-  //         format: t.format || this.format,
-  //         structs: t.structs || this.structs,
-  //         kwicrightctx: t.kwicrightctx || this.kwicrightctx,
-  //         kwicleftctx: t.kwicleftctx || this.kwicleftctx,
-  //         refs: t.refs || this.refs,
-  //         pagesize: t.pagesize || this.pagesize,
-  //         fromp: t.fromp || this.fromp,
-  //         selectQueryId: `${n}-select`,
-  //       });
-  //     await this.transformResponse(x, t, s, o, i, a),
-  //       await this.createPagination(c.target.value, t, s, o, n, i, a);
-  //   }),
-  //     (u.value = e.toString());
-  // }
+  async createPagination(e = 1, t, s, o, n, i, a) {
+    let u = document.querySelector(`#${o.id}-select`);
+    u.addEventListener("change", async (c) => {
+      t.fromp = parseInt(c.target.value);
+      let f = document.querySelector(`input#${n}-input`).value,
+        x = await I(f, {
+          corpname: t.corpname,
+          viewmode: t.viewmode || this.viewmode,
+          attrs: t.attrs || this.attrs,
+          format: t.format || this.format,
+          structs: t.structs || this.structs,
+          kwicrightctx: t.kwicrightctx || this.kwicrightctx,
+          kwicleftctx: t.kwicleftctx || this.kwicleftctx,
+          refs: t.refs || this.refs,
+          pagesize: t.pagesize || this.pagesize,
+          fromp: t.fromp || this.fromp,
+          selectQueryId: `${n}-select`,
+        });
+      await this.transformResponse(x, t, s, o, i, a),
+        await this.createPagination(c.target.value, t, s, o, n, i, a);
+    }),
+      (u.value = e.toString());
+  }
   clearResults(e, t, s, o) {
     document
       .querySelector(`input#${s}-input`)
