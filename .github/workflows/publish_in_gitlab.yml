@@ -34,7 +34,7 @@ jobs:
         git config --global credential.helper cache
         mkdir data_repo
         git clone https://${GITHUB_ACCESS_TOKEN_NAME}:${GITHUB_ACCESS_TOKEN}@github.com/Armesuenderblaetter/armesuenderblaetter_data_ouput.git data_repo
-        data_dir="./data/"
+        data_dir="${{ github.workspace }}/data/"
         cp -r data_repo/xml/editions $data_dir
         cp -r data_repo/xml/indices $data_dir
         cp -r data_repo/json .
