@@ -115,9 +115,10 @@ div#current-refinements {
 .tabulator {
 	display: inline-block!important ;
 	max-height: 70rem ;
-	overflow-y: scroll!important ;
     width: 100%!important;
     border: 0!important;
+    overflow-y: unset ;
+
 
 }
 
