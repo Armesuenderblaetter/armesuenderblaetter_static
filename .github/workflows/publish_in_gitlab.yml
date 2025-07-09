@@ -35,16 +35,11 @@ jobs:
         git config --global credential.helper cache
         mkdir data
         git clone https://${GITHUB_ACCESS_TOKEN_NAME}:${GITHUB_ACCESS_TOKEN}@github.com/Armesuenderblaetter/armesuenderblaetter_data_ouput.git data_repo
-    - name: DEBUG data_repo
-      run: |
-        ls data_repo
-    - name: Continue
-      run: |
-        cp -r data_repo/xml/editions data
-        cp -r data_repo/xml/indices data
+        cp -r data_repo/xml/editions/ data
+        cp -r data_repo/xml/indices/ data
         cp -r data_repo/json .
-        cp -r data_repo/meta data
-    - name: DEBUG data_dir
+        cp -r data_repo/meta/ data
+    - name: DEBUG
       run: |
         ls data
     - name: setup typesense
