@@ -43,6 +43,7 @@ jobs:
     - name: DEBUG
       run: |
         ls data
+        ls data/meta
     - name: setup typesense
       run: |
         ls -la json
