@@ -29,26 +29,24 @@ jobs:
         pip install -r requirements.txt
     - name: clone data output repo
       run: |
-        data_dir="./data/"
-        data_repo="./data_repo/"
-        rm -rf $data_repo  $data_dir
+        rm -rf data_repo  data
         git config --global user.email "${GH_USERMAIL}"
         git config --global user.name "${GH_USERNAME}"
         git config --global credential.helper cache
-        mkdir -p $data_dir
-        git clone https://${GITHUB_ACCESS_TOKEN_NAME}:${GITHUB_ACCESS_TOKEN}@github.com/Armesuenderblaetter/armesuenderblaetter_data_ouput.git $data_repo
+        mkdir data
+        git clone https://${GITHUB_ACCESS_TOKEN_NAME}:${GITHUB_ACCESS_TOKEN}@github.com/Armesuenderblaetter/armesuenderblaetter_data_ouput.git data_repo
     - name: DEBUG data_repo
       run: |
-        ls $data_repo
+        ls data_repo
     - name: Continue
       run: |
-        cp -r $data_repo/xml/editions $data_dir
-        cp -r $data_repo/xml/indices $data_dir
-        cp -r $data_repo/json .
-        cp -r $data_repo/meta $data_dir
+        cp -r data_repo/xml/editions data
+        cp -r data_repo/xml/indices data
+        cp -r data_repo/json .
+        cp -r data_repo/meta data
     - name: DEBUG data_dir
       run: |
-        ls $data_dir
+        ls data
     - name: setup typesense
       run: |
         ls -la json
