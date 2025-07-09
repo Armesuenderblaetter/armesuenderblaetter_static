@@ -24,11 +24,12 @@ jobs:
     - name: Install Saxon, Ant and Python
       run: |
         apt-get update && apt-get install openjdk-11-jre-headless ant -y --no-install-recommend
-        ./shellscripts/script.sh
+        ./shellscripts/dl_saxon.sh
         python -m pip config set global.break-system-packages true
         pip install -r requirements.txt
     - name: clone data output repo
       run: |
+        ./shellscripts/dl_imprint.sh
         rm -rf data_repo  data
         git config --global user.email "${GH_USERMAIL}"
         git config --global user.name "${GH_USERNAME}"
