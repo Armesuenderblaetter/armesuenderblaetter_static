@@ -1,4 +1,5 @@
 //import { NoskeSearch } from "https://cdn.jsdelivr.net/npm/acdh-noske-search/dist/index.js";
+
 import { NoskeSearch } from "./noske.js";
 const search = new NoskeSearch({ container: "noske-search", autocomplete: false,  wordlistattr: ["word","lemma","pos","vocab","id"]});
 
