@@ -447,7 +447,8 @@ span.lemma::before {
 }
 
 *.spaced {
-    text-decoration: underline !important;
+    letter-spacing: 5px;
+    /*text-decoration: underline !important;     ABSTAND */
 }
 
 *.indent {
