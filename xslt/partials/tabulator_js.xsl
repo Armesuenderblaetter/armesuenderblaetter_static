@@ -8,15 +8,15 @@
         <script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.1/dist/js/tabulator.min.js" />
         <xsl:choose>
             <xsl:when test="$tableconf = 'punishments'">
-                <script src="./js/tabulator/punishments.js" />
+                <script type="text/javascript" src="./js/tabulator/punishments.js" />
             </xsl:when>
             <xsl:when test="$tableconf = 'noske'">
-                <script src="./js/tabulator/noske.js" />
+                <script type="text/javascript" src="./js/tabulator/noske.js" />
             </xsl:when>
             <xsl:otherwise>
-                <script src="./js/tabulator/toc.js" />
+                <script type="text/javascript" src="./js/tabulator/toc.js" />
             </xsl:otherwise>
         </xsl:choose>
-        <script  type="module" src="js/tabulator/basic.js" />
+        <script  type="text/javascript" src="js/tabulator/basic.js" />
     </xsl:template>
 </xsl:stylesheet>
