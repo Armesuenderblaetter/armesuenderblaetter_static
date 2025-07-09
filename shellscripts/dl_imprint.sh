@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REDMINE_ID="22954?format=xhtml&locale="
-IMPRINT_XML=./data/imprint.xml
+IMPRINT_XML=./data/meta/imprint.xml
 rm ${IMPRINT_XML}
 echo '<?xml version="1.0" encoding="UTF-8"?>'
 echo "<root>" >> ${IMPRINT_XML}
