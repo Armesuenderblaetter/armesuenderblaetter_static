@@ -30,6 +30,9 @@ jobs:
     - name: clone data output repo
       run: |
         ./shellscripts/dl_imprint.sh
+        ls data/meta
+        echo '----'
+        ls data
         rm -rf data_repo  data
         git config --global user.email "${GH_USERMAIL}"
         git config --global user.name "${GH_USERNAME}"
