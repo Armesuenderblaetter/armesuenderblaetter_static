@@ -3,17 +3,23 @@ let isInitializing = false; // Prevent recursive calls
 
 function waitForTable() {
   if (isInitializing) return; // Prevent multiple simultaneous calls
-  
+
   const el = document.querySelector("#myTable");
   if (!el) {
     setTimeout(waitForTable, 100); // Try again after 100ms
     return;
   }
 
+  // Only create the table if it doesn't exist yet
+  if (table && table.element === el) {
+    // Table already created for this element, do nothing
+    return;
+  }
+
   isInitializing = true;
 
-  // Destroy existing table instance if it exists
-  if (table) {
+  // Destroy existing table instance only if the element reference has changed
+  if (table && table.element !== el) {
     try {
       table.destroy();
     } catch (e) {
@@ -24,7 +30,6 @@ function waitForTable() {
 
   // Add a small delay to ensure DOM is fully ready
   setTimeout(() => {
-    // Double-check the element still exists
     const tableEl = document.querySelector("#myTable");
     if (!tableEl) {
       isInitializing = false;
@@ -32,10 +37,8 @@ function waitForTable() {
       return;
     }
 
-    // Create new table instance
     table = new Tabulator("#myTable", config);
 
-    // Set up download buttons after table is ready
     table.on("tableBuilt", function() {
       setupDownloadButtons();
       isInitializing = false; // Allow future calls after table is built
@@ -82,21 +85,18 @@ waitForTable();
 let lastTableEl = null;
 const observer = new MutationObserver(() => {
   const el = document.querySelector("#myTable");
-  
   // Only trigger if the actual #myTable element reference has changed
   // and we're not currently initializing
   if (el !== lastTableEl && !isInitializing) {
     lastTableEl = el;
     if (el) {
-      // Add a delay to ensure the element is fully in the DOM
       setTimeout(waitForTable, 100);
     }
   }
-  
   if (!el) {
     lastTableEl = null;
+    // Do NOT destroy the table here; let it persist until a new #myTable is created
   }
 });
 
-// Only observe direct children changes, not all subtree changes
 observer.observe(document.body, { childList: true, subtree: true });
