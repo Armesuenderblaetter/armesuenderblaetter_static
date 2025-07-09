@@ -29,8 +29,8 @@ jobs:
         pip install -r requirements.txt
     - name: clone data output repo
       run: |
-        data_dir="${{ github.workspace }}/data/"
-        data_repo="${{ github.workspace }}/data_repo/"
+        data_dir="/data/"
+        data_repo="/data_repo/"
         rm -rf $data_repo  $data_dir
         git config --global user.email "${GH_USERMAIL}"
         git config --global user.name "${GH_USERNAME}"
