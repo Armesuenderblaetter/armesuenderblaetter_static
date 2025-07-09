@@ -68,17 +68,8 @@
                                             </a>
                                         </td>
                                         <xsl:variable name="alt_path" select="replace($full_path, '/fb_([^/]+)$', '/$1')" />
-                                        <xsl:variable name="alt_doc" select="document($alt_path)" />
-                                        <xsl:variable name="eventDate" select="($alt_doc//tei:event[@type='execution']/tei:desc/tei:date/@when, $alt_doc//tei:event[@type='verdict']/tei:desc/tei:date/@when, $alt_doc//tei:event[@type='offence']/tei:desc/tei:date/@when,
-           $alt_doc//tei:event/tei:desc/tei:date/@when,
-           $alt_doc//tei:date/@when,
-           substring(tokenize($alt_path, '/')[last()], 1, 4)
-          )[1]" />
-                                        <xsl:variable name="rawDate" select="($alt_doc//tei:event[@type='execution']/tei:desc/tei:date/text(), $alt_doc//tei:event[@type='verdict']/tei:desc/tei:date/text(), $alt_doc//tei:event[@type='offence']/tei:desc/tei:date/text(),
-           $alt_doc//tei:event/tei:desc/tei:date/text(),
-           $alt_doc//tei:date/@text(),
-           substring(tokenize($alt_path, '/')[last()], 1, 4)
-          )[1]" />
+                                        <xsl:variable name="eventDate" select="substring(tokenize($alt_path, '/')[last()], 1, 4)" />
+                                        <xsl:variable name="rawDate" select="substring(tokenize($alt_path, '/')[last()], 1, 4)" />
                                         <xsl:variable name="filename" select="tokenize($full_path, '/')[last()]" />
                                         <xsl:variable name="ymd" select="replace($filename, '^fb_(\d{4})(\d{2})(\d{2}).*$', '$1-$2-$3')" />
                                         <xsl:variable name="eventDateSort">
