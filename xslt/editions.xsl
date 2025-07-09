@@ -89,7 +89,7 @@
                                 <xsl:call-template name="annotation-options"/>
                             </div>-->
                     </div>
-                    <div class="edition-content body">
+                    <div class="edition-content row body">
                         <div id="facsimiles" class="col-6">
                             <xsl:call-template name="osd-container"/>
                         </div>
