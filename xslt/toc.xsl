@@ -50,9 +50,9 @@
         let $filename := tokenize(document-uri(/), '/')[last()]
         return
             replace($filename,
-                '^fb_(\d{4})$', '$1-01-01')
-            => replace('^fb_(\d{4})(\d{2})$', '$1-$2-01')
-            => replace('^fb_(\d{4})(\d{2})(\d{2}).*$', '$1-$2-$3')
+                '^fb_(\d{4})$', 'fb_$1-01-01')
+            => replace('^fb_(\d{4})(\d{2})$', 'fb_$1-$2-01')
+            => replace('^fb_(\d{4})(\d{2})(\d{2}).*$', 'fb_$1-$2-$3')
     " data-type="text" order="ascending" />
                                     <xsl:variable name="full_path">
                                         <xsl:value-of select="document-uri(/)"/>
