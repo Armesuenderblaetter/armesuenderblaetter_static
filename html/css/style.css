@@ -24,6 +24,8 @@ main {
 
 #myTable {
 	display: none ;
+  width: 100%;
+  max-width: 100%;
 }
 
 
@@ -114,7 +116,7 @@ div#current-refinements {
 
 .tabulator {
 	display: inline-block!important ;
-	max-height: 70rem ;
+	height: unset ;
     width: 100%!important;
     border: 0!important;
     overflow-y: unset ;
@@ -658,7 +660,9 @@ dd {
 } */
  .tabulator-headers{
     padding: 0!important;
+    max-width: 100%,
  }
+
 
 .tabulator-header .tabulator-header-contents .tabulator-headers .tabulator-col{
     /* background-color: var(--asb-banner-colour) ; */
@@ -671,6 +675,7 @@ dd {
 
 .tabulator-row {
     border-bottom: unset!important ;
+    background-color: unset!important ;
    
 }
 
@@ -679,8 +684,9 @@ dd {
     border-bottom: 6px solid black!important;
 }
 
-.tabulator-row {
-    background-color: unset!important ;
+.tabulator-col {
+    max-width: 100% ;
+    
 }
 
 /* MEDIA SPECIFIC */
@@ -695,10 +701,18 @@ dd {
     color: black;
 }
 
+.tabulator-table {
+    max-width: 100% ;
+}
 .tabulator-tableholder, .noske-hits-tbody {
     margin-top: 1rem;
  border: solid var(--asb-link-colour) 3px!important;
     border-radius: 15px;
+}
+
+.tabulator,
+.tabulator * {
+  box-sizing: border-box !important;
 }
 
 
