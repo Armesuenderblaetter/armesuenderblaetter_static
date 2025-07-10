@@ -1,6 +1,6 @@
 name: build page and push to gitlab
 
-on: [workflow_dispatch, push]
+on: [workflow_dispatch]
 
 jobs:
   build_html:
