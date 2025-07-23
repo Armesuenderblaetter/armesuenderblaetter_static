@@ -34,16 +34,16 @@ current_typesense_schema = {
     "default_sorting_field": "sorting_date",
     "fields": [
         {"name": "thumbnail", "type": "string"},
-        {"name": "title", "type": "string"},
+        {"name": "title", "type": "string", "sort": True},
         {"name": "id", "type": "string"},
         {"name": "sorting_date", "type": "int32"},
         {"name": "label_date", "type": "int32", "facet": True},
-        {"name": "filename", "type": "string"},
+        {"name": "filename", "type": "string", "Sort": True},
         {"name": "fulltext", "type": "string"},
         {"name": "print_date", "type": "string"},
-        {"name": "printer", "type": "string",  "facet": True},
-        {"name": "printing_location", "type": "string", "facet": True},
-        {"name": "archives", "type": "string[]", "facet": True}
+        {"name": "printer", "type": "string",  "facet": True, "sort": True},
+        {"name": "printing_location", "type": "string", "facet": True, "sort": True},
+        {"name": "archives", "type": "string[]", "facet": True, "sort": True}
     ],
 }
 

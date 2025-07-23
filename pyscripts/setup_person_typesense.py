@@ -15,27 +15,31 @@ current_typesense_schema = {
     "name": typesense_collection_name,
     "enable_nested_fields": False,
     "default_sorting_field": "fullname",
+    "sorting": {
+        "facet_by": "fields.name(sort_by: recipe.calories:asc)"
+
+    },
     "fields": [
         {"name": "sorter", "type": "int32"},
         {"name": "global_id", "type": "string"},
         {"name": "forename", "type": "string"},
         {"name": "surname", "type": "string"},
-        {"name": "fullname", "type": "string", "facet": True},
-        {"name": "birth_place", "type": "string", "facet": True},
+        {"name": "fullname", "type": "string", "facet": True, "sort": True},
+        {"name": "birth_place", "type": "string", "facet": True,  "sort": True},
         {"name": "sex", "type": "string", "facet": True},
         {"name": "age", "type": "string", "facet": False},
         {"name": "decade_age", "type": "string", "facet": True},
         {"name": "type", "type": "string", "facet": True},
-        {"name": "marriage_status", "type": "string", "facet": True},
+        {"name": "marriage_status", "type": "string", "facet": True,  "sort": True},
         {"name": "faith", "type": "string", "facet": True},
         {"name": "occupation", "type": "string", "facet": True},
         {"name": "offences", "type": "string[]", "facet": True},
         {"name": "execution", "type": "string[]", "facet": True},
-        {"name": "execution_places", "type": "string[]", "facet": True},
+        {"name": "execution_places", "type": "string[]", "facet": True,  "sort": True},
         {"name": "punishments", "type": "string[]", "facet": True},
         {"name": "file_identifier", "type": "string", "facet": False},
         {"name": "archives", "type": "string[]", "facet": False},
-        {"name": "id", "type": "string", "facet": False},
+        {"name": "id", "type": "string", "facet": False,  "sort": True},
         {"name": "thumbnail", "type": "string"},
     ]
 }
