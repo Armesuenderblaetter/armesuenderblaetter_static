@@ -14,7 +14,7 @@ json_ts_index_path = "./json/persons.json"
 current_typesense_schema = {
     "name": typesense_collection_name,
     "enable_nested_fields": False,
-    "default_sorting_field": "sorter",
+    "default_sorting_field": "fullname",
     "fields": [
         {"name": "sorter", "type": "int32"},
         {"name": "global_id", "type": "string"},
