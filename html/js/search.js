@@ -197,10 +197,9 @@ search.addWidgets([
     container: "#sort-by",
     items: [
       { label: "Jahr (absteigend)", value: "flugblaetter_todesurteile" },
-      {
-        label: "Jahr (aufsteigend)",
-        value: "flugblaetter_todesurteile/sort/sorting_date:asc",
-      },
+      {label: "Jahr (aufsteigend)", value: "flugblaetter_todesurteile/sort/sorting_date:asc",},
+      { label: "Titel (absteigend)", value: "flugblaetter_todesurteile" },
+      {label: "Titel (aufsteigend)", value: "flugblaetter_todesurteile/sort/titel:asc",},
     ],
   }),
 
@@ -227,7 +226,8 @@ search.addWidgets([
     container: "#printer",
     attribute: "printer",
     limit: 1000,
-    searchable: true,
+    searchable: false,
+    sortBy: ['name:asc', 'count:desc'],
     cssClasses: {
       list: "facet-list-scroll",
     },
@@ -242,7 +242,7 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#archives",
     attribute: "archives",
-    searchable: true,
+    sortBy: ['name:asc', 'count:desc'],
     /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
@@ -254,8 +254,9 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#printing_location",
     attribute: "printing_location",
+    sortBy: ['name:asc', 'count:desc'],
     limit: 1000,
-    searchable: true,
+    searchable: false,
     /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",

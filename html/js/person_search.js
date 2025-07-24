@@ -178,8 +178,9 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#name_list",
     attribute: "fullname",
+    sortBy: ['name:asc', 'count:desc'],
     limit: 1000,
-    searchable: true,
+    searchable: false,
     cssClasses: {
       // showMore: "btn btn-secondary btn-sm align-content-center",
       list: "facet-list-scroll",
@@ -206,7 +207,8 @@ search.addWidgets([
     container: "#birth_place",
     attribute: "birth_place",
     limit: 1000,
-    searchable: true,
+    searchable: false,
+    sortBy: ['name:asc', 'count:desc'],
     cssClasses: {
       list: "facet-list-scroll",
     },
@@ -223,7 +225,8 @@ search.addWidgets([
     container: "#execution_places",
     attribute: "execution_places",
     limit: 1000,
-    searchable: true,
+    searchable: false,
+    sortBy: ['name:asc', 'count:desc'],
     cssClasses: {
       list: "facet-list-scroll",
     },
@@ -240,6 +243,7 @@ search.addWidgets([
     container: "#decade_age",
     attribute: "decade_age",
     searchable: false,
+    sortBy: ['name:asc'],
     /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
       list: "list-unstyled",
@@ -265,6 +269,7 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#marriage_status",
     attribute: "marriage_status",
+     sortBy: ['name:asc', 'count:desc'],
     searchable: false,
     /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
@@ -278,6 +283,7 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#faith",
     attribute: "faith",
+     sortBy: ['name:asc', 'count:desc'],
     searchable: false,
     /*cssClasses: {
       showMore: "btn btn-secondary btn-sm align-content-center",
@@ -291,7 +297,8 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#occupation",
     attribute: "occupation",
-    searchable: true,
+    searchable: false,
+     sortBy: ['name:asc', 'count:desc'],
     cssClasses: {
       list: "facet-list-scroll",
     },
@@ -307,7 +314,8 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#offences",
     attribute: "offences",
-    searchable: true,
+    searchable: false,
+     sortBy: ['name:asc', 'count:desc'],
     cssClasses: {
       list: "facet-list-scroll",
     },
@@ -324,7 +332,8 @@ search.addWidgets([
     container: "#execution",
     attribute: "execution",
     limit: 1000,
-    searchable: true,
+    searchable: false,
+     sortBy: ['name:asc', 'count:desc'],
     cssClasses: {
       list: "facet-list-scroll",
     },
@@ -341,7 +350,8 @@ search.addWidgets([
     container: "#punishments",
     attribute: "punishments",
     limit: 1000,
-    searchable: true,
+    searchable: false,
+     sortBy: ['name:asc', 'count:desc'],
     cssClasses: {
       list: "facet-list-scroll",
     },
