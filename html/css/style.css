@@ -29,10 +29,6 @@ main {
 }
 
 
-button {
-    max-width: 30px;
-}
-
 p {
     margin: 0;
 }
@@ -600,7 +596,9 @@ a.personview::before {
     content: "↗ ";
 }
 
-
+ul {
+    border-bottom: unset!important;
+}
 ul#witness_overview.nav.nav-tabs li.nav-item button.nav-link {
     font-weight: bold;
 }
@@ -744,10 +742,21 @@ dd {
 }
 }
 
+button.nav-link {
+    background-color: var(--asb-banner-colour)!important;
+    color: var(--asb-link-visited-colour) !important ;
+}
+.nav-item{margin:auto;}
+
+button.nav-link.active {
+    background-color: var(--asb-banner-colour)!important;
+    color: black !important;
+}
+
 button, select{
   border: solid var(--asb-link-colour) 3px !important;
   border-radius: 15px !important;
-  background-color: var(--asb-banner-colour);
+  background-color: var(--asb-banner-colour)!important;
   max-width: unset!important;
   padding: 0.5rem!important;
   word-wrap: normal;
