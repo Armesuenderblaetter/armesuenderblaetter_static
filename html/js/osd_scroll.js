@@ -79,17 +79,25 @@ function debounce(callback, wait) {
 
 function scroll_prev() {
   if (previous_pb_index == -1) {
-    pb_elements[0].scrollIntoView();
+    // pb_elements[0].scrollIntoView();
+    handle_new_image(pb_elements[0]);
+    handle_page_visibility(pb_elements[0]);
   } else {
-    pb_elements[previous_pb_index].scrollIntoView();
+    // pb_elements[previous_pb_index].scrollIntoView();
+    handle_new_image(pb_elements[previous_pb_index]);
+    handle_page_visibility(pb_elements[previous_pb_index]);
   }
 }
 
 function scroll_next() {
   if (next_pb_index > max_index) {
-    pb_elements[max_index].scrollIntoView();
+    // pb_elements[max_index].scrollIntoView();
+    handle_new_image(pb_elements[max_index]);
+    handle_page_visibility(pb_elements[max_index]);
   } else {
-    pb_elements[next_pb_index].scrollIntoView();
+    // pb_elements[next_pb_index].scrollIntoView();
+    handle_new_image(pb_elements[next_pb_index]);
+    handle_page_visibility(pb_elements[next_pb_index]);
   }
 }
 
@@ -112,47 +120,41 @@ function get_pb_sibling(element){
   }
 
 function load_initial_image() {
-  // depending on the margins you set for you intersection observer
-  // and the position of you lb elements on the page the initial image
-  //   might not be in the observerd zone when the page is loaded, such that
-  //   no image is loaded when the page is loaded. Try removing the conditional
-  //   check for a window hash in this function if you encounter this problem
+  // Load the first image on startup
+  if (viewer.world.getItemCount() > 1) {
+    viewer.world.removeItem(viewer.world.getItemAt(1));
+  }
+  
+  let first_pb_element_in_viewport = pb_elements[0]; // Always start with first page
+  
+  // Handle URL hash for specific page targeting
   if (window.location.hash) {
-    let first_pb_element_in_viewport = undefined;
     for (let pb_element of pb_elements) {
       if (isInViewport(pb_element)) {
         first_pb_element_in_viewport = pb_element;
         break;
       }
-    }
-    if (viewer.world.getItemCount() > 1) {
-      viewer.world.removeItem(viewer.world.getItemAt(1));
     }
     if (first_pb_element_in_viewport === undefined || first_pb_element_in_viewport === null) {
       let current_target_element = document.getElementById(
         window.location.hash.substring(1)
       );
-      target_el_parent = current_target_element.parentElement
-      if (target_el_parent){
-        first_pb_element_in_viewport = get_pb_sibling(target_el_parent)
+      if (current_target_element) {
+        target_el_parent = current_target_element.parentElement
+        if (target_el_parent){
+          first_pb_element_in_viewport = get_pb_sibling(target_el_parent)
+        }
       }
       if (first_pb_element_in_viewport === undefined || first_pb_element_in_viewport === null){
         first_pb_element_in_viewport = pb_elements[0]
       }
     }
+  }
+  
+  // Load the appropriate image and show its content
+  if (first_pb_element_in_viewport) {
     handle_new_image(first_pb_element_in_viewport);
-  } else {
-    let first_pb_element_in_viewport = undefined;
-    for (let pb_element of pb_elements) {
-      if (isInViewport(pb_element)) {
-        first_pb_element_in_viewport = pb_element;
-        break;
-      }
-    }
-    if (viewer.world.getItemCount() > 1) {
-      viewer.world.removeItem(viewer.world.getItemAt(1));
-    }
-    handle_new_image(first_pb_element_in_viewport);
+    handle_page_visibility(first_pb_element_in_viewport);
   }
 }
 
@@ -230,6 +232,69 @@ function handle_new_image(current_pb_element) {
   load_new_image_with_check(new_image_url, old_image);
 }
 
+// New function to handle page content visibility
+function handle_page_visibility(current_pb_element) {
+  let current_pb_index = pb_elements_array.findIndex(
+    (el) => el === current_pb_element
+  );
+  next_pb_index = current_pb_index + 1;
+  previous_pb_index = current_pb_index - 1;
+  
+  // Hide all page content except current page
+  show_only_current_page(current_pb_index);
+}
+
+// Function to show only the content of the current page
+function show_only_current_page(current_page_index) {
+  // Get all content between page breaks
+  const editionText = document.getElementById('edition-text');
+  if (!editionText) {
+    console.log('No edition-text element found');
+    return;
+  }
+  
+  const allElements = Array.from(editionText.children);
+  const pbElements = allElements.filter(el => 
+    el.classList && el.classList.contains('pb') && el.classList.contains('primary')
+  );
+  
+  if (pbElements.length === 0) {
+    console.log('No page break elements found');
+    return;
+  }
+  
+  // Get the current and next page break elements
+  const currentPbElement = pbElements[current_page_index];
+  const nextPbElement = pbElements[current_page_index + 1];
+  
+  if (!currentPbElement) {
+    console.log('Current page element not found for index:', current_page_index);
+    return;
+  }
+  
+  // Find the indices in the full children array
+  const currentPbIndex = allElements.indexOf(currentPbElement);
+  const nextPbIndex = nextPbElement ? allElements.indexOf(nextPbElement) : allElements.length;
+  
+  // First, hide ALL elements
+  allElements.forEach((element) => {
+    element.classList.remove('current-page');
+    element.style.display = 'none';
+    element.style.visibility = 'hidden';
+  });
+  
+  // Then show only current page elements
+  for (let index = currentPbIndex; index < nextPbIndex; index++) {
+    if (allElements[index]) {
+      allElements[index].classList.add('current-page');
+      allElements[index].style.display = 'block';
+      allElements[index].style.visibility = 'visible';
+    }
+  }
+  
+  console.log(`Showing page ${current_page_index + 1}: elements ${currentPbIndex} to ${nextPbIndex - 1}, total pb elements: ${pbElements.length}`);
+}
+
 function load_new_image_with_check(new_image_url, old_image) {
   if (last_img_url != new_image_url){
     last_img_url = new_image_url;
@@ -263,7 +328,9 @@ function handle_visible_lbs(entries, observer) {
     if (intersecting.length > 0) {
       first_intersecting_entry = intersecting[0];
       if (first_intersecting_entry != last_loaded_entry) {
+        // Handle both image and page content visibility when scrolling
         handle_new_image(first_intersecting_entry.target);
+        handle_page_visibility(first_intersecting_entry.target);
         last_loaded_entry = first_intersecting_entry;
       }
     }
@@ -271,16 +338,16 @@ function handle_visible_lbs(entries, observer) {
 }
 
 /*
- call some stuff
+ call some stuff - DISABLED INTERSECTION OBSERVER FOR MANUAL NAVIGATION ONLY
 */
-const debounced_lb_handler = debounce(handle_visible_lbs, 1000);
+// const debounced_lb_handler = debounce(handle_visible_lbs, 1000);
 // create the observer, its default scope (root element) is the viewport,
 // but you could change it eg. to body etc.
-let viewportObserver = new IntersectionObserver(handle_visible_lbs, io_options);
+// let viewportObserver = new IntersectionObserver(handle_visible_lbs, io_options);
 // give the observer some lbs to observer
-pb_elements_array.forEach((entry) => {
-  viewportObserver.observe(entry);
-});
+// pb_elements_array.forEach((entry) => {
+//   viewportObserver.observe(entry);
+// });
 prev.addEventListener("click", () => {
   scroll_prev();
 });
@@ -290,4 +357,22 @@ next.addEventListener("click", () => {
 
 if (isVisible(OSD_container_spawnpoint)) {
   load_initial_image();
+}
+
+// Initialize the page to show only the first page content
+function initializePageView() {
+  // Show only the first page initially
+  if (pb_elements_array.length > 0) {
+    // Force initialize the first page
+    show_only_current_page(0);
+    console.log('Page view initialized - showing first page only');
+  }
+}
+
+// Make sure DOM is loaded before initializing
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializePageView);
+} else {
+  // Add a small delay to ensure everything is rendered
+  setTimeout(initializePageView, 100);
 }

@@ -38,8 +38,10 @@
                         <table class="table" id="myTable">
                             <thead>
                                 <tr>
+                                    <th scope="col" />
                                     <th scope="col">Titel</th>
                                     <th scope="col">Datum</th>
+                                    <th scope="col">Ort</th>
                                     <!-- <th scope="col" tabulator-headerFilter="input">Dateiname</th> -->
                                 </tr>
                             </thead>
@@ -54,11 +56,18 @@
             => replace('^fb_(\d{4})(\d{2})$', 'fb_$1-$2-01')
             => replace('^fb_(\d{4})(\d{2})(\d{2}).*$', 'fb_$1-$2-$3')
     " data-type="text" order="ascending" />
-                                    <xsl:variable name="full_path">
-                                        <xsl:value-of select="document-uri(/)"/>
-                                    </xsl:variable>
-
+                                    <xsl:variable name="full_path" select="document-uri(/)"/>
+                                    <xsl:variable name="iiifbase" select="'https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/'" />
+                                    <xsl:variable name="iiifpars" select="'/full/260,/0/default.jpg'" />
+                                    <xsl:variable name="iiiffile" select="(//tei:pb/@facs)[1]"/>
                                     <tr>
+                                        <td>
+                                            <img>
+                                                <xsl:attribute name="src" select="concat($iiifbase, $iiiffile, $iiifpars)" />
+                                                <xsl:attribute name="alt" select="'Deckblatt/Erste Seite des Armesünderblattes'" />
+                                                <xsl:attribute name="class" select="'thumbnail'" />
+                                            </img>
+                                        </td>
                                         <td>
                                             <a>
                                                 <xsl:attribute name="href">
@@ -120,6 +129,9 @@
                                                     <xsl:value-of select="$eventDate" />
                                                 </xsl:otherwise>
                                             </xsl:choose>
+                                        </td>
+                                        <td>
+                                            <xsl:value-of select="./tei:desc/tei:placeName/text()"/>
                                         </td>
                                         <!-- <td>
                                             <xsl:value-of select="tokenize($full_path, '/')[last()]" />

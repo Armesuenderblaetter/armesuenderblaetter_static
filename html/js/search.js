@@ -25,12 +25,13 @@ const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   collectionSpecificFacetByOptions: {
     collection1: {
       printer: "(sort_by: _alpha:desc)",
-    },
+    }
+  },
   additionalSearchParameters: {
     query_by: "fulltext",
-    sort_by: 'title:asc', // Sort by title alphabetically
   },
-});
+}
+);
 
 const searchClient = typesenseInstantsearchAdapter.searchClient;
 const search = instantsearch({
@@ -211,7 +212,6 @@ search.addWidgets([
   instantsearch.widgets.rangeInput({
     container: "#decade",
     attribute: "label_date",
-    sortBy: "name:asc",
     templates: {
       separatorText: "bis",
       submitText: "Suchen",
@@ -228,8 +228,6 @@ search.addWidgets([
     attribute: "printer",
     limit: 1000,
     searchable: true,
-    name(sort_by: _alpha:asc),
-    sortBy: "name:asc",
     cssClasses: {
       list: "facet-list-scroll",
     },
@@ -256,7 +254,6 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#printing_location",
     attribute: "printing_location",
-    sortBy: "name:asc",
     limit: 1000,
     searchable: true,
     /*cssClasses: {

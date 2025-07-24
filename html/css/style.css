@@ -29,10 +29,6 @@ main {
 }
 
 
-button {
-    max-width: 30px;
-}
-
 p {
     margin: 0;
 }
@@ -162,8 +158,10 @@ div ul.ais-RefinementList-list {
 
 #edition-text {
     margin-left: 3rem;
-    padding-bottom: 75vh;
+    padding-bottom: 2rem;
     max-width: 30rem;
+    height: 100vh;
+    overflow: hidden; /* Remove scrolling completely */
 }
 
 #sticky-OSD-wrapper {
@@ -598,7 +596,9 @@ a.personview::before {
     content: "↗ ";
 }
 
-
+ul {
+    border-bottom: unset!important;
+}
 ul#witness_overview.nav.nav-tabs li.nav-item button.nav-link {
     font-weight: bold;
 }
@@ -689,6 +689,11 @@ dd {
     
 }
 
+
+.thumbnail {
+    max-height: 128px;
+    min-height: 64px;
+}
 /* MEDIA SPECIFIC */
 .tabulator-header, .noske-hits-head {
   border: solid var(--asb-link-colour) 3px!important;
@@ -742,8 +747,54 @@ dd {
 }
 }
 
+button.nav-link {
+    background-color: var(--asb-banner-colour)!important;
+    color: var(--asb-link-visited-colour) !important ;
+}
+.nav-item{margin:auto;}
+
+button.nav-link.active {
+    background-color: var(--asb-banner-colour)!important;
+    color: black !important;
+}
+
+button, select{
+  border: solid var(--asb-link-colour) 3px !important;
+  border-radius: 15px !important;
+  background-color: var(--asb-banner-colour)!important;
+  max-width: unset!important;
+  padding: 0.5rem!important;
+  word-wrap: normal;
+  text-transform: none;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1!important;
+}
 
 
+option {
+    background-color: var(--asb-banner-colour);
+
+}
+
+
+@mixin background-up-down($color: #000) {
+  $rgb: 'rgb%28#{round(red($color))}, #{round(green($color))}, #{round(blue($color))}%29';
+}
+
+select {
+  &.different {
+    background-color: var(--asb-banner-colour);
+    box-sizing: border-box;
+    padding-right: 1.5em;
+  }
+}
+
+.kwic, .kwic * {
+    color: pink!important;
+    font-weight: bold;
+}
 
 
 @media screen and (max-width: 1399) {
@@ -778,4 +829,51 @@ dd {
     .ais-Panel-header .ais-Panel-collapseButton{
         display: none ;
     }   
+}
+
+/* Page visibility transitions for single-page view */
+#edition-text > * {
+    transition: opacity 0.2s ease-in-out;
+}
+
+#edition-text > *[style*="display: none"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#edition-text > *:not([style*="display: none"]) {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Ensure facsimile stays fixed */
+#facsimiles {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Ensure page break markers are visible for navigation */
+span.pb.primary {
+    display: block !important;
+}
+
+/* Ensure the row layout stays side by side */
+.edition-content.row.body {
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Force single page view - hide everything by default, show only current */
+#edition-text {
+    position: relative;
+}
+
+#edition-text > *:not(.current-page) {
+    display: none !important;
 }
