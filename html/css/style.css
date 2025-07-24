@@ -689,6 +689,11 @@ dd {
     
 }
 
+
+.thumbnail {
+    max-height: 128px;
+    min-height: 64px;
+}
 /* MEDIA SPECIFIC */
 .tabulator-header, .noske-hits-head {
   border: solid var(--asb-link-colour) 3px!important;
