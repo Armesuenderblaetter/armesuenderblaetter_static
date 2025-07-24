@@ -109,11 +109,19 @@
                                         </td>
                                         <!-- ID -->
                                         <td>
+                                            <xsl:variable name="iiifbase" select="'https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/'" />
+                                            <xsl:variable name="iiifpars" select="'/full/260,/0/default.jpg'" />
+                                            <xsl:variable name="xmlfile" select="replace($id, '^trial_result_(fb_.*)_[^_]+$', '$1.xml')"/>
+                                            <xsl:variable name="iiiffile" select="(document(concat('../data/editions/', $xmlfile))//*:pb/@facs)[1]"/>
                                             <a>
                                                 <xsl:attribute name="href">
-                                                    <xsl:value-of select="replace($id, '^trial_result_(fb_.*)_[^_]+$', '$1.html')"/>
+                                                    <xsl:value-of select="replace($xmlfile, 'xml$', 'html')"/>
                                                 </xsl:attribute>
-                                            Dokument
+                                                <img>
+                                                    <xsl:attribute name="src" select="concat($iiifbase, $iiiffile, $iiifpars)" />
+                                                    <xsl:attribute name="alt" select="'Deckblatt/Erste Seite des Armesünderblattes'" />
+                                                    <xsl:attribute name="class" select="'thumbnail'" />
+                                                </img>
                                             </a>
                                         </td>
                                     </tr>

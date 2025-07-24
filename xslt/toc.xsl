@@ -41,6 +41,7 @@
                                     <th scope="col" />
                                     <th scope="col">Titel</th>
                                     <th scope="col">Datum</th>
+                                    <th scope="col">Ort</th>
                                     <!-- <th scope="col" tabulator-headerFilter="input">Dateiname</th> -->
                                 </tr>
                             </thead>
@@ -128,6 +129,9 @@
                                                     <xsl:value-of select="$eventDate" />
                                                 </xsl:otherwise>
                                             </xsl:choose>
+                                        </td>
+                                        <td>
+                                            <xsl:value-of select="./tei:desc/tei:placeName/text()"/>
                                         </td>
                                         <!-- <td>
                                             <xsl:value-of select="tokenize($full_path, '/')[last()]" />
