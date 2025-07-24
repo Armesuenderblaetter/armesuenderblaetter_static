@@ -12,21 +12,7 @@ const iiif_server_base_path =
 const iiif_attribs = "/full/max/0/default.jpg";
 const page_break_marker_classname = "pb primary";
 const page_break_marker_image_attribute = "source";
-/*
-Change theses values to negative percentates/px if you want to narrow/expand
-the region of the viewport whicht triggers a reload.
-One possibly irritating behavior can be, that clicking on prev/next button 
-scrolls the pb element outside the screen region that triggers reload. If this 
-region is being empty, when the debounced function is running, no new image will 
-be loaded. Expand the region that triggers reload in this case or increase the
-top scroll offset of the targeted bp elements
-*/
-const top_viewport_threshold = "0px";
-const bottom_viewport_threshold = "-90%";
-// this is the options object for the intersection observer
-const io_options = {
-  rootMargin: `${top_viewport_threshold} 0% ${bottom_viewport_threshold} 0%`,
-};
+// Removed automatic scrolling thresholds and intersection observer options
 
 // get relevant elements/values
 const OSD_container_spawnpoint = document.getElementById(
@@ -46,66 +32,34 @@ function isVisible(el) {
   return style.display !== "none";
 }
 
-function isInViewport(element) {
-  // Get the bounding client rectangle position in the viewport
-  var bounding = element.getBoundingClientRect();
-  if (
-    bounding.top >= 0 &&
-    bounding.left >= 0 &&
-    bounding.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) &&
-    bounding.right <=
-      (window.innerWidth || document.documentElement.clientWidth)
-  ) {
-    return true;
+// Removed isInViewport function as it's no longer needed for automatic scrolling
+
+// Removed debounce function as it's no longer needed for automatic scrolling
+
+function navigate_prev() {
+  const prev_index = current_page_index - 1;
+  if (prev_index >= 0) {
+    handle_new_image(prev_index);
+    handle_page_visibility(prev_index);
+    console.log('Navigated to previous page:', prev_index + 1);
   } else {
-    return false;
+    console.log('Already at first page');
   }
 }
 
-// simple implementation of debounce
-// prevents loading a lot of images when
-// scrolling fast through the page
-// without setting unnecessary heuristic timeouts
-function debounce(callback, wait) {
-  let timeoutId = null;
-  return (...args) => {
-    window.clearTimeout(timeoutId);
-    timeoutId = window.setTimeout(() => {
-      callback(...args);
-    }, wait);
-  };
-}
-
-function scroll_prev() {
-  if (previous_pb_index == -1) {
-    // pb_elements[0].scrollIntoView();
-    handle_new_image(pb_elements[0]);
-    handle_page_visibility(pb_elements[0]);
+function navigate_next() {
+  const next_index = current_page_index + 1;
+  if (next_index <= max_index) {
+    handle_new_image(next_index);
+    handle_page_visibility(next_index);
+    console.log('Navigated to next page:', next_index + 1);
   } else {
-    // pb_elements[previous_pb_index].scrollIntoView();
-    handle_new_image(pb_elements[previous_pb_index]);
-    handle_page_visibility(pb_elements[previous_pb_index]);
+    console.log('Already at last page');
   }
 }
 
-function scroll_next() {
-  if (next_pb_index > max_index) {
-    // pb_elements[max_index].scrollIntoView();
-    handle_new_image(pb_elements[max_index]);
-    handle_page_visibility(pb_elements[max_index]);
-  } else {
-    // pb_elements[next_pb_index].scrollIntoView();
-    handle_new_image(pb_elements[next_pb_index]);
-    handle_page_visibility(pb_elements[next_pb_index]);
-  }
-}
-
-// since the page loading process is sometimes hard to predict
-// it might happen that the loading the page with an url anchor param
-// doesn't trigger the intersectionobserver callback
-// to prevent any hassle the following functions handle the inital scrolling
-// if such param is present in url
+// URL hash handling for initial page setup
+// No automatic scrolling - only content and image updates
 
 function get_pb_sibling(element){
     let parent_childs = Array.from(element.parentElement.children);
@@ -125,37 +79,37 @@ function load_initial_image() {
     viewer.world.removeItem(viewer.world.getItemAt(1));
   }
   
-  let first_pb_element_in_viewport = pb_elements[0]; // Always start with first page
+  let initial_page_index = 0; // Always start with first page
+  let first_pb_element_in_viewport = pb_elements_array[0];
   
   // Handle URL hash for specific page targeting
   if (window.location.hash) {
-    for (let pb_element of pb_elements) {
-      if (isInViewport(pb_element)) {
-        first_pb_element_in_viewport = pb_element;
-        break;
+    let current_target_element = document.getElementById(
+      window.location.hash.substring(1)
+    );
+    if (current_target_element) {
+      target_el_parent = current_target_element.parentElement
+      if (target_el_parent){
+        first_pb_element_in_viewport = get_pb_sibling(target_el_parent)
       }
     }
-    if (first_pb_element_in_viewport === undefined || first_pb_element_in_viewport === null) {
-      let current_target_element = document.getElementById(
-        window.location.hash.substring(1)
-      );
-      if (current_target_element) {
-        target_el_parent = current_target_element.parentElement
-        if (target_el_parent){
-          first_pb_element_in_viewport = get_pb_sibling(target_el_parent)
-        }
-      }
-      if (first_pb_element_in_viewport === undefined || first_pb_element_in_viewport === null){
-        first_pb_element_in_viewport = pb_elements[0]
+    if (first_pb_element_in_viewport === undefined || first_pb_element_in_viewport === null){
+      first_pb_element_in_viewport = pb_elements_array[0]
+    }
+    
+    // Find the index of the target element
+    if (first_pb_element_in_viewport) {
+      initial_page_index = pb_elements_array.findIndex(el => el === first_pb_element_in_viewport);
+      if (initial_page_index === -1) {
+        initial_page_index = 0;
       }
     }
   }
   
   // Load the appropriate image and show its content
-  if (first_pb_element_in_viewport) {
-    handle_new_image(first_pb_element_in_viewport);
-    handle_page_visibility(first_pb_element_in_viewport);
-  }
+  handle_new_image(initial_page_index);
+  handle_page_visibility(initial_page_index);
+  console.log('Initial page loaded:', initial_page_index + 1);
 }
 
 /*
@@ -205,24 +159,25 @@ locate index of anchor element
 ##################################################################
 */
 
-var next_pb_index = 0;
-var previous_pb_index = -1;
-const max_index = pb_elements.length - 1;
+// Track the current page index globally
+var current_page_index = 0;
+const max_index = pb_elements_array.length - 1;
 var prev = document.querySelector("div[title='Previous page']");
 var next = document.querySelector("div[title='Next page']");
 prev.style.opacity = 1;
 next.style.opacity = 1;
 var last_img_url = ""
-/* These two values define the size of the part
-of the viewport that should trigger an image reload
-whenever it gets enterd by a pb element. Negative values
-make that zone smaller, positive expand it.*/
-function handle_new_image(current_pb_element) {
-  let current_pb_index = pb_elements_array.findIndex(
-    (el) => el === current_pb_element
-  );
-  next_pb_index = current_pb_index + 1;
-  previous_pb_index = current_pb_index - 1;
+
+// Manual navigation with prev/next buttons only
+function handle_new_image(page_index) {
+  if (page_index < 0 || page_index >= pb_elements_array.length) {
+    console.log('Invalid page index:', page_index);
+    return;
+  }
+  
+  current_page_index = page_index;
+  const current_pb_element = pb_elements_array[page_index];
+  
   new_image_url = get_iif_link(
     current_pb_element.getAttribute(
       page_break_marker_image_attribute
@@ -233,15 +188,15 @@ function handle_new_image(current_pb_element) {
 }
 
 // New function to handle page content visibility
-function handle_page_visibility(current_pb_element) {
-  let current_pb_index = pb_elements_array.findIndex(
-    (el) => el === current_pb_element
-  );
-  next_pb_index = current_pb_index + 1;
-  previous_pb_index = current_pb_index - 1;
+function handle_page_visibility(page_index) {
+  if (page_index < 0 || page_index >= pb_elements_array.length) {
+    console.log('Invalid page index for visibility:', page_index);
+    return;
+  }
   
+  current_page_index = page_index;
   // Hide all page content except current page
-  show_only_current_page(current_pb_index);
+  show_only_current_page(page_index);
 }
 
 // Function to show only the content of the current page
@@ -253,46 +208,61 @@ function show_only_current_page(current_page_index) {
     return;
   }
   
-  const allElements = Array.from(editionText.children);
-  const pbElements = allElements.filter(el => 
-    el.classList && el.classList.contains('pb') && el.classList.contains('primary')
-  );
-  
-  if (pbElements.length === 0) {
+  // Use the same pb_elements_array that's used for images
+  if (pb_elements_array.length === 0) {
     console.log('No page break elements found');
     return;
   }
   
-  // Get the current and next page break elements
-  const currentPbElement = pbElements[current_page_index];
-  const nextPbElement = pbElements[current_page_index + 1];
+  // Get the current and next page break elements from the main array
+  const currentPbElement = pb_elements_array[current_page_index];
+  const nextPbElement = pb_elements_array[current_page_index + 1];
   
   if (!currentPbElement) {
     console.log('Current page element not found for index:', current_page_index);
     return;
   }
   
-  // Find the indices in the full children array
-  const currentPbIndex = allElements.indexOf(currentPbElement);
-  const nextPbIndex = nextPbElement ? allElements.indexOf(nextPbElement) : allElements.length;
-  
-  // First, hide ALL elements
-  allElements.forEach((element) => {
-    element.classList.remove('current-page');
-    element.style.display = 'none';
-    element.style.visibility = 'hidden';
+  // Hide all direct children of editionText by default
+  const directChildren = Array.from(editionText.children);
+  directChildren.forEach(child => {
+    child.style.display = 'none';
+    child.classList.remove('current-page');
   });
-  
-  // Then show only current page elements
-  for (let index = currentPbIndex; index < nextPbIndex; index++) {
-    if (allElements[index]) {
-      allElements[index].classList.add('current-page');
-      allElements[index].style.display = 'block';
-      allElements[index].style.visibility = 'visible';
+
+  // Find all nodes between currentPbElement and nextPbElement in document order
+  let started = false;
+  let finished = false;
+  let nodesToShow = [];
+  function collectNodes(node) {
+    if (finished) return;
+    if (node === currentPbElement) started = true;
+    if (started) nodesToShow.push(node);
+    if (node === nextPbElement && started && node !== currentPbElement) {
+      finished = true;
+      nodesToShow.pop(); // do not include the nextPbElement itself
+      return;
+    }
+    for (let child of node.childNodes) {
+      collectNodes(child);
+      if (finished) break;
     }
   }
-  
-  console.log(`Showing page ${current_page_index + 1}: elements ${currentPbIndex} to ${nextPbIndex - 1}, total pb elements: ${pbElements.length}`);
+  collectNodes(editionText);
+
+  // Show all nodes in the range and their ancestors up to editionText
+  nodesToShow.forEach(node => {
+    let el = node.nodeType === 1 ? node : node.parentElement;
+    while (el && el !== editionText) {
+      el.style.display = '';
+      el.classList.add('current-page');
+      el = el.parentElement;
+    }
+  });
+  // Always show editionText
+  editionText.style.display = '';
+
+  console.log(`Showing page ${current_page_index + 1} of ${pb_elements_array.length}: showing nodes from pb #${current_page_index} to pb #${current_page_index + 1}`);
 }
 
 function load_new_image_with_check(new_image_url, old_image) {
@@ -318,41 +288,18 @@ function load_new_image_with_check(new_image_url, old_image) {
 }
 
 
-/*this function is the callback for the intersection observer
-it gets called whenever an element leaves or enters the defined 
-section of the viewport*/
-var last_loaded_entry = "";
-function handle_visible_lbs(entries, observer) {
-  entries.forEach((entry) => {
-    var intersecting = entries.filter((entry) => entry.isIntersecting == true);
-    if (intersecting.length > 0) {
-      first_intersecting_entry = intersecting[0];
-      if (first_intersecting_entry != last_loaded_entry) {
-        // Handle both image and page content visibility when scrolling
-        handle_new_image(first_intersecting_entry.target);
-        handle_page_visibility(first_intersecting_entry.target);
-        last_loaded_entry = first_intersecting_entry;
-      }
-    }
-  });
-}
+// Removed intersection observer functionality for automatic scrolling
+/*this function previously handled automatic scrolling via intersection observer
+but has been removed to disable automatic scrolling behavior*/
 
 /*
- call some stuff - DISABLED INTERSECTION OBSERVER FOR MANUAL NAVIGATION ONLY
+ Manual navigation only - no scrolling, just content updates
 */
-// const debounced_lb_handler = debounce(handle_visible_lbs, 1000);
-// create the observer, its default scope (root element) is the viewport,
-// but you could change it eg. to body etc.
-// let viewportObserver = new IntersectionObserver(handle_visible_lbs, io_options);
-// give the observer some lbs to observer
-// pb_elements_array.forEach((entry) => {
-//   viewportObserver.observe(entry);
-// });
 prev.addEventListener("click", () => {
-  scroll_prev();
+  navigate_prev();
 });
 next.addEventListener("click", () => {
-  scroll_next();
+  navigate_next();
 });
 
 if (isVisible(OSD_container_spawnpoint)) {
@@ -363,9 +310,10 @@ if (isVisible(OSD_container_spawnpoint)) {
 function initializePageView() {
   // Show only the first page initially
   if (pb_elements_array.length > 0) {
-    // Force initialize the first page
+    // Set initial state
+    current_page_index = 0;
     show_only_current_page(0);
-    console.log('Page view initialized - showing first page only');
+    console.log('Page view initialized - showing first page only, total pages:', pb_elements_array.length);
   }
 }
 
