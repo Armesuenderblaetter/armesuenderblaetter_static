@@ -34,7 +34,10 @@ h1 {
     padding-right: 1rem;
 }
 
-
+.noske-search-div{
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+}
 
 .noske-hits-left {
     padding-right: 0;
