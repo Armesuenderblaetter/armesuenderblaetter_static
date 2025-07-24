@@ -745,7 +745,10 @@ dd {
 }
 
 
-
+.kwic, .kwic * {
+    color: pink!important;
+    font-weight: bold;
+}
 
 
 @media screen and (max-width: 1399) {
