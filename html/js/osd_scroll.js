@@ -58,9 +58,6 @@ function navigate_prev() {
   if (prev_index >= 0) {
     handle_new_image(prev_index);
     handle_page_visibility(prev_index);
-    console.log('Navigated to previous page:', prev_index + 1);
-  } else {
-    console.log('Already at first page');
   }
 }
 
@@ -69,9 +66,6 @@ function navigate_next() {
   if (next_index <= max_index) {
     handle_new_image(next_index);
     handle_page_visibility(next_index);
-    console.log('Navigated to next page:', next_index + 1);
-  } else {
-    console.log('Already at last page');
   }
 }
 
@@ -80,7 +74,6 @@ function navigate_next() {
 
 function get_pb_sibling(element){
     let parent_childs = Array.from(element.parentElement.children);
-    console.log(parent_childs)
     parent_childs = parent_childs.filter(c=>c.nodeType == 1 && c.classList.contains("pb") && c.classList.contains("primary"))
     if (parent_childs.length != 0){
       return parent_childs[0]
@@ -126,7 +119,6 @@ function load_initial_image() {
   // Load the appropriate image and show its content
   handle_new_image(initial_page_index);
   handle_page_visibility(initial_page_index);
-  console.log('Initial page loaded:', initial_page_index + 1);
 }
 
 /*
@@ -137,6 +129,63 @@ creates an array for osd viewer with static images
 */
 var pb_elements = document.getElementsByClassName(page_break_marker_classname);
 var pb_elements_array = Array.from(pb_elements);
+
+// Debug: Log all page break elements found
+console.log('Total page break elements found:', pb_elements_array.length);
+pb_elements_array.forEach((el, index) => {
+  console.log(`Page break ${index}:`, el.getAttribute('source'), el);
+});
+
+// Debug: Check if the missing _d_ element exists with different classes
+const editionText = document.getElementById('edition-text');
+if (editionText) {
+  const allSpansWithSource = editionText.querySelectorAll('span[source*="_d_"]');
+  console.log('All spans with _d_ in source:', allSpansWithSource.length);
+  allSpansWithSource.forEach((el, index) => {
+    console.log(`_d_ span ${index}:`, el.getAttribute('source'), 'classes:', el.className, el);
+  });
+  
+  // Also check for any pb elements regardless of classes
+  const allPbElements = editionText.querySelectorAll('span.pb');
+  console.log('All pb elements found:', allPbElements.length);
+  const missingD = Array.from(allPbElements).find(el => el.getAttribute('source') && el.getAttribute('source').includes('_d_'));
+  if (missingD) {
+    console.log('Found _d_ pb element with classes:', missingD.className, missingD);
+  } else {
+    console.log('No _d_ pb element found at all');
+  }
+  
+  // Check entire document for _d_ elements
+  const allDElementsInDoc = document.querySelectorAll('*[source*="_d_"]');
+  console.log('All _d_ elements in entire document:', allDElementsInDoc.length);
+  allDElementsInDoc.forEach((el, index) => {
+    console.log(`_d_ element ${index} in document:`, el.getAttribute('source'), 'classes:', el.className, 'parent:', el.parentElement?.id || 'no-id', el);
+  });
+
+  // Set up a mutation observer to watch for dynamically added _d_ elements
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      mutation.addedNodes.forEach(function(node) {
+        if (node.nodeType === 1) { // Element node
+          if (node.getAttribute && node.getAttribute('source') && node.getAttribute('source').includes('_d_')) {
+            console.log('DYNAMIC: _d_ element added:', node.getAttribute('source'), 'classes:', node.className, node);
+          }
+          // Check children too
+          const childDElements = node.querySelectorAll ? node.querySelectorAll('*[source*="_d_"]') : [];
+          childDElements.forEach(child => {
+            console.log('DYNAMIC: _d_ child element added:', child.getAttribute('source'), 'classes:', child.className, child);
+          });
+        }
+      });
+    });
+  });
+  
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+  console.log('Mutation observer set up to watch for _d_ elements');
+}
 
 /*
 ##################################################################
@@ -231,6 +280,9 @@ function show_only_current_page(current_page_index) {
   // Hide all horizontal rules to prevent visual artifacts.
   editionText.querySelectorAll('hr').forEach(hr => hr.style.display = 'none');
 
+  // Remove 'current' from all line break elements to reset the state.
+  editionText.querySelectorAll('br.lb').forEach(br => br.classList.remove('current'));
+
   const currentPbElement = pb_elements_array[current_page_index];
   const nextPbElement = pb_elements_array[current_page_index + 1];
 
@@ -238,6 +290,8 @@ function show_only_current_page(current_page_index) {
     console.log('Current page element not found for index:', current_page_index);
     return;
   }
+
+  console.log(`Showing page ${current_page_index + 1}, current pb:`, currentPbElement, 'next pb:', nextPbElement);
 
   // 1. Get all elements within edition-text in document order.
   const allElements = Array.from(editionText.querySelectorAll('*'));
@@ -254,15 +308,31 @@ function show_only_current_page(current_page_index) {
     const nextPbIndex = allElements.indexOf(nextPbElement);
     if (nextPbIndex > startIndex) {
       endIndex = nextPbIndex;
+      console.log(`Page boundary: elements ${startIndex} to ${endIndex - 1} (next page starts at ${endIndex})`);
     }
+  } else {
+    console.log(`Last page: elements ${startIndex} to end (${allElements.length})`);
   }
 
   // 3. Collect all elements for the current page and their ancestors.
   const elementsToShow = new Set();
   const elementsInRange = allElements.slice(startIndex, endIndex);
 
+  console.log(`Elements in range for page ${current_page_index + 1}:`, elementsInRange.length);
+
   elementsInRange.forEach(element => {
     elementsToShow.add(element);
+    // Add 'current' class to visible line breaks and mark split words.
+    if (element.tagName === 'BR' && element.classList.contains('lb')) {
+      element.classList.add('current');
+      const parent = element.parentElement;
+      if (parent && parent.classList.contains('token')) {
+        const prevSibling = element.previousElementSibling;
+        if (prevSibling && prevSibling.tagName === 'SPAN') {
+          prevSibling.classList.add('split-word-part-1');
+        }
+      }
+    }
     let parent = element.parentElement;
     // Traverse up the DOM tree to ensure all parent containers are also shown.
     while (parent && parent !== editionText) {
@@ -272,17 +342,21 @@ function show_only_current_page(current_page_index) {
   });
 
   // 4. Apply visibility based on the collected set.
+  let hiddenCount = 0;
+  let shownCount = 0;
   allElements.forEach(element => {
     if (elementsToShow.has(element)) {
-      element.style.display = ''; // Reset to default display style.
+      element.style.cssText = ''; // Reset to default display style.
       element.classList.add('current-page');
+      shownCount++;
     } else {
-      element.style.display = 'none';
+      element.style.cssText = 'display: none !important;';
       element.classList.remove('current-page');
+      hiddenCount++;
     }
   });
 
-  console.log(`Showing page ${current_page_index + 1} of ${pb_elements_array.length}`);
+  console.log(`Page ${current_page_index + 1}: ${shownCount} elements shown, ${hiddenCount} elements hidden`);
 }
 
 function load_new_image_with_check(new_image_url, old_image) {
@@ -338,7 +412,6 @@ function initializePageView() {
     // Set initial state
     current_page_index = 0;
     show_only_current_page(0);
-    console.log('Page view initialized - showing first page only, total pages:', pb_elements_array.length);
   }
 }
 

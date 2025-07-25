@@ -1,3 +1,19 @@
+.catch {
+    display: inline-block;
+   
+    text-align: right;
+    position: relative;
+}
+
+
+.row.fw {
+ width: 100%;
+
+}
+.row.fw {
+ color: grey;
+
+}
 :root {
     --editor-font-family: serif;
     --editor-font-color: grey;
@@ -23,7 +39,7 @@ main {
 }
 
 #myTable {
-	display: none ;
+    display: none ;
   width: 100%;
   max-width: 100%;
 }
@@ -45,11 +61,11 @@ html {
 }
 
 .showBanner {
-	background: url('../images/banner.jpg') repeat-x;
+    background: url('../images/banner.jpg') repeat-x;
     background-size: contain;
-	height: 15vh;
+    height: 15vh;
     width: 100% ;
-	margin: 0;
+    margin: 0;
 }
 
 .footer{
@@ -111,8 +127,8 @@ div#current-refinements {
 
 
 .tabulator {
-	display: inline-block!important ;
-	height: unset ;
+    display: inline-block!important ;
+    height: unset ;
     width: 100%!important;
     border: 0!important;
     overflow-y: unset ;
@@ -160,7 +176,7 @@ div ul.ais-RefinementList-list {
     margin-left: 3rem;
     padding-bottom: 2rem;
     max-width: 30rem;
-    height: 100vh;
+    /* height: 100vh; */
     overflow: hidden; /* Remove scrolling completely */
 }
 
@@ -190,6 +206,10 @@ div.icon_desc {
     font-size: small;
 }
 
+
+span.pb {
+    padding-top: 10rem;
+}
 span.pb.nearly_no_content {
     display: block;
     height: 16rem;
@@ -198,10 +218,9 @@ span.pb.nearly_no_content {
 span.pb.primary {
     display: block;
     width: 100%;
-    margin: 1rem 0;
+    margin: 0;
     color: inherit;
     border: 0;
-    border-bottom: var(--bs-border-width) solid;
     opacity: .25;
 }
 
@@ -360,21 +379,19 @@ span.image_preview img {
 }
 
 
-span.sig,
-span.catch {
+span.sig {
     width: fit-content;
-    display: block;
+    display: inline-block;
     color: grey;
-    text-align: left;
+    text-align: center;
     position: relative;
-    right: var(--catch-offset-right);
 }
 
 a.variant_anchor_link.block_lemma.catch>span.catch {
     width: fit-content;
     display: block;
     color: grey;
-    text-align: left;
+    text-align: right;
     position: relative;
     right: 0;
     text-indent: 0;
@@ -429,7 +446,6 @@ span.lemma::before {
 
 *.text_align_center {
     display: inline-block;
-    width: 100%;
     text-align: center !important;
     align-content: center !important;
 }
@@ -565,10 +581,28 @@ span.sic:hover::before {
     color: var(--editor-font-color) !important;
 }
 
+.lb {
+  display: block;
+}
+
+.lat {}
+.split-word-part-1:has(+ br.lb.current:not([style*="display: none"]))::after {
+    content: "⹀";
+    margin-left: 0px;
+}
+
+br.lb.current {
+    display: block;
+    content: "";
+    margin-top: 0;
+    font-size: 2px;
+    line-height: 0px;
+}
+
+
 *.text_align_center span.lb::after,
 span.verse+span.lb::after {
-    content: "\a";
-    white-space: pre;
+     white-space: pre;
 }
 
 
@@ -733,12 +767,12 @@ dd {
 }
 
 @media screen and (max-width: 767px) {
-	.mobile-align-right {
-		 text-align: right;
-	}
+    .mobile-align-right {
+         text-align: right;
+    }
 .mobile-align-left {
-		 text-align: left;
-	}
+         text-align: left;
+    }
 .mobile-hide {
     display: none ;
 }
@@ -831,25 +865,6 @@ select {
     }   
 }
 
-/* Page visibility transitions for single-page view */
-#edition-text > * {
-    transition: opacity 0.2s ease-in-out;
-}
-
-#edition-text > *[style*="display: none"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-#edition-text > *:not([style*="display: none"]) {
-    opacity: 1;
-    visibility: visible;
-}
-
 /* Ensure facsimile stays fixed */
 #facsimiles {
     position: sticky;
@@ -861,19 +876,4 @@ select {
 /* Ensure page break markers are visible for navigation */
 span.pb.primary {
     display: block !important;
-}
-
-/* Ensure the row layout stays side by side */
-.edition-content.row.body {
-    height: 100vh;
-    overflow: hidden;
-}
-
-/* Force single page view - hide everything by default, show only current */
-#edition-text {
-    position: relative;
-}
-
-#edition-text > *:not(.current-page) {
-    display: none !important;
 }
