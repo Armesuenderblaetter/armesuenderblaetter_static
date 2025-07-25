@@ -149,51 +149,9 @@
             <xsl:value-of select="' '"/>
         </xsl:if>
     </xsl:template>
-    <xsl:template match="tei:pb[@type = 'primary']">
-        <!--
-            this is necessary cause empty pages have to little height to
-            trigger scrolling, so i need to create a hight via css, ergo
-            I need a class, but at the same moment there are sometimes
-            more then one image sources linked, so determining if the amount
-            of text inbetween two pb elements is more difficult, I need to
-            excluded images from all sources but one to determine the amount of
-            text between them
-        -->
-        <xsl:variable name="facs">
-            <xsl:value-of select="@facs"/>
-        </xsl:variable>
-        <xsl:variable name="emptypage">
-            <xsl:for-each-group select="//tei:text//text() | //tei:text//tei:pb[@type = 'primary']" group-starting-with=".[local-name() = 'pb' and @type = 'primary']">
-                <xsl:if test="current-group()[1][local-name() = 'pb' and @facs = $facs]">
-                    <xsl:if test="not(current-group()//tei:titlePage)">
-                        <xsl:value-of select="string-length(string-join(current-group())) lt 100"/>
-                    </xsl:if>
-                </xsl:if>
-            </xsl:for-each-group>
-        </xsl:variable>
-        <span class="pb primary" source="{@facs}">
-            <xsl:if test="string($emptypage) = 'true'">
-                <xsl:attribute name="class">
-                    <xsl:value-of select="'pb nearly_no_content primary'"/>
-                </xsl:attribute>
-            </xsl:if>
-            <xsl:value-of select="./@n"/>
-        </span>
-    </xsl:template>
-    <xsl:template match="tei:pb[@type = 'secondary']">
-        <xsl:if test="@type = 'secondary' and not(preceding-sibling::*[1][self::tei:pb and @type = 'primary']) and not(following-sibling::*[1][self::tei:pb and @type = 'primary']) and not(ancestor::tei:app)">
-            <xsl:variable name="num">
-                <xsl:number level="any"/>
-            </xsl:variable>
-            <span class="empty_lemma">
-                <a class="variant_anchor_link" href="#app_pb_{$num}">
-                    <xsl:attribute name="id">
-                        <xsl:value-of select="concat('var_pb_', $num)"/>
-                    </xsl:attribute>
-                    <xsl:value-of select="' '"/>
-                </a>
-            </span>
-        </xsl:if>
+
+    <xsl:template match="tei:pb" mode="#all">
+        <span class="pb primary" source="{@facs}"></span>
     </xsl:template>
     <xsl:template match="tei:pb" mode="app">
         <xsl:text> | </xsl:text>
@@ -281,7 +239,7 @@
             <xsl:apply-templates/>
         </span>
     </xsl:template>
-    <xsl:template match="tei:lb">
+    <xsl:template match="tei:lb" mode="#all">
         <br class="lb"/>
     </xsl:template>
     <xsl:template match="tei:note">
@@ -323,33 +281,34 @@
             </xsl:when>
         </xsl:choose>
     </xsl:template>
-    <xsl:template match="tei:fw">
+    <xsl:template match="tei:fw" mode="#all">
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
         <xsl:choose>
             <xsl:when test="@type = 'catch'">
-                <span class="catch {$rendering}">
+                <div class="col catch {$rendering} fw">
                     <xsl:apply-templates/>
-                </span>
+                </div>
             </xsl:when>
             <xsl:when test="@type = 'footer'">
-                <span class="layer_counter {$rendering}">
+                <div class="row layer_counter {$rendering} fw">
+                    <div class="col fw" />
                     <xsl:apply-templates/>
-                </span>
+                </div>
             </xsl:when>
             <xsl:when test="@type = 'pageNum'">
-                <span class="page_number {$rendering}">
+                <div class="col page_number {$rendering} fw">
                     <xsl:apply-templates/>
-                </span>
+                </div>
             </xsl:when>
             <xsl:when test="@type = 'sig'">
-                <span class="sig {$rendering}">
+                <div class="col sig {$rendering} fw">
                     <xsl:apply-templates/>
-                </span>
+                </div>
             </xsl:when>
             <xsl:when test="@type = 'footnote'">
-                <span class="footnote {$rendering}">
+                <span class="footnote {$rendering} fw">
                     <xsl:apply-templates/>
                 </span>
             </xsl:when>

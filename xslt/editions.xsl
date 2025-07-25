@@ -46,7 +46,7 @@
                     .navBarNavDropdown ul li:nth-child(2) {
                         display: none !important;
                     }</style>
-                 <link rel="stylesheet" href="css/de-micro-editor.css" />   
+                 <link rel="stylesheet" href="css/micro-editor.css" />   
             </head>
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
