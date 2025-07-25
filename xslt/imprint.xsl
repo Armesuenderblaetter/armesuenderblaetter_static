@@ -34,11 +34,9 @@
                         </h1>
                     </div>
                     <div class="body">
-                        <xsl:for-each select=".//div">
-                            <xsl:copy>
-                                <xsl:copy-of select="."/>
-                            </xsl:copy>
-                        </xsl:for-each>
+<xsl:copy>
+  <xsl:apply-templates select="@* | node()"/>
+</xsl:copy>
                     </div>
                 </main>
                 <xsl:call-template name="html_footer"/>
