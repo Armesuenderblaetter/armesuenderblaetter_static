@@ -51,9 +51,9 @@ var editor = new LoadEditor({
           class: "features-1",
         },
       },
-       {
+      {
         opt: "lat",
-        color: "none",
+        color: "green",
         title: "Lateinische Begriffe",
         html_class: "la",
         css_class: "lat",
