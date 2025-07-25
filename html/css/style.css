@@ -14,7 +14,7 @@
 }
 
 main {
-    max-width: 1024px;
+    max-width: 1920px;
     padding-bottom: 4rem;
     padding-top: 4rem;
 }
@@ -187,7 +187,7 @@ div ul.ais-RefinementList-list {
 #edition-text {
     margin-left: 3rem;
     padding-bottom: 2rem;
-    max-width: 30rem;
+    max-width: 45%;
     /* height: 100vh; */
     overflow: hidden; /* Remove scrolling completely */
 }
