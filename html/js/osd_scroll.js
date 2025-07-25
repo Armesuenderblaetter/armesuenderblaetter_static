@@ -32,6 +32,23 @@ function isVisible(el) {
   return style.display !== "none";
 }
 
+function wrap_all_text_nodes(element) {
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
+    const textNodes = [];
+    let node;
+    while(node = walker.nextNode()) {
+        if (node.textContent.trim() !== '') {
+            textNodes.push(node);
+        }
+    }
+    
+    textNodes.forEach(textNode => {
+        const wrapper = document.createElement('span');
+        textNode.parentNode.insertBefore(wrapper, textNode);
+        wrapper.appendChild(textNode);
+    });
+}
+
 // Removed isInViewport function as it's no longer needed for automatic scrolling
 
 // Removed debounce function as it's no longer needed for automatic scrolling
@@ -201,68 +218,71 @@ function handle_page_visibility(page_index) {
 
 // Function to show only the content of the current page
 function show_only_current_page(current_page_index) {
-  // Get all content between page breaks
   const editionText = document.getElementById('edition-text');
   if (!editionText) {
     console.log('No edition-text element found');
     return;
   }
-  
-  // Use the same pb_elements_array that's used for images
   if (pb_elements_array.length === 0) {
     console.log('No page break elements found');
     return;
   }
-  
-  // Get the current and next page break elements from the main array
+
+  // Hide all horizontal rules to prevent visual artifacts.
+  editionText.querySelectorAll('hr').forEach(hr => hr.style.display = 'none');
+
   const currentPbElement = pb_elements_array[current_page_index];
   const nextPbElement = pb_elements_array[current_page_index + 1];
-  
+
   if (!currentPbElement) {
     console.log('Current page element not found for index:', current_page_index);
     return;
   }
-  
-  // Hide all direct children of editionText by default
-  const directChildren = Array.from(editionText.children);
-  directChildren.forEach(child => {
-    child.style.display = 'none';
-    child.classList.remove('current-page');
-  });
 
-  // Find all nodes between currentPbElement and nextPbElement in document order
-  let started = false;
-  let finished = false;
-  let nodesToShow = [];
-  function collectNodes(node) {
-    if (finished) return;
-    if (node === currentPbElement) started = true;
-    if (started) nodesToShow.push(node);
-    if (node === nextPbElement && started && node !== currentPbElement) {
-      finished = true;
-      nodesToShow.pop(); // do not include the nextPbElement itself
-      return;
-    }
-    for (let child of node.childNodes) {
-      collectNodes(child);
-      if (finished) break;
+  // 1. Get all elements within edition-text in document order.
+  const allElements = Array.from(editionText.querySelectorAll('*'));
+  
+  // 2. Find the start and end markers in the flat list.
+  const startIndex = allElements.indexOf(currentPbElement);
+  if (startIndex === -1) {
+    console.error('Could not find the current page break element in the DOM.');
+    return;
+  }
+  
+  let endIndex = allElements.length;
+  if (nextPbElement) {
+    const nextPbIndex = allElements.indexOf(nextPbElement);
+    if (nextPbIndex > startIndex) {
+      endIndex = nextPbIndex;
     }
   }
-  collectNodes(editionText);
 
-  // Show all nodes in the range and their ancestors up to editionText
-  nodesToShow.forEach(node => {
-    let el = node.nodeType === 1 ? node : node.parentElement;
-    while (el && el !== editionText) {
-      el.style.display = '';
-      el.classList.add('current-page');
-      el = el.parentElement;
+  // 3. Collect all elements for the current page and their ancestors.
+  const elementsToShow = new Set();
+  const elementsInRange = allElements.slice(startIndex, endIndex);
+
+  elementsInRange.forEach(element => {
+    elementsToShow.add(element);
+    let parent = element.parentElement;
+    // Traverse up the DOM tree to ensure all parent containers are also shown.
+    while (parent && parent !== editionText) {
+      elementsToShow.add(parent);
+      parent = parent.parentElement;
     }
   });
-  // Always show editionText
-  editionText.style.display = '';
 
-  console.log(`Showing page ${current_page_index + 1} of ${pb_elements_array.length}: showing nodes from pb #${current_page_index} to pb #${current_page_index + 1}`);
+  // 4. Apply visibility based on the collected set.
+  allElements.forEach(element => {
+    if (elementsToShow.has(element)) {
+      element.style.display = ''; // Reset to default display style.
+      element.classList.add('current-page');
+    } else {
+      element.style.display = 'none';
+      element.classList.remove('current-page');
+    }
+  });
+
+  console.log(`Showing page ${current_page_index + 1} of ${pb_elements_array.length}`);
 }
 
 function load_new_image_with_check(new_image_url, old_image) {
@@ -308,6 +328,11 @@ if (isVisible(OSD_container_spawnpoint)) {
 
 // Initialize the page to show only the first page content
 function initializePageView() {
+  // Wrap all loose text nodes in spans to make them targetable
+  const editionText = document.getElementById('edition-text');
+  if (editionText) {
+    wrap_all_text_nodes(editionText);
+  }
   // Show only the first page initially
   if (pb_elements_array.length > 0) {
     // Set initial state
