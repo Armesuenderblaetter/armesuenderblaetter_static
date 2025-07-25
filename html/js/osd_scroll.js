@@ -231,6 +231,9 @@ function show_only_current_page(current_page_index) {
   // Hide all horizontal rules to prevent visual artifacts.
   editionText.querySelectorAll('hr').forEach(hr => hr.style.display = 'none');
 
+  // Remove 'current' from all line break elements to reset the state.
+  editionText.querySelectorAll('br.lb').forEach(br => br.classList.remove('current'));
+
   const currentPbElement = pb_elements_array[current_page_index];
   const nextPbElement = pb_elements_array[current_page_index + 1];
 
@@ -263,6 +266,17 @@ function show_only_current_page(current_page_index) {
 
   elementsInRange.forEach(element => {
     elementsToShow.add(element);
+    // Add 'current' class to visible line breaks and mark split words.
+    if (element.tagName === 'BR' && element.classList.contains('lb')) {
+      element.classList.add('current');
+      const parent = element.parentElement;
+      if (parent && parent.classList.contains('token')) {
+        const prevSibling = element.previousElementSibling;
+        if (prevSibling && prevSibling.tagName === 'SPAN') {
+          prevSibling.classList.add('split-word-part-1');
+        }
+      }
+    }
     let parent = element.parentElement;
     // Traverse up the DOM tree to ensure all parent containers are also shown.
     while (parent && parent !== editionText) {
@@ -274,10 +288,10 @@ function show_only_current_page(current_page_index) {
   // 4. Apply visibility based on the collected set.
   allElements.forEach(element => {
     if (elementsToShow.has(element)) {
-      element.style.display = ''; // Reset to default display style.
+      element.style.cssText = ''; // Reset to default display style.
       element.classList.add('current-page');
     } else {
-      element.style.display = 'none';
+      element.style.cssText = 'display: none !important;';
       element.classList.remove('current-page');
     }
   });

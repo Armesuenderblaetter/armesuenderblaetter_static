@@ -35,6 +35,7 @@
             <xsl:value-of select="./text()"/>
         </div>
     </xsl:template>
+    
     <xsl:template match="/">
         <html class="h-100" lang="de">
             <head>
@@ -45,6 +46,7 @@
                     .navBarNavDropdown ul li:nth-child(2) {
                         display: none !important;
                     }</style>
+                 <link rel="stylesheet" href="css/de-micro-editor.css" />   
             </head>
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
@@ -85,9 +87,9 @@
                                 </h1>
                             </xsl:if>
                         </div>
-                        <!-- <div id="editor-widget">
+                        <div id="editor-widget">
                                 <xsl:call-template name="annotation-options"/>
-                            </div>-->
+                            </div>
                     </div>
                     <div class="edition-content row body">
                         <div id="facsimiles" class="col-6">
@@ -215,8 +217,8 @@
             <xsl:call-template name="html_footer"/>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"/>
             <script src="js/osd_scroll.js"/>
-            <!--<script src="https://unpkg.com/de-micro-editor@0.3.4/dist/de-editor.min.js"/>-->
-            <!-- <script type="text/javascript" src="js/run.js"/> -->
+            <script src="https://unpkg.com/de-micro-editor@0.3.4/dist/de-editor.min.js"/>
+            <script type="text/javascript" src="js/run.js"/>
         </body>
     </html>
 </xsl:template>

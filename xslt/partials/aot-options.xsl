@@ -37,17 +37,17 @@
                     <annotation-slider opt="ef"></annotation-slider>
                 </li>
                 <li class="dropdown-item">
-                    <annotation-slider opt="prs"></annotation-slider>
+                    <annotation-slider opt="pbs"></annotation-slider>
                 </li>
                 <li class="dropdown-item">
-                    <annotation-slider opt="plc"></annotation-slider>
+                    <annotation-slider opt="lat"></annotation-slider>
                 </li>
-                <li class="dropdown-item">
+                <!-- <li class="dropdown-item">
                     <annotation-slider opt="wrk"></annotation-slider>
                 </li>
                 <li class="dropdown-item">
                     <annotation-slider opt="org"></annotation-slider>
-                </li>
+                </li> -->
             </ul>
         </div>
 

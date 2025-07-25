@@ -118,7 +118,7 @@
             <xsl:attribute name="lemma" select="@lemma"/>
             <xsl:attribute name="pos" select="@pos"/>
             <xsl:attribute name="vocab" select="$vocab"/>
-            <xsl:apply-templates/>
+            <xsl:apply-templates mode="replace-equals"/>
         </span>
         <xsl:variable name="relevant_interpunctuation_after">
             <xsl:if test="not(following-sibling::*[1][tei:app[not(tei:lem)]])">
@@ -128,6 +128,19 @@
         <xsl:if test="$relevant_interpunctuation_after != '1'">
             <xsl:value-of select="' '"/>
         </xsl:if>
+    </xsl:template>
+    
+    <!-- Mode to replace = with ⹀ in text -->
+    <xsl:template match="text()" mode="replace-equals">
+        <xsl:value-of select="replace(., '=', '⹀')"/>
+    </xsl:template>
+    
+    <!-- Default template for elements in replace-equals mode -->
+    <xsl:template match="*" mode="replace-equals">
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates mode="replace-equals"/>
+        </xsl:copy>
     </xsl:template>
     <!-- add whitespace after tei:pc -->
     <xsl:template match="tei:pc" mode="#all">
@@ -269,7 +282,7 @@
         </span>
     </xsl:template>
     <xsl:template match="tei:lb">
-        <span class="lb"/>
+        <br class="lb"/>
     </xsl:template>
     <xsl:template match="tei:note">
         <xsl:element name="a">
