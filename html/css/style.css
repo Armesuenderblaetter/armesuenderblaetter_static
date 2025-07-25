@@ -1,19 +1,4 @@
-.catch {
-    display: inline-block;
-   
-    text-align: right;
-    position: relative;
-}
 
-
-.row.fw {
- width: 100%;
-
-}
-.row.fw {
- color: grey;
-
-}
 :root {
     --editor-font-family: serif;
     --editor-font-color: grey;
@@ -33,6 +18,33 @@ main {
     padding-bottom: 4rem;
     padding-top: 4rem;
 }
+
+.catch {
+    display: inline-block;
+   color: grey;
+    text-align: right;
+    width: 100%;
+    position: relative;
+}
+
+
+.row.fw {
+ width: 100%;
+color: grey;
+
+}
+.row.fw {
+  flex: 1;
+}
+
+.row.fw:has(.col:nth-child(3)) .col {
+  width: 33.3333%;
+}
+
+.row.fw:not(:has(.col:nth-child(3))) .col {
+  width: 50%;
+}
+
 
 .align-right{
     text-align:right;
