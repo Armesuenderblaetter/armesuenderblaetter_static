@@ -840,6 +840,7 @@ select {
 .kwic, .kwic * {
     color: pink!important;
     font-weight: bold;
+    text-align: center;
 }
 
 
