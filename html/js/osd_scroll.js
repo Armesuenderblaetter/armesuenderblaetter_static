@@ -263,6 +263,56 @@ function handle_page_visibility(page_index) {
   current_page_index = page_index;
   // Hide all page content except current page
   show_only_current_page(page_index);
+  // Update citation suggestion below footnotes
+  updateCitationSuggestion(page_index);
+}
+
+// Generate and update citation suggestion below footnotes
+function updateCitationSuggestion(page_index) {
+  // Find the main container and edition-text element
+  const main = document.querySelector('main');
+  const editionText = document.getElementById('edition-text');
+  if (!main || !editionText) return;
+  
+  // Find the current pb element
+  const pbEl = pb_elements_array[page_index];
+  if (!pbEl) return;
+  
+  // Get page info for citation
+  const pageNum = pbEl.getAttribute('data-page-number') || (page_index + 1);
+  
+  // Get document title from <title> tag or fallback to filename
+  let docTitle = '';
+  const h1 = document.querySelector('h1');
+  if (h1 && h1.textContent) {
+    docTitle = h1.textContent.trim();
+  } else if (document.title && document.title.trim() !== '') {
+    docTitle = document.title.trim();
+  } else {
+    docTitle = window.location.pathname.split('/').pop().replace('.html', '');
+  }
+  
+  // Get current page URL
+  const pageUrl = window.location.href;
+  
+  // Compose citation text
+  const citationText = `${docTitle}. In Claudia Resch (Hrsg.) <em>ArmesünderBlätter Online</em>, S. ${pageNum}. <a href='${pageUrl}' target='_blank'>${pageUrl}</a>`;
+  
+  // Find the citation div (which is a direct child of main, not edition-text)
+  let citationDiv = main.querySelector('div.citation');
+  if (!citationDiv) {
+    console.log('Citation div not found in main, creating it');
+    citationDiv = document.createElement('div');
+    citationDiv.className = 'citation';
+    main.appendChild(citationDiv);
+  }
+  
+  // Update the citation content and styling
+  citationDiv.innerHTML = citationText;
+  citationDiv.style.display = 'block'; // Ensure always visible
+  citationDiv.style.marginTop = '1em';
+  citationDiv.style.fontSize = 'small';
+  citationDiv.style.color = 'grey';
 }
 
 // Function to show only the content of the current page
@@ -345,6 +395,7 @@ function show_only_current_page(current_page_index) {
   let hiddenCount = 0;
   let shownCount = 0;
   allElements.forEach(element => {
+    // No need to check for citation div here as it's not inside edition-text
     if (elementsToShow.has(element)) {
       element.style.cssText = ''; // Reset to default display style.
       element.classList.add('current-page');
@@ -412,6 +463,7 @@ function initializePageView() {
     // Set initial state
     current_page_index = 0;
     show_only_current_page(0);
+    updateCitationSuggestion(0);
   }
 }
 

@@ -213,6 +213,7 @@
                         <xsl:apply-templates/>
                     </div>
                 </xsl:for-each>
+                <div class="citation" />
             </main>
             <xsl:call-template name="html_footer"/>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"/>
