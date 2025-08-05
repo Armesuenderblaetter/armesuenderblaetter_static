@@ -296,7 +296,7 @@ function updateCitationSuggestion(page_index) {
   const pageUrl = window.location.href;
   
   // Compose citation text
-  const citationText = `${docTitle}. In Claudia Resch (Hrsg.) <em>ArmesünderBlätter Online</em>, S. ${pageNum}. <a href='${pageUrl}' target='_blank'>${pageUrl}</a>`;
+  const citationText = `${docTitle}. In Claudia Resch. <em>Armesünderblätter Online</em>, 2025, S. ${pageNum}. <a href='${pageUrl}' target='_blank'>${pageUrl}</a>`;
   
   // Find the citation div (which is a direct child of main, not edition-text)
   let citationDiv = main.querySelector('div.citation');
@@ -445,6 +445,46 @@ prev.addEventListener("click", () => {
 });
 next.addEventListener("click", () => {
   navigate_next();
+});
+
+// Keyboard navigation
+document.addEventListener("keydown", (event) => {
+  // Only handle navigation when not typing in an input field
+  if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+    return;
+  }
+  
+  switch(event.key) {
+    case 'ArrowLeft':
+    case 'ArrowUp':
+      event.preventDefault();
+      navigate_prev();
+      break;
+      
+    case 'ArrowRight':
+    case 'ArrowDown':
+    case ' ': // Spacebar
+      event.preventDefault();
+      navigate_next();
+      break;
+      
+    case 'Home':
+      event.preventDefault();
+      if (pb_elements_array.length > 0) {
+        handle_new_image(0);
+        handle_page_visibility(0);
+      }
+      break;
+      
+    case 'End':
+      event.preventDefault();
+      if (pb_elements_array.length > 0) {
+        const lastIndex = pb_elements_array.length - 1;
+        handle_new_image(lastIndex);
+        handle_page_visibility(lastIndex);
+      }
+      break;
+  }
 });
 
 if (isVisible(OSD_container_spawnpoint)) {
