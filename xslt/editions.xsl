@@ -46,7 +46,8 @@
                     .navBarNavDropdown ul li:nth-child(2) {
                         display: none !important;
                     }</style>
-                 <link rel="stylesheet" href="css/micro-editor.css" />   
+                 <link rel="stylesheet" href="css/micro-editor.css" />
+                 <link rel="stylesheet" href="css/variant-switcher.css" />   
             </head>
             <body class="d-flex flex-column h-100">
                 <xsl:call-template name="nav_bar"/>
@@ -217,7 +218,8 @@
             </main>
             <xsl:call-template name="html_footer"/>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"/>
-            <script src="js/osd_scroll.js"/>
+            <script src="../js/osd_scroll.js"/>
+            <script src="../js/witness_switcher.js"/>
             <script src="https://unpkg.com/de-micro-editor@0.3.4/dist/de-editor.min.js"/>
             <script type="text/javascript" src="js/run.js"/>
         </body>

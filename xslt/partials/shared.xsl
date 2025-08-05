@@ -40,32 +40,26 @@
         <xsl:variable name="num">
             <xsl:number level="any"/>
         </xsl:variable>
-        <xsl:choose>
-            <xsl:when test="./tei:lem[normalize-space()=.//*[local-name()='fw' and @type='catch']/normalize-space()]">
-                <a class="variant_anchor_link block_lemma catch" href="#app_{$num}">
-                    <xsl:attribute name="id">
-                        <xsl:value-of select="concat('var_', $num)"/>
-                    </xsl:attribute>
-                    <xsl:apply-templates select="./tei:lem/node()"/>
-                </a>
-            </xsl:when>
-            <xsl:when test="(not(.//tei:w or .//tei:pc) and not(ancestor::tei:w))">
-                <a class="variant_anchor_link block_lemma" href="#app_{$num}">
-                    <xsl:attribute name="id">
-                        <xsl:value-of select="concat('var_', $num)"/>
-                    </xsl:attribute>
-                    <xsl:apply-templates select="./tei:lem/node()"/>
-                </a>
-            </xsl:when>
-            <xsl:otherwise>
-                <a class="variant_anchor_link" href="#app_{$num}">
-                    <xsl:attribute name="id">
-                        <xsl:value-of select="concat('var_', $num)"/>
-                    </xsl:attribute>
-                    <xsl:apply-templates select="./tei:lem/node()"/>
-                </a>
-            </xsl:otherwise>
-        </xsl:choose>
+        <xsl:variable name="num">
+            <xsl:number level="any"/>
+        </xsl:variable>
+        <xsl:variable name="app_id" select="concat('app_', $num)"/>
+        <span class="variant-container" data-app-id="{$app_id}">
+            <!-- Process lem elements -->
+            <xsl:for-each select="tei:lem">
+                <xsl:variable name="witness_name" select="substring-after(@wit, '#')"/>
+                <span class="variant-reading lem" data-witness="{$witness_name}" data-variant-type="lem">
+                    <xsl:apply-templates select="node()"/>
+                </span>
+            </xsl:for-each>
+            <!-- Process rdg elements -->
+            <xsl:for-each select="tei:rdg">
+                <xsl:variable name="witness_name" select="substring-after(@wit, '#')"/>
+                <span class="variant-reading rdg" data-witness="{$witness_name}" data-variant-type="rdg">
+                    <xsl:apply-templates select="node()"/>
+                </span>
+            </xsl:for-each>
+        </span>
     </xsl:template>
     <xsl:template match="tei:app[not(tei:lem)]">
         <xsl:variable name="num">
@@ -80,68 +74,6 @@
             </a>
         </span>
     </xsl:template>
-    <xsl:template match="tei:lem" mode="app">
-        <xsl:apply-templates mode="app"/>
-        <xsl:text>] </xsl:text>
-    </xsl:template>
-    <xsl:template match="tei:rdg"/>
-    <xsl:template match="tei:rdg" mode="app">
-        <span class="variant">
-            <xsl:variable name="witness_name">
-                <xsl:value-of select="substring-after(@wit, '#')"/>
-            </xsl:variable>
-            <xsl:variable name="image_name">
-                <xsl:value-of select=".//preceding::tei:pb[@edRef = concat('#', $witness_name)][1]/@facs"/>
-            </xsl:variable>
-            <a href="#witness_overview" class="editor_comment">
-                <xsl:value-of select="$witness_name"/>
-                <xsl:text>: </xsl:text>
-            </a>
-            <a href="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$image_name}/full/max/0/default.jpg">
-                <xsl:apply-templates mode="app"/>
-            </a>
-        </span>
-    </xsl:template>
-    <!--watch me suffer from these whitespaces-->
-    <!-- add whitespace after tei:w -->
-    <xsl:template match="tei:w" mode="#all">
-        <span class="token">
-            <xsl:attribute name="id">
-                <xsl:value-of select="@xml:id"/>
-            </xsl:attribute>
-            <xsl:variable name="target_f_id">
-                <xsl:value-of select="substring-after(./@ana, '#')"/>
-            </xsl:variable>
-            <xsl:variable name="vocab">
-                <xsl:value-of select="//tei:fs[@xml:id = $target_f_id]/tei:f[@name='dictref']/text()"/>
-            </xsl:variable>
-            <xsl:attribute name="lemma" select="@lemma"/>
-            <xsl:attribute name="pos" select="@pos"/>
-            <xsl:attribute name="vocab" select="$vocab"/>
-            <xsl:apply-templates mode="replace-equals"/>
-        </span>
-        <xsl:variable name="relevant_interpunctuation_after">
-            <xsl:if test="not(following-sibling::*[1][tei:app[not(tei:lem)]])">
-                <xsl:value-of select="count((./following::*[text()[normalize-space() != '']])[1][local-name() = 'pc' and (@pos = ('$,', '$.') or normalize-space() = (')', ':'))])" />
-            </xsl:if>
-        </xsl:variable>
-        <xsl:if test="$relevant_interpunctuation_after != '1'">
-            <xsl:value-of select="' '"/>
-        </xsl:if>
-    </xsl:template>
-    
-    <!-- Mode to replace = with ⹀ in text -->
-    <xsl:template match="text()" mode="replace-equals">
-        <xsl:value-of select="replace(., '=', '⹀')"/>
-    </xsl:template>
-    
-    <!-- Default template for elements in replace-equals mode -->
-    <xsl:template match="*" mode="replace-equals">
-        <xsl:copy>
-            <xsl:copy-of select="@*"/>
-            <xsl:apply-templates mode="replace-equals"/>
-        </xsl:copy>
-    </xsl:template>
     <!-- add whitespace after tei:pc -->
     <xsl:template match="tei:pc" mode="#all">
         <xsl:apply-templates/>
@@ -151,7 +83,9 @@
     </xsl:template>
 
     <xsl:template match="tei:pb" mode="#all">
-        <span class="pb primary" source="{@facs}"></span>
+        <xsl:variable name="witness_ref" select="if(@edRef) then substring-after(@edRef, '#') else 'primary'"/>
+        <xsl:variable name="pb_type" select="if(@type) then @type else 'primary'"/>
+        <span class="pb {$pb_type}" source="{@facs}" data-witness="{$witness_ref}" data-pb-type="{$pb_type}"></span>
     </xsl:template>
     <xsl:template match="tei:pb" mode="app">
         <xsl:text> | </xsl:text>
