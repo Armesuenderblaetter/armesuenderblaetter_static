@@ -111,8 +111,8 @@
     <!-- add whitespace after tei:pc -->
     <xsl:template match="tei:pc" mode="#all">
         <span class="pc">
-            <xsl:apply-templates/>
-            <xsl:apply-templates mode="replace-equals"/>
+            <xsl:apply-templates />
+            <!-- <xsl:apply-templates mode="replace-equals"/> -->
         </span>
         <xsl:if test="normalize-space() != ('(', '/')">
             <xsl:text> </xsl:text>
