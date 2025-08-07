@@ -74,54 +74,14 @@
             </a>
         </span>
     </xsl:template>
-    <!-- add whitespace after tei:w -->
-    <xsl:template match="tei:w" mode="#all">
-        <span class="token">
-            <xsl:attribute name="id">
-                <xsl:value-of select="@xml:id"/>
-            </xsl:attribute>
-            <xsl:variable name="target_f_id">
-                <xsl:value-of select="substring-after(./@ana, '#')"/>
-            </xsl:variable>
-            <xsl:variable name="vocab">
-                <xsl:value-of select="//tei:fs[@xml:id = $target_f_id]/tei:f[@name='dictref']/text()"/>
-            </xsl:variable>
-            <xsl:attribute name="lemma" select="@lemma"/>
-            <xsl:attribute name="pos" select="@pos"/>
-            <xsl:attribute name="vocab" select="$vocab"/>
-            <xsl:apply-templates mode="replace-equals"/>
-        </span>
-        <!-- whitespace logic after tei:w -->
-        <xsl:variable name="relevant_interpunctuation_after">
-            <xsl:if test="not(following-sibling::*[1][tei:app[not(tei:lem)]])">
-                <xsl:value-of select="count((./following::*[text()[normalize-space() != '']])[1][local-name() = 'pc' and (@pos = ('$,', '$.') or normalize-space() = (')', ':'))])" />
-            </xsl:if>
-        </xsl:variable>
-        <xsl:if test="$relevant_interpunctuation_after != '1'">
-            <xsl:text> </xsl:text>
+    <!-- add whitespace after tei:pc -->
+    <xsl:template match="tei:pc" mode="#all">
+        <xsl:apply-templates/>
+        <xsl:if test="normalize-space() != ('(', '/')">
+            <xsl:value-of select="' '"/>
         </xsl:if>
     </xsl:template>
 
-    <!-- add whitespace after tei:pc -->
-    <xsl:template match="tei:pc" mode="#all">
-        <span class="pc">
-            <xsl:apply-templates mode="replace-equals"/>
-        </span>
-        <xsl:text> </xsl:text>
-    </xsl:template>
-
-    <!-- Mode to replace = with ⹀ in text -->
-    <xsl:template match="text()" mode="replace-equals">
-        <xsl:value-of select="replace(., '=', '⹀')"/>
-    </xsl:template>
-
-    <!-- Default template for elements in replace-equals mode -->
-    <xsl:template match="*" mode="replace-equals">
-        <xsl:copy>
-            <xsl:copy-of select="@*"/>
-            <xsl:apply-templates mode="replace-equals"/>
-        </xsl:copy>
-    </xsl:template>
     <xsl:template match="tei:pb" mode="#all">
         <xsl:variable name="witness_ref" select="if(@edRef) then substring-after(@edRef, '#') else 'primary'"/>
         <xsl:variable name="pb_type" select="if(@type) then @type else 'primary'"/>
