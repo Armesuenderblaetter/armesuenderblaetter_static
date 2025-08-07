@@ -125,7 +125,7 @@
                             </xsl:for-each>
                         </div>
                     </xsl:if>
-                    <xsl:if test="count(//tei:app) != 0">
+                    <!-- <xsl:if test="count(//tei:app) != 0">
                         <div class="variants">
                             <xsl:for-each select="//tei:app | //tei:pb[@type = 'secondary' and not(preceding-sibling::*[1][self::tei:pb and @type = 'primary']) and not(following-sibling::*[1][self::tei:pb and @type = 'primary']) and not(ancestor::tei:app)]">
                                 <xsl:variable name="num">
@@ -207,7 +207,7 @@
                                 </xsl:if>
                             </xsl:for-each>
                         </div>
-                    </xsl:if>
+                    </xsl:if> -->
                 <xsl:call-template name="place_fullimages"/>
                 <xsl:for-each select="//tei:back">
                     <div class="tei-back">
