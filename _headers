@@ -1,0 +1,3 @@
+/*
+  X-Content-Type-Options: nosniff
+  Content-Security-Policy: script-src 'self' 'unsafe-inline' https://acdh-ch.pages.oeaw.ac.at https://cdn.jsdelivr.net https://unpkg.com; object-src 'none';
