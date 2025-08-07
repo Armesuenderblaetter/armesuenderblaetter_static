@@ -192,6 +192,7 @@ div ul.ais-RefinementList-list {
     overflow: hidden; /* Remove scrolling completely */
 }
 
+
 #sticky-OSD-wrapper {
     position: sticky;
     top: 0;
@@ -597,7 +598,6 @@ span.sic:hover::before {
   display: block;
 }
 
-.lat {}
 .split-word-part-1:has(+ br.lb.current:not([style*="display: none"]))::after {
     content: "⹀";
     margin-left: 0px;
@@ -709,7 +709,10 @@ dd {
     max-width: 100%,
  }
 
+.tabulator-footer-contents {
+	background-color: white; 
 
+}
 .tabulator-header .tabulator-header-contents .tabulator-headers .tabulator-col{
     /* background-color: var(--asb-banner-colour) ; */
 }
