@@ -346,10 +346,10 @@ span.token:hover {
     background-color: aliceblue!important;
 }
 
-/* Add this rule to style variant readings */
+/* Add this rule to style variant readings
 span.rdg {
     background-color: lightgreen; /* Replace with your desired green color */
-}
+} */
 
 span.sic span.token::after,
 span.token:hover::before{
