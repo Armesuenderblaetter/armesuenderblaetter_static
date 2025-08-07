@@ -349,7 +349,7 @@ span.token:hover {
 /* Add this rule to style variant readings
 span.rdg {
     background-color: lightgreen; /* Replace with your desired green color */
-} */
+                    
 
 span.sic span.token::after,
 span.token:hover::before{
