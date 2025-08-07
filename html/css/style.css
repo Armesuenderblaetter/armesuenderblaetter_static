@@ -603,11 +603,13 @@ span.sic:hover::before {
   display: block;
 }
 
+
+/*
 .split-word-part-1:has(+ br.lb.current:not([style*="display: none"]))::after {
     content: "⹀";
     margin-left: 0px;
 }
-
+*/
 br.lb.current {
     display: block;
     content: "";
