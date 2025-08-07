@@ -74,11 +74,48 @@
             </a>
         </span>
     </xsl:template>
+    <!-- add whitespace after tei:w, but preserve tei:app handling -->
+    <xsl:template match="tei:w" mode="#all">
+        <span class="token">
+            <xsl:attribute name="id">
+                <xsl:value-of select="@xml:id"/>
+            </xsl:attribute>
+            <xsl:variable name="target_f_id">
+                <xsl:value-of select="substring-after(./@ana, '#')"/>
+            </xsl:variable>
+            <xsl:variable name="vocab">
+                <xsl:value-of select="//tei:fs[@xml:id = $target_f_id]/tei:f[@name='dictref']/text()"/>
+            </xsl:variable>
+            <xsl:attribute name="lemma" select="@lemma"/>
+            <xsl:attribute name="pos" select="@pos"/>
+            <xsl:attribute name="vocab" select="$vocab"/>
+            <xsl:apply-templates mode="replace-equals"/>
+        </span>
+        <!-- whitespace logic after tei:w, but not if next sibling is tei:app -->
+        <xsl:choose>
+            <xsl:when test="following-sibling::*[1][self::tei:app]">
+                <!-- do not output space if next is tei:app -->
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:variable name="relevant_interpunctuation_after">
+                    <xsl:if test="not(following-sibling::*[1][tei:app[not(tei:lem)]])">
+                        <xsl:value-of select="count((./following::*[text()[normalize-space() != '']])[1][local-name() = 'pc' and (@pos = ('$,', '$.') or normalize-space() = (')', ':'))])" />
+                    </xsl:if>
+                </xsl:variable>
+                <xsl:if test="$relevant_interpunctuation_after != '1'">
+                    <xsl:text> </xsl:text>
+                </xsl:if>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
     <!-- add whitespace after tei:pc -->
     <xsl:template match="tei:pc" mode="#all">
-        <xsl:apply-templates/>
+        <span class="pc">
+            <xsl:apply-templates/>
+            <xsl:apply-templates mode="replace-equals"/>
+        </span>
         <xsl:if test="normalize-space() != ('(', '/')">
-            <xsl:value-of select="' '"/>
+            <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
 
@@ -908,6 +945,23 @@
                 </div>
             </div>
         </div>
+    </xsl:template>
+    <!-- Improved tei:app template: wrap both lem and rdg in spans with wit, and add a space after each -->
+    <xsl:template match="tei:app" mode="#all">
+        <span class="app" id="{@xml:id}">
+            <xsl:for-each select="tei:lem">
+                <span class="rdg" wit="{@wit}">
+                    <xsl:apply-templates select="." mode="#current"/>
+                </span>
+                <xsl:text> </xsl:text>
+            </xsl:for-each>
+            <xsl:for-each select="tei:rdg">
+                <span class="rdg" wit="{@wit}">
+                    <xsl:apply-templates select="." mode="#current"/>
+                </span>
+                <xsl:text> </xsl:text>
+            </xsl:for-each>
+        </span>
     </xsl:template>
     <!-- <xsl:template match="tei:rs[@ref or @key]">
         <strong>
