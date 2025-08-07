@@ -29,7 +29,7 @@ search.search({
     refs: "doc.id,doc.title,doc.attrs,persName.id",
     kwicrightctx: "45#",
     kwicleftctx: "45#",
-    pagesize: 10,
+    pagesize: 100000000,
   },
   hits: {
     id: "custom-noske-hits",

@@ -30,7 +30,8 @@
                         <div id="noske-search">
                             <div id="custom-noske-input"></div>
                         </div>
-                        <button id="infoBoxBtn">Info</button>
+            		<div id="custom-noske-stats" />
+                        <button id="infoBoxBtn">ⓘ</button>
                         <div id="infoBox" class="modal">
                             <!-- Modal content -->
                             <div class="modal-content">
@@ -125,8 +126,7 @@
         </div>
         <div>
             <div id="custom-noske-hits"/>
-             <div id="custom-noske-pagination"/>
-            <div id="custom-noske-stats" />
+            <div id="custom-noske-pagination" style="display:none;" />
         </div>
     </div>
 </main>

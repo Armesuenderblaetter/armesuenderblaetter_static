@@ -863,23 +863,27 @@ function B(r, e, t, s, o = !1, n = !1, i) {
         const key = w.split("=")[0];
         return `<th class="${i.css?.th || h.th}">${labels[key] || key}</th>`;
       }).join("");
-        let V = E.filter((w) => w.length > 0  && !w.startsWith("doc.delinquent_sexes="))
-          .map(
-            (w) => {
-				const [key, value] = w.split("=");
-				if (key === "p.id") {
-					// Extract the number after _p_0* using regex
-					const match = value.match(/_p_0*(\d+)$/);
-					const pageNum = match ? match[1] : value;
-					return `<td class="${i.css?.td || h.td}">${pageNum}</td>`;
-				}
-				if (key === "doc.id") {
-					const pidEntry = E.find(e => e.startsWith("p.id="));
-					const pid = pidEntry ? pidEntry.split("=")[1] : "";
-					return `<td class="${i.css?.td || h.td}"><a href="${value}.html#${pid}">${value}</a></td>`;				}
-				return `<td class="${i.css?.td || h.td}">${value}</td>`;
-			  })
-			  .join("");
+        let V = E.filter((w) => w.length > 0 && !w.startsWith("doc.delinquent_sexes="))
+          .map((w) => {
+            const [key, value] = w.split("=");
+            // Find p.id and doc.id values for this row
+            const pidEntry = E.find(e => e.startsWith("p.id="));
+            const docidEntry = E.find(e => e.startsWith("doc.id="));
+            const ppid = pidEntry ? pidEntry.split("=")[1] : "";
+            const pvalue = docidEntry ? docidEntry.split("=")[1] : "";
+            if (key === "p.id") {
+              // Extract the number after _p_0* using regex
+              const match = value.match(/_p_0*(\d+)$/);
+              const pageNum = match ? match[1] : value;
+              return `<td class="${i.css?.td || h.td}">${pageNum}</td>`;
+            }
+            if (key === "doc.id") {
+              return `<td class="${i.css?.td || h.td}"><a href="${value}.html#${ppid}">${value}</a></td>`;
+            }
+            // For other keys, use the found doc.id and p.id for the link
+            return `<td class="${i.css?.td || h.td}"><a href="${pvalue}.html#${ppid}">${value}</a></td>`;
+          })
+          .join("");
         if (n) var v = n(m);
         else {
           let w = J.filter((_) => !_.startsWith("doc") && _.length > 0)
@@ -945,14 +949,14 @@ var W = class {
     p(this, "selectcss", "basis-2/12 p-2");
     p(this, "inputcss", "basis-10/12 rounded border p-2");
     p(this, "div1css", "flex flex-row p-2");
-    p(this, "button", "search");
+    p(this, "button", "Suche");
     p(this, "buttoncss", "p-2");
     p(this, "selectQueryCss", "basis-2/12 p-2");
     p(this, "customUrl", "");
     p(this, "urlparam", !1);
     p(this, "statsDiv", "flex flex-row m-2");
     p(this, "statsLabel", "p-2");
-    p(this, "statsLabelValue", "Hits:");
+    p(this, "statsLabelValue", "Treffer:");
     p(this, "wordlistattr", ["word", "lemma", "type", "id"]);
     p(this, "autocompleteOptions", {
       id: "noske-autocomplete",
