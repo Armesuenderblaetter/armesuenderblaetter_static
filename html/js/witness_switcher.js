@@ -31,7 +31,10 @@ class WitnessSwitcher {
         this.setupOSDIntegration();
         this.setupTabEventListeners();
         this.setupVariantClickListeners();
-        this.setDefaultWitness();
+        // Fix: call setDefaultWitness as a method of the class, not as a property
+        if (typeof this.setDefaultWitness === "function") {
+            this.setDefaultWitness();
+        }
         console.log('🔄 Enhanced Witness Switcher initialized');
         console.log('📋 Available witnesses:', Array.from(this.availableWitnesses));
         console.log('🗺️ Witness to suffix mapping:', this.witnessToSuffixMap);
@@ -398,54 +401,55 @@ class WitnessSwitcher {
     switchToWitness(witness) {
         console.log(`🔄 Switching to witness: ${witness}`);
         console.log(`📊 Available pages before switch:`, this.allPages.length);
-        
+
         this.currentWitness = witness;
-        
+
         // Add witness-active class to body
         document.body.classList.add('witness-active');
         document.body.setAttribute('data-active-witness', witness);
-        
-        // Update text display first
-        this.updateTextForWitness(witness);
-        
-        // Then update OSD pages (with a small delay to ensure text is updated)
+
+        // Fix: ensure updateTextForWitness is called as a method of the class
+        if (typeof this.updateTextForWitness === "function") {
+            this.updateTextForWitness(witness);
+        }
+
+        // Hide/show pb elements for this witness
+        if (typeof this.updatePbElementsForWitness === "function") {
+            this.updatePbElementsForWitness(witness);
+        }
+
+        // Update OSD images for this witness (directly, not via allPages)
         setTimeout(() => {
-            this.updateOSDForWitness(witness);
+            if (typeof this.updateOSDImagesForWitness === "function") {
+                this.updateOSDImagesForWitness(witness);
+            }
         }, 100);
-        
+
         // Update tab states
-        this.updateTabStates(witness);
-        
+        if (typeof this.updateTabStates === "function") {
+            this.updateTabStates(witness);
+        }
+
         // Update URL or state if needed
-        this.updateBrowserState(witness);
-        
+        if (typeof this.updateBrowserState === "function") {
+            this.updateBrowserState(witness);
+        }
+
         console.log(`✅ Successfully switched to witness: ${witness}`);
     }
 
     /**
-     * Update text display to show only variants for the current witness
+     * Hide/show pb elements for the current witness
      */
-    updateTextForWitness(witness) {
-        // Hide all variant readings
-        const allVariants = document.querySelectorAll('.variant-reading');
-        allVariants.forEach(variant => {
-            variant.classList.remove('active-witness');
-        });
-
-        // Show only variants for the current witness
-        const witnessVariants = document.querySelectorAll(`.variant-reading[data-witness="${witness}"]`);
-        witnessVariants.forEach(variant => {
-            variant.classList.add('active-witness');
-        });
-
-        // Handle page breaks for witness - hide all pb elements first
+    updatePbElementsForWitness(witness) {
+        // Hide all pb elements
         const allPbs = document.querySelectorAll('.pb');
         allPbs.forEach(pb => {
             pb.style.display = 'none';
             pb.classList.remove('active-witness-pb');
         });
 
-        // Show only page breaks for the current witness
+        // Show only pb elements for the current witness
         const witnessPbs = document.querySelectorAll(`.pb[data-witness="${witness}"]`);
         witnessPbs.forEach(pb => {
             pb.style.display = 'inline';
@@ -460,120 +464,53 @@ class WitnessSwitcher {
                 pb.classList.add('active-witness-pb');
             });
         }
-
-        console.log(`📝 Text updated for witness: ${witness}`);
-        console.log(`📄 Showing ${witnessPbs.length} page breaks for witness ${witness}`);
     }
 
     /**
-     * Update tab visual states
+     * Update OSD viewer images for a specific witness
      */
-    updateTabStates(witness) {
-        // Remove active class from all tabs
-        const allTabs = document.querySelectorAll('[id$="-tab"]');
-        allTabs.forEach(tab => {
-            tab.classList.remove('active');
-        });
-
-        // Add active class to current witness tab
-        const currentTab = document.getElementById(`${witness}-tab`);
-        if (currentTab) {
-            currentTab.classList.add('active');
-        }
-    }
-
-    /**
-     * Update browser state (URL hash or history)
-     */
-    updateBrowserState(witness) {
-        // Update URL hash to reflect current witness
-        if (history.replaceState) {
-            const newUrl = `${window.location.pathname}${window.location.search}#witness=${witness}`;
-            history.replaceState(null, null, newUrl);
-        }
-    }
-
-    /**
-     * Set default witness from URL hash or first available
-     */
-    setDefaultWitness() {
-        let defaultWitness = null;
-        
-        // Check URL hash first
-        const hash = window.location.hash;
-        if (hash.includes('witness=')) {
-            const witnessFromHash = hash.split('witness=')[1].split('&')[0];
-            if (this.availableWitnesses.has(witnessFromHash)) {
-                defaultWitness = witnessFromHash;
-            }
-        }
-        
-        // Fallback to first available witness
-        if (!defaultWitness && this.availableWitnesses.size > 0) {
-            defaultWitness = Array.from(this.availableWitnesses)[0];
-        }
-        
-        if (defaultWitness) {
-            console.log(`🎯 Setting default witness: ${defaultWitness}`);
-            this.switchToWitness(defaultWitness);
-        }
-    }
-
-    /**
-     * Get current witness
-     */
-    getCurrentWitness() {
-        return this.currentWitness;
-    }
-
-    /**
-     * Get all available witnesses
-     */
-    getAvailableWitnesses() {
-        return Array.from(this.availableWitnesses);
-    }
-
-    /**
-     * Synchronize text display with current OSD page
-     */
-    syncTextWithPage(pageIndex) {
-        if (!this.filteredPages || pageIndex >= this.filteredPages.length) return;
-        
-        const currentPage = this.filteredPages[pageIndex];
-        console.log(`🔄 Syncing text display with page ${pageIndex}: ${currentPage.filename}`);
-        
-        // Here you could add logic to highlight the corresponding text section
-        // based on the current page being viewed
-    }
-
-    /**
-     * Restore original OSD view (show all pages)
-     */
-    restoreOriginalOSDView() {
-        if (!this.osdViewer || !this.osdViewer.originalTileSources) {
-            console.warn('⚠️ No original tile sources to restore');
+    updateOSDImagesForWitness(witness) {
+        // Find all pb elements for this witness
+        const witnessPbs = Array.from(document.querySelectorAll(`.pb[data-witness="${witness}"]`));
+        if (witnessPbs.length === 0) {
+            console.warn(`⚠️ No pb elements found for witness: ${witness}`);
             return;
         }
 
-        console.log('🔄 Restoring original OSD view with all pages');
+        // Build IIIF URLs from pb 'source' attributes
+        const tileSources = witnessPbs.map(pb => {
+            const src = pb.getAttribute('source');
+            if (src && !src.startsWith('http')) {
+                return `https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/${src}/info.json`;
+            }
+            return src;
+        });
 
-        // Restore original arrays
-        this.osdViewer.iiifManifests = [...this.osdViewer.originalTileSources];
-        this.osdViewer.allImages = [...this.osdViewer.originalAllImages];
-        this.osdViewer.validImageTileSources = [...this.osdViewer.originalTileSources];
-        
-        // Reset current index
-        this.osdViewer.currentIndex = 0;
-        
-        // Close and rebuild viewer
-        if (this.osdViewer.viewer && this.osdViewer.viewer.isOpen()) {
-            this.osdViewer.viewer.close();
+        // Try to find the OSD viewer instance
+        let viewer = null;
+        if (window.manuscriptViewer && window.manuscriptViewer.viewer) {
+            viewer = window.manuscriptViewer.viewer;
+        } else if (window.viewer && typeof window.viewer.open === 'function') {
+            viewer = window.viewer;
+        } else if (window.OpenSeadragon && window.OpenSeadragon.viewers && window.OpenSeadragon.viewers.length > 0) {
+            viewer = window.OpenSeadragon.viewers[0];
         }
-        
-        // Rebuild with all images
-        this.osdViewer.updateViewerWithImages(this.osdViewer.allImages, false);
-        
-        console.log('✅ Original OSD view restored');
+
+        if (!viewer) {
+            console.warn('⚠️ No OSD viewer instance found');
+            return;
+        }
+
+        // Replace images in OSD viewer
+        try {
+            if (viewer.isOpen && viewer.isOpen()) {
+                viewer.close();
+            }
+            viewer.open(tileSources);
+            console.log(`🖼️ OSD viewer updated with ${tileSources.length} images for witness ${witness}`);
+        } catch (e) {
+            console.error('❌ Failed to update OSD viewer:', e);
+        }
     }
 }
 

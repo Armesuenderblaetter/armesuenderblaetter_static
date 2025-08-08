@@ -82,7 +82,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <xsl:if test="@type = 'secondary'">
+                    <!-- <xsl:if test="@type = 'secondary'">
                         <xsl:for-each select="//tei:pb[@edRef = concat('#', $wit_id)]">
                             <xsl:variable name="facs">
                                 <xsl:value-of select="@facs"/>
@@ -97,7 +97,7 @@
                                     alt="Seite des Flugblatts"/>
                             </span>
                         </xsl:for-each>
-                    </xsl:if>
+                    </xsl:if> -->
                 </div>
             </xsl:for-each>
             <div id="person_overview-tab-meta-data" role="tabpanel" aria-labelledby="#person_overview-tab">
