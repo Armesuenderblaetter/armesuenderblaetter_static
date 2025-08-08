@@ -69,7 +69,7 @@
                             <tr>
                                 <td>Drucker: </td>
                                 <td>
-                                    <xsl:value-of select=".//tei:publisher/text()"/>
+                                    <xsl:value-of select="(.//tei:publisher/text())[1]"/>
                                 </td>
                             </tr>
                             <tr>
