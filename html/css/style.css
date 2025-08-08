@@ -219,9 +219,10 @@ div.icon_desc {
 }
 
 
-span.pb {
+/*span.pb {
     padding-top: 10rem;
-}
+}*/
+
 span.pb.nearly_no_content {
     display: block;
     height: 16rem;
@@ -892,7 +893,7 @@ select {
 #facsimiles {
     position: sticky;
     top: 0;
-    height: 100vh;
+/*     height: 100vh; */
     overflow: hidden;
 }
 
