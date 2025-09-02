@@ -514,3 +514,32 @@ if (document.readyState === 'loading') {
   // Add a small delay to ensure everything is rendered
   setTimeout(initializePageView, 100);
 }
+
+// Add a new method to set the active witness
+function setActiveWitness(witness, pageBreaks)  {
+  console.log(`🔍 osd_scroll: Setting active witness to ${witness}`);
+    
+    // Store the witness information
+    this.activeWitness = witness;
+    
+    // Dispatch an event that other scripts can listen for
+    document.dispatchEvent(new CustomEvent('osdScrollWitnessChanged', {
+        detail: { witness, pageBreaks }
+    }));
+}
+
+// Add witness awareness to showPage method
+function showPage(pageNumber) {
+    // ...existing code...
+    
+    // Add this at the end of the method
+    // Notify about the page change with witness info
+    document.dispatchEvent(new CustomEvent('osdScrollPageChanged', {
+        detail: { 
+            pageIndex: pageNumber,
+            witness: this.activeWitness || null
+        }
+    }));
+    
+    return true;
+}

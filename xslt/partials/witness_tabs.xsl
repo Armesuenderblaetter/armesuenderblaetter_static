@@ -82,6 +82,15 @@
                             </tr>
                         </tbody>
                     </table>
+                    
+                    <!-- Add empty container for witness pages, to be filled by witness_switcher.js -->
+                    <div class="witness-pages mt-3">
+                        <h5>Seiten:</h5>
+                        <ul class="list-inline page-links">
+                            <!-- Page links will be populated dynamically by JavaScript -->
+                        </ul>
+                    </div>
+                    
                     <!-- <xsl:if test="@type = 'secondary'">
                         <xsl:for-each select="//tei:pb[@edRef = concat('#', $wit_id)]">
                             <xsl:variable name="facs">
