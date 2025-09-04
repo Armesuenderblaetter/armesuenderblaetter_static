@@ -1,3 +1,5 @@
+/* All console outputs are muted in this file (none present). */
+
 /*
 ##################################################################
 get container holding the transcribed text
@@ -133,69 +135,16 @@ var pb_elements_array = Array.from(pb_elements);
 // Expose functions for witness_switcher.js
 window.show_only_current_page = show_only_current_page;
 window.updateOsdScrollPageBreaks = (newPbElements) => {
-  console.log('osd_scroll.js: Updating page breaks from witness switcher.', newPbElements);
   pb_elements_array = Array.from(newPbElements);
   max_index = pb_elements_array.length - 1;
 };
 window.getOsdScrollPbElements = () => pb_elements_array;
 
-
-// Debug: Log all page break elements found
-console.log('Total page break elements found:', pb_elements_array.length);
-pb_elements_array.forEach((el, index) => {
-  console.log(`Page break ${index}:`, el.getAttribute('source'), el);
-});
-
-// Debug: Check if the missing _d_ element exists with different classes
-const editionText = document.getElementById('edition-text');
-if (editionText) {
-  const allSpansWithSource = editionText.querySelectorAll('span[source*="_d_"]');
-  console.log('All spans with _d_ in source:', allSpansWithSource.length);
-  allSpansWithSource.forEach((el, index) => {
-    console.log(`_d_ span ${index}:`, el.getAttribute('source'), 'classes:', el.className, el);
-  });
-  
-  // Also check for any pb elements regardless of classes
-  const allPbElements = editionText.querySelectorAll('span.pb');
-  console.log('All pb elements found:', allPbElements.length);
-  const missingD = Array.from(allPbElements).find(el => el.getAttribute('source') && el.getAttribute('source').includes('_d_'));
-  if (missingD) {
-    console.log('Found _d_ pb element with classes:', missingD.className, missingD);
-  } else {
-    console.log('No _d_ pb element found at all');
-  }
-  
-  // Check entire document for _d_ elements
-  const allDElementsInDoc = document.querySelectorAll('*[source*="_d_"]');
-  console.log('All _d_ elements in entire document:', allDElementsInDoc.length);
-  allDElementsInDoc.forEach((el, index) => {
-    console.log(`_d_ element ${index} in document:`, el.getAttribute('source'), 'classes:', el.className, 'parent:', el.parentElement?.id || 'no-id', el);
-  });
-
-  // Set up a mutation observer to watch for dynamically added _d_ elements
-  const observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      mutation.addedNodes.forEach(function(node) {
-        if (node.nodeType === 1) { // Element node
-          if (node.getAttribute && node.getAttribute('source') && node.getAttribute('source').includes('_d_')) {
-            console.log('DYNAMIC: _d_ element added:', node.getAttribute('source'), 'classes:', node.className, node);
-          }
-          // Check children too
-          const childDElements = node.querySelectorAll ? node.querySelectorAll('*[source*="_d_"]') : [];
-          childDElements.forEach(child => {
-            console.log('DYNAMIC: _d_ child element added:', child.getAttribute('source'), 'classes:', child.className, child);
-          });
-        }
-      });
-    });
-  });
-  
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
-  console.log('Mutation observer set up to watch for _d_ elements');
-}
+// Debug logging removed
+// const editionText = document.getElementById('edition-text');
+// if (editionText) {
+//   /* debug logging and mutation observer setup removed */
+// }
 
 /*
 ##################################################################
@@ -247,7 +196,7 @@ var last_img_url = ""
 // Manual navigation with prev/next buttons only
 function handle_new_image(page_index) {
   if (page_index < 0 || page_index >= pb_elements_array.length) {
-    console.log('Invalid page index:', page_index);
+    // console.log('Invalid page index:', page_index);
     return;
   }
   
@@ -266,7 +215,7 @@ function handle_new_image(page_index) {
 // New function to handle page content visibility
 function handle_page_visibility(page_index) {
   if (page_index < 0 || page_index >= pb_elements_array.length) {
-    console.log('Invalid page index for visibility:', page_index);
+    // console.log('Invalid page index for visibility:', page_index);
     return;
   }
   
@@ -311,7 +260,7 @@ function updateCitationSuggestion(page_index) {
   // Find the citation div (which is a direct child of main, not edition-text)
   let citationDiv = main.querySelector('div.citation');
   if (!citationDiv) {
-    console.log('Citation div not found in main, creating it');
+    // console.log('Citation div not found in main, creating it');
     citationDiv = document.createElement('div');
     citationDiv.className = 'citation';
     main.appendChild(citationDiv);
@@ -329,56 +278,47 @@ function updateCitationSuggestion(page_index) {
 function show_only_current_page(current_page_index) {
   const editionText = document.getElementById('edition-text');
   if (!editionText) {
-    console.log('No edition-text element found');
+    // console.log('No edition-text element found');
     return;
   }
   if (pb_elements_array.length === 0) {
-    console.log('No page break elements found');
+    // console.log('No page break elements found');
     return;
   }
-
-  // Hide all horizontal rules to prevent visual artifacts.
-  editionText.querySelectorAll('hr').forEach(hr => hr.style.display = 'none');
-
-  // Remove 'current' from all line break elements to reset the state.
-  editionText.querySelectorAll('br.lb').forEach(br => br.classList.remove('current'));
 
   const currentPbElement = pb_elements_array[current_page_index];
   const nextPbElement = pb_elements_array[current_page_index + 1];
 
   if (!currentPbElement) {
-    console.log('Current page element not found for index:', current_page_index);
+    // console.log('Current page element not found for index:', current_page_index);
     return;
   }
 
-  console.log(`Showing page ${current_page_index + 1}, current pb:`, currentPbElement, 'next pb:', nextPbElement);
+  // console.log(`Showing page ${current_page_index + 1}, current pb:`, currentPbElement, 'next pb:', nextPbElement);
 
-  // 1. Get all elements within edition-text in document order.
   const allElements = Array.from(editionText.querySelectorAll('*'));
-  
-  // 2. Find the start and end markers in the flat list.
   const startIndex = allElements.indexOf(currentPbElement);
   if (startIndex === -1) {
-    console.error('Could not find the current page break element in the DOM.');
+    // console.error('Could not find the current page break element in the DOM.');
     return;
   }
-  
   let endIndex = allElements.length;
   if (nextPbElement) {
     const nextPbIndex = allElements.indexOf(nextPbElement);
     if (nextPbIndex > startIndex) {
       endIndex = nextPbIndex;
-      console.log(`Page boundary: elements ${startIndex} to ${endIndex - 1} (next page starts at ${endIndex})`);
+      // console.log(`Page boundary: elements ${startIndex} to ${endIndex - 1} (next page starts at ${endIndex})`);
     }
   } else {
-    console.log(`Last page: elements ${startIndex} to end (${allElements.length})`);
+    // console.log(`Last page: elements ${startIndex} to end (${allElements.length})`);
   }
+
 
   // 3. Collect all elements for the current page and their ancestors.
   const elementsToShow = new Set();
   const elementsInRange = allElements.slice(startIndex, endIndex);
 
-  console.log(`Elements in range for page ${current_page_index + 1}:`, elementsInRange.length);
+  // console.log(`Elements in range for page ${current_page_index + 1}:`, elementsInRange.length);
 
   elementsInRange.forEach(element => {
     elementsToShow.add(element);
@@ -417,7 +357,7 @@ function show_only_current_page(current_page_index) {
     }
   });
 
-  console.log(`Page ${current_page_index + 1}: ${shownCount} elements shown, ${hiddenCount} elements hidden`);
+  // console.log(`Page ${current_page_index + 1}: ${shownCount} elements shown, ${hiddenCount} elements hidden`);
 }
 
 function load_new_image_with_check(new_image_url, old_image) {
@@ -515,6 +455,9 @@ function initializePageView() {
     show_only_current_page(0);
     updateCitationSuggestion(0);
   }
+  
+  // Initial update of the page links
+  updatePageLinks();
 }
 
 // Make sure DOM is loaded before initializing
@@ -525,17 +468,104 @@ if (document.readyState === 'loading') {
   setTimeout(initializePageView, 100);
 }
 
-// Add a new method to set the active witness
-function setActiveWitness(witness, pageBreaks)  {
-  console.log(`🔍 osd_scroll: Setting active witness to ${witness}`);
-    
-    // Store the witness information
-    this.activeWitness = witness;
-    
-    // Dispatch an event that other scripts can listen for
-    document.dispatchEvent(new CustomEvent('osdScrollWitnessChanged', {
-        detail: { witness, pageBreaks }
-    }));
+// Update the page links based on the current witness
+function updatePageLinks() {
+  // Find all page links in the witness-pages section
+  const pageLinks = document.querySelectorAll('.witness-pages .page-link');
+  if (pageLinks.length === 0) return;
+  
+  // Get base URL without any query parameters or hash
+  const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+  
+  // Get current witness from URL or any other available source
+  let currentWitness = getCurrentWitness();
+  
+  // Update each link with the correct href
+  pageLinks.forEach(link => {
+    const pageIndex = link.getAttribute('data-page-index');
+    if (pageIndex !== null) {
+      const pageNumber = parseInt(pageIndex, 10) + 1;
+      link.href = `${baseUrl}?tab=${pageNumber}wm${currentWitness}`;
+    }
+  });
+}
+
+// Helper function to get the current witness
+function getCurrentWitness() {
+  // First check URL for witness information
+  const urlParams = new URLSearchParams(window.location.search);
+  const tabParam = urlParams.get('tab');
+  if (tabParam && tabParam.includes('wm')) {
+    return tabParam.split('wm')[1];
+  }
+  
+  // If not in URL, check for active tab or other indicators
+  const activeTab = document.querySelector('.tab-pane.active');
+  if (activeTab && activeTab.id) {
+    const witnessMatch = activeTab.id.match(/witness-(\w+)/);
+    if (witnessMatch) return witnessMatch[1];
+  }
+  
+  // Default to W if nothing else found
+  return 'W';
+}
+
+// Expose the updatePageLinks function globally so witness_switcher.js can call it
+window.updatePageLinks = updatePageLinks;
+
+// Add a new method to set the active witness - update links when witness changes
+function setActiveWitness(witness, pageBreaks) {
+  // console.log(`🔍 osd_scroll: Setting active witness to ${witness}`);
+  
+  // Store witness info
+  window.currentWitness = witness;
+  
+  // Dispatch event
+  document.dispatchEvent(new CustomEvent('osdScrollWitnessChanged', {
+    detail: { witness, pageBreaks }
+  }));
+  
+  // Update page links with new witness
+  setTimeout(updatePageLinks, 100);
+}
+
+function setupWitnessChangeListeners() {
+  document.addEventListener('click', function(event) {
+    const target = event.target;
+    if (target && target.getAttribute && target.getAttribute('data-bs-toggle') === 'tab') {
+      const witness = target.getAttribute('data-witness') || 
+                     target.getAttribute('href')?.replace('#witness-', '') || '';
+      if (witness) {
+        // console.log(`Tab change detected, witness: ${witness}`);
+        window.activeWitness = witness;
+        setTimeout(updatePageLinks, 200);
+      }
+    }
+  });
+  
+  const witnessSelect = document.querySelector('#witness-select');
+  if (witnessSelect) {
+    witnessSelect.addEventListener('change', function() {
+      // console.log(`Witness dropdown changed to: ${this.value}`);
+      window.activeWitness = this.value;
+      setTimeout(updatePageLinks, 200);
+    });
+  }
+  
+  window.addEventListener('popstate', function() {
+    // console.log('URL changed, updating page links');
+    setTimeout(updatePageLinks, 200);
+  });
+  
+  setInterval(updatePageLinks, 2000);
+}
+
+// Call this function during initialization
+document.addEventListener('DOMContentLoaded', setupWitnessChangeListeners);
+
+// Replace the old updatePageLinkHrefs function
+function updatePageLinkHrefs() {
+  updatePageLinks();
 }
 
 // Add witness awareness to showPage method

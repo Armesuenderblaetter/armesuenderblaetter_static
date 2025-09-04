@@ -11,7 +11,6 @@
  * Enhanced Witness Switcher for Manuscript Sources
  * Handles switching between different manuscript witnesses and filters OSD pages accordingly
  */
-
 class WitnessSwitcher {
     constructor() {
         this.currentWitness = null;
@@ -22,6 +21,7 @@ class WitnessSwitcher {
         this.osdViewer = null;
         this.witnessPagesMap = new Map(); // witness -> [{ tileSource, label, source, pb }]
         this.pendingNavigation = null;     // { witness, index }
+        this._linksRefreshTimer = null; // debounce timer for page-links refresh
         
         // Use DOM safety helper if available
         if (typeof DOMSafetyHelper !== 'undefined') {
@@ -51,11 +51,13 @@ class WitnessSwitcher {
                 this.buildAllPaginations();
 
                 this.setDefaultWitness(); // now respects ?tab=...
-                console.log('🔄 Enhanced Witness Switcher initialized');
-                console.log('📋 Available witnesses:', Array.from(this.availableWitnesses));
-                console.log('🗺️ Witness to suffix mapping:', this.witnessToSuffixMap);
+                // Ensure page links reflect the initial state
+                this.triggerPageLinksRefresh();
+                // console.log('🔄 Enhanced Witness Switcher initialized');
+                // console.log('📋 Available witnesses:', Array.from(this.availableWitnesses));
+                // console.log('🗺️ Witness to suffix mapping:', this.witnessToSuffixMap);
             } catch (e) {
-                console.error('❌ Error during witness switcher initialization:', e);
+                // console.error('❌ Error during witness switcher initialization:', e);
             }
         }, 100);
     }
@@ -67,12 +69,24 @@ class WitnessSwitcher {
             if (typeof fn === 'function') {
                 return fn.apply(this, args);
             } else {
-                console.warn(`⚠️ ${methodName} is not a function; skipping`);
+                // console.warn(`⚠️ ${methodName} is not a function; skipping`);
             }
         } catch (e) {
-            console.error(`❌ Error calling ${methodName}:`, e);
+            // console.error(`❌ Error calling ${methodName}:`, e);
         }
         return undefined;
+    }
+
+    // Helper: refresh the page list links (delegates to osd_scroll.js)
+    triggerPageLinksRefresh() {
+        try {
+            if (typeof window.updatePageLinks === 'function') {
+                clearTimeout(this._linksRefreshTimer);
+                this._linksRefreshTimer = setTimeout(() => window.updatePageLinks(), 0);
+            }
+        } catch (e) {
+            // console.warn('⚠️ triggerPageLinksRefresh error:', e);
+        }
     }
 
     /**
@@ -85,7 +99,7 @@ class WitnessSwitcher {
                 try {
                     return document.querySelectorAll(selector) || [];
                 } catch (e) {
-                    console.error(`❌ Error querying selector "${selector}":`, e);
+                    // console.error(`❌ Error querying selector "${selector}":`, e);
                     return [];
                 }
             };
@@ -134,9 +148,9 @@ class WitnessSwitcher {
             this.availableWitnesses.add('wmW');
             this.availableWitnesses.add('wmR');
 
-            console.log('🔍 Discovered witnesses:', Array.from(this.availableWitnesses));
+            // console.log('🔍 Discovered witnesses:', Array.from(this.availableWitnesses));
         } catch (e) {
-            console.error('❌ Error discovering witnesses:', e);
+            // console.error('❌ Error discovering witnesses:', e);
             // Add fallback witnesses
             this.availableWitnesses.add('wmW');
             this.availableWitnesses.add('wmR');
@@ -198,22 +212,22 @@ class WitnessSwitcher {
                     window.manuscriptViewer.iiifManifests.length > 0) {
                     
                     this.osdViewer = window.manuscriptViewer;
-                    console.log('🖼️ OSD integration ready');
+                    // console.log('🖼️ OSD integration ready');
                     
                     // Wait a bit more to ensure all images are loaded
                     setTimeout(() => {
                         this.captureAllPages();
-                        console.log('📄 Total pages available:', this.allPages.length);
+                        // console.log('📄 Total pages available:', this.allPages.length);
                         if (this.osdViewer.viewer) {
                             this.osdViewer.viewer.addHandler('page', (event) => {
                                 try {
-                                    console.log(`📄 OSD page changed to: ${event.page}`);
+                                    // console.log(`📄 OSD page changed to: ${event.page}`);
                                     this.syncTextWithPage(event.page);
                                     if (this.currentWitness) {
                                         this.updatePaginationActiveState(this.currentWitness, event.page);
                                     }
                                 } catch (e) {
-                                    console.error('❌ Error in page change handler:', e);
+                                    // console.error('❌ Error in page change handler:', e);
                                 }
                             });
                         }
@@ -222,7 +236,7 @@ class WitnessSwitcher {
                     setTimeout(checkOSD, 200);
                 }
             } catch (e) {
-                console.error('❌ Error checking for OSD viewer:', e);
+                // console.error('❌ Error checking for OSD viewer:', e);
                 setTimeout(checkOSD, 500);
             }
         };
@@ -266,7 +280,7 @@ class WitnessSwitcher {
             }
             return witnessPbs;
         } catch (e) {
-            console.error('❌ getWitnessPbs error:', e);
+            // console.error('❌ getWitnessPbs error:', e);
             return [];
         }
     }
@@ -275,7 +289,7 @@ class WitnessSwitcher {
      * Update OSD viewer images for a specific witness with defensive coding
      */
     updateOSDImagesForWitness(witness) {
-        console.log(`🔍 Finding facsimile images for witness: ${witness}`);
+        // console.log(`🔍 Finding facsimile images for witness: ${witness}`);
         try {
             // Prefer pages derived from DOM (keeps order in sync with pagination)
             this.ensurePaginationForWitness(witness);
@@ -287,7 +301,7 @@ class WitnessSwitcher {
             if (tileSources.length === 0) {
                 const witnessPbs = this.getWitnessPbs(witness);
                 if (!witnessPbs || witnessPbs.length === 0) {
-                    console.warn(`⚠️ No pb elements found. Using hard-coded fallbacks for ${witness}`);
+                    // console.warn(`⚠️ No pb elements found. Using hard-coded fallbacks for ${witness}`);
                     if (witness === 'wmW') {
                         return this.loadFallbackSources('W');
                     } else if (witness === 'wmR') {
@@ -306,7 +320,7 @@ class WitnessSwitcher {
             }
 
             if (tileSources.length === 0) {
-                console.warn(`⚠️ No valid tile sources found for witness: ${witness}`);
+                // console.warn(`⚠️ No valid tile sources found for witness: ${witness}`);
                 return;
             }
 
@@ -318,10 +332,10 @@ class WitnessSwitcher {
                 witness
             }));
 
-            console.log(`🖼️ Built ${tileSources.length} tile sources for witness ${witness}`);
+            // console.log(`🖼️ Built ${tileSources.length} tile sources for witness ${witness}`);
             this.loadFacsimilesIntoOSD(tileSources);
         } catch (e) {
-            console.error(`❌ Error updating OSD images for witness ${witness}:`, e);
+            // console.error(`❌ Error updating OSD images for witness ${witness}:`, e);
         }
     }
     
@@ -329,7 +343,7 @@ class WitnessSwitcher {
      * Load fallback sources for a specific witness type
      */
     loadFallbackSources(witnessType) {
-        console.log(`🔄 Loading fallback sources for witness type ${witnessType}`);
+        // console.log(`🔄 Loading fallback sources for witness type ${witnessType}`);
         
         let sources = [];
         if (witnessType === 'W') {
@@ -351,7 +365,7 @@ class WitnessSwitcher {
         const tileSources = sources.map(src => 
             `https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/${src}/info.json`);
         
-        console.log(`📋 Using ${tileSources.length} fallback tile sources`);
+        // console.log(`📋 Using ${tileSources.length} fallback tile sources`);
         this.loadFacsimilesIntoOSD(tileSources);
     }
     
@@ -359,24 +373,24 @@ class WitnessSwitcher {
      * Simplified method to load facsimiles into OSD viewer
      */
     loadFacsimilesIntoOSD(tileSources) {
-        console.log('🔄 Loading facsimiles into OSD viewer');
+        // console.log('🔄 Loading facsimiles into OSD viewer');
         try {
             // Find the viewer - try multiple approaches
             let viewer = null;
             
             if (window.manuscriptViewer && window.manuscriptViewer.viewer) {
                 viewer = window.manuscriptViewer.viewer;
-                console.log('✅ Found viewer in manuscriptViewer.viewer');
+                // console.log('✅ Found viewer in manuscriptViewer.viewer');
             } else if (window.viewer && typeof window.viewer.open === 'function') {
                 viewer = window.viewer;
-                console.log('✅ Found viewer in window.viewer');
+                // console.log('✅ Found viewer in window.viewer');
             } else if (window.OpenSeadragon && window.OpenSeadragon.viewers && window.OpenSeadragon.viewers.length > 0) {
                 viewer = window.OpenSeadragon.viewers[0];
-                console.log('✅ Found viewer in OpenSeadragon.viewers[0]');
+                // console.log('✅ Found viewer in OpenSeadragon.viewers[0]');
             }
             
             if (!viewer) {
-                console.error('❌ No OSD viewer found');
+                // console.error('❌ No OSD viewer found');
                 return;
             }
             
@@ -387,7 +401,7 @@ class WitnessSwitcher {
                 window.manuscriptViewer.currentIndex = 0;
             }
             
-            console.log('🔄 Updating viewer with new tile sources...');
+            // console.log('🔄 Updating viewer with new tile sources...');
             
             // Reset the viewer
             if (viewer.world && typeof viewer.world.removeAll === 'function') {
@@ -400,19 +414,19 @@ class WitnessSwitcher {
             }
             
             // Open with new tile sources - add error handling
-            console.log('🔄 Opening viewer with new tile sources');
+            // console.log('🔄 Opening viewer with new tile sources');
             try {
                 viewer.open(tileSources);
-                console.log('✅ Successfully opened viewer with new sources');
+                // console.log('✅ Successfully opened viewer with new sources');
             } catch (openError) {
-                console.error('❌ Error opening viewer with tileSources:', openError);
+                // console.error('❌ Error opening viewer with tileSources:', openError);
                 // Try opening just the first image as fallback
                 if (tileSources.length > 0) {
                     try {
-                        console.log('🔄 Trying to open just the first image');
+                        // console.log('🔄 Trying to open just the first image');
                         viewer.open(tileSources[0]);
                     } catch (singleError) {
-                        console.error('❌ Error opening single image:', singleError);
+                        // console.error('❌ Error opening single image:', singleError);
                     }
                 }
             }
@@ -436,7 +450,7 @@ class WitnessSwitcher {
                         viewer.goToPage(0);
                     }
                 } catch (e) {
-                    console.error('❌ Error applying pending navigation:', e);
+                    // console.error('❌ Error applying pending navigation:', e);
                 }
             };
 
@@ -446,13 +460,15 @@ class WitnessSwitcher {
                 setTimeout(applyPending, 300);
             }
         } catch (e) {
-            console.error('❌ Error loading facsimiles:', e);
+            // console.error('❌ Error loading facsimiles:', e);
         }
     }
 
     // Build pagination for all discovered witnesses
     buildAllPaginations() {
         this.availableWitnesses.forEach(witness => this.ensurePaginationForWitness(witness));
+        // After building all paginations, refresh links
+        this.triggerPageLinksRefresh();
     }
 
     // Ensure pagination exists for a witness; build it once
@@ -516,8 +532,11 @@ class WitnessSwitcher {
             });
 
             this.witnessPagesMap.set(witness, entries);
+
+            // Newly built UL => refresh link hrefs
+            this.triggerPageLinksRefresh();
         } catch (e) {
-            console.error(`❌ Error building pagination for ${witness}:`, e);
+            // console.error(`❌ Error building pagination for ${witness}:`, e);
         }
     }
 
@@ -544,7 +563,7 @@ class WitnessSwitcher {
                 viewer.goToPage(index);
             }
         } catch (e) {
-            console.error('❌ navigateViewerToIndex error:', e);
+            // console.error('❌ navigateViewerToIndex error:', e);
         }
     }
 
@@ -556,7 +575,7 @@ class WitnessSwitcher {
             const current = container.querySelector(`.page-link[data-page-index="${pageIndex}"]`);
             if (current) current.classList.add('active');
         } catch (e) {
-            console.error('❌ updatePaginationActiveState error:', e);
+            // console.error('❌ updatePaginationActiveState error:', e);
         }
     }
 
@@ -564,7 +583,7 @@ class WitnessSwitcher {
      * Switch to a specific witness - SIMPLIFIED VERSION
      */
     switchToWitness(witness) {
-        console.log(`🔄 Switching to witness: ${witness}`);
+        // console.log(`🔄 Switching to witness: ${witness}`);
         this.currentWitness = witness;
 
         // Add witness-active class to body
@@ -584,7 +603,9 @@ class WitnessSwitcher {
         // Do NOT update browser state here, as it might lack page context.
         // It's handled by goToWitnessPage or after pending navigation is resolved.
 
-        console.log(`✅ Finished switching to witness: ${witness}`);
+        // console.log(`✅ Finished switching to witness: ${witness}`);
+        // Ensure page-links reflect the switched witness
+        this.triggerPageLinksRefresh();
     }
     
     /**
@@ -603,7 +624,7 @@ class WitnessSwitcher {
                 pageIndex = Math.max(0, parseInt(match[1], 10) - 1); // 0-based
                 witness = match[2];
                 this.pendingNavigation = { witness, index: pageIndex };
-                console.log(`📌 URL parameter parsed: page ${pageIndex + 1} of witness ${witness}`);
+                // console.log(`📌 URL parameter parsed: page ${pageIndex + 1} of witness ${witness}`);
             }
 
             const fallbackWitness = this.availableWitnesses.has('wmW') ? 'wmW' : Array.from(this.availableWitnesses)[0];
@@ -673,14 +694,17 @@ class WitnessSwitcher {
                 this.updateBrowserState(witness, pageToShow);
             }
 
-            console.log(`📝 Text updated for witness: ${witness}`);
+            // console.log(`📝 Text updated for witness: ${witness}`);
         } catch (e) {
-            console.error(`❌ Error updating text for witness ${witness}:`, e);
+            // console.error(`❌ Error updating text for witness ${witness}:`, e);
+        } finally {
+            // Text, pbs and pagination updated -> refresh links
+            this.triggerPageLinksRefresh();
         }
     }
 
     /**
-     * Shows/hides variant readings based on the selected witness.
+     * Shows/hides variant readings based on the selected witness
      */
     applyWitnessVariants(witness) {
         // Hide all variant readings
@@ -700,7 +724,7 @@ class WitnessSwitcher {
         try {
             const entries = this.witnessPagesMap.get(this.currentWitness) || [];
             if (pageIndex >= entries.length) {
-                console.warn(`⚠️ syncTextWithPage: pageIndex ${pageIndex} is out of bounds for witness ${this.currentWitness} (max: ${entries.length - 1})`);
+                // console.warn(`⚠️ syncTextWithPage: pageIndex ${pageIndex} is out of bounds for witness ${this.currentWitness} (max: ${entries.length - 1})`);
                 return;
             }
 
@@ -727,7 +751,10 @@ class WitnessSwitcher {
             this.applyWitnessVariants(this.currentWitness);
 
         } catch (e) {
-            console.error(`❌ Error syncing text with page ${pageIndex}:`, e);
+            // console.error(`❌ Error syncing text with page ${pageIndex}:`, e);
+        } finally {
+            // Keep links in sync with current witness state
+            this.triggerPageLinksRefresh();
         }
     }
 
@@ -745,17 +772,17 @@ class WitnessSwitcher {
                 if (pageIndex !== -1) {
                     window.show_only_current_page(pageIndex);
                 } else {
-                    console.warn('displayTextForPage: pbElement not found in osd_scroll.js page breaks.');
+                    // console.warn('displayTextForPage: pbElement not found in osd_scroll.js page breaks.');
                 }
             } else {
-                console.error('displayTextForPage: show_only_current_page or getOsdScrollPbElements is not available.');
+                // console.error('displayTextForPage: show_only_current_page or getOsdScrollPbElements is not available.');
             }
 
             try {
                 pbElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } catch (_) {}
         } catch (e) {
-            console.error('❌ displayTextForPage error:', e);
+            // console.error('❌ displayTextForPage error:', e);
         }
     }
 
@@ -764,7 +791,7 @@ class WitnessSwitcher {
      */
     setupTabEventListeners() {
         try {
-            console.log('Setting up tab event listeners');
+            // console.log('Setting up tab event listeners');
             
             // Handle dynamically discovered witnesses
             this.availableWitnesses.forEach(witness => {
@@ -773,15 +800,15 @@ class WitnessSwitcher {
                     if (tabElement) {
                         tabElement.addEventListener('click', (event) => {
                             event.preventDefault();
-                            console.log(`📑 ${witness} tab clicked`);
+                            // console.log(`📑 ${witness} tab clicked`);
                             this.switchToWitness(witness);
                         });
-                        console.log(`✅ Added click listener for ${witness} tab`);
+                        // console.log(`✅ Added click listener for ${witness} tab`);
                     } else {
-                        console.log(`⚠️ Tab element for ${witness} not found`);
+                        // console.log(`⚠️ Tab element for ${witness} not found`);
                     }
                 } catch (e) {
-                    console.error(`❌ Error setting up tab for ${witness}:`, e);
+                    // console.error(`❌ Error setting up tab for ${witness}:`, e);
                 }
             });
 
@@ -792,24 +819,24 @@ class WitnessSwitcher {
             if (wmWTab) {
                 wmWTab.addEventListener('click', (event) => {
                     event.preventDefault();
-                    console.log('📑 wmW tab clicked');
+                    // console.log('📑 wmW tab clicked');
                     this.switchToWitness('wmW');
                 });
-                console.log('✅ Added click listener for wmW tab');
+                // console.log('✅ Added click listener for wmW tab');
             }
             
             if (wmRTab) {
                 wmRTab.addEventListener('click', (event) => {
                     event.preventDefault();
-                    console.log('📑 wmR tab clicked');
+                    // console.log('📑 wmR tab clicked');
                     this.switchToWitness('wmR');
                 });
-                console.log('✅ Added click listener for wmR tab');
+                // console.log('✅ Added click listener for wmR tab');
             }
             
-            console.log('✅ Tab event listeners setup complete');
+            // console.log('✅ Tab event listeners setup complete');
         } catch (e) {
-            console.error('❌ Error setting up tab event listeners:', e);
+            // console.error('❌ Error setting up tab event listeners:', e);
         }
     }
 
@@ -818,7 +845,7 @@ class WitnessSwitcher {
      */
     setupVariantClickListeners() {
         try {
-            console.log('Setting up variant click listeners');
+            // console.log('Setting up variant click listeners');
             const variantElements = document.querySelectorAll('.variant-reading');
             
             if (variantElements && variantElements.length > 0) {
@@ -828,20 +855,20 @@ class WitnessSwitcher {
                             event.preventDefault();
                             const witness = element.getAttribute('data-witness');
                             if (witness) {
-                                console.log(`🎯 Variant clicked for witness: ${witness}`);
+                                // console.log(`🎯 Variant clicked for witness: ${witness}`);
                                 this.switchToWitness(witness);
                             }
                         });
                     } catch (e) {
-                        console.error('❌ Error setting up variant click listener:', e);
+                        // console.error('❌ Error setting up variant click listener:', e);
                     }
                 });
-                console.log(`✅ Added click listeners for ${variantElements.length} variant elements`);
+                // console.log(`✅ Added click listeners for ${variantElements.length} variant elements`);
             } else {
-                console.log('⚠️ No variant elements found');
+                // console.log('⚠️ No variant elements found');
             }
         } catch (e) {
-            console.error('❌ Error setting up variant click listeners:', e);
+            // console.error('❌ Error setting up variant click listeners:', e);
         }
     }
 
@@ -878,7 +905,7 @@ class WitnessSwitcher {
                         witness: witness
                     };
                 } catch (e) {
-                    console.error(`❌ Error mapping page ${index}:`, e);
+                    // console.error(`❌ Error mapping page ${index}:`, e);
                     return {
                         index: index,
                         source: source,
@@ -888,10 +915,10 @@ class WitnessSwitcher {
                 }
             });
             
-            console.log('📋 All pages captured with witness mapping:', 
-                       this.allPages.map(p => `${p.filename} (${p.witness})`));
+            // console.log('📋 All pages captured with witness mapping:', 
+            //            this.allPages.map(p => `${p.filename} (${p.witness})`));
         } catch (e) {
-            console.error('❌ Error capturing pages:', e);
+            // console.error('❌ Error capturing pages:', e);
             this.allPages = [];
         }
     }
@@ -908,7 +935,7 @@ class WitnessSwitcher {
             }
             return '';
         } catch (e) {
-            console.error('❌ Error extracting filename:', e);
+            // console.error('❌ Error extracting filename:', e);
             return '';
         }
     }
@@ -945,12 +972,12 @@ class WitnessSwitcher {
 
             this.filteredPages = filteredPages;
 
-            console.log(`🔍 Filtered pages for ${witness}:`, 
-                       this.filteredPages.map(p => `${p.filename} (${p.witness})`));
+            // console.log(`🔍 Filtered pages for ${witness}:`, 
+            //            this.filteredPages.map(p => `${p.filename} (${p.witness})`));
             
             return this.filteredPages;
         } catch (e) {
-            console.error(`❌ Error filtering pages for witness ${witness}:`, e);
+            // console.error(`❌ Error filtering pages for witness ${witness}:`, e);
             this.filteredPages = [];
             return [];
         }
@@ -969,7 +996,7 @@ class WitnessSwitcher {
                 activeTab.classList.add('active');
             }
         } catch (e) {
-            console.error('❌ Error updating tab states:', e);
+            // console.error('❌ Error updating tab states:', e);
         }
     }
 
@@ -986,7 +1013,9 @@ class WitnessSwitcher {
             url.searchParams.set('tab', tabValue);
             window.history.replaceState(null, null, url);
         } catch (e) {
-            console.error('❌ Error updating browser state:', e);
+            // console.error('❌ Error updating browser state:', e);
+        } finally {
+            this.triggerPageLinksRefresh();
         }
     }
 
@@ -1000,3 +1029,7 @@ class WitnessSwitcher {
 
 // Initialize the witness switcher when the class is instantiated
 new WitnessSwitcher();
+
+// Keep the initial one-time refresh
+if (window.updatePageLinks) window.updatePageLinks();
+
