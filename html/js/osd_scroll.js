@@ -130,6 +130,16 @@ creates an array for osd viewer with static images
 var pb_elements = document.getElementsByClassName(page_break_marker_classname);
 var pb_elements_array = Array.from(pb_elements);
 
+// Expose functions for witness_switcher.js
+window.show_only_current_page = show_only_current_page;
+window.updateOsdScrollPageBreaks = (newPbElements) => {
+  console.log('osd_scroll.js: Updating page breaks from witness switcher.', newPbElements);
+  pb_elements_array = Array.from(newPbElements);
+  max_index = pb_elements_array.length - 1;
+};
+window.getOsdScrollPbElements = () => pb_elements_array;
+
+
 // Debug: Log all page break elements found
 console.log('Total page break elements found:', pb_elements_array.length);
 pb_elements_array.forEach((el, index) => {
@@ -227,7 +237,7 @@ locate index of anchor element
 
 // Track the current page index globally
 var current_page_index = 0;
-const max_index = pb_elements_array.length - 1;
+let max_index = pb_elements_array.length - 1;
 var prev = document.querySelector("div[title='Previous page']");
 var next = document.querySelector("div[title='Next page']");
 prev.style.opacity = 1;
