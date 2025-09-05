@@ -1134,24 +1134,48 @@ function reloadPageWithWitness(witness) {
     // Get current page from global variable or URL or default to 1
     let currentPage = 1;
     
-    // Try to get from global variable first
-    if (typeof window.current_page_index === 'number') {
+    // First priority: Try getting directly from the OSD viewer
+    if (window.viewer && typeof window.viewer.currentPage === 'function') {
+        currentPage = window.viewer.currentPage() + 1; // Convert from 0-based to 1-based
+        console.log(`📄 Got page ${currentPage} from OSD viewer.currentPage()`);
+    }
+    // Second priority: Try window.current_page_index global variable
+    else if (typeof window.current_page_index === 'number') {
         currentPage = window.current_page_index + 1; // Convert from 0-based to 1-based
-    } else {
-        // Try to parse from URL
+        console.log(`📄 Got page ${currentPage} from window.current_page_index`);
+    }
+    // Third priority: Try the manuscriptViewer global object
+    else if (window.manuscriptViewer && typeof window.manuscriptViewer.currentIndex === 'number') {
+        currentPage = window.manuscriptViewer.currentIndex + 1; // Convert from 0-based to 1-based
+        console.log(`📄 Got page ${currentPage} from manuscriptViewer.currentIndex`);
+    }
+    // Last resort: Parse from URL
+    else {
         const urlParams = new URLSearchParams(window.location.search);
         const tab = urlParams.get('tab');
         if (tab) {
             const match = tab.match(/^(\d+)/);
             if (match && match[1]) {
                 currentPage = parseInt(match[1], 10);
+                console.log(`📄 Got page ${currentPage} from URL tab parameter`);
             }
+        } else {
+            console.log('⚠️ No page information found, defaulting to page 1');
         }
     }
     
+    // Validate the page number
+    if (isNaN(currentPage) || currentPage < 1) {
+        console.log('⚠️ Invalid page number, defaulting to page 1');
+        currentPage = 1;
+    }
+    
+    // Make sure witness code is properly formatted
+    const cleanWitness = witness.replace(/^wm/, '');
+    
     // Build the new URL
     const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-    const newUrl = `${baseUrl}?tab=${currentPage}wm${witness.replace(/^wm/, '')}`;
+    const newUrl = `${baseUrl}?tab=${currentPage}wm${cleanWitness}`;
     
     console.log(`🔄 Reloading page with witness ${witness}, page ${currentPage}`);
     console.log(`📄 New URL: ${newUrl}`);
