@@ -1069,3 +1069,188 @@ new WitnessSwitcher();
 // Keep the initial one-time refresh
 if (window.updatePageLinks) window.updatePageLinks();
 
+/**
+ * Simple Witness Switcher - Immediately reloads page when witness tabs are clicked
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔍 Witness switcher initializing...');
+    
+    // FIRST APPROACH: Direct tab click handlers for witness tabs
+    const wmWTab = document.getElementById('wmW-tab');
+    const wmRTab = document.getElementById('wmR-tab');
+    
+    if (wmWTab) {
+        console.log('📋 Found wmW tab, adding handler');
+        wmWTab.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            reloadPageWithWitness('wmW');
+            return false;
+        };
+    }
+    
+    if (wmRTab) {
+        console.log('📋 Found wmR tab, adding handler');
+        wmRTab.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            reloadPageWithWitness('wmR');
+            return false;
+        };
+    }
+    
+    // SECOND APPROACH: Generic handler for all witness tabs using event delegation
+    document.addEventListener('click', function(e) {
+        // Find closest tab button - handle both direct clicks and bubbled events
+        const tabButton = e.target.closest('button[data-bs-toggle="tab"]');
+        
+        if (!tabButton) return;
+        
+        // Check if it's a witness tab (not persons tab)
+        if (tabButton.id && (tabButton.id.indexOf('wmW') !== -1 || tabButton.id.indexOf('wmR') !== -1)) {
+            console.log('🎯 Witness tab clicked:', tabButton.id);
+            
+            // Determine which witness
+            let witness = 'wmW'; // default
+            if (tabButton.id.indexOf('wmR') !== -1) {
+                witness = 'wmR';
+            }
+            
+            // Prevent default and reload
+            e.preventDefault();
+            e.stopPropagation();
+            reloadPageWithWitness(witness);
+            return false;
+        }
+    }, true); // Use capturing to get event before Bootstrap
+    
+    console.log('✅ Witness switcher initialized');
+});
+
+/**
+ * Reload the page with a new witness parameter, preserving current page number
+ */
+function reloadPageWithWitness(witness) {
+    // Get current page from global variable or URL or default to 1
+    let currentPage = 1;
+    
+    // Try to get from global variable first
+    if (typeof window.current_page_index === 'number') {
+        currentPage = window.current_page_index + 1; // Convert from 0-based to 1-based
+    } else {
+        // Try to parse from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get('tab');
+        if (tab) {
+            const match = tab.match(/^(\d+)/);
+            if (match && match[1]) {
+                currentPage = parseInt(match[1], 10);
+            }
+        }
+    }
+    
+    // Build the new URL
+    const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+    const newUrl = `${baseUrl}?tab=${currentPage}wm${witness.replace(/^wm/, '')}`;
+    
+    console.log(`🔄 Reloading page with witness ${witness}, page ${currentPage}`);
+    console.log(`📄 New URL: ${newUrl}`);
+    
+    // Force a complete page reload
+    window.location.href = newUrl;
+}
+
+// Export function for global use
+window.reloadPageWithWitness = reloadPageWithWitness;
+
+/**
+ * Witness Switcher - Handles switching between witness tabs with proper page reloading
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Witness switcher initializing...');
+    
+    // Find all witness tab buttons
+    const witnessTabs = document.querySelectorAll('.nav-tabs button[data-bs-toggle="tab"][id$="-tab"]');
+    console.log(`Found ${witnessTabs.length} witness tabs`);
+    
+    // Add click handlers to each tab
+    witnessTabs.forEach(tab => {
+        // Get the witness ID from the tab's ID or target
+        const witnessId = tab.id.replace('-tab', '') || 
+                         tab.getAttribute('data-bs-target')?.replace('#', '').replace('-meta-data', '');
+        
+        if (!witnessId) return;
+        
+        console.log(`Setting up click handler for ${witnessId} tab`);
+        
+        // Replace Bootstrap's event handler with our own
+        tab.addEventListener('click', function(e) {
+            // Get current page index from OSD (0-based)
+            const pageIndex = window.current_page_index || 0;
+            // Convert to 1-based for URL
+            const pageNumber = pageIndex + 1;
+            
+            // Get base URL without parameters
+            const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+            
+            // Create URL with the new witness and current page
+            let newUrl;
+            if (witnessId === 'primary') {
+                newUrl = `${baseUrl}?tab=${pageNumber}primary`;
+            } else {
+                newUrl = `${baseUrl}?tab=${pageNumber}wm${witnessId}`;
+            }
+            
+            console.log(`Witness tab clicked: ${witnessId}, reloading to page ${pageNumber}`);
+            console.log(`Navigating to: ${newUrl}`);
+            
+            // Prevent default bootstrap tab behavior
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Force reload with new URL
+            window.location.href = newUrl;
+            
+            return false;
+        }, true); // Use capturing phase to intercept before Bootstrap
+    });
+    
+    // Also handle witness dropdown if present
+    const witnessDropdown = document.getElementById('witness-select');
+    if (witnessDropdown) {
+        console.log('Setting up witness dropdown handler');
+        witnessDropdown.addEventListener('change', function() {
+            const selectedWitness = this.value;
+            const pageNumber = (window.current_page_index || 0) + 1;
+            const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+            const newUrl = `${baseUrl}?tab=${pageNumber}wm${selectedWitness}`;
+            
+            console.log(`Witness dropdown changed to ${selectedWitness}, navigating to page ${pageNumber}`);
+            window.location.href = newUrl;
+        });
+    }
+    
+    console.log('Witness switcher initialized');
+});
+
+/**
+ * Called when witness tabs are dynamically updated
+ */
+function refreshWitnessTabs() {
+    // Re-initialize the click handlers after DOM changes
+    const witnessTabs = document.querySelectorAll('.nav-tabs button[data-bs-toggle="tab"][id$="-tab"]');
+    console.log(`Refreshing handlers for ${witnessTabs.length} witness tabs`);
+    
+    // Remove any existing click listeners first
+    witnessTabs.forEach(tab => {
+        const newTab = tab.cloneNode(true);
+        tab.parentNode.replaceChild(newTab, tab);
+    });
+    
+    // Re-initialize
+    document.dispatchEvent(new Event('DOMContentLoaded'));
+}
+
+// Expose for other scripts
+window.refreshWitnessTabs = refreshWitnessTabs;
+
