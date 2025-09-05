@@ -997,7 +997,7 @@ class WitnessSwitcher {
             if (filteredPages.length === 0) {
                 const suffix = this.witnessToSuffixMap.get(witness);
                 if (suffix) {
-                    filteredPages = this.allPages.filter page => {
+                    filteredPages = this.allPages.filter(page => {
                         const filename = page.filename;
                         return filename.endsWith(suffix) || filename.includes(`_${suffix.toLowerCase()}`);
                     });
@@ -1076,110 +1076,13 @@ class WitnessSwitcher {
 new WitnessSwitcher();
 
 // Keep the initial one-time refresh
-if (window.updatePageLinks) window.updatePageLinks;
+if (window.updatePageLinks) window.updatePageLinks();
 
 /**
  * Simple Witness Switcher - Immediately reloads page when witness tabs are clicked
  */
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🔍 Witness switcher initializing...');
-    
-    // Initialize localStorage-based witness page storage
-    try {
-        // Load existing page positions from localStorage
-        const savedPositions = localStorage.getItem('witnessPagePositions');
-        window.witnessPagePositions = savedPositions ? JSON.parse(savedPositions) : {};
-        console.log('📊 INIT: Loaded witness page positions from localStorage:', window.witnessPagePositions);
-        
-        // Fix storage keys - make sure witnesses are properly prefixed with 'wm'
-        const fixedPositions = {};
-        Object.entries(window.witnessPagePositions).forEach(([key, value]) => {
-            // Normalize keys to ensure they have proper prefix
-            const normalizedKey = normalizeWitnessKey(key);
-            fixedPositions[normalizedKey] = value;
-        });
-        
-        window.witnessPagePositions = fixedPositions;
-        localStorage.setItem('witnessPagePositions', JSON.stringify(fixedPositions));
-        console.log('📊 INIT: Normalized witness keys in localStorage:', fixedPositions);
-    } catch (e) {
-        console.error('Error loading witness page positions:', e);
-        window.witnessPagePositions = {};
-    }
-    
-    // Helper to ensure consistent witness keys
-    function normalizeWitnessKey(key) {
-        if (key === 'W') return 'wmW';
-        if (key === 'R') return 'wmR';
-        if (key === 'primary') return 'primary';
-        return key; // Keep as is if already normalized or unknown
-    }
-    
-    // Helper function to save witness page position to localStorage
-    function saveWitnessPage(witness, pageIndex) {
-        if (!witness || typeof pageIndex !== 'number') return;
-        
-        // Always normalize the key for consistency
-        const witnessKey = normalizeWitnessKey(witness);
-        
-        try {
-            // Update localStorage with normalized key
-            if (!window.witnessPagePositions) window.witnessPagePositions = {};
-            window.witnessPagePositions[witnessKey] = pageIndex;
-            localStorage.setItem('witnessPagePositions', JSON.stringify(window.witnessPagePositions));
-            
-            console.log(`📋 SAVED: Page ${pageIndex} for ${witnessKey} to localStorage`, window.witnessPagePositions);
-        } catch (e) {
-            console.error('Error saving witness page:', e);
-        }
-    }
-    
-    // Helper function to get witness page position with normalization
-    function getWitnessPage(witness) {
-        try {
-            // Always normalize the key for consistency
-            const witnessKey = normalizeWitnessKey(witness);
-            
-            // Try localStorage with normalized key
-            if (window.witnessPagePositions && window.witnessPagePositions[witnessKey] !== undefined) {
-                const page = window.witnessPagePositions[witnessKey];
-                console.log(`📊 RETRIEVED: Page ${page} for ${witnessKey} from localStorage`);
-                return page;
-            }
-            
-            console.log(`📊 NOT FOUND: No saved position for ${witnessKey}, using current page ${window.current_page_index || 0}`);
-            return window.current_page_index || 0;
-        } catch (e) {
-            console.error('Error getting witness page:', e);
-            return window.current_page_index || 0;
-        }
-    }
-    
-    // Extract and save current witness and page from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const tabParam = urlParams.get('tab') || '';
-    let currentWitness = null;
-    
-    if (tabParam.includes('wmW')) {
-        currentWitness = 'wmW';
-    } else if (tabParam.includes('wmR')) {
-        currentWitness = 'wmR';
-    } else if (tabParam.includes('primary')) {
-        currentWitness = 'primary';
-    }
-    
-    window.currentWitness = currentWitness;
-    console.log(`🔍 CURRENT WITNESS: ${currentWitness} from URL param: ${tabParam}`);
-    
-    // Extract the current page number and save it
-    if (currentWitness) {
-        const pageMatch = tabParam.match(/^(\d+)/);
-        if (pageMatch && pageMatch[1]) {
-            const currentPage = parseInt(pageMatch[1], 10) - 1; // Convert to 0-based
-            saveWitnessPage(currentWitness, currentPage);
-            console.log(`📊 INITIAL: Saved page ${currentPage} for current witness ${currentWitness}`);
-        }
-    }
     
     // FIRST APPROACH: Direct tab click handlers for witness tabs
     const wmWTab = document.getElementById('wmW-tab');
@@ -1190,21 +1093,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wmWTab.onclick = function(e) {
             e.preventDefault();
             e.stopPropagation();
-            
-            // Always save the current page position before switching
-            const currentPageIndex = window.current_page_index || 0;
-            if (window.currentWitness) {
-                console.log(`📋 SWITCHING: From ${window.currentWitness} page ${currentPageIndex} to wmW`);
-                saveWitnessPage(window.currentWitness, currentPageIndex);
-            }
-            
-            // Get saved position for target witness WITH CURRENT PAGE AS DEFAULT
-            // This is the critical fix - we use current page as fallback when no saved page exists
-            const savedPage = getWitnessPageWithFallback('wmW', currentPageIndex);
-            console.log(`📊 NAVIGATION: Using page ${savedPage} for wmW (current page is ${currentPageIndex})`);
-            
-            // Navigate to the target witness at the saved page
-            reloadPageWithWitness('wmW', savedPage + 1); // +1 because function expects 1-based
+            reloadPageWithWitness('wmW');
             return false;
         };
     }
@@ -1214,21 +1103,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wmRTab.onclick = function(e) {
             e.preventDefault();
             e.stopPropagation();
-            
-            // Always save the current page position before switching
-            const currentPageIndex = window.current_page_index || 0;
-            if (window.currentWitness) {
-                console.log(`📋 SWITCHING: From ${window.currentWitness} page ${currentPageIndex} to wmR`);
-                saveWitnessPage(window.currentWitness, currentPageIndex);
-            }
-            
-            // Get saved position for target witness WITH CURRENT PAGE AS DEFAULT
-            // This is the critical fix - we use current page as fallback when no saved page exists
-            const savedPage = getWitnessPageWithFallback('wmR', currentPageIndex);
-            console.log(`📊 NAVIGATION: Using page ${savedPage} for wmR (current page is ${currentPageIndex})`);
-            
-            // Navigate to the target witness at the saved page
-            reloadPageWithWitness('wmR', savedPage + 1); // +1 because function expects 1-based
+            reloadPageWithWitness('wmR');
             return false;
         };
     }
@@ -1242,103 +1117,84 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Check if it's a witness tab (not persons tab)
         if (tabButton.id && (tabButton.id.indexOf('wmW') !== -1 || tabButton.id.indexOf('wmR') !== -1)) {
-            // Determine which witness
-            let witness = tabButton.id.indexOf('wmW') !== -1 ? 'wmW' : 'wmR';
-            console.log(`🎯 DELEGATE: Witness tab clicked: ${tabButton.id}, target witness: ${witness}`);
+            console.log('🎯 Witness tab clicked:', tabButton.id);
             
-            // Always save the current page position before switching
-            const currentPageIndex = window.current_page_index || 0;
-            if (window.currentWitness) {
-                console.log(`📋 DELEGATE SWITCHING: From ${window.currentWitness} page ${currentPageIndex} to ${witness}`);
-                saveWitnessPage(window.currentWitness, currentPageIndex);
+            // Determine which witness
+            let witness = 'wmW'; // default
+            if (tabButton.id.indexOf('wmR') !== -1) {
+                witness = 'wmR';
             }
             
-            // Get saved position for target witness WITH CURRENT PAGE AS DEFAULT
-            const savedPage = getWitnessPageWithFallback(witness, currentPageIndex);
-            console.log(`📊 DELEGATE NAVIGATION: Using page ${savedPage} for ${witness} (current page is ${currentPageIndex})`);
-                
-            // Prevent default and reload with proper page
+            // Prevent default and reload
             e.preventDefault();
             e.stopPropagation();
-            reloadPageWithWitness(witness, savedPage + 1); // +1 because function expects 1-based
+            reloadPageWithWitness(witness);
             return false;
         }
     }, true); // Use capturing to get event before Bootstrap
     
-    // NEW HELPER: Get witness page with explicit fallback
-    function getWitnessPageWithFallback(witness, fallbackPage) {
-        try {
-            // Always normalize the key for consistency
-            const witnessKey = normalizeWitnessKey(witness);
-            
-            // Try localStorage with normalized key
-            if (window.witnessPagePositions && window.witnessPagePositions[witnessKey] !== undefined) {
-                const page = window.witnessPagePositions[witnessKey];
-                console.log(`📊 RETRIEVED: Page ${page} for ${witnessKey} from localStorage`);
-                return page;
-            }
-            
-            console.log(`📊 NOT FOUND: No saved position for ${witnessKey}, using CURRENT page ${fallbackPage}`);
-            return fallbackPage; // EXPLICIT FALLBACK to current page
-        } catch (e) {
-            console.error('Error getting witness page:', e);
-            return fallbackPage; // EXPLICIT FALLBACK to current page
-        }
-    }
-    
-    console.log('✅ Witness switcher initialized with localStorage persistence');
+    console.log('✅ Witness switcher initialized');
 });
 
 /**
  * Reload the page with a new witness parameter, preserving current page number
  */
-function reloadPageWithWitness(witness, specifiedPage) {
-    console.log(`🔄 RELOAD: For witness ${witness}, specified page: ${specifiedPage}`);
-    
-    // Helper to ensure consistent witness keys
-    function normalizeWitnessKey(key) {
-        if (key === 'W') return 'wmW';
-        if (key === 'R') return 'wmR';
-        if (key === 'primary') return 'primary';
-        return key; // Keep as is if already normalized or unknown
-    }
-    
+function reloadPageWithWitness(witness) {
     // Get current page from global variable or URL or default to 1
     let currentPage = 1;
     
-    // If a specific page was provided, use it (highest priority)
-    if (specifiedPage && !isNaN(specifiedPage)) {
-        currentPage = specifiedPage;
-        console.log(`📄 RELOAD: Using specified page ${currentPage} for witness ${witness}`);
-    } 
-    // Check localStorage for saved position - use normalized key
-    else if (window.witnessPagePositions && window.witnessPagePositions[normalizeWitnessKey(witness)] !== undefined) {
-        currentPage = window.witnessPagePositions[normalizeWitnessKey(witness)] + 1; // Convert 0-based to 1-based
-        console.log(`📄 RELOAD: Using saved page ${currentPage} from localStorage for witness ${witness}`);
+    // FIRST PRIORITY: Use window.current_page_index which is set by osd_scroll.js
+    if (typeof window.current_page_index === 'number') {
+        currentPage = window.current_page_index + 1; // Convert from 0-based to 1-based
+        console.log(`📄 Got page ${currentPage} from window.current_page_index`);
     }
-    // EXPLICIT FALLBACK: Use current page index as fallback
-    else if (typeof window.current_page_index === 'number') {
-        // FIX: Always use current page as fallback when switching witnesses
-        currentPage = window.current_page_index + 1; // Convert 0-based to 1-based
-        console.log(`📄 RELOAD: Using current page ${currentPage} as fallback for ${witness}`);
-    } else {
-        console.log(`📄 RELOAD: No current page index found, using page 1 for ${witness}`);
+    // Second priority: Try getting directly from the OSD viewer
+    else if (window.viewer && typeof window.viewer.currentPage === 'function') {
+        currentPage = window.viewer.currentPage() + 1; // Convert from 0-based to 1-based
+        console.log(`📄 Got page ${currentPage} from OSD viewer.currentPage()`);
+    }
+    // Third priority: Try the manuscriptViewer global object
+    else if (window.manuscriptViewer && typeof window.manuscriptViewer.currentIndex === 'number') {
+        currentPage = window.manuscriptViewer.currentIndex + 1; // Convert from 0-based to 1-based
+        console.log(`📄 Got page ${currentPage} from manuscriptViewer.currentIndex`);
+    }
+    // Last resort: Parse from URL
+    else {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get('tab');
+        if (tab) {
+            const match = tab.match(/^(\d+)/);
+            if (match && match[1]) {
+                currentPage = parseInt(match[1], 10);
+                console.log(`📄 Got page ${currentPage} from URL tab parameter`);
+            }
+        } else {
+            console.log('⚠️ No page information found, defaulting to page 1');
+        }
+    }
+    
+    // Validate the page number
+    if (isNaN(currentPage) || currentPage < 1) {
+        console.log('⚠️ Invalid page number, defaulting to page 1');
         currentPage = 1;
     }
     
-    // Make sure witness code is properly formatted for URL
+    // Make sure witness code is properly formatted
     const cleanWitness = witness.replace(/^wm/, '');
     
     // Build the new URL
     const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
     const newUrl = `${baseUrl}?tab=${currentPage}wm${cleanWitness}`;
     
-    console.log(`🔄 RELOADING: Page with witness ${witness}, page ${currentPage}`);
-    console.log(`📄 NEW URL: ${newUrl}`);
+    console.log(`🔄 Reloading page with witness ${witness}, page ${currentPage}`);
+    console.log(`📄 New URL: ${newUrl}`);
     
     // Force a complete page reload
     window.location.href = newUrl;
 }
+
+// Export function for global use
+window.reloadPageWithWitness = reloadPageWithWitness;
 
 /**
  * Witness Switcher - Handles switching between witness tabs with proper page reloading
@@ -1346,117 +1202,11 @@ function reloadPageWithWitness(witness, specifiedPage) {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Witness switcher initializing...');
     
-    // Initialize localStorage-based witness page storage if needed
-    try {
-        if (!window.witnessPagePositions) {
-            const savedPositions = localStorage.getItem('witnessPagePositions');
-            window.witnessPagePositions = savedPositions ? JSON.parse(savedPositions) : {};
-        }
-    } catch (e) {
-        console.error('Error loading witness page positions:', e);
-        window.witnessPagePositions = {};
-    }
-    
-    // Initialize witness page map from localStorage data
-    if (!window.witnessPageMap) {
-        window.witnessPageMap = new Map();
-        // Copy values from localStorage
-        if (window.witnessPagePositions) {
-            Object.entries(window.witnessPagePositions).forEach(([key, value]) => {
-                window.witnessPageMap.set(key, value);
-            });
-        }
-    }
-    
-    // Extract current witness from URL and save to global and localStorage
-    const urlParams = new URLSearchParams(window.location.search);
-    const tabParam = urlParams.get('tab');
-    
-    if (tabParam) {
-        // Store the current witness and page in global variables
-        if (tabParam.includes('wmW')) {
-            window.currentWitness = 'wmW';
-            
-            // Extract the page number and save it to localStorage
-            const pageMatch = tabParam.match(/^(\d+)/);
-            if (pageMatch && pageMatch[1]) {
-                const pageIndex = parseInt(pageMatch[1], 10) - 1; // 0-based index
-                try {
-                    if (!window.witnessPagePositions) window.witnessPagePositions = {};
-                    window.witnessPagePositions['wmW'] = pageIndex;
-                    localStorage.setItem('witnessPagePositions', JSON.stringify(window.witnessPagePositions));
-                    
-                    console.log(`📊 Saved page ${pageIndex} for witness wmW to localStorage (initial)`);
-                } catch (e) {
-                    console.error('Error saving to localStorage:', e);
-                }
-            }
-        } else if (tabParam.includes('wmR')) {
-            window.currentWitness = 'wmR';
-            
-            // Extract the page number and save it to localStorage
-            const pageMatch = tabParam.match(/^(\d+)/);
-            if (pageMatch && pageMatch[1]) {
-                const pageIndex = parseInt(pageMatch[1], 10) - 1; // 0-based index
-                try {
-                    if (!window.witnessPagePositions) window.witnessPagePositions = {};
-                    window.witnessPagePositions['wmR'] = pageIndex;
-                    localStorage.setItem('witnessPagePositions', JSON.stringify(window.witnessPagePositions));
-                    
-                    console.log(`📊 Saved page ${pageIndex} for witness wmR to localStorage (initial)`);
-                } catch (e) {
-                    console.error('Error saving to localStorage:', e);
-                }
-            }
-        } else if (tabParam.includes('primary')) {
-            window.currentWitness = 'primary';
-        }
-    }
-    
-    // Helper function to save witness page position to localStorage
-    function saveWitnessPage(witness, pageIndex) {
-        if (!witness || typeof pageIndex !== 'number') return;
-        
-        try {
-            // Update both Map and localStorage
-            window.witnessPageMap.set(witness, pageIndex);
-            
-            if (!window.witnessPagePositions) window.witnessPagePositions = {};
-            window.witnessPagePositions[witness] = pageIndex;
-            localStorage.setItem('witnessPagePositions', JSON.stringify(window.witnessPagePositions));
-            
-            console.log(`📋 Saved page ${pageIndex} for ${witness} to localStorage`);
-        } catch (e) {
-            console.error('Error saving witness page:', e);
-        }
-    }
-    
-    // Helper function to get witness page position
-    function getWitnessPage(witness) {
-        try {
-            // Try localStorage first
-            if (window.witnessPagePositions && window.witnessPagePositions[witness] !== undefined) {
-                return window.witnessPagePositions[witness];
-            }
-            
-            // Try Map as fallback
-            if (window.witnessPageMap && window.witnessPageMap.has(witness)) {
-                return window.witnessPageMap.get(witness);
-            }
-            
-            // Default to current page
-            return window.current_page_index || 0;
-        } catch (e) {
-            console.error('Error getting witness page:', e);
-            return window.current_page_index || 0;
-        }
-    }
-    
     // Find all witness tab buttons
     const witnessTabs = document.querySelectorAll('.nav-tabs button[data-bs-toggle="tab"][id$="-tab"]');
     console.log(`Found ${witnessTabs.length} witness tabs`);
     
-    // Add click handlers to each tab with improved localStorage persistence
+    // Add click handlers to each tab
     witnessTabs.forEach(tab => {
         // Get the witness ID from the tab's ID or target
         const witnessId = tab.id.replace('-tab', '') || 
@@ -1468,31 +1218,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Replace Bootstrap's event handler with our own
         tab.addEventListener('click', function(e) {
-            // Always save the current page position before switching
-            const currentPageIndex = window.current_page_index || 0;
-            if (window.currentWitness) {
-                saveWitnessPage(window.currentWitness, currentPageIndex);
-                console.log(`📋 TAB: Saving page ${currentPageIndex} for ${window.currentWitness}`);
-            }
-            
-            // Get saved position for target witness with CURRENT PAGE as fallback
-            let targetPage;
-            if (window.witnessPagePositions && window.witnessPagePositions[witnessId] !== undefined) {
-                targetPage = window.witnessPagePositions[witnessId];
-                console.log(`📊 TAB: Using saved page ${targetPage} for ${witnessId}`);
-            } else {
-                // EXPLICIT FALLBACK to current page index
-                targetPage = currentPageIndex;
-                console.log(`📊 TAB: No saved page, using current page ${targetPage} for ${witnessId}`);
-            }
-            
+            // Get current page index from OSD (0-based)
+            const pageIndex = window.current_page_index || 0;
             // Convert to 1-based for URL
-            const pageNumber = targetPage + 1;
+            const pageNumber = pageIndex + 1;
             
             // Get base URL without parameters
             const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
             
-            // Create URL with the new witness and target page
+            // Create URL with the new witness and current page
             let newUrl;
             if (witnessId === 'primary') {
                 newUrl = `${baseUrl}?tab=${pageNumber}primary`;
@@ -1520,19 +1254,8 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Setting up witness dropdown handler');
         witnessDropdown.addEventListener('change', function() {
             const selectedWitness = this.value;
-            
-            // Store current page for current witness before switching
-            if (window.currentWitness) {
-                window.witnessPageMap.set(window.currentWitness, window.current_page_index || 0);
-            }
-            
-            // Use previously visited page or current page
-            const targetPage = window.witnessPageMap.has(selectedWitness) ? 
-                window.witnessPageMap.get(selectedWitness) : 
-                (window.current_page_index || 0);
-                
-            const pageNumber = targetPage + 1; // 1-based for URL
-            
+            // Always use window.current_page_index for consistency
+            const pageNumber = (window.current_page_index !== undefined ? window.current_page_index : 0) + 1;
             const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
             const newUrl = `${baseUrl}?tab=${pageNumber}wm${selectedWitness}`;
             
@@ -1541,7 +1264,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    console.log('Witness switcher initialized with localStorage persistence');
+    console.log('Witness switcher initialized');
 });
 
 /**
@@ -1564,4 +1287,3 @@ function refreshWitnessTabs() {
 
 // Expose for other scripts
 window.refreshWitnessTabs = refreshWitnessTabs;
-
