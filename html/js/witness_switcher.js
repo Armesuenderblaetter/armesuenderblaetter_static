@@ -836,8 +836,11 @@ class WitnessSwitcher {
                     if (tabElement) {
                         tabElement.addEventListener('click', (event) => {
                             event.preventDefault();
-                            // console.log(`📑 ${witness} tab clicked`);
-                            this.switchToWitness(witness);
+                            // Get current page index from global variable
+                            const pageIndex = window.current_page_index || 0;
+                            // Use goToWitnessPage instead of switchToWitness to preserve page
+                            this.goToWitnessPage(witness, pageIndex);
+                            // console.log(`📑 ${witness} tab clicked, going to page ${pageIndex}`);
                         });
                         // console.log(`✅ Added click listener for ${witness} tab`);
                     } else {
@@ -855,8 +858,11 @@ class WitnessSwitcher {
             if (wmWTab) {
                 wmWTab.addEventListener('click', (event) => {
                     event.preventDefault();
-                    // console.log('📑 wmW tab clicked');
-                    this.switchToWitness('wmW');
+                    // Get current page index from global variable
+                    const pageIndex = window.current_page_index || 0;
+                    // Use goToWitnessPage instead of switchToWitness to preserve page
+                    this.goToWitnessPage('wmW', pageIndex);
+                    // console.log(`📑 wmW tab clicked, going to page ${pageIndex}`);
                 });
                 // console.log('✅ Added click listener for wmW tab');
             }
@@ -864,8 +870,11 @@ class WitnessSwitcher {
             if (wmRTab) {
                 wmRTab.addEventListener('click', (event) => {
                     event.preventDefault();
-                    // console.log('📑 wmR tab clicked');
-                    this.switchToWitness('wmR');
+                    // Get current page index from global variable
+                    const pageIndex = window.current_page_index || 0;
+                    // Use goToWitnessPage instead of switchToWitness to preserve page
+                    this.goToWitnessPage('wmR', pageIndex);
+                    // console.log(`📑 wmR tab clicked, going to page ${pageIndex}`);
                 });
                 // console.log('✅ Added click listener for wmR tab');
             }
@@ -1134,15 +1143,15 @@ function reloadPageWithWitness(witness) {
     // Get current page from global variable or URL or default to 1
     let currentPage = 1;
     
-    // First priority: Try getting directly from the OSD viewer
-    if (window.viewer && typeof window.viewer.currentPage === 'function') {
-        currentPage = window.viewer.currentPage() + 1; // Convert from 0-based to 1-based
-        console.log(`📄 Got page ${currentPage} from OSD viewer.currentPage()`);
-    }
-    // Second priority: Try window.current_page_index global variable
-    else if (typeof window.current_page_index === 'number') {
+    // FIRST PRIORITY: Use window.current_page_index which is set by osd_scroll.js
+    if (typeof window.current_page_index === 'number') {
         currentPage = window.current_page_index + 1; // Convert from 0-based to 1-based
         console.log(`📄 Got page ${currentPage} from window.current_page_index`);
+    }
+    // Second priority: Try getting directly from the OSD viewer
+    else if (window.viewer && typeof window.viewer.currentPage === 'function') {
+        currentPage = window.viewer.currentPage() + 1; // Convert from 0-based to 1-based
+        console.log(`📄 Got page ${currentPage} from OSD viewer.currentPage()`);
     }
     // Third priority: Try the manuscriptViewer global object
     else if (window.manuscriptViewer && typeof window.manuscriptViewer.currentIndex === 'number') {
@@ -1245,7 +1254,8 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Setting up witness dropdown handler');
         witnessDropdown.addEventListener('change', function() {
             const selectedWitness = this.value;
-            const pageNumber = (window.current_page_index || 0) + 1;
+            // Always use window.current_page_index for consistency
+            const pageNumber = (window.current_page_index !== undefined ? window.current_page_index : 0) + 1;
             const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
             const newUrl = `${baseUrl}?tab=${pageNumber}wm${selectedWitness}`;
             

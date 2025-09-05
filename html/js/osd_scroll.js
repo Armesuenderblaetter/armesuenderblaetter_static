@@ -567,9 +567,36 @@ function updatePageLinks() {
     // Use lowercase letter for label
     link.textContent = String.fromCharCode(97 + index);
     
+    // Add click handler to ensure text updates for single-witness documents
+    link.addEventListener('click', function(e) {
+      const pageIndex = parseInt(this.getAttribute('data-page-index'), 10);
+      
+      // Check if we're in a single-witness document
+      const availableWitnesses = document.querySelectorAll('.tab-pane[id^="witness-"]').length;
+      if (availableWitnesses <= 1 || window.witnessState === 'single') {
+        e.preventDefault();
+        
+        // Update both facsimile and text
+        handle_new_image(pageIndex);
+        handle_page_visibility(pageIndex);
+        
+        // Update URL without page reload
+        const newUrl = this.href;
+        window.history.replaceState(null, '', newUrl);
+        return false;
+      }
+      // For multi-witness docs, let the normal navigation handle it
+    });
+    
     listItem.appendChild(link);
     pageLinksContainer.appendChild(listItem);
   });
+  
+  // Mark the current page as active
+  const currentPageLink = pageLinksContainer.querySelector(`[data-page-index="${current_page_index}"]`);
+  if (currentPageLink) {
+    currentPageLink.classList.add('active');
+  }
   
   console.log(`Page links rebuilt for witness: ${currentWitness}`);
 }
@@ -630,7 +657,7 @@ function setupWitnessChangeListeners() {
       // Get current page number (1-based)
       const pageNumber = current_page_index + 1;
       
-      // Build URL and force reload
+      // Build URL and force reload - using current page number
       const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
       let newUrl = `${baseUrl}?tab=${pageNumber}wm${witnessId}`;
       
@@ -647,7 +674,7 @@ function setupWitnessChangeListeners() {
     console.log(`Added click handler to ${tabLink.getAttribute('href')}`);
   });
   
-  // Keep the old handlers as backup
+  // Keep the old handlers as backup with fix for preserving current page
   document.addEventListener('click', function(event) {
     const target = event.target;
     
@@ -665,10 +692,10 @@ function setupWitnessChangeListeners() {
       if (witness) {
         console.log(`Tab clicked for witness: ${witness}`);
         
-        // Get current page number (1-based)
+        // Get current page number (1-based) - FIXED to use the global current_page_index
         const pageNumber = current_page_index + 1;
         
-        // Construct URL
+        // Construct URL with current page number
         const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
         let newUrl = (witness === 'primary') 
                     ? `${baseUrl}?tab=${pageNumber}primary` 
@@ -685,14 +712,14 @@ function setupWitnessChangeListeners() {
     }
   }, true); // Use capturing phase for earlier interception
   
-  // Witness dropdown handler
+  // Witness dropdown handler with page preservation fix
   const witnessSelect = document.querySelector('#witness-select');
   if (witnessSelect) {
     witnessSelect.addEventListener('change', function() {
       const witness = this.value;
       console.log(`Dropdown changed to: ${witness}`);
       
-      // Get page number and construct URL
+      // Get page number and construct URL - FIXED to use current_page_index
       const pageNumber = current_page_index + 1;
       const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
       const newUrl = `${baseUrl}?tab=${pageNumber}wm${witness}`;
