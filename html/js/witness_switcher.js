@@ -250,38 +250,49 @@ class WitnessSwitcher {
         try {
             const witnessSuffix = this.witnessToSuffixMap.get(witness) || (witness === 'wmW' ? 'W' : witness === 'wmR' ? 'R' : '');
             let witnessPbs = [];
-
-            // Most specific first: wit attribute
+            
+            // For single-witness documents - if there's only one set of page breaks, use those
+            const allPbs = Array.from(document.querySelectorAll('.pb[source]') || []);
+            
+            // 1. Most specific first: wit attribute
             witnessPbs = Array.from(document.querySelectorAll(`.pb[wit="#${witness}"][source]`) || []);
 
+            // 2. Try data-witness attribute
             if (witnessPbs.length === 0) {
                 witnessPbs = Array.from(document.querySelectorAll(`.pb[data-witness="${witness}"][source]`) || []);
             }
 
-            if (witnessPbs.length === 0 && (witness === 'wmW' || witness === 'wmR')) {
-                const suffix = witness === 'wmW' ? 'W' : 'R';
-                const selector = `.pb[source*="_${suffix}"]`;
-                witnessPbs = Array.from(document.querySelectorAll(selector) || []);
-            }
-
-            if (witnessPbs.length === 0 && witnessSuffix) {
-                const allPbs = Array.from(document.querySelectorAll('.pb[source]') || []);
-                witnessPbs = allPbs.filter(pb => {
-                    const src = pb.getAttribute('source') || '';
-                    return src.includes(`_${witnessSuffix}`) || src.includes(`${witnessSuffix}_`);
-                });
-            }
-            if (witnessPbs.length === 0) {
-                if (witness === 'wmW' || witnessSuffix === 'W') {
-                    witnessPbs = Array.from(document.querySelectorAll('.pb[source*="_W"], .pb[source*="W_"]') || []);
-                } else if (witness === 'wmR' || witnessSuffix === 'R') {
-                    witnessPbs = Array.from(document.querySelectorAll('.pb[source*="_R"], .pb[source*="R_"]') || []);
+            // 3. If we're still empty and this is a default witness, use any available pbs
+            if (witnessPbs.length === 0 && 
+                (witness === 'wmW' || witness === 'wmR' || witness === 'primary')) {
+                
+                // If we have data-pb-type="primary", prefer those
+                const primaryPbs = Array.from(document.querySelectorAll('.pb[data-pb-type="primary"][source]'));
+                if (primaryPbs.length > 0) {
+                    return primaryPbs;
+                }
+                
+                // If still empty, use ANY pbs we can find
+                if (allPbs.length > 0) {
+                    return allPbs;
                 }
             }
+            
+            // 4. If still nothing found and we have a witnessSuffix, try less specific pattern matching
+            if (witnessPbs.length === 0 && witnessSuffix) {
+                // Don't be too specific about where the suffix appears in the filename
+                witnessPbs = allPbs.filter(pb => {
+                    const src = pb.getAttribute('source') || '';
+                    // Case insensitive check for the suffix anywhere in the source
+                    return src.toLowerCase().includes(witnessSuffix.toLowerCase());
+                });
+            }
+            
             return witnessPbs;
         } catch (e) {
             // console.error('❌ getWitnessPbs error:', e);
-            return [];
+            // Return any available page breaks as a last resort
+            return Array.from(document.querySelectorAll('.pb[source]') || []);
         }
     }
 
@@ -289,7 +300,6 @@ class WitnessSwitcher {
      * Update OSD viewer images for a specific witness with defensive coding
      */
     updateOSDImagesForWitness(witness) {
-        // console.log(`🔍 Finding facsimile images for witness: ${witness}`);
         try {
             // Prefer pages derived from DOM (keeps order in sync with pagination)
             this.ensurePaginationForWitness(witness);
@@ -297,26 +307,38 @@ class WitnessSwitcher {
 
             let tileSources = entries.map(e => e.tileSource);
 
-            // Fallback to legacy discovery if none found
+            // Fallback to any page breaks if none witness-specific found
             if (tileSources.length === 0) {
                 const witnessPbs = this.getWitnessPbs(witness);
+                
+                // Last resort: If still no witness-specific pbs, use ANY available pbs
                 if (!witnessPbs || witnessPbs.length === 0) {
-                    // console.warn(`⚠️ No pb elements found. Using hard-coded fallbacks for ${witness}`);
-                    if (witness === 'wmW') {
-                        return this.loadFallbackSources('W');
-                    } else if (witness === 'wmR') {
-                        return this.loadFallbackSources('R');
+                    const anyPbs = document.querySelectorAll('.pb[source]');
+                    if (anyPbs && anyPbs.length > 0) {
+                        tileSources = Array.from(anyPbs).map(pb => {
+                            const src = pb.getAttribute('source');
+                            if (!src) return null;
+                            return src.startsWith('http') 
+                                ? src 
+                                : `https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/${src}/info.json`;
+                        }).filter(Boolean);
+                    } else {
+                        // Absolute last resort - use hardcoded fallbacks
+                        if (witness === 'wmW' || witness === 'primary') {
+                            return this.loadFallbackSources('W');
+                        } else if (witness === 'wmR') {
+                            return this.loadFallbackSources('R'); 
+                        }
                     }
-                    return;
+                } else {
+                    tileSources = witnessPbs.map(pb => {
+                        const src = pb.getAttribute('source');
+                        if (!src) return null;
+                        return src.startsWith('http')
+                            ? src
+                            : `https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/${src}/info.json`;
+                    }).filter(Boolean);
                 }
-
-                tileSources = witnessPbs.map(pb => {
-                    const src = pb.getAttribute('source');
-                    if (!src) return null;
-                    return src.startsWith('http')
-                        ? src
-                        : `https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/${src}/info.json`;
-                }).filter(Boolean);
             }
 
             if (tileSources.length === 0) {
@@ -612,8 +634,10 @@ class WitnessSwitcher {
      * Set the default witness based on URL parameters or fallback
      */
     setDefaultWitness() {
+        // First check URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const tab = urlParams.get('tab');
+        
         if (tab) {
             // Parse for page number prefix, e.g., "3wmR" -> witness "wmR", page 3
             const match = tab.match(/^(\d+)(.*)$/);
@@ -635,6 +659,18 @@ class WitnessSwitcher {
                 this.goToWitnessPage(targetWitness, pageIndex);
             }
         } else {
+            // Pick the most appropriate default witness
+            const allPbElements = document.querySelectorAll('.pb[source]');
+            const hasMultipleWitnesses = this.availableWitnesses.size > 2; // More than just default witnesses
+            
+            // For single-witness documents, create and use a "primary" witness
+            if (!hasMultipleWitnesses && allPbElements.length > 0) {
+                this.availableWitnesses.add('primary');
+                this.goToWitnessPage('primary', 0);
+                return;
+            }
+            
+            // For multi-witness, use wmW or first available
             const defaultWitness = this.availableWitnesses.has('wmW') ? 'wmW' : Array.from(this.availableWitnesses)[0];
             if (defaultWitness) {
                 this.goToWitnessPage(defaultWitness, 0);
