@@ -246,11 +246,14 @@ var last_img_url = ""
 
 // Manual navigation with prev/next buttons only
 function handle_new_image(page_index) {
+  console.log(`🔄 IMAGE: handle_new_image(${page_index})`);
+  
   if (page_index < 0 || page_index >= pb_elements_array.length) {
-    console.log('Invalid page index:', page_index);
+    console.log('❌ IMAGE: Invalid page index:', page_index);
     return;
   }
   
+  console.log(`🔄 IMAGE: Setting current_page_index = ${page_index}`);
   current_page_index = page_index;
   const current_pb_element = pb_elements_array[page_index];
   
@@ -259,8 +262,14 @@ function handle_new_image(page_index) {
       page_break_marker_image_attribute
     )
   );
+  console.log(`🔄 IMAGE: Loading image: ${new_image_url}`);
+  
   old_image = viewer.world.getItemAt(0);
   load_new_image_with_check(new_image_url, old_image);
+  
+  // Update citation with correct page after image change
+  console.log(`🔄 IMAGE: Updating citation for page ${page_index}`);
+  updateCitationSuggestion(page_index);
 }
 
 // New function to handle page content visibility
@@ -279,17 +288,26 @@ function handle_page_visibility(page_index) {
 
 // Generate and update citation suggestion below footnotes
 function updateCitationSuggestion(page_index) {
+  console.log(`🔍 CITATION: Updating citation for page_index=${page_index}, current_page_index=${current_page_index}`);
+  
   // Find the main container and edition-text element
   const main = document.querySelector('main');
   const editionText = document.getElementById('edition-text');
-  if (!main || !editionText) return;
+  if (!main || !editionText) {
+    console.log('❌ CITATION: Missing main or edition-text elements');
+    return;
+  }
   
   // Find the current pb element
   const pbEl = pb_elements_array[page_index];
-  if (!pbEl) return;
+  if (!pbEl) {
+    console.log(`❌ CITATION: No pb element found for index ${page_index}`);
+    return;
+  }
   
   // Get page info for citation
   const pageNum = pbEl.getAttribute('data-page-number') || (page_index + 1);
+  console.log(`📋 CITATION: Using page number ${pageNum} for citation`);
   
   // Get document title from <title> tag or fallback to filename
   let docTitle = '';
@@ -302,16 +320,28 @@ function updateCitationSuggestion(page_index) {
     docTitle = window.location.pathname.split('/').pop().replace('.html', '');
   }
   
-  // Get current page URL
-  const pageUrl = window.location.href;
+  // Generate URL with the current page number and witness
+  const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+  let currentWitness = getCurrentWitness();
+  console.log(`🔍 CITATION: Current witness for URL: ${currentWitness}`);
   
-  // Compose citation text
-  const citationText = `${docTitle}. In Claudia Resch. <em>Armesünderblätter Online</em>, 2025, S. ${pageNum}. <a href='${pageUrl}' target='_blank'>${pageUrl}</a>`;
+  let pageUrlWithTab;
+  
+  if (currentWitness === 'primary') {
+    pageUrlWithTab = `${baseUrl}?tab=${pageNum}primary`;
+  } else {
+    pageUrlWithTab = `${baseUrl}?tab=${pageNum}wm${currentWitness}`;
+  }
+  
+  console.log(`🌐 CITATION: Generated URL: ${pageUrlWithTab}`);
+  
+  // Compose citation text with updated URL that includes the current page
+  const citationText = `${docTitle}. In Claudia Resch. <em>Armesünderblätter Online</em>, 2025, S. ${pageNum}. <a href='${pageUrlWithTab}' target='_blank'>${pageUrlWithTab}</a>`;
   
   // Find the citation div (which is a direct child of main, not edition-text)
   let citationDiv = main.querySelector('div.citation');
   if (!citationDiv) {
-    console.log('Citation div not found in main, creating it');
+    console.log('📋 CITATION: Citation div not found in main, creating it');
     citationDiv = document.createElement('div');
     citationDiv.className = 'citation';
     main.appendChild(citationDiv);
@@ -323,17 +353,20 @@ function updateCitationSuggestion(page_index) {
   citationDiv.style.marginTop = '1em';
   citationDiv.style.fontSize = 'small';
   citationDiv.style.color = 'grey';
+  console.log(`✅ CITATION: Citation updated successfully`);
 }
 
 // Function to show only the content of the current page
 function show_only_current_page(current_page_index) {
+  console.log(`📃 PAGE: show_only_current_page(${current_page_index})`);
+  
   const editionText = document.getElementById('edition-text');
   if (!editionText) {
-    console.log('No edition-text element found');
+    console.log('❌ PAGE: No edition-text element found');
     return;
   }
   if (pb_elements_array.length === 0) {
-    console.log('No page break elements found');
+    console.log('❌ PAGE: No page break elements found');
     return;
   }
 
@@ -347,11 +380,12 @@ function show_only_current_page(current_page_index) {
   const nextPbElement = pb_elements_array[current_page_index + 1];
 
   if (!currentPbElement) {
-    console.log('Current page element not found for index:', current_page_index);
+    console.log('❌ PAGE: Current page element not found for index:', current_page_index);
     return;
   }
 
-  console.log(`Showing page ${current_page_index + 1}, current pb:`, currentPbElement, 'next pb:', nextPbElement);
+  console.log(`📃 PAGE: Showing page ${current_page_index + 1}, current pb:`, 
+    currentPbElement.getAttribute('source') || 'no-source');
 
   // 1. Get all elements within edition-text in document order.
   const allElements = Array.from(editionText.querySelectorAll('*'));
@@ -359,7 +393,7 @@ function show_only_current_page(current_page_index) {
   // 2. Find the start and end markers in the flat list.
   const startIndex = allElements.indexOf(currentPbElement);
   if (startIndex === -1) {
-    console.error('Could not find the current page break element in the DOM.');
+    console.error('❌ PAGE: Could not find the current page break element in the DOM.');
     return;
   }
   
@@ -368,17 +402,17 @@ function show_only_current_page(current_page_index) {
     const nextPbIndex = allElements.indexOf(nextPbElement);
     if (nextPbIndex > startIndex) {
       endIndex = nextPbIndex;
-      console.log(`Page boundary: elements ${startIndex} to ${endIndex - 1} (next page starts at ${endIndex})`);
+      console.log(`📃 PAGE: Page boundary: elements ${startIndex} to ${endIndex - 1} (next page starts at ${endIndex})`);
     }
   } else {
-    console.log(`Last page: elements ${startIndex} to end (${allElements.length})`);
+    console.log(`📃 PAGE: Last page: elements ${startIndex} to end (${allElements.length})`);
   }
 
   // 3. Collect all elements for the current page and their ancestors.
   const elementsToShow = new Set();
   const elementsInRange = allElements.slice(startIndex, endIndex);
 
-  console.log(`Elements in range for page ${current_page_index + 1}:`, elementsInRange.length);
+  console.log(`📃 PAGE: Elements in range for page ${current_page_index + 1}:`, elementsInRange.length);
 
   elementsInRange.forEach(element => {
     elementsToShow.add(element);
@@ -417,7 +451,15 @@ function show_only_current_page(current_page_index) {
     }
   });
 
-  console.log(`Page ${current_page_index + 1}: ${shownCount} elements shown, ${hiddenCount} elements hidden`);
+  console.log(`📃 PAGE: Page ${current_page_index + 1}: ${shownCount} elements shown, ${hiddenCount} elements hidden`);
+  
+  // Update global current_page_index for tracking
+  window.current_page_index = current_page_index;
+  console.log(`📃 PAGE: Set window.current_page_index = ${current_page_index}`);
+  
+  // Make sure citation is updated with the correct page number
+  console.log(`📃 PAGE: Calling updateCitationSuggestion(${current_page_index})`);
+  updateCitationSuggestion(current_page_index);
 }
 
 function load_new_image_with_check(new_image_url, old_image) {
@@ -603,21 +645,48 @@ function updatePageLinks() {
 
 // Helper function to get the current witness
 function getCurrentWitness() {
+  console.log(`🔍 GET_WITNESS: Starting getCurrentWitness()`);
+  
   // First check URL for witness information
   const urlParams = new URLSearchParams(window.location.search);
   const tabParam = urlParams.get('tab');
+  console.log(`🔍 GET_WITNESS: URL tab parameter: "${tabParam}"`);
+  
   if (tabParam && tabParam.includes('wm')) {
-    return tabParam.split('wm')[1];
+    const witness = tabParam.match(/wm([A-Za-z0-9]+)/);
+    if (witness && witness[1]) {
+      console.log(`✅ GET_WITNESS: Found witness ${witness[1]} in URL tab parameter`);
+      return witness[1];
+    }
+  }
+  
+  // If window.currentWitness is set (by witness_switcher.js), use that
+  if (window.currentWitness) {
+    const cleanWitness = window.currentWitness.replace(/^wm/, '');
+    console.log(`✅ GET_WITNESS: Using window.currentWitness: ${cleanWitness}`);
+    return cleanWitness;
   }
   
   // If not in URL, check for active tab or other indicators
   const activeTab = document.querySelector('.tab-pane.active');
   if (activeTab && activeTab.id) {
     const witnessMatch = activeTab.id.match(/witness-(\w+)/);
-    if (witnessMatch) return witnessMatch[1];
+    if (witnessMatch) {
+      console.log(`✅ GET_WITNESS: Found witness ${witnessMatch[1]} from active tab`);
+      return witnessMatch[1];
+    }
+  }
+  
+  // Check document attribute as a last resort
+  const bodyWitness = document.body.getAttribute('data-active-witness');
+  if (bodyWitness) {
+    const cleanWitness = bodyWitness.replace(/^wm/, '');
+    console.log(`✅ GET_WITNESS: Found witness ${cleanWitness} from body attribute`);
+    return cleanWitness;
   }
   
   // Default to W if nothing else found
+  console.log(`⚠️ GET_WITNESS: No witness found, defaulting to W`);
   return 'W';
 }
 

@@ -563,21 +563,37 @@ class WitnessSwitcher {
         }
     }
 
-    // Navigate to a specific page in a witness (switch if needed)
-    goToWitnessPage(witness, index) {
-        if (this.currentWitness !== witness) {
-            // If switching witness, let switchToWitness handle the initial text update.
-            // It will use pendingNavigation if set, or default to page 0.
-            this.scheduleNavigation(witness, index);
-            this.switchToWitness(witness);
-        } else {
-            // If witness is already active, just navigate to the page.
-            this.navigateViewerToIndex(index);
-            this.syncTextWithPage(index); // This will update the text display
-        }
-        this.updatePaginationActiveState(witness, index);
-        this.updateBrowserState(witness, index);
+// Navigate to a specific page in a witness (switch if needed)
+goToWitnessPage(witness, index) {
+    console.log(`🔄 GOTO: goToWitnessPage("${witness}", ${index})`);
+    
+    if (this.currentWitness !== witness) {
+        console.log(`🔄 GOTO: Switching from "${this.currentWitness}" to "${witness}"`);
+        // If switching witness, let switchToWitness handle the initial text update.
+        // It will use pendingNavigation if set, or default to page 0.
+        this.scheduleNavigation(witness, index);
+        console.log(`🔄 GOTO: Scheduled navigation to "${witness}" page ${index}`);
+        this.switchToWitness(witness);
+    } else {
+        console.log(`🔄 GOTO: Already on witness "${witness}", just navigating to page ${index}`);
+        // If witness is already active, just navigate to the page.
+        this.navigateViewerToIndex(index);
+        this.syncTextWithPage(index); // This will update the text display
     }
+    this.updatePaginationActiveState(witness, index);
+    this.updateBrowserState(witness, index);
+    
+    // Make this index globally available
+    window.current_page_index = index;
+    console.log(`🔄 GOTO: Set window.current_page_index = ${index}`);
+    
+    // Update citation with the correct witness and page
+    if (typeof window.updateCitationSuggestion === 'function') {
+        window.currentWitness = witness;
+        console.log(`🔄 GOTO: Updating citation for "${witness}" page ${index}`);
+        window.updateCitationSuggestion(index);
+    }
+}
 
     navigateViewerToIndex(index) {
         try {
@@ -629,6 +645,11 @@ class WitnessSwitcher {
         // console.log(`✅ Finished switching to witness: ${witness}`);
         // Ensure page-links reflect the switched witness
         this.triggerPageLinksRefresh();
+        
+        // Force a citation update based on the current page index
+        if (typeof window.updateCitationSuggestion === 'function' && typeof window.current_page_index === 'number') {
+            window.updateCitationSuggestion(window.current_page_index);
+        }
     }
     
     /**
@@ -730,6 +751,11 @@ class WitnessSwitcher {
             if (this.pendingNavigation && this.pendingNavigation.witness === witness) {
                 this.updateBrowserState(witness, pageToShow);
             }
+            
+            // Force update the citation to ensure it shows the correct page after witness switch
+            if (typeof window.updateCitationSuggestion === 'function') {
+                window.updateCitationSuggestion(pageToShow);
+            }
 
             // console.log(`📝 Text updated for witness: ${witness}`);
         } catch (e) {
@@ -824,67 +850,73 @@ class WitnessSwitcher {
     }
 
     /**
-     * Set up event listeners for witness tabs
-     */
-    setupTabEventListeners() {
-        try {
-            // console.log('Setting up tab event listeners');
-            
-            // Handle dynamically discovered witnesses
-            this.availableWitnesses.forEach(witness => {
-                try {
-                    const tabElement = document.getElementById(`${witness}-tab`);
-                    if (tabElement) {
-                        tabElement.addEventListener('click', (event) => {
-                            event.preventDefault();
-                            // Get current page index from global variable
-                            const pageIndex = window.current_page_index || 0;
-                            // Use goToWitnessPage instead of switchToWitness to preserve page
-                            this.goToWitnessPage(witness, pageIndex);
-                            // console.log(`📑 ${witness} tab clicked, going to page ${pageIndex}`);
-                        });
-                        // console.log(`✅ Added click listener for ${witness} tab`);
-                    } else {
-                        // console.log(`⚠️ Tab element for ${witness} not found`);
-                    }
-                } catch (e) {
-                    // console.error(`❌ Error setting up tab for ${witness}:`, e);
+ * Set up event listeners for witness tabs
+ */
+setupTabEventListeners() {
+    try {
+        console.log('🔄 TABS: Setting up tab event listeners');
+        
+        // Handle dynamically discovered witnesses
+        this.availableWitnesses.forEach(witness => {
+            try {
+                const tabElement = document.getElementById(`${witness}-tab`);
+                if (tabElement) {
+                    tabElement.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        
+                        // Get current page index from global variable
+                        const pageIndex = window.current_page_index || 0;
+                        console.log(`📑 TABS: ${witness} tab clicked, page index: ${pageIndex}`);
+                        
+                        // Use goToWitnessPage instead of switchToWitness to preserve page
+                        this.goToWitnessPage(witness, pageIndex);
+                    });
+                    console.log(`✅ TABS: Added click listener for ${witness} tab`);
+                } else {
+                    console.log(`⚠️ TABS: Tab element for ${witness} not found`);
                 }
-            });
+            } catch (e) {
+                console.error(`❌ TABS: Error setting up tab for ${witness}:`, e);
+            }
+        });
 
-            // Legacy support for hardcoded wmW and wmR tabs
-            const wmWTab = document.getElementById('wmW-tab');
-            const wmRTab = document.getElementById('wmR-tab');
-            
-            if (wmWTab) {
-                wmWTab.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    // Get current page index from global variable
-                    const pageIndex = window.current_page_index || 0;
-                    // Use goToWitnessPage instead of switchToWitness to preserve page
-                    this.goToWitnessPage('wmW', pageIndex);
-                    // console.log(`📑 wmW tab clicked, going to page ${pageIndex}`);
-                });
-                // console.log('✅ Added click listener for wmW tab');
-            }
-            
-            if (wmRTab) {
-                wmRTab.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    // Get current page index from global variable
-                    const pageIndex = window.current_page_index || 0;
-                    // Use goToWitnessPage instead of switchToWitness to preserve page
-                    this.goToWitnessPage('wmR', pageIndex);
-                    // console.log(`📑 wmR tab clicked, going to page ${pageIndex}`);
-                });
-                // console.log('✅ Added click listener for wmR tab');
-            }
-            
-            // console.log('✅ Tab event listeners setup complete');
-        } catch (e) {
-            // console.error('❌ Error setting up tab event listeners:', e);
+        // Legacy support for hardcoded wmW and wmR tabs
+        const wmWTab = document.getElementById('wmW-tab');
+        const wmRTab = document.getElementById('wmR-tab');
+        
+        if (wmWTab) {
+            wmWTab.addEventListener('click', (event) => {
+                event.preventDefault();
+                
+                // Get current page index from global variable
+                const pageIndex = window.current_page_index || 0;
+                console.log(`📑 TABS: wmW tab clicked, page index: ${pageIndex}`);
+                
+                // Use goToWitnessPage instead of switchToWitness to preserve page
+                this.goToWitnessPage('wmW', pageIndex);
+            });
+            console.log('✅ TABS: Added click listener for wmW tab');
         }
+        
+        if (wmRTab) {
+            wmRTab.addEventListener('click', (event) => {
+                event.preventDefault();
+                
+                // Get current page index from global variable
+                const pageIndex = window.current_page_index || 0;
+                console.log(`📑 TABS: wmR tab clicked, page index: ${pageIndex}`);
+                
+                // Use goToWitnessPage instead of switchToWitness to preserve page
+                this.goToWitnessPage('wmR', pageIndex);
+            });
+            console.log('✅ TABS: Added click listener for wmR tab');
+        }
+        
+        console.log('✅ TABS: Tab event listeners setup complete');
+    } catch (e) {
+        console.error('❌ TABS: Error setting up tab event listeners:', e);
     }
+}
 
     /**
      * Set up event listeners for variant text clicks
@@ -1141,23 +1173,30 @@ document.addEventListener('DOMContentLoaded', function() {
  * Reload the page with a new witness parameter, preserving current page number
  */
 function reloadPageWithWitness(witness) {
+    console.log(`🔄 RELOAD: Starting reloadPageWithWitness("${witness}")`);
+    console.log(`🔄 RELOAD: window.current_page_index = ${window.current_page_index}`);
+    
     // Get current page from global variable or URL or default to 1
     let currentPage = 1;
+    
+    // Store witness code for debugging
+    window.currentWitness = witness;
+    console.log(`🔄 RELOAD: Setting window.currentWitness = "${witness}"`);
     
     // FIRST PRIORITY: Use window.current_page_index which is set by osd_scroll.js
     if (typeof window.current_page_index === 'number') {
         currentPage = window.current_page_index + 1; // Convert from 0-based to 1-based
-        console.log(`📄 Got page ${currentPage} from window.current_page_index`);
+        console.log(`📄 RELOAD: Got page ${currentPage} from window.current_page_index`);
     }
     // Second priority: Try getting directly from the OSD viewer
     else if (window.viewer && typeof window.viewer.currentPage === 'function') {
         currentPage = window.viewer.currentPage() + 1; // Convert from 0-based to 1-based
-        console.log(`📄 Got page ${currentPage} from OSD viewer.currentPage()`);
+        console.log(`📄 RELOAD: Got page ${currentPage} from OSD viewer.currentPage()`);
     }
     // Third priority: Try the manuscriptViewer global object
     else if (window.manuscriptViewer && typeof window.manuscriptViewer.currentIndex === 'number') {
         currentPage = window.manuscriptViewer.currentIndex + 1; // Convert from 0-based to 1-based
-        console.log(`📄 Got page ${currentPage} from manuscriptViewer.currentIndex`);
+        console.log(`📄 RELOAD: Got page ${currentPage} from manuscriptViewer.currentIndex`);
     }
     // Last resort: Parse from URL
     else {
@@ -1167,30 +1206,63 @@ function reloadPageWithWitness(witness) {
             const match = tab.match(/^(\d+)/);
             if (match && match[1]) {
                 currentPage = parseInt(match[1], 10);
-                console.log(`📄 Got page ${currentPage} from URL tab parameter`);
+                console.log(`📄 RELOAD: Got page ${currentPage} from URL tab parameter`);
             }
         } else {
-            console.log('⚠️ No page information found, defaulting to page 1');
+            console.log('⚠️ RELOAD: No page information found, defaulting to page 1');
         }
     }
     
     // Validate the page number
     if (isNaN(currentPage) || currentPage < 1) {
-        console.log('⚠️ Invalid page number, defaulting to page 1');
+        console.log('⚠️ RELOAD: Invalid page number, defaulting to page 1');
         currentPage = 1;
     }
     
     // Make sure witness code is properly formatted
     const cleanWitness = witness.replace(/^wm/, '');
+    console.log(`🔄 RELOAD: Using clean witness code: "${cleanWitness}"`);
     
     // Build the new URL
     const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
     const newUrl = `${baseUrl}?tab=${currentPage}wm${cleanWitness}`;
     
-    console.log(`🔄 Reloading page with witness ${witness}, page ${currentPage}`);
-    console.log(`📄 New URL: ${newUrl}`);
+    console.log(`🔄 RELOAD: Reloading page with witness ${witness}, page ${currentPage}`);
+    console.log(`📄 RELOAD: New URL: ${newUrl}`);
+    
+    // Update the citation before navigation
+    if (typeof window.updateCitationSuggestion === 'function') {
+        const citationPageIndex = currentPage - 1; // Convert back to 0-based for citation
+        console.log(`📋 RELOAD: Updating citation with page index ${citationPageIndex} before navigation`);
+        
+        // Force current witness to be updated to ensure citation has correct witness
+        window.currentWitness = witness;
+        console.log(`📋 RELOAD: Set window.currentWitness = "${witness}" for citation`);
+        
+        try {
+            window.updateCitationSuggestion(citationPageIndex);
+            console.log(`✅ RELOAD: Citation updated successfully`);
+        } catch (e) {
+            console.error(`❌ RELOAD: Error updating citation: ${e.message}`);
+        }
+    } else {
+        console.log(`⚠️ RELOAD: window.updateCitationSuggestion is not available`);
+    }
+    
+    // Store the target page and witness in localStorage for persistence
+    try {
+        const state = {
+            pageIndex: currentPage - 1, // Store as 0-based index
+            witness: witness
+        };
+        localStorage.setItem('lastWitnessState', JSON.stringify(state));
+        console.log(`📋 RELOAD: Saved state to localStorage: ${JSON.stringify(state)}`);
+    } catch (e) {
+        console.error(`❌ RELOAD: Error saving state to localStorage: ${e.message}`);
+    }
     
     // Force a complete page reload
+    console.log(`🚀 RELOAD: Navigating to: ${newUrl}`);
     window.location.href = newUrl;
 }
 
