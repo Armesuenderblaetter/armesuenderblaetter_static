@@ -69,7 +69,8 @@
                             <tr>
                                 <td>Drucker: </td>
                                 <td>
-                                    <xsl:value-of select=".//tei:publisher/text()"/>
+                                    <!-- Only the first publisher is displayed, even if multiple <tei:publisher> elements exist. -->
+                                    <xsl:value-of select="(.//tei:publisher/text())[1]"/>
                                 </td>
                             </tr>
                             <tr>
@@ -82,7 +83,16 @@
                             </tr>
                         </tbody>
                     </table>
-                    <xsl:if test="@type = 'secondary'">
+                    
+                    <!-- Add empty container for witness pages, to be filled by witness_switcher.js -->
+                    <div class="witness-pages mt-3">
+                        <h5>Seiten:</h5>
+                        <ul class="list-inline page-links">
+                            <!-- Page links will be populated dynamically by JavaScript -->
+                        </ul>
+                    </div>
+                    
+                    <!-- <xsl:if test="@type = 'secondary'">
                         <xsl:for-each select="//tei:pb[@edRef = concat('#', $wit_id)]">
                             <xsl:variable name="facs">
                                 <xsl:value-of select="@facs"/>
@@ -97,7 +107,7 @@
                                     alt="Seite des Flugblatts"/>
                             </span>
                         </xsl:for-each>
-                    </xsl:if>
+                    </xsl:if> -->
                 </div>
             </xsl:for-each>
             <div id="person_overview-tab-meta-data" role="tabpanel" aria-labelledby="#person_overview-tab">

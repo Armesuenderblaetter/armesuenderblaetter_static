@@ -130,6 +130,16 @@ creates an array for osd viewer with static images
 var pb_elements = document.getElementsByClassName(page_break_marker_classname);
 var pb_elements_array = Array.from(pb_elements);
 
+// Expose functions for witness_switcher.js
+window.show_only_current_page = show_only_current_page;
+window.updateOsdScrollPageBreaks = (newPbElements) => {
+  console.log('osd_scroll.js: Updating page breaks from witness switcher.', newPbElements);
+  pb_elements_array = Array.from(newPbElements);
+  max_index = pb_elements_array.length - 1;
+};
+window.getOsdScrollPbElements = () => pb_elements_array;
+
+
 // Debug: Log all page break elements found
 console.log('Total page break elements found:', pb_elements_array.length);
 pb_elements_array.forEach((el, index) => {
@@ -227,7 +237,7 @@ locate index of anchor element
 
 // Track the current page index globally
 var current_page_index = 0;
-const max_index = pb_elements_array.length - 1;
+let max_index = pb_elements_array.length - 1;
 var prev = document.querySelector("div[title='Previous page']");
 var next = document.querySelector("div[title='Next page']");
 prev.style.opacity = 1;
@@ -505,6 +515,9 @@ function initializePageView() {
     show_only_current_page(0);
     updateCitationSuggestion(0);
   }
+  
+  // Initial update of the page links
+  updatePageLinks();
 }
 
 // Make sure DOM is loaded before initializing
@@ -513,4 +526,231 @@ if (document.readyState === 'loading') {
 } else {
   // Add a small delay to ensure everything is rendered
   setTimeout(initializePageView, 100);
+}
+
+// Update the page links based on the current witness
+function updatePageLinks() {
+  // Find the witness-pages container and the page links list
+  const pageLinksContainer = document.querySelector('.witness-pages ul.page-links');
+  if (!pageLinksContainer) return;
+  
+  // Get current witness and base URL
+  let currentWitness = getCurrentWitness();
+  const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+  
+  // DESTROY the old list completely
+  while (pageLinksContainer.firstChild) {
+    pageLinksContainer.removeChild(pageLinksContainer.firstChild);
+  }
+  
+  // Create new links
+  pb_elements_array.forEach((pb, index) => {
+    const pageNumber = index + 1;
+    const listItem = document.createElement('li');
+    listItem.className = 'list-inline-item';
+    
+    const link = document.createElement('a');
+    link.className = 'page-link';
+    // FIX: Use correct URL format for witness links
+    if (currentWitness === 'primary') {
+      // Primary witness format
+      link.href = `${baseUrl}?tab=${pageNumber}primary`;
+    } else {
+      // Regular witness format with wm prefix
+      link.href = `${baseUrl}?tab=${pageNumber}wm${currentWitness}`;
+    }
+    
+    // Set correct data attributes
+    link.setAttribute('data-witness', currentWitness);
+    link.setAttribute('data-page-index', index);
+    
+    // Use lowercase letter for label
+    link.textContent = String.fromCharCode(97 + index);
+    
+    // Add click handler to ensure text updates for single-witness documents
+    link.addEventListener('click', function(e) {
+      const pageIndex = parseInt(this.getAttribute('data-page-index'), 10);
+      
+      // Check if we're in a single-witness document
+      const availableWitnesses = document.querySelectorAll('.tab-pane[id^="witness-"]').length;
+      if (availableWitnesses <= 1 || window.witnessState === 'single') {
+        e.preventDefault();
+        
+        // Update both facsimile and text
+        handle_new_image(pageIndex);
+        handle_page_visibility(pageIndex);
+        
+        // Update URL without page reload
+        const newUrl = this.href;
+        window.history.replaceState(null, '', newUrl);
+        return false;
+      }
+      // For multi-witness docs, let the normal navigation handle it
+    });
+    
+    listItem.appendChild(link);
+    pageLinksContainer.appendChild(listItem);
+  });
+  
+  // Mark the current page as active
+  const currentPageLink = pageLinksContainer.querySelector(`[data-page-index="${current_page_index}"]`);
+  if (currentPageLink) {
+    currentPageLink.classList.add('active');
+  }
+  
+  console.log(`Page links rebuilt for witness: ${currentWitness}`);
+}
+
+// Helper function to get the current witness
+function getCurrentWitness() {
+  // First check URL for witness information
+  const urlParams = new URLSearchParams(window.location.search);
+  const tabParam = urlParams.get('tab');
+  if (tabParam && tabParam.includes('wm')) {
+    return tabParam.split('wm')[1];
+  }
+  
+  // If not in URL, check for active tab or other indicators
+  const activeTab = document.querySelector('.tab-pane.active');
+  if (activeTab && activeTab.id) {
+    const witnessMatch = activeTab.id.match(/witness-(\w+)/);
+    if (witnessMatch) return witnessMatch[1];
+  }
+  
+  // Default to W if nothing else found
+  return 'W';
+}
+
+// Expose the updatePageLinks function globally so witness_switcher.js can call it
+window.updatePageLinks = updatePageLinks;
+
+// Add a new method to set the active witness - update links when witness changes
+function setActiveWitness(witness, pageBreaks) {
+  console.log(`🔍 osd_scroll: Setting active witness to ${witness}`);
+  
+  // Store witness info
+  window.currentWitness = witness;
+  
+  // Dispatch event
+  document.dispatchEvent(new CustomEvent('osdScrollWitnessChanged', {
+    detail: { witness, pageBreaks }
+  }));
+  
+  // Update page links with new witness
+  setTimeout(updatePageLinks, 100);
+}
+
+// Set up listeners for witness tab changes
+function setupWitnessChangeListeners() {
+  console.log("Setting up witness change listeners");
+  
+  // DIRECT APPROACH: Find and attach click handlers to all witness tabs
+  const witnessTabLinks = document.querySelectorAll('.nav-tabs a[data-bs-toggle="tab"][href^="#witness-"]');
+  console.log(`Found ${witnessTabLinks.length} witness tab links`);
+  
+  witnessTabLinks.forEach(tabLink => {
+    tabLink.addEventListener('click', function(e) {
+      // Get the witness code from the link
+      const witnessId = this.getAttribute('href').replace('#witness-', '');
+      console.log(`Direct tab click on witness: ${witnessId}`);
+      
+      // Get current page number (1-based)
+      const pageNumber = current_page_index + 1;
+      
+      // Build URL and force reload - using current page number
+      const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+      let newUrl = `${baseUrl}?tab=${pageNumber}wm${witnessId}`;
+      
+      console.log(`RELOADING TO: ${newUrl}`);
+      
+      // Prevent default tab behavior
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Force reload with new URL
+      window.location.replace(newUrl);
+      return false;
+    });
+    console.log(`Added click handler to ${tabLink.getAttribute('href')}`);
+  });
+  
+  // Keep the old handlers as backup with fix for preserving current page
+  document.addEventListener('click', function(event) {
+    const target = event.target;
+    
+    if (target && 
+        target.getAttribute && 
+        target.getAttribute('data-bs-toggle') === 'tab' && 
+        (target.getAttribute('href')?.startsWith('#witness-') || target.getAttribute('data-witness'))) {
+      
+      console.log('General click handler caught a tab click');
+      
+      // Extract witness code
+      const witness = target.getAttribute('data-witness') || 
+                     (target.getAttribute('href') ? target.getAttribute('href').replace('#witness-', '') : '');
+      
+      if (witness) {
+        console.log(`Tab clicked for witness: ${witness}`);
+        
+        // Get current page number (1-based) - FIXED to use the global current_page_index
+        const pageNumber = current_page_index + 1;
+        
+        // Construct URL with current page number
+        const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+        let newUrl = (witness === 'primary') 
+                    ? `${baseUrl}?tab=${pageNumber}primary` 
+                    : `${baseUrl}?tab=${pageNumber}wm${witness}`;
+        
+        // Prevent default and force reload
+        event.preventDefault();
+        event.stopPropagation();
+        
+        console.log(`FORCE RELOADING to: ${newUrl}`);
+        window.location.replace(newUrl);
+        return false;
+      }
+    }
+  }, true); // Use capturing phase for earlier interception
+  
+  // Witness dropdown handler with page preservation fix
+  const witnessSelect = document.querySelector('#witness-select');
+  if (witnessSelect) {
+    witnessSelect.addEventListener('change', function() {
+      const witness = this.value;
+      console.log(`Dropdown changed to: ${witness}`);
+      
+      // Get page number and construct URL - FIXED to use current_page_index
+      const pageNumber = current_page_index + 1;
+      const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+      const newUrl = `${baseUrl}?tab=${pageNumber}wm${witness}`;
+      
+      console.log(`RELOADING TO: ${newUrl}`);
+      window.location.replace(newUrl);
+    });
+    console.log('Added change handler to witness dropdown');
+  }
+}
+
+// Call this function during initialization
+document.addEventListener('DOMContentLoaded', setupWitnessChangeListeners);
+
+// Replace the old updatePageLinkHrefs function
+function updatePageLinkHrefs() {
+  updatePageLinks();
+}
+
+// Add witness awareness to showPage method
+function showPage(pageNumber) {
+    // ...existing code...
+    
+    // Add this at the end of the method
+    // Notify about the page change with witness info
+    document.dispatchEvent(new CustomEvent('osdScrollPageChanged', {
+        detail: { 
+            pageIndex: pageNumber,
+            witness: this.activeWitness || null
+        }
+    }));
+    
+    return true;
 }
