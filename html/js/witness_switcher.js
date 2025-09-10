@@ -281,10 +281,11 @@ class WitnessSwitcher {
             // 4. If still nothing found and we have a witnessSuffix, try less specific pattern matching
             if (witnessPbs.length === 0 && witnessSuffix) {
                 // Don't be too specific about where the suffix appears in the filename
+                const witnessSuffixLower = witnessSuffix.toLowerCase();
                 witnessPbs = allPbs.filter(pb => {
                     const src = pb.getAttribute('source') || '';
                     // Case insensitive check for the suffix anywhere in the source
-                    return src.toLowerCase().includes(witnessSuffix.toLowerCase());
+                    return src.toLowerCase().includes(witnessSuffixLower);
                 });
             }
             
