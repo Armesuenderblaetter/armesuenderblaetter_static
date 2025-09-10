@@ -196,108 +196,23 @@ class WitnessSwitcher {
     discoverWitnesses() {
         try {
             console.log('🔍 DISCOVER: Starting witness discovery');
-            
-            // Use safe DOM queries with defensive null checks
-            const safeQuerySelectorAll = (selector) => {
-                try {
-                    return document.querySelectorAll(selector) || [];
-                } catch (e) {
-                    console.error(`❌ DISCOVER: Error querying selector "${selector}":`, e);
-                    return [];
-                }
-            };
-            
-            // Find witnesses from variant elements
+            const safeQuerySelectorAll = (selector) => { try { return document.querySelectorAll(selector) || []; } catch { return []; } };
             const variantElements = safeQuerySelectorAll('[data-witness]');
-            console.log(`🔍 DISCOVER: Found ${variantElements.length} elements with [data-witness]`);
-            
-            if (variantElements && variantElements.length > 0) {
-                variantElements.forEach(element => {
-                    if (element && typeof element.getAttribute === 'function') {
-                        const witness = element.getAttribute('data-witness');
-                        if (witness) {
-                            console.log(`🔍 DISCOVER: Adding witness from variant: "${witness}"`);
-                            this.availableWitnesses.add(witness);
-                        }
-                    }
-                });
-            }
-
-            // Check pb elements for witness references
-            const pbElementsDataWitness = safeQuerySelectorAll('.pb[data-witness]');
-            console.log(`🔍 DISCOVER: Found ${pbElementsDataWitness.length} elements with .pb[data-witness]`);
-            
-            if (pbElementsDataWitness && pbElementsDataWitness.length > 0) {
-                pbElementsDataWitness.forEach(element => {
-                    if (element && typeof element.getAttribute === 'function') {
-                        const witness = element.getAttribute('data-witness');
-                        if (witness) {
-                            console.log(`🔍 DISCOVER: Adding witness from pb data-witness: "${witness}"`);
-                            this.availableWitnesses.add(witness);
-                        }
-                    }
-                });
-            }
-
-            // Check for wit attributes
-            const pbElementsWit = safeQuerySelectorAll('.pb[wit]');
-            console.log(`🔍 DISCOVER: Found ${pbElementsWit.length} elements with .pb[wit]`);
-            
-            if (pbElementsWit && pbElementsWit.length > 0) {
-                pbElementsWit.forEach(element => {
-                    if (element && typeof element.getAttribute === 'function') {
-                        const wit = element.getAttribute('wit');
-                        if (wit) {
-                            const witness = wit.startsWith('#') ? wit.substring(1) : wit;
-                            console.log(`🔍 DISCOVER: Adding witness from pb wit: "${witness}"`);
-                            this.availableWitnesses.add(witness);
-                        }
-                    }
-                });
-            }
-
-            // Get all pb sources for checking and extract witness IDs from filenames
-            const allPbSources = [];
-            const allPbs = safeQuerySelectorAll('.pb[source]');
-            const witnessesFromFilenames = new Set();
-            
-            allPbs.forEach(pb => {
-                const source = pb.getAttribute('source');
-                if (source) {
-                    allPbSources.push(source);
-                    
-                    // Extract witness ID from filename (like 17000316_HanssGeorgWagner_a_oenb.jp2)
-                    const parts = source.split('_');
-                    if (parts.length >= 4) {
-                        // The last part before file extension typically contains the witness ID
-                        const lastPart = parts[parts.length - 1].split('.')[0];
-                        if (lastPart) {
-                            console.log(`🔍 DISCOVER: Found witness "${lastPart}" in filename: ${source}`);
-                            witnessesFromFilenames.add(lastPart);
-                        }
-                    }
-                }
-            });
-            console.log(`🔍 DISCOVER: Found ${allPbSources.length} pb sources:`, allPbSources);
-            
-            // Add witnesses extracted from filenames
-            witnessesFromFilenames.forEach(witness => {
-                console.log(`🔍 DISCOVER: Adding witness from filename: "${witness}"`);
-                this.availableWitnesses.add(witness);
-            });
-
-            // If no witnesses discovered at all, create a default "primary" witness
-            if (this.availableWitnesses.size === 0) {
-                console.log(`🔍 DISCOVER: No witnesses found, creating default "primary" witness`);
-                this.availableWitnesses.add('primary');
-            }
-
-            console.log('🔍 DISCOVER: Discovered witnesses:', Array.from(this.availableWitnesses));
-        } catch (e) {
-            console.error('❌ DISCOVER: Error discovering witnesses:', e);
-            // Add a fallback witness if error
-            this.availableWitnesses.add('primary');
-        }
+            variantElements.forEach(el => { const w = el.getAttribute('data-witness'); if (w) this.availableWitnesses.add(w.trim()); });
+            const pbDataWitness = safeQuerySelectorAll('.pb[data-witness]');
+            pbDataWitness.forEach(el => { const w = el.getAttribute('data-witness'); if (w) this.availableWitnesses.add(w.trim()); });
+            const pbWit = safeQuerySelectorAll('.pb[wit]');
+            pbWit.forEach(el => { const wit = el.getAttribute('wit'); if (wit) { const w = wit.startsWith('#') ? wit.slice(1) : wit; if (w) this.availableWitnesses.add(w.trim()); } });
+            const pbs = safeQuerySelectorAll('.pb[source]');
+            pbs.forEach(pb => { const src = pb.getAttribute('source'); if (src) { const parts = src.split('_'); if (parts.length >= 4) { const last = parts[parts.length - 1].split('.')[0]; if (last) this.availableWitnesses.add(last.trim()); } } });
+            // Remove empty strings
+            if (this.availableWitnesses.has('')) this.availableWitnesses.delete('');
+            // Add primary only if still none
+            if (this.availableWitnesses.size === 0) this.availableWitnesses.add('primary');
+            // If more than one witness, drop 'primary'
+            if (this.availableWitnesses.size > 1 && this.availableWitnesses.has('primary')) this.availableWitnesses.delete('primary');
+            console.log('🔍 DISCOVER: Final witnesses:', Array.from(this.availableWitnesses));
+        } catch (e) { console.error('❌ DISCOVER error', e); if (this.availableWitnesses.size === 0) this.availableWitnesses.add('primary'); }
     }
 
     /**
@@ -868,104 +783,25 @@ class WitnessSwitcher {
      * Set the default witness based on URL parameters or fallback
      */
     setDefaultWitness() {
-        console.log('🔍 DEFAULT: Setting default witness');
-        
-        // First check URL parameters
+        console.log('🔍 DEFAULT: Setting default witness (simplified)');
         const urlParams = new URLSearchParams(window.location.search);
         const tab = urlParams.get('tab');
-        console.log(`🔍 DEFAULT: URL tab parameter: "${tab}"`);
-        
         if (tab) {
-            // Parse for page number prefix, e.g., "3oenb" -> witness "oenb", page 3
-            const match = tab.match(/^(\d+)(.*)$/);
-            let witness = tab;
-            let pageIndex = 0;
-
-            if (match) {
-                pageIndex = Math.max(0, parseInt(match[1], 10) - 1); // 0-based
-                witness = match[2];
-                console.log(`🔍 DEFAULT: Parsed from URL: page ${pageIndex + 1} of witness "${witness}"`);
-                this.pendingNavigation = { witness, index: pageIndex };
-            }
-
-            // Check if the witness exists in our available witnesses
-            // If we don't have a valid witness, use the first available one
-            let targetWitness = witness;
+            const m = tab.match(/^(\d+)(.*)$/);
+            let pageIndex = 0; let witness = tab;
+            if (m) { pageIndex = Math.max(0, parseInt(m[1],10)-1); witness = m[2]; }
             if (!this.availableWitnesses.has(witness)) {
-                targetWitness = Array.from(this.availableWitnesses)[0];
-                console.log(`🔍 DEFAULT: Witness "${witness}" not found, using first available: "${targetWitness}"`);
+                // fallback first real witness (avoid 'primary' if others)
+                const ordered = Array.from(this.availableWitnesses).filter(w=>w!=='primary');
+                witness = ordered[0] || 'primary';
             }
-            
-            if (targetWitness) {
-                // Use goToWitnessPage to handle the initial state
-                console.log(`🔍 DEFAULT: Going to witness "${targetWitness}" page ${pageIndex}`);
-                this.goToWitnessPage(targetWitness, pageIndex);
-            }
-        } else {
-            // Pick the most appropriate default witness
-            const allPbElements = document.querySelectorAll('.pb[source]');
-            const hasMultipleWitnesses = this.availableWitnesses.size > 1;
-            
-            console.log(`🔍 DEFAULT: No tab param, found ${allPbElements.length} pb elements, hasMultipleWitnesses: ${hasMultipleWitnesses}`);
-            
-            // Check for witnesses in the filenames of page breaks
-            let witnessFromFilename = null;
-            if (allPbElements && allPbElements.length > 0) {
-                const firstPb = allPbElements[0];
-                const source = firstPb.getAttribute('source');
-                if (source) {
-                    const parts = source.split('_');
-                    if (parts.length >= 4) {
-                        const lastPart = parts[parts.length - 1].split('.')[0];
-                        if (lastPart && this.availableWitnesses.has(lastPart)) {
-                            witnessFromFilename = lastPart;
-                            console.log(`🔍 DEFAULT: Found witness "${witnessFromFilename}" in first pb source: ${source}`);
-                        }
-                    }
-                }
-            }
-            
-            // For single-witness documents, create a tab using the actual witness name from source
-            if (!hasMultipleWitnesses && allPbElements.length > 0) {
-                let actualWitnessId = 'primary';
-                
-                // Try to get the actual witness ID from the first page break source
-                if (allPbElements[0]) {
-                    const source = allPbElements[0].getAttribute('source');
-                    if (source) {
-                        const parts = source.split('_');
-                        if (parts.length >= 4) {
-                            const lastPart = parts[parts.length - 1].split('.')[0];
-                            if (lastPart) {
-                                actualWitnessId = lastPart;
-                                console.log(`🔍 DEFAULT: Using actual witness ID "${actualWitnessId}" from source`);
-                            }
-                        }
-                    }
-                }
-                
-                console.log(`🔍 DEFAULT: Single-witness document, using "${actualWitnessId}" witness`);
-                this.availableWitnesses.add(actualWitnessId);
-                this.goToWitnessPage(actualWitnessId, 0);
-                return;
-            }
-            
-            // For multi-witness, prioritize real witness IDs from filenames
-            let defaultWitness;
-            if (witnessFromFilename) {
-                defaultWitness = witnessFromFilename;
-                console.log(`🔍 DEFAULT: Using witness from filename: "${defaultWitness}"`);
-            } else {
-                defaultWitness = Array.from(this.availableWitnesses)[0];
-                console.log(`🔍 DEFAULT: Using first available witness: "${defaultWitness}"`);
-            }
-            
-            if (defaultWitness) {
-                this.goToWitnessPage(defaultWitness, 0);
-            }
+            this.goToWitnessPage(witness, pageIndex);
+            return;
         }
-        
-        console.log(`🔍 DEFAULT: Current witness set to: "${this.currentWitness}"`);
+        // No tab param: choose first non-primary witness, else primary
+        const ordered = Array.from(this.availableWitnesses).filter(w=>w!=='primary');
+        const chosen = ordered[0] || 'primary';
+        this.goToWitnessPage(chosen, 0);
     }
 
     /**
@@ -1337,73 +1173,31 @@ class WitnessSwitcher {
     createWitnessTabs(witnessIds) {
         try {
             const tabsContainer = document.querySelector('ul.nav-tabs');
-            if (!tabsContainer) {
-                console.log('⚠️ No tab container found to create tabs');
-                return;
-            }
-            
+            if (!tabsContainer) return;
+            const multiple = witnessIds.size > 1 || this.availableWitnesses.size > 1;
             witnessIds.forEach(witnessId => {
-                // Check if tab already exists
-                if (document.getElementById(`${witnessId}-tab`)) {
-                    console.log(`📋 Tab for ${witnessId} already exists`);
-                    return;
-                }
-                
-                console.log(`🔨 Creating tab for witness: ${witnessId}`);
-                
-                // Create tab button
-                const li = document.createElement('li');
-                li.className = 'nav-item';
-                
+                if (!witnessId) return;
+                if (witnessId === 'primary' && multiple) return; // skip primary when others exist
+                if (document.getElementById(`${witnessId}-tab`)) return;
+                const li = document.createElement('li'); li.className = 'nav-item';
                 const button = document.createElement('button');
                 button.className = 'nav-link';
                 button.id = `${witnessId}-tab`;
-                button.setAttribute('data-bs-toggle', 'tab');
+                button.setAttribute('data-bs-toggle','tab');
                 button.setAttribute('data-bs-target', `#${witnessId}-meta-data`);
-                button.setAttribute('type', 'button');
-                button.setAttribute('role', 'tab');
-                button.setAttribute('aria-controls', `${witnessId}`);
-                button.setAttribute('aria-selected', 'false');
-                button.textContent = witnessId.toUpperCase();
-                
-                li.appendChild(button);
-                tabsContainer.appendChild(li);
-                
-                // Create tab content pane
-                const contentContainer = document.querySelector('div.tab-content');
-                if (contentContainer) {
-                    const tabPane = document.createElement('div');
-                    tabPane.className = 'tab-pane fade';
-                    tabPane.id = `${witnessId}-meta-data`;
-                    tabPane.setAttribute('role', 'tabpanel');
-                    tabPane.setAttribute('aria-labelledby', `${witnessId}-tab`);
-                    
-                    // Add container for page links with the requested structure
-                    const witnessPages = document.createElement('div');
-                    witnessPages.className = 'witness-pages mt-3';
-                    
-                    const heading = document.createElement('h5');
-                    heading.textContent = 'Seiten:';
-                    witnessPages.appendChild(heading);
-                    
-                    const pageLinks = document.createElement('ul');
-                    pageLinks.className = 'page-links list-inline';
-                    
-                    witnessPages.appendChild(pageLinks);
-                    tabPane.appendChild(witnessPages);
-                    contentContainer.appendChild(tabPane);
-                    
-                    console.log(`📦 Created tab content pane for ${witnessId}`);
-                    console.log(`📦 STRUCTURE: #${witnessId}-meta-data > .witness-pages > .page-links`);
-                } else {
-                    console.error(`❌ No tab content container found for ${witnessId}`);
-                }
-                
-                console.log(`✅ Created tab and content for ${witnessId}`);
+                button.setAttribute('type','button'); button.setAttribute('role','tab');
+                button.setAttribute('aria-controls', `${witnessId}`); button.setAttribute('aria-selected','false');
+                button.textContent = (multiple ? witnessId : this.getDisplayNameForWitness(witnessId));
+                li.appendChild(button); tabsContainer.appendChild(li);
+                const contentContainer = document.querySelector('div.tab-content'); if (!contentContainer) return;
+                const tabPane = document.createElement('div'); tabPane.className='tab-pane fade'; tabPane.id = `${witnessId}-meta-data`;
+                tabPane.setAttribute('role','tabpanel'); tabPane.setAttribute('aria-labelledby', `${witnessId}-tab`);
+                const witnessPages = document.createElement('div'); witnessPages.className='witness-pages mt-3';
+                const heading = document.createElement('h5'); heading.textContent = 'Seiten:'; witnessPages.appendChild(heading);
+                const pageLinks = document.createElement('ul'); pageLinks.className='page-links list-inline'; witnessPages.appendChild(pageLinks);
+                tabPane.appendChild(witnessPages); contentContainer.appendChild(tabPane);
             });
-        } catch (e) {
-            console.error('❌ Error creating witness tabs:', e);
-        }
+        } catch(e) { console.error('❌ createWitnessTabs error', e); }
     }
     
     // Get a display name for the witness ID
