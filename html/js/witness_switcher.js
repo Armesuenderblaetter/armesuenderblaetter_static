@@ -36,30 +36,103 @@ class WitnessSwitcher {
         }
     }
 
+    // Debug helper to check page break sources for witness identification
+    debugPageBreakSources() {
+        try {
+            console.log('🔍 DEBUG: Examining page break sources for witness identification');
+            const pbElements = document.querySelectorAll('.pb[source]');
+            
+            if (!pbElements || pbElements.length === 0) {
+                console.log('🔍 DEBUG: No page breaks with source attribute found');
+                return;
+            }
+            
+            console.log(`🔍 DEBUG: Found ${pbElements.length} page breaks with source attribute`);
+            
+            // Check first few page breaks
+            const samplesToShow = Math.min(pbElements.length, 5);
+            for (let i = 0; i < samplesToShow; i++) {
+                const pb = pbElements[i];
+                const source = pb.getAttribute('source');
+                console.log(`🔍 DEBUG: Page break ${i+1} source: "${source}"`);
+                
+                // Try to extract witness from source
+                if (source) {
+                    const parts = source.split('_');
+                    if (parts.length >= 4) {
+                        const lastPart = parts[parts.length - 1].split('.')[0];
+                        console.log(`🔍 DEBUG: Extracted potential witness ID: "${lastPart}" from source`);
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('❌ DEBUG: Error examining page break sources:', e);
+        }
+    }
+    
     init() {
         // Add a slight delay to ensure DOM is fully loaded
         setTimeout(() => {
             try {
+                // Debug: Check for filename-based witness IDs in page breaks before anything else
+                this.debugPageBreakSources();
+                
+                // Discover witnesses and set up mapping
                 this.discoverWitnesses();
                 this.setupWitnessToSuffixMapping();
+                
+                // Create necessary UI elements for witnesses
+                this.availableWitnesses.forEach(witness => {
+                    if (!document.getElementById(`${witness}-tab`)) {
+                        console.log(`Creating tab for witness: ${witness}`);
+                        this.createWitnessTabs(new Set([witness]));
+                    }
+                });
+                
+                // Set up integrations and build paginations
                 this.setupOSDIntegration();
-                // Safely call optional hooks to avoid init crashes if not present
                 this.safeCall('setupTabEventListeners');
                 this.safeCall('setupVariantClickListeners');
-
-                // Build pagination for each witness (populates UL.page-links inside tabs)
-                this.buildAllPaginations();
-
-                this.setDefaultWitness(); // now respects ?tab=...
-                // Ensure page links reflect the initial state
-                this.triggerPageLinksRefresh();
-                // console.log('🔄 Enhanced Witness Switcher initialized');
-                // console.log('📋 Available witnesses:', Array.from(this.availableWitnesses));
-                // console.log('🗺️ Witness to suffix mapping:', this.witnessToSuffixMap);
+                
+                // Debug: Add a slight delay before building paginations
+                setTimeout(() => {
+                    console.log('🔄 Starting to build all paginations');
+                    
+                    // Debug: Check the tab content structure before building paginations
+                    this.availableWitnesses.forEach(witness => {
+                        const tabContent = document.getElementById(`${witness}-meta-data`);
+                        if (tabContent) {
+                            const witnessPages = tabContent.querySelector('.witness-pages');
+                            if (witnessPages) {
+                                const pageLinks = witnessPages.querySelector('.page-links');
+                                console.log(`📦 TAB CHECK: ${witness} tab content structure: ` + 
+                                           (pageLinks ? '✅ Complete' : '❌ Missing .page-links'));
+                            } else {
+                                console.log(`📦 TAB CHECK: ${witness} tab content missing .witness-pages`);
+                            }
+                        } else {
+                            console.log(`📦 TAB CHECK: ${witness} tab content element not found`);
+                        }
+                    });
+                    
+                    this.buildAllPaginations();
+                    
+                    // Now set default witness and refresh links
+                    this.setDefaultWitness();
+                    this.triggerPageLinksRefresh();
+                    
+                    console.log('🔄 Enhanced Witness Switcher initialized');
+                    console.log('📋 Available witnesses:', Array.from(this.availableWitnesses));
+                    console.log('🗺️ Witness to suffix mapping:', this.witnessToSuffixMap);
+                    
+                    // Expose available witnesses for other scripts
+                    window.witnessAvailableSet = this.availableWitnesses;
+                }, 200);
+                
             } catch (e) {
-                // console.error('❌ Error during witness switcher initialization:', e);
+                console.error('❌ Error during witness switcher initialization:', e);
             }
-        }, 100);
+        }, 200); // Increased delay for better tab content initialization
     }
 
     // Safe method invoker to avoid TypeError if a hook is missing
@@ -80,12 +153,66 @@ class WitnessSwitcher {
     // Helper: refresh the page list links (delegates to osd_scroll.js)
     triggerPageLinksRefresh() {
         try {
+            console.log('🔄 REFRESH: Triggering page links refresh');
+            
+            // Debug: Check existing page links before refresh
+            const allPageLinks = document.querySelectorAll('.page-links .page-link');
+            console.log(`🔍 REFRESH: Found ${allPageLinks.length} total .page-link elements before refresh`);
+            
+            // Witness-specific check
+            if (this.currentWitness) {
+                const witnessPageLinks = document.querySelectorAll(`#${this.currentWitness}-meta-data .page-links .page-link`);
+                console.log(`🔍 REFRESH: Found ${witnessPageLinks.length} .page-link elements for current witness "${this.currentWitness}"`);
+                
+                // If we don't have any links for the current witness, populate them directly
+                if (witnessPageLinks.length === 0) {
+                    console.log(`🔍 REFRESH: No links found for "${this.currentWitness}", triggering direct population`);
+                    this.populatePageLinksForWitness(this.currentWitness);
+                }
+            }
+            
             if (typeof window.updatePageLinks === 'function') {
                 clearTimeout(this._linksRefreshTimer);
-                this._linksRefreshTimer = setTimeout(() => window.updatePageLinks(), 0);
+                this._linksRefreshTimer = setTimeout(() => {
+                    window.updatePageLinks();
+                    console.log('✅ REFRESH: Called window.updatePageLinks()');
+                    
+                    // Debug: Check page links after refresh
+                    setTimeout(() => {
+                        const afterAllPageLinks = document.querySelectorAll('.page-links .page-link');
+                        console.log(`🔍 REFRESH: Found ${afterAllPageLinks.length} total .page-link elements after refresh`);
+                        
+                        if (this.currentWitness) {
+                            const afterWitnessPageLinks = document.querySelectorAll(`#${this.currentWitness}-meta-data .page-links .page-link`);
+                            console.log(`🔍 REFRESH: Found ${afterWitnessPageLinks.length} .page-link elements for current witness "${this.currentWitness}" after refresh`);
+                            
+                            // Final check - if still no links, try one more direct population
+                            if (afterWitnessPageLinks.length === 0) {
+                                console.log(`🔍 REFRESH: Still no links for "${this.currentWitness}" after refresh, repopulating`);
+                                this.populatePageLinksForWitness(this.currentWitness);
+                            }
+                        }
+                    }, 50);
+                }, 0);
+            } else {
+                console.warn('⚠️ REFRESH: window.updatePageLinks is not available');
+                
+                // If updatePageLinks is not available, make sure we have direct population
+                if (this.currentWitness) {
+                    this.populatePageLinksForWitness(this.currentWitness);
+                }
             }
         } catch (e) {
-            // console.warn('⚠️ triggerPageLinksRefresh error:', e);
+            console.error('❌ REFRESH: Error refreshing page links:', e);
+            
+            // Last resort - try direct population even if there was an error
+            if (this.currentWitness) {
+                try {
+                    this.populatePageLinksForWitness(this.currentWitness);
+                } catch (innerError) {
+                    console.error('❌ REFRESH: Error in fallback population:', innerError);
+                }
+            }
         }
     }
 
@@ -94,23 +221,28 @@ class WitnessSwitcher {
      */
     discoverWitnesses() {
         try {
+            console.log('🔍 DISCOVER: Starting witness discovery');
+            
             // Use safe DOM queries with defensive null checks
             const safeQuerySelectorAll = (selector) => {
                 try {
                     return document.querySelectorAll(selector) || [];
                 } catch (e) {
-                    // console.error(`❌ Error querying selector "${selector}":`, e);
+                    console.error(`❌ DISCOVER: Error querying selector "${selector}":`, e);
                     return [];
                 }
             };
             
             // Find witnesses from variant elements
             const variantElements = safeQuerySelectorAll('[data-witness]');
+            console.log(`🔍 DISCOVER: Found ${variantElements.length} elements with [data-witness]`);
+            
             if (variantElements && variantElements.length > 0) {
                 variantElements.forEach(element => {
                     if (element && typeof element.getAttribute === 'function') {
                         const witness = element.getAttribute('data-witness');
                         if (witness) {
+                            console.log(`🔍 DISCOVER: Adding witness from variant: "${witness}"`);
                             this.availableWitnesses.add(witness);
                         }
                     }
@@ -119,11 +251,14 @@ class WitnessSwitcher {
 
             // Check pb elements for witness references
             const pbElementsDataWitness = safeQuerySelectorAll('.pb[data-witness]');
+            console.log(`🔍 DISCOVER: Found ${pbElementsDataWitness.length} elements with .pb[data-witness]`);
+            
             if (pbElementsDataWitness && pbElementsDataWitness.length > 0) {
                 pbElementsDataWitness.forEach(element => {
                     if (element && typeof element.getAttribute === 'function') {
                         const witness = element.getAttribute('data-witness');
                         if (witness) {
+                            console.log(`🔍 DISCOVER: Adding witness from pb data-witness: "${witness}"`);
                             this.availableWitnesses.add(witness);
                         }
                     }
@@ -132,71 +267,113 @@ class WitnessSwitcher {
 
             // Check for wit attributes
             const pbElementsWit = safeQuerySelectorAll('.pb[wit]');
+            console.log(`🔍 DISCOVER: Found ${pbElementsWit.length} elements with .pb[wit]`);
+            
             if (pbElementsWit && pbElementsWit.length > 0) {
                 pbElementsWit.forEach(element => {
                     if (element && typeof element.getAttribute === 'function') {
                         const wit = element.getAttribute('wit');
                         if (wit) {
                             const witness = wit.startsWith('#') ? wit.substring(1) : wit;
+                            console.log(`🔍 DISCOVER: Adding witness from pb wit: "${witness}"`);
                             this.availableWitnesses.add(witness);
                         }
                     }
                 });
             }
 
-            // Add fallback witnesses for wmW and wmR if not already discovered
-            this.availableWitnesses.add('wmW');
-            this.availableWitnesses.add('wmR');
+            // Get all pb sources for checking and extract witness IDs from filenames
+            const allPbSources = [];
+            const allPbs = safeQuerySelectorAll('.pb[source]');
+            const witnessesFromFilenames = new Set();
+            
+            allPbs.forEach(pb => {
+                const source = pb.getAttribute('source');
+                if (source) {
+                    allPbSources.push(source);
+                    
+                    // Extract witness ID from filename (like 17000316_HanssGeorgWagner_a_oenb.jp2)
+                    const parts = source.split('_');
+                    if (parts.length >= 4) {
+                        // The last part before file extension typically contains the witness ID
+                        const lastPart = parts[parts.length - 1].split('.')[0];
+                        if (lastPart) {
+                            console.log(`🔍 DISCOVER: Found witness "${lastPart}" in filename: ${source}`);
+                            witnessesFromFilenames.add(lastPart);
+                        }
+                    }
+                }
+            });
+            console.log(`🔍 DISCOVER: Found ${allPbSources.length} pb sources:`, allPbSources);
+            
+            // Add witnesses extracted from filenames
+            witnessesFromFilenames.forEach(witness => {
+                console.log(`🔍 DISCOVER: Adding witness from filename: "${witness}"`);
+                this.availableWitnesses.add(witness);
+            });
 
-            // console.log('🔍 Discovered witnesses:', Array.from(this.availableWitnesses));
+            // If no witnesses discovered at all, create a default "primary" witness
+            if (this.availableWitnesses.size === 0) {
+                console.log(`🔍 DISCOVER: No witnesses found, creating default "primary" witness`);
+                this.availableWitnesses.add('primary');
+            }
+
+            console.log('🔍 DISCOVER: Discovered witnesses:', Array.from(this.availableWitnesses));
         } catch (e) {
-            // console.error('❌ Error discovering witnesses:', e);
-            // Add fallback witnesses
-            this.availableWitnesses.add('wmW');
-            this.availableWitnesses.add('wmR');
+            console.error('❌ DISCOVER: Error discovering witnesses:', e);
+            // Add a fallback witness if error
+            this.availableWitnesses.add('primary');
         }
     }
 
     /**
      * Set up mapping between witnesses and their page suffixes
-     * wb (Wienbibliothek) -> W pages
-     * oenb (Österreichische Nationalbibliothek) -> R pages
      */
     setupWitnessToSuffixMapping() {
-        // Common mappings based on the institution names
-        const commonMappings = {
-            'wb': 'W',     // Wienbibliothek -> W pages
-            'oenb': 'R',   // Österreichische Nationalbibliothek -> R pages
-            'wien': 'W',   // Alternative Wien reference
-            'vienna': 'W', // English Vienna reference
-            'nat': 'R',    // National library abbreviation
-            'onb': 'R',     // Alternative ONB abbreviation
-            'wmw': 'W',    // Specific for wmW
-            'wmr': 'R'     // Specific for wmR
-        };
+        console.log('🔍 MAPPING: Setting up witness to suffix mapping');
 
+        // Map discovered witnesses to their suffix identifiers based on naming patterns
         this.availableWitnesses.forEach(witness => {
-            const lowerWitness = witness.toLowerCase();
-            
-            // Try exact match first
-            if (commonMappings[lowerWitness]) {
-                this.witnessToSuffixMap.set(witness, commonMappings[lowerWitness]);
-            }
-            // Try partial match
-            else {
-                for (const [key, suffix] of Object.entries(commonMappings)) {
-                    if (lowerWitness.includes(key)) {
-                        this.witnessToSuffixMap.set(witness, suffix);
-                        break;
+            // Simply use the first letter of the witness ID as a suffix by default
+            const defaultSuffix = witness.charAt(0).toUpperCase();
+            this.witnessToSuffixMap.set(witness, defaultSuffix);
+            console.log(`🔍 MAPPING: Set ${witness} -> ${defaultSuffix} (default mapping)`);
+        });
+        
+        // Look for more specific mappings in pb elements' sources
+        const pbElements = document.querySelectorAll('.pb[source]');
+        if (pbElements && pbElements.length > 0) {
+            pbElements.forEach(pb => {
+                const source = pb.getAttribute('source');
+                if (source) {
+                    // Try to extract witness ID and suffix from filename patterns
+                    const parts = source.split('_');
+                    if (parts.length >= 4) {
+                        // Check if the last part contains the witness ID
+                        const lastPart = parts[parts.length - 1].split('.')[0];
+                        
+                        // If we have a witness with this ID, look for a pattern in the source
+                        if (this.availableWitnesses.has(lastPart)) {
+                            // Look for suffix indicators in the filename (like '_R_' or '_W_')
+                            for (let i = 0; i < parts.length; i++) {
+                                const part = parts[i];
+                                if (part.length === 1 && /^[A-Z]$/.test(part)) {
+                                    // Single uppercase letter could be a suffix indicator
+                                    this.witnessToSuffixMap.set(lastPart, part);
+                                    console.log(`🔍 MAPPING: Updated ${lastPart} -> ${part} (from filename pattern)`);
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
-            }
-            
-            // Fallback: use first letter uppercased
-            if (!this.witnessToSuffixMap.has(witness)) {
-                this.witnessToSuffixMap.set(witness, witness.charAt(0).toUpperCase());
-            }
-        });
+            });
+        }
+        
+        console.log('🔍 MAPPING: Final witness to suffix mapping:', 
+                    Array.from(this.witnessToSuffixMap.entries())
+                        .map(([k, v]) => `${k} -> ${v}`)
+                        .join(', '));
     }
 
     /**
@@ -248,37 +425,62 @@ class WitnessSwitcher {
     // Helper to find pb elements for a witness (shared by pagination + OSD update)
     getWitnessPbs(witness) {
         try {
-            const witnessSuffix = this.witnessToSuffixMap.get(witness) || (witness === 'wmW' ? 'W' : witness === 'wmR' ? 'R' : '');
+            console.log(`🔍 GET_PBS: Finding page breaks for witness "${witness}"`);
+            
+            const witnessSuffix = this.witnessToSuffixMap.get(witness);
             let witnessPbs = [];
             
             // For single-witness documents - if there's only one set of page breaks, use those
             const allPbs = Array.from(document.querySelectorAll('.pb[source]') || []);
+            console.log(`🔍 GET_PBS: Found ${allPbs.length} total page breaks with source attribute`);
             
             // 1. Most specific first: wit attribute
             witnessPbs = Array.from(document.querySelectorAll(`.pb[wit="#${witness}"][source]`) || []);
+            if (witnessPbs.length > 0) {
+                console.log(`🔍 GET_PBS: Found ${witnessPbs.length} page breaks with wit="#${witness}"`);
+            }
 
             // 2. Try data-witness attribute
             if (witnessPbs.length === 0) {
                 witnessPbs = Array.from(document.querySelectorAll(`.pb[data-witness="${witness}"][source]`) || []);
+                if (witnessPbs.length > 0) {
+                    console.log(`🔍 GET_PBS: Found ${witnessPbs.length} page breaks with data-witness="${witness}"`);
+                }
             }
 
-            // 3. If we're still empty and this is a default witness, use any available pbs
-            if (witnessPbs.length === 0 && 
-                (witness === 'wmW' || witness === 'wmR' || witness === 'primary')) {
-                
+            // 3. Try matching against the filenames directly
+            if (witnessPbs.length === 0) {
+                witnessPbs = allPbs.filter(pb => {
+                    const source = pb.getAttribute('source') || '';
+                    const parts = source.split('_');
+                    if (parts.length >= 4) {
+                        const lastPart = parts[parts.length - 1].split('.')[0];
+                        return lastPart === witness;
+                    }
+                    return false;
+                });
+                if (witnessPbs.length > 0) {
+                    console.log(`🔍 GET_PBS: Found ${witnessPbs.length} page breaks with "${witness}" in filename`);
+                }
+            }
+
+            // 4. If we're still empty and this is a primary witness, use any available pbs
+            if (witnessPbs.length === 0 && witness === 'primary') {
                 // If we have data-pb-type="primary", prefer those
                 const primaryPbs = Array.from(document.querySelectorAll('.pb[data-pb-type="primary"][source]'));
                 if (primaryPbs.length > 0) {
+                    console.log(`🔍 GET_PBS: Using ${primaryPbs.length} primary page breaks as fallback`);
                     return primaryPbs;
                 }
                 
                 // If still empty, use ANY pbs we can find
                 if (allPbs.length > 0) {
+                    console.log(`🔍 GET_PBS: Using all ${allPbs.length} available page breaks as fallback`);
                     return allPbs;
                 }
             }
             
-            // 4. If still nothing found and we have a witnessSuffix, try less specific pattern matching
+            // 5. If still nothing found and we have a witnessSuffix, try less specific pattern matching
             if (witnessPbs.length === 0 && witnessSuffix) {
                 // Don't be too specific about where the suffix appears in the filename
                 const witnessSuffixLower = witnessSuffix.toLowerCase();
@@ -287,13 +489,19 @@ class WitnessSwitcher {
                     // Case insensitive check for the suffix anywhere in the source
                     return src.toLowerCase().includes(witnessSuffixLower);
                 });
+                if (witnessPbs.length > 0) {
+                    console.log(`🔍 GET_PBS: Found ${witnessPbs.length} page breaks containing suffix "${witnessSuffix}"`);
+                }
             }
             
+            console.log(`🔍 GET_PBS: Final result - using ${witnessPbs.length} page breaks for "${witness}"`);
             return witnessPbs;
         } catch (e) {
-            // console.error('❌ getWitnessPbs error:', e);
+            console.error('❌ getWitnessPbs error:', e);
             // Return any available page breaks as a last resort
-            return Array.from(document.querySelectorAll('.pb[source]') || []);
+            const anyPbs = Array.from(document.querySelectorAll('.pb[source]') || []);
+            console.log(`❌ GET_PBS: Error, falling back to ${anyPbs.length} available page breaks`);
+            return anyPbs;
         }
     }
 
@@ -324,12 +532,8 @@ class WitnessSwitcher {
                                 : `https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/${src}/info.json`;
                         }).filter(Boolean);
                     } else {
-                        // Absolute last resort - use hardcoded fallbacks
-                        if (witness === 'wmW' || witness === 'primary') {
-                            return this.loadFallbackSources('W');
-                        } else if (witness === 'wmR') {
-                            return this.loadFallbackSources('R'); 
-                        }
+                        // Absolute last resort - use an empty array
+                        return [];
                     }
                 } else {
                     tileSources = witnessPbs.map(pb => {
@@ -343,7 +547,7 @@ class WitnessSwitcher {
             }
 
             if (tileSources.length === 0) {
-                // console.warn(`⚠️ No valid tile sources found for witness: ${witness}`);
+                console.warn(`⚠️ No valid tile sources found for witness: ${witness}`);
                 return;
             }
 
@@ -355,10 +559,10 @@ class WitnessSwitcher {
                 witness
             }));
 
-            // console.log(`🖼️ Built ${tileSources.length} tile sources for witness ${witness}`);
+            console.log(`🖼️ Built ${tileSources.length} tile sources for witness ${witness}`);
             this.loadFacsimilesIntoOSD(tileSources);
         } catch (e) {
-            // console.error(`❌ Error updating OSD images for witness ${witness}:`, e);
+            console.error(`❌ Error updating OSD images for witness ${witness}:`, e);
         }
     }
     
@@ -368,22 +572,8 @@ class WitnessSwitcher {
     loadFallbackSources(witnessType) {
         // console.log(`🔄 Loading fallback sources for witness type ${witnessType}`);
         
-        let sources = [];
-        if (witnessType === 'W') {
-            sources = [
-                'oenb_W_1r.jpg',
-                'oenb_W_1v.jpg',
-                'oenb_W_2r.jpg',
-                'oenb_W_2v.jpg'
-            ];
-        } else if (witnessType === 'R') {
-            sources = [
-                'oenb_R_1r.jpg',
-                'oenb_R_1v.jpg',
-                'oenb_R_2r.jpg',
-                'oenb_R_2v.jpg'
-            ];
-        }
+        // No more hardcoded witness types
+        const sources = [];
         
         const tileSources = sources.map(src => 
             `https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/${src}/info.json`);
@@ -489,15 +679,21 @@ class WitnessSwitcher {
 
     // Build pagination for all discovered witnesses
     buildAllPaginations() {
-        this.availableWitnesses.forEach(witness => this.ensurePaginationForWitness(witness));
+        console.log('🔄 Building paginations for all witnesses:', Array.from(this.availableWitnesses));
+        this.availableWitnesses.forEach(witness => {
+            console.log(`🔄 Ensuring pagination for witness: ${witness}`);
+            this.ensurePaginationForWitness(witness);
+        });
         // After building all paginations, refresh links
         this.triggerPageLinksRefresh();
     }
 
     // Ensure pagination exists for a witness; build it once
     ensurePaginationForWitness(witness) {
-        if (this.witnessPagesMap.has(witness)) return;
-        this.buildPaginationForWitness(witness);
+        if (!this.witnessPagesMap.has(witness)) {
+            console.log(`🔄 Building pagination for witness "${witness}" as it doesn't exist yet`);
+            this.buildPaginationForWitness(witness);
+        }
     }
 
     // Derive a short page label from @n or source filename
@@ -505,13 +701,28 @@ class WitnessSwitcher {
         const n = pbEl && pbEl.getAttribute ? pbEl.getAttribute('n') : null;
         if (n) return n;
         try {
-            // Try pattern "..._a_wmW.jp2" -> "a"
-            const m = src && src.match(/_([a-zA-Z0-9]+)_wm/i);
-            if (m && m[1]) return m[1];
+            // Try to extract a page identifier from between underscores
+            // Look for patterns like "date_name_a_witnessId.jp2" -> "a"
+            const pageIdentifier = src && src.match(/_([a-zA-Z0-9]+)_[^_.]+\.[^_.]+$/i);
+            if (pageIdentifier && pageIdentifier[1]) {
+                console.log(`🔍 LABEL: Extracted page label "${pageIdentifier[1]}" from "${src}"`);
+                return pageIdentifier[1];
+            }
+            
+            // Try to extract a single letter (like a, b, c) which often represents page
+            const letterIdentifier = src && src.match(/_([a-z])_/i);
+            if (letterIdentifier && letterIdentifier[1]) {
+                console.log(`🔍 LABEL: Extracted letter label "${letterIdentifier[1]}" from "${src}"`);
+                return letterIdentifier[1];
+            }
+            
             // Fallback to the last chunk before extension
             const base = (src || '').split('/').pop() || '';
-            return base.replace(/\.[^.]+$/, '') || String(index + 1);
-        } catch (_) {
+            const simpleName = base.replace(/\.[^.]+$/, '') || String(index + 1);
+            console.log(`🔍 LABEL: Using fallback label "${simpleName}" for "${src}"`);
+            return simpleName;
+        } catch (e) {
+            console.error(`❌ LABEL: Error deriving label from "${src}":`, e);
             return String(index + 1);
         }
     }
@@ -519,24 +730,61 @@ class WitnessSwitcher {
     // Build pagination UI and data for one witness
     buildPaginationForWitness(witness) {
         try {
-            const ul = document.querySelector(`#${witness}-meta-data .witness-pages .page-links`);
-            if (!ul) return;
-
+            console.log(`🔄 PAGINATION: Starting buildPaginationForWitness for "${witness}"`);
+            
+            // Debug: Check if the tab content exists
+            const tabContent = document.getElementById(`${witness}-meta-data`);
+            if (!tabContent) {
+                console.error(`❌ PAGINATION: Tab content #${witness}-meta-data not found`);
+                return;
+            }
+            
+            // Debug: Check if the witness-pages container exists
+            const witnessPages = tabContent.querySelector('.witness-pages');
+            if (!witnessPages) {
+                console.error(`❌ PAGINATION: .witness-pages container not found in #${witness}-meta-data`);
+                return;
+            }
+            
+            // Find the page links container
+            const ul = witnessPages.querySelector('.page-links');
+            if (!ul) {
+                console.error(`❌ PAGINATION: .page-links container not found in #${witness}-meta-data .witness-pages`);
+                return;
+            }
+            
+            // Debug: List all the page breaks we have
+            console.log(`🔍 PAGINATION: Looking for page breaks for witness "${witness}"`);
+            const allPbs = document.querySelectorAll('.pb[source]');
+            console.log(`🔍 PAGINATION: Found ${allPbs.length} total page breaks with source`);
+            
+            // Get page breaks specific to this witness
             const pbs = this.getWitnessPbs(witness);
-            if (!pbs || pbs.length === 0) return;
-
+            if (!pbs || pbs.length === 0) {
+                console.error(`❌ PAGINATION: No page breaks found for witness "${witness}"`);
+                return;
+            }
+            
+            console.log(`✅ PAGINATION: Found ${pbs.length} page breaks for witness "${witness}"`);
+            
             // Clear container
             ul.innerHTML = '';
-
+            
+            // Create entries from page breaks
             const entries = pbs.map((pb, idx) => {
                 const src = pb.getAttribute('source');
+                console.log(`🔍 PAGINATION: Processing page break ${idx} with source "${src}"`);
+                
                 const tileSource = src && src.startsWith('http')
                     ? src
                     : `https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/${src}/info.json`;
                 const label = this.deriveLabelFromSource(src, idx, pb);
+                console.log(`🔍 PAGINATION: Derived label for page ${idx}: "${label}"`);
+                
                 return { index: idx, tileSource, label, source: src, pb };
             });
-
+            
+            // Add page links to the UI
             entries.forEach(entry => {
                 const li = document.createElement('li');
                 li.className = 'list-inline-item';
@@ -552,48 +800,39 @@ class WitnessSwitcher {
                 });
                 li.appendChild(a);
                 ul.appendChild(li);
+                console.log(`➕ PAGINATION: Added page link for ${witness}: ${entry.label} (index: ${entry.index})`);
             });
-
+            
+            // Store the entries for later use
             this.witnessPagesMap.set(witness, entries);
-
-            // Newly built UL => refresh link hrefs
+            console.log(`✅ PAGINATION: Completed pagination for "${witness}" with ${entries.length} pages`);
+            
+            // Debug: Confirm the links are actually in the DOM
+            const addedLinks = ul.querySelectorAll('.page-link');
+            console.log(`🔍 PAGINATION: Verified ${addedLinks.length} page links are in the DOM for witness "${witness}"`);
+            
+            // Refresh links
             this.triggerPageLinksRefresh();
         } catch (e) {
-            // console.error(`❌ Error building pagination for ${witness}:`, e);
+            console.error(`❌ PAGINATION: Error building pagination for "${witness}":`, e);
         }
     }
 
-// Navigate to a specific page in a witness (switch if needed)
-goToWitnessPage(witness, index) {
-    console.log(`🔄 GOTO: goToWitnessPage("${witness}", ${index})`);
-    
-    if (this.currentWitness !== witness) {
-        console.log(`🔄 GOTO: Switching from "${this.currentWitness}" to "${witness}"`);
-        // If switching witness, let switchToWitness handle the initial text update.
-        // It will use pendingNavigation if set, or default to page 0.
-        this.scheduleNavigation(witness, index);
-        console.log(`🔄 GOTO: Scheduled navigation to "${witness}" page ${index}`);
-        this.switchToWitness(witness);
-    } else {
-        console.log(`🔄 GOTO: Already on witness "${witness}", just navigating to page ${index}`);
-        // If witness is already active, just navigate to the page.
-        this.navigateViewerToIndex(index);
-        this.syncTextWithPage(index); // This will update the text display
+    // Navigate to a specific page in a witness (switch if needed)
+    goToWitnessPage(witness, index) {
+        if (this.currentWitness !== witness) {
+            // If switching witness, let switchToWitness handle the initial text update.
+            // It will use pendingNavigation if set, or default to page 0.
+            this.scheduleNavigation(witness, index);
+            this.switchToWitness(witness);
+        } else {
+            // If witness is already active, just navigate to the page.
+            this.navigateViewerToIndex(index);
+            this.syncTextWithPage(index); // This will update the text display
+        }
+        this.updatePaginationActiveState(witness, index);
+        this.updateBrowserState(witness, index);
     }
-    this.updatePaginationActiveState(witness, index);
-    this.updateBrowserState(witness, index);
-    
-    // Make this index globally available
-    window.current_page_index = index;
-    console.log(`🔄 GOTO: Set window.current_page_index = ${index}`);
-    
-    // Update citation with the correct witness and page
-    if (typeof window.updateCitationSuggestion === 'function') {
-        window.currentWitness = witness;
-        console.log(`🔄 GOTO: Updating citation for "${witness}" page ${index}`);
-        window.updateCitationSuggestion(index);
-    }
-}
 
     navigateViewerToIndex(index) {
         try {
@@ -622,7 +861,7 @@ goToWitnessPage(witness, index) {
      * Switch to a specific witness - SIMPLIFIED VERSION
      */
     switchToWitness(witness) {
-        // console.log(`🔄 Switching to witness: ${witness}`);
+        console.log(`🔄 SWITCH: Switching to witness: ${witness}`);
         this.currentWitness = witness;
 
         // Add witness-active class to body
@@ -633,35 +872,37 @@ goToWitnessPage(witness, index) {
         this.updateTextForWitness(witness);
 
         // Make sure pagination exists before loading images, then load images
+        console.log(`🔄 SWITCH: Ensuring pagination exists for ${witness}`);
         this.ensurePaginationForWitness(witness);
+        
+        // Force page links refresh after ensuring pagination
+        this.triggerPageLinksRefresh();
+        
+        // Update OSD images
+        console.log(`🔄 SWITCH: Updating OSD images for ${witness}`);
         this.updateOSDImagesForWitness(witness);
 
         // Update tab states
         this.updateTabStates(witness);
 
-        // Do NOT update browser state here, as it might lack page context.
-        // It's handled by goToWitnessPage or after pending navigation is resolved.
-
-        // console.log(`✅ Finished switching to witness: ${witness}`);
         // Ensure page-links reflect the switched witness
+        console.log(`✅ SWITCH: Finished switching to witness: ${witness}`);
         this.triggerPageLinksRefresh();
-        
-        // Force a citation update based on the current page index
-        if (typeof window.updateCitationSuggestion === 'function' && typeof window.current_page_index === 'number') {
-            window.updateCitationSuggestion(window.current_page_index);
-        }
     }
     
     /**
      * Set the default witness based on URL parameters or fallback
      */
     setDefaultWitness() {
+        console.log('🔍 DEFAULT: Setting default witness');
+        
         // First check URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const tab = urlParams.get('tab');
+        console.log(`🔍 DEFAULT: URL tab parameter: "${tab}"`);
         
         if (tab) {
-            // Parse for page number prefix, e.g., "3wmR" -> witness "wmR", page 3
+            // Parse for page number prefix, e.g., "3oenb" -> witness "oenb", page 3
             const match = tab.match(/^(\d+)(.*)$/);
             let witness = tab;
             let pageIndex = 0;
@@ -669,35 +910,88 @@ goToWitnessPage(witness, index) {
             if (match) {
                 pageIndex = Math.max(0, parseInt(match[1], 10) - 1); // 0-based
                 witness = match[2];
+                console.log(`🔍 DEFAULT: Parsed from URL: page ${pageIndex + 1} of witness "${witness}"`);
                 this.pendingNavigation = { witness, index: pageIndex };
-                // console.log(`📌 URL parameter parsed: page ${pageIndex + 1} of witness ${witness}`);
             }
 
-            const fallbackWitness = this.availableWitnesses.has('wmW') ? 'wmW' : Array.from(this.availableWitnesses)[0];
-            const targetWitness = this.availableWitnesses.has(witness) ? witness : fallbackWitness;
+            // Check if the witness exists in our available witnesses
+            // If we don't have a valid witness, use the first available one
+            let targetWitness = witness;
+            if (!this.availableWitnesses.has(witness)) {
+                targetWitness = Array.from(this.availableWitnesses)[0];
+                console.log(`🔍 DEFAULT: Witness "${witness}" not found, using first available: "${targetWitness}"`);
+            }
             
             if (targetWitness) {
                 // Use goToWitnessPage to handle the initial state
+                console.log(`🔍 DEFAULT: Going to witness "${targetWitness}" page ${pageIndex}`);
                 this.goToWitnessPage(targetWitness, pageIndex);
             }
         } else {
             // Pick the most appropriate default witness
             const allPbElements = document.querySelectorAll('.pb[source]');
-            const hasMultipleWitnesses = this.availableWitnesses.size > 2; // More than just default witnesses
+            const hasMultipleWitnesses = this.availableWitnesses.size > 1;
             
-            // For single-witness documents, create and use a "primary" witness
+            console.log(`🔍 DEFAULT: No tab param, found ${allPbElements.length} pb elements, hasMultipleWitnesses: ${hasMultipleWitnesses}`);
+            
+            // Check for witnesses in the filenames of page breaks
+            let witnessFromFilename = null;
+            if (allPbElements && allPbElements.length > 0) {
+                const firstPb = allPbElements[0];
+                const source = firstPb.getAttribute('source');
+                if (source) {
+                    const parts = source.split('_');
+                    if (parts.length >= 4) {
+                        const lastPart = parts[parts.length - 1].split('.')[0];
+                        if (lastPart && this.availableWitnesses.has(lastPart)) {
+                            witnessFromFilename = lastPart;
+                            console.log(`🔍 DEFAULT: Found witness "${witnessFromFilename}" in first pb source: ${source}`);
+                        }
+                    }
+                }
+            }
+            
+            // For single-witness documents, create a tab using the actual witness name from source
             if (!hasMultipleWitnesses && allPbElements.length > 0) {
-                this.availableWitnesses.add('primary');
-                this.goToWitnessPage('primary', 0);
+                let actualWitnessId = 'primary';
+                
+                // Try to get the actual witness ID from the first page break source
+                if (allPbElements[0]) {
+                    const source = allPbElements[0].getAttribute('source');
+                    if (source) {
+                        const parts = source.split('_');
+                        if (parts.length >= 4) {
+                            const lastPart = parts[parts.length - 1].split('.')[0];
+                            if (lastPart) {
+                                actualWitnessId = lastPart;
+                                console.log(`🔍 DEFAULT: Using actual witness ID "${actualWitnessId}" from source`);
+                            }
+                        }
+                    }
+                }
+                
+                console.log(`🔍 DEFAULT: Single-witness document, using "${actualWitnessId}" witness`);
+                this.availableWitnesses.add(actualWitnessId);
+                this.goToWitnessPage(actualWitnessId, 0);
                 return;
             }
             
-            // For multi-witness, use wmW or first available
-            const defaultWitness = this.availableWitnesses.has('wmW') ? 'wmW' : Array.from(this.availableWitnesses)[0];
+            // For multi-witness, prioritize real witness IDs from filenames
+            let defaultWitness;
+            if (witnessFromFilename) {
+                defaultWitness = witnessFromFilename;
+                console.log(`🔍 DEFAULT: Using witness from filename: "${defaultWitness}"`);
+            } else {
+                defaultWitness = Array.from(this.availableWitnesses)[0];
+                console.log(`🔍 DEFAULT: Using first available witness: "${defaultWitness}"`);
+            }
+            
             if (defaultWitness) {
                 this.goToWitnessPage(defaultWitness, 0);
             }
         }
+        
+        console.log(`🔍 DEFAULT: Current witness set to: "${this.currentWitness}"`);
     }
 
     /**
@@ -705,6 +999,8 @@ goToWitnessPage(witness, index) {
      */
     updateTextForWitness(witness) {
         try {
+            console.log(`🔄 UPDATE_TEXT: Updating text for witness "${witness}"`);
+            
             // Ensure pagination/entries exist before using them
             this.ensurePaginationForWitness(witness);
 
@@ -719,6 +1015,8 @@ goToWitnessPage(witness, index) {
 
             // Get pbs for the current witness
             const witnessPbs = this.getWitnessPbs(witness);
+            console.log(`🔄 UPDATE_TEXT: Found ${witnessPbs.length} page breaks for witness "${witness}"`);
+            
             witnessPbs.forEach(pb => {
                 pb.style.display = 'inline';
                 pb.classList.add('active-witness-pb');
@@ -726,7 +1024,10 @@ goToWitnessPage(witness, index) {
 
             // Also show primary pbs if no specific witness pages found
             if (witnessPbs.length === 0) {
-                document.querySelectorAll('.pb[data-pb-type="primary"]').forEach(pb => {
+                const primaryPbs = document.querySelectorAll('.pb[data-pb-type="primary"]');
+                console.log(`🔄 UPDATE_TEXT: Using ${primaryPbs.length} primary page breaks as fallback`);
+                
+                primaryPbs.forEach(pb => {
                     pb.style.display = 'inline';
                     pb.classList.add('active-witness-pb');
                 });
@@ -734,6 +1035,7 @@ goToWitnessPage(witness, index) {
 
             // Inform osd_scroll.js about the new set of page breaks
             if (typeof window.updateOsdScrollPageBreaks === 'function') {
+                console.log(`🔄 UPDATE_TEXT: Updating osd_scroll page breaks`);
                 window.updateOsdScrollPageBreaks(witnessPbs);
             }
 
@@ -741,7 +1043,7 @@ goToWitnessPage(witness, index) {
             let pageToShow = 0;
             if (this.pendingNavigation && this.pendingNavigation.witness === witness) {
                 pageToShow = this.pendingNavigation.index;
-                // Don't clear pendingNavigation here; let the viewer handler do it.
+                console.log(`🔄 UPDATE_TEXT: Using pending navigation to show page ${pageToShow + 1}`);
             }
 
             // Show the determined page's text. This will mark the correct pb.
@@ -751,18 +1053,112 @@ goToWitnessPage(witness, index) {
             if (this.pendingNavigation && this.pendingNavigation.witness === witness) {
                 this.updateBrowserState(witness, pageToShow);
             }
-            
-            // Force update the citation to ensure it shows the correct page after witness switch
-            if (typeof window.updateCitationSuggestion === 'function') {
-                window.updateCitationSuggestion(pageToShow);
-            }
 
-            // console.log(`📝 Text updated for witness: ${witness}`);
+            console.log(`✅ UPDATE_TEXT: Finished updating text for witness "${witness}"`);
+            
+            // DIRECT TAB CONTENT POPULATION - ensure page links exist
+            this.populatePageLinksForWitness(witness);
         } catch (e) {
-            // console.error(`❌ Error updating text for witness ${witness}:`, e);
+            console.error(`❌ UPDATE_TEXT: Error updating text for witness "${witness}":`, e);
         } finally {
             // Text, pbs and pagination updated -> refresh links
             this.triggerPageLinksRefresh();
+        }
+    }
+    
+    /**
+     * Directly populate page links for a witness - emergency fallback
+     */
+    populatePageLinksForWitness(witness) {
+        try {
+            console.log(`🔄 POPULATE: Direct population of page links for "${witness}"`);
+            
+            // Find the tab content pane
+            const tabContent = document.getElementById(`${witness}-meta-data`);
+            if (!tabContent) {
+                console.error(`❌ POPULATE: Tab content not found for "${witness}"`);
+                return;
+            }
+            
+            // Find or create the witness-pages container
+            let witnessPages = tabContent.querySelector('.witness-pages');
+            if (!witnessPages) {
+                console.log(`🔄 POPULATE: Creating missing .witness-pages container for "${witness}"`);
+                witnessPages = document.createElement('div');
+                witnessPages.className = 'witness-pages mt-3';
+                
+                const heading = document.createElement('h5');
+                heading.textContent = 'Seiten:';
+                witnessPages.appendChild(heading);
+                
+                tabContent.appendChild(witnessPages);
+            }
+            
+            // Find or create the page-links container
+            let pageLinks = witnessPages.querySelector('.page-links');
+            if (!pageLinks) {
+                console.log(`🔄 POPULATE: Creating missing .page-links container for "${witness}"`);
+                pageLinks = document.createElement('ul');
+                pageLinks.className = 'page-links list-inline';
+                witnessPages.appendChild(pageLinks);
+            }
+            
+            // Check if we already have links
+            const existingLinks = pageLinks.querySelectorAll('.page-link');
+            if (existingLinks.length > 0) {
+                console.log(`✅ POPULATE: Page links already exist (${existingLinks.length} found)`);
+                return;
+            }
+            
+            // Get page breaks for this witness
+            const witnessPbs = this.getWitnessPbs(witness);
+            console.log(`🔄 POPULATE: Found ${witnessPbs.length} page breaks to use for links`);
+            
+            // Clear container and add links
+            pageLinks.innerHTML = '';
+            
+            witnessPbs.forEach((pb, index) => {
+                const source = pb.getAttribute('source') || '';
+                
+                // Extract letter ID (like 'a', 'b', 'c') from the source
+                let pageLetter = String(index + 1);  // Default: just use numbers
+                
+                // Try to extract letter from source like "xxx_a_yyy.jp2"
+                const letterMatch = source.match(/_([a-z])_/i);
+                if (letterMatch && letterMatch[1]) {
+                    pageLetter = letterMatch[1];
+                }
+                
+                const li = document.createElement('li');
+                li.className = 'list-inline-item';
+                
+                const a = document.createElement('a');
+                a.href = '#';
+                a.className = 'page-link';
+                a.textContent = pageLetter;
+                a.setAttribute('data-witness', witness);
+                a.setAttribute('data-page-index', String(index));
+                
+                // Add click handler
+                a.addEventListener('click', (ev) => {
+                    ev.preventDefault();
+                    this.goToWitnessPage(witness, index);
+                });
+                
+                li.appendChild(a);
+                pageLinks.appendChild(li);
+            });
+            
+            // Mark current page as active
+            let currentPageIndex = window.current_page_index || 0;
+            const currentPageLink = pageLinks.querySelector(`.page-link[data-page-index="${currentPageIndex}"]`);
+            if (currentPageLink) {
+                currentPageLink.classList.add('active');
+            }
+            
+            console.log(`✅ POPULATE: Successfully added ${pageLinks.children.length} page links for "${witness}"`);
+        } catch (e) {
+            console.error(`❌ POPULATE: Error populating page links for "${witness}":`, e);
         }
     }
 
@@ -850,73 +1246,41 @@ goToWitnessPage(witness, index) {
     }
 
     /**
- * Set up event listeners for witness tabs
- */
-setupTabEventListeners() {
-    try {
-        console.log('🔄 TABS: Setting up tab event listeners');
-        
-        // Handle dynamically discovered witnesses
-        this.availableWitnesses.forEach(witness => {
-            try {
-                const tabElement = document.getElementById(`${witness}-tab`);
-                if (tabElement) {
-                    tabElement.addEventListener('click', (event) => {
-                        event.preventDefault();
-                        
-                        // Get current page index from global variable
-                        const pageIndex = window.current_page_index || 0;
-                        console.log(`📑 TABS: ${witness} tab clicked, page index: ${pageIndex}`);
-                        
-                        // Use goToWitnessPage instead of switchToWitness to preserve page
-                        this.goToWitnessPage(witness, pageIndex);
-                    });
-                    console.log(`✅ TABS: Added click listener for ${witness} tab`);
-                } else {
-                    console.log(`⚠️ TABS: Tab element for ${witness} not found`);
+     * Set up event listeners for witness tabs
+     */
+    setupTabEventListeners() {
+        try {
+            console.log('🔄 TABS: Setting up tab event listeners');
+            
+            // Handle dynamically discovered witnesses
+            this.availableWitnesses.forEach(witness => {
+                try {
+                    const tabElement = document.getElementById(`${witness}-tab`);
+                    if (tabElement) {
+                        tabElement.addEventListener('click', (event) => {
+                            event.preventDefault();
+                            
+                            // Get current page index from global variable
+                            const pageIndex = window.current_page_index || 0;
+                            console.log(`📑 TABS: ${witness} tab clicked, page index: ${pageIndex}`);
+                            
+                            // Use goToWitnessPage instead of switchToWitness to preserve page
+                            this.goToWitnessPage(witness, pageIndex);
+                        });
+                        console.log(`✅ TABS: Added click listener for ${witness} tab`);
+                    } else {
+                        console.log(`⚠️ TABS: Tab element for ${witness} not found`);
+                    }
+                } catch (e) {
+                    console.error(`❌ TABS: Error setting up tab for ${witness}:`, e);
                 }
-            } catch (e) {
-                console.error(`❌ TABS: Error setting up tab for ${witness}:`, e);
-            }
-        });
-
-        // Legacy support for hardcoded wmW and wmR tabs
-        const wmWTab = document.getElementById('wmW-tab');
-        const wmRTab = document.getElementById('wmR-tab');
-        
-        if (wmWTab) {
-            wmWTab.addEventListener('click', (event) => {
-                event.preventDefault();
-                
-                // Get current page index from global variable
-                const pageIndex = window.current_page_index || 0;
-                console.log(`📑 TABS: wmW tab clicked, page index: ${pageIndex}`);
-                
-                // Use goToWitnessPage instead of switchToWitness to preserve page
-                this.goToWitnessPage('wmW', pageIndex);
             });
-            console.log('✅ TABS: Added click listener for wmW tab');
+            
+            console.log('✅ TABS: Tab event listeners setup complete');
+        } catch (e) {
+            console.error('❌ TABS: Error setting up tab event listeners:', e);
         }
-        
-        if (wmRTab) {
-            wmRTab.addEventListener('click', (event) => {
-                event.preventDefault();
-                
-                // Get current page index from global variable
-                const pageIndex = window.current_page_index || 0;
-                console.log(`📑 TABS: wmR tab clicked, page index: ${pageIndex}`);
-                
-                // Use goToWitnessPage instead of switchToWitness to preserve page
-                this.goToWitnessPage('wmR', pageIndex);
-            });
-            console.log('✅ TABS: Added click listener for wmR tab');
-        }
-        
-        console.log('✅ TABS: Tab event listeners setup complete');
-    } catch (e) {
-        console.error('❌ TABS: Error setting up tab event listeners:', e);
     }
-}
 
     /**
      * Set up event listeners for variant text clicks
@@ -1078,9 +1442,7 @@ setupTabEventListeners() {
         }
     }
 
-    /**
-     * Update the browser state (URL) with the current witness
-     */
+    // Update the browser state (URL) with the current witness
     updateBrowserState(witness, pageIndex = -1) {
         try {
             const url = new URL(window.location);
@@ -1103,10 +1465,224 @@ setupTabEventListeners() {
     scheduleNavigation(witness, index) {
         this.pendingNavigation = { witness, index };
     }
+
+    // Create a witness tab if it doesn't exist
+    createWitnessTabs(witnessIds) {
+        try {
+            const tabsContainer = document.querySelector('ul.nav-tabs');
+            if (!tabsContainer) {
+                console.log('⚠️ No tab container found to create tabs');
+                return;
+            }
+            
+            witnessIds.forEach(witnessId => {
+                // Check if tab already exists
+                if (document.getElementById(`${witnessId}-tab`)) {
+                    console.log(`📋 Tab for ${witnessId} already exists`);
+                    return;
+                }
+                
+                console.log(`🔨 Creating tab for witness: ${witnessId}`);
+                
+                // Create tab button
+                const li = document.createElement('li');
+                li.className = 'nav-item';
+                
+                const button = document.createElement('button');
+                button.className = 'nav-link';
+                button.id = `${witnessId}-tab`;
+                button.setAttribute('data-bs-toggle', 'tab');
+                button.setAttribute('data-bs-target', `#${witnessId}-meta-data`);
+                button.setAttribute('type', 'button');
+                button.setAttribute('role', 'tab');
+                button.setAttribute('aria-controls', `${witnessId}`);
+                button.setAttribute('aria-selected', 'false');
+                button.textContent = witnessId.toUpperCase();
+                
+                li.appendChild(button);
+                tabsContainer.appendChild(li);
+                
+                // Create tab content pane
+                const contentContainer = document.querySelector('div.tab-content');
+                if (contentContainer) {
+                    const tabPane = document.createElement('div');
+                    tabPane.className = 'tab-pane fade';
+                    tabPane.id = `${witnessId}-meta-data`;
+                    tabPane.setAttribute('role', 'tabpanel');
+                    tabPane.setAttribute('aria-labelledby', `${witnessId}-tab`);
+                    
+                    // Add container for page links with the requested structure
+                    const witnessPages = document.createElement('div');
+                    witnessPages.className = 'witness-pages mt-3';
+                    
+                    const heading = document.createElement('h5');
+                    heading.textContent = 'Seiten:';
+                    witnessPages.appendChild(heading);
+                    
+                    const pageLinks = document.createElement('ul');
+                    pageLinks.className = 'page-links list-inline';
+                    
+                    witnessPages.appendChild(pageLinks);
+                    tabPane.appendChild(witnessPages);
+                    contentContainer.appendChild(tabPane);
+                    
+                    console.log(`📦 Created tab content pane for ${witnessId}`);
+                    console.log(`📦 STRUCTURE: #${witnessId}-meta-data > .witness-pages > .page-links`);
+                } else {
+                    console.error(`❌ No tab content container found for ${witnessId}`);
+                }
+                
+                console.log(`✅ Created tab and content for ${witnessId}`);
+            });
+        } catch (e) {
+            console.error('❌ Error creating witness tabs:', e);
+        }
+    }
+    
+    // Get a display name for the witness ID
+    getDisplayNameForWitness(witnessId) {
+        // If the witness is "primary", try to find a better name from the actual content
+        if (witnessId === 'primary') {
+            // Look through pb sources to find an actual witness identifier
+            const pbs = document.querySelectorAll('.pb[source]');
+            if (pbs && pbs.length > 0) {
+                // Check the first pb element's source
+                const source = pbs[0].getAttribute('source');
+                if (source) {
+                    const parts = source.split('_');
+                    if (parts.length >= 4) {
+                        // Usually the last part before the extension is the witness ID
+                        const lastPart = parts[parts.length - 1].split('.')[0];
+                        if (lastPart && lastPart !== 'primary') {
+                            console.log(`🔍 Found better display name "${lastPart}" for primary witness`);
+                            return lastPart.toUpperCase();
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Standard case: just convert to uppercase for consistent display
+        return witnessId.toUpperCase();
+    }
 }
 
 // Initialize the witness switcher when the class is instantiated
-new WitnessSwitcher();
+const witnessSwitcherInstance = new WitnessSwitcher();
+
+// Manual initialization for the page links
+document.addEventListener('DOMContentLoaded', function() {
+    // Give time for the witness switcher to initialize
+    setTimeout(() => {
+        // Get current witness from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get('tab');
+        let currentWitness = null;
+        
+        if (tab) {
+            const match = tab.match(/^(\d+)(.*)$/);
+            if (match && match[2]) {
+                currentWitness = match[2];
+                console.log(`🔍 MANUAL INIT: Found witness ${currentWitness} in URL`);
+            }
+        }
+        
+        // If no witness in URL, try to extract from page breaks
+        if (!currentWitness) {
+            const pbElements = document.querySelectorAll('.pb[source]');
+            if (pbElements && pbElements.length > 0) {
+                const source = pbElements[0].getAttribute('source');
+                if (source) {
+                    const parts = source.split('_');
+                    if (parts.length >= 4) {
+                        currentWitness = parts[parts.length - 1].split('.')[0];
+                        console.log(`🔍 MANUAL INIT: Extracted witness ${currentWitness} from page break`);
+                    }
+                }
+            }
+        }
+        
+        // Fallback to a known witness
+        if (!currentWitness) {
+            currentWitness = Array.from(witnessSwitcherInstance.availableWitnesses)[0] || 'oenb';
+            console.log(`🔍 MANUAL INIT: Using fallback witness ${currentWitness}`);
+        }
+        
+        // Manually populate the page links for the witness
+        console.log(`🔍 MANUAL INIT: Manually populating page links for ${currentWitness}`);
+        const tabContent = document.getElementById(`${currentWitness}-meta-data`);
+        
+        if (tabContent) {
+            const pageLinksContainer = tabContent.querySelector('.page-links');
+            if (pageLinksContainer) {
+                // Clear existing links just in case
+                pageLinksContainer.innerHTML = '';
+                
+                // Get page breaks for this witness
+                const pbElements = document.querySelectorAll('.pb[source]');
+                console.log(`🔍 MANUAL INIT: Found ${pbElements.length} page breaks`);
+                
+                // Create page links
+                pbElements.forEach((pb, index) => {
+                    const source = pb.getAttribute('source') || '';
+                    
+                    // Extract page letter from source (e.g., 'a' from 'xxx_a_yyy.jp2')
+                    let pageLetter = String(index + 1);
+                    const letterMatch = source.match(/_([a-z])_/i);
+                    if (letterMatch && letterMatch[1]) {
+                        pageLetter = letterMatch[1];
+                    }
+                    
+                    const li = document.createElement('li');
+                    li.className = 'list-inline-item';
+                    
+                    const a = document.createElement('a');
+                    a.href = '#';
+                    a.className = 'page-link';
+                    a.textContent = pageLetter;
+                    a.setAttribute('data-witness', currentWitness);
+                    a.setAttribute('data-page-index', String(index));
+                    
+                    // Add click handler
+                    a.addEventListener('click', (ev) => {
+                        ev.preventDefault();
+                        if (witnessSwitcherInstance && typeof witnessSwitcherInstance.goToWitnessPage === 'function') {
+                            witnessSwitcherInstance.goToWitnessPage(currentWitness, index);
+                        } else {
+                            // Fallback if the witness switcher isn't available
+                            window.location.href = `?tab=${index+1}${currentWitness}`;
+                        }
+                    });
+                    
+                    li.appendChild(a);
+                    pageLinksContainer.appendChild(li);
+                    console.log(`➕ MANUAL INIT: Added page link for page ${pageLetter} (index: ${index})`);
+                });
+                
+                // Mark current page as active
+                let currentPageIndex = 0;
+                if (tab) {
+                    const match = tab.match(/^(\d+)/);
+                    if (match && match[1]) {
+                        currentPageIndex = parseInt(match[1], 10) - 1; // Convert to 0-based
+                    }
+                }
+                
+                const currentPageLink = pageLinksContainer.querySelector(`.page-link[data-page-index="${currentPageIndex}"]`);
+                if (currentPageLink) {
+                    currentPageLink.classList.add('active');
+                    console.log(`✅ MANUAL INIT: Marked page ${currentPageIndex + 1} as active`);
+                }
+                
+                console.log(`✅ MANUAL INIT: Successfully populated ${pageLinksContainer.children.length} page links`);
+            } else {
+                console.error(`❌ MANUAL INIT: Page links container not found for ${currentWitness}`);
+            }
+        } else {
+            console.error(`❌ MANUAL INIT: Tab content not found for ${currentWitness}`);
+        }
+    }, 500);
+});
 
 // Keep the initial one-time refresh
 if (window.updatePageLinks) window.updatePageLinks();
@@ -1115,33 +1691,83 @@ if (window.updatePageLinks) window.updatePageLinks();
  * Simple Witness Switcher - Immediately reloads page when witness tabs are clicked
  */
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔍 Witness switcher initializing...');
+    console.log('🔍 Simple Witness Switcher initializing...');
     
-    // FIRST APPROACH: Direct tab click handlers for witness tabs
-    const wmWTab = document.getElementById('wmW-tab');
-    const wmRTab = document.getElementById('wmR-tab');
+    // Create a helper to get available witnesses
+    const getAvailableWitnesses = () => {
+        const availableWitnesses = new Set();
+        
+        // Find witnesses from page break sources
+        const pbElements = document.querySelectorAll('.pb[source]');
+        pbElements.forEach(pb => {
+            const source = pb.getAttribute('source');
+            if (source) {
+                const parts = source.split('_');
+                if (parts.length >= 4) {
+                    const lastPart = parts[parts.length - 1].split('.')[0];
+                    if (lastPart) {
+                        availableWitnesses.add(lastPart);
+                        console.log(`📋 Identified witness ID from source: "${lastPart}"`);
+                    }
+                }
+            }
+        });
+        
+        // Also check [data-witness] attributes
+        const witnessElements = document.querySelectorAll('[data-witness]');
+        witnessElements.forEach(el => {
+            const witness = el.getAttribute('data-witness');
+            if (witness) {
+                availableWitnesses.add(witness);
+                console.log(`📋 Identified witness ID from data-witness: "${witness}"`);
+            }
+        });
+        
+        // If no witnesses found, use ID from existing tabs
+        if (availableWitnesses.size === 0) {
+            const tabs = document.querySelectorAll('button[data-bs-toggle="tab"][id$="-tab"]');
+            tabs.forEach(tab => {
+                const witnessId = tab.id.replace('-tab', '');
+                if (witnessId && witnessId !== 'persons') {
+                    availableWitnesses.add(witnessId);
+                    console.log(`📋 Identified witness ID from tab ID: "${witnessId}"`);
+                }
+            });
+        }
+        
+        // If still no witnesses found, add a default
+        if (availableWitnesses.size === 0) {
+            // Look for actual witness ID in file names
+            const imgElements = document.querySelectorAll('img[src*="_"]');
+            imgElements.forEach(img => {
+                const src = img.getAttribute('src');
+                if (src) {
+                    const parts = src.split('_');
+                    if (parts.length >= 4) {
+                        const lastPart = parts[parts.length - 1].split('.')[0];
+                        if (lastPart) {
+                            availableWitnesses.add(lastPart);
+                            console.log(`📋 Identified witness ID from image src: "${lastPart}"`);
+                        }
+                    }
+                }
+            });
+            
+            // If still nothing, use a generic default
+            if (availableWitnesses.size === 0) {
+                console.log(`📋 No witnesses found, using default "doc" witness ID`);
+                availableWitnesses.add('doc');
+            }
+        }
+        
+        return availableWitnesses;
+    };
     
-    if (wmWTab) {
-        console.log('📋 Found wmW tab, adding handler');
-        wmWTab.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            reloadPageWithWitness('wmW');
-            return false;
-        };
-    }
+    // Store available witnesses for global access
+    window.witnessAvailableSet = getAvailableWitnesses();
+    console.log('📋 Available witnesses:', Array.from(window.witnessAvailableSet));
     
-    if (wmRTab) {
-        console.log('📋 Found wmR tab, adding handler');
-        wmRTab.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            reloadPageWithWitness('wmR');
-            return false;
-        };
-    }
-    
-    // SECOND APPROACH: Generic handler for all witness tabs using event delegation
+    // Generic handler for all witness tabs using event delegation
     document.addEventListener('click', function(e) {
         // Find closest tab button - handle both direct clicks and bubbled events
         const tabButton = e.target.closest('button[data-bs-toggle="tab"]');
@@ -1149,24 +1775,21 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!tabButton) return;
         
         // Check if it's a witness tab (not persons tab)
-        if (tabButton.id && (tabButton.id.indexOf('wmW') !== -1 || tabButton.id.indexOf('wmR') !== -1)) {
-            console.log('🎯 Witness tab clicked:', tabButton.id);
+        if (tabButton.id && tabButton.id.endsWith('-tab')) {
+            const witnessId = tabButton.id.replace('-tab', '');
+            if (witnessId === 'persons') return; // Skip persons tab
             
-            // Determine which witness
-            let witness = 'wmW'; // default
-            if (tabButton.id.indexOf('wmR') !== -1) {
-                witness = 'wmR';
-            }
+            console.log('🎯 Witness tab clicked:', tabButton.id);
             
             // Prevent default and reload
             e.preventDefault();
             e.stopPropagation();
-            reloadPageWithWitness(witness);
+            reloadPageWithWitness(witnessId);
             return false;
         }
     }, true); // Use capturing to get event before Bootstrap
     
-    console.log('✅ Witness switcher initialized');
+    console.log('✅ Simple Witness Switcher initialized');
 });
 
 /**
@@ -1174,14 +1797,9 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function reloadPageWithWitness(witness) {
     console.log(`🔄 RELOAD: Starting reloadPageWithWitness("${witness}")`);
-    console.log(`🔄 RELOAD: window.current_page_index = ${window.current_page_index}`);
     
     // Get current page from global variable or URL or default to 1
     let currentPage = 1;
-    
-    // Store witness code for debugging
-    window.currentWitness = witness;
-    console.log(`🔄 RELOAD: Setting window.currentWitness = "${witness}"`);
     
     // FIRST PRIORITY: Use window.current_page_index which is set by osd_scroll.js
     if (typeof window.current_page_index === 'number') {
@@ -1219,18 +1837,14 @@ function reloadPageWithWitness(witness) {
         currentPage = 1;
     }
     
-    // Make sure witness code is properly formatted
-    const cleanWitness = witness.replace(/^wm/, '');
-    console.log(`🔄 RELOAD: Using clean witness code: "${cleanWitness}"`);
-    
-    // Build the new URL
+    // Build the new URL with the witness ID
     const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-    const newUrl = `${baseUrl}?tab=${currentPage}wm${cleanWitness}`;
+    const newUrl = `${baseUrl}?tab=${currentPage}${witness}`;
     
     console.log(`🔄 RELOAD: Reloading page with witness ${witness}, page ${currentPage}`);
     console.log(`📄 RELOAD: New URL: ${newUrl}`);
     
-    // Update the citation before navigation
+    // Update the citation before navigation if available
     if (typeof window.updateCitationSuggestion === 'function') {
         const citationPageIndex = currentPage - 1; // Convert back to 0-based for citation
         console.log(`📋 RELOAD: Updating citation with page index ${citationPageIndex} before navigation`);
@@ -1275,12 +1889,52 @@ window.reloadPageWithWitness = reloadPageWithWitness;
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Witness switcher initializing...');
     
-    // Find all witness tab buttons
+    // Share available witnesses for the cleanWitnessId function
+    try {
+        if (typeof window.witnessAvailableSet === 'undefined') {
+            window.witnessAvailableSet = new Set();
+            
+            // Extract witness IDs from page break sources
+            const pbElements = document.querySelectorAll('.pb[source]');
+            if (pbElements && pbElements.length > 0) {
+                pbElements.forEach(pb => {
+                    const source = pb.getAttribute('source');
+                    if (source) {
+                        const parts = source.split('_');
+                        if (parts.length >= 4) {
+                            const lastPart = parts[parts.length - 1].split('.')[0];
+                            if (lastPart) {
+                                window.witnessAvailableSet.add(lastPart);
+                                console.log(`📋 Added witness from source: "${lastPart}"`);
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Also check data-witness attributes
+            const witnessElements = document.querySelectorAll('[data-witness]');
+            witnessElements.forEach(el => {
+                const witness = el.getAttribute('data-witness');
+                if (witness) {
+                    window.witnessAvailableSet.add(witness);
+                    console.log(`📋 Added witness from data-witness: "${witness}"`);
+                }
+            });
+            
+            console.log('📋 Available witnesses for URL handling:', Array.from(window.witnessAvailableSet));
+        }
+    } catch (e) {
+        console.error('❌ Error setting up witness available set:', e);
+    }
+    
+    // Find all witness tab buttons (excluding persons tab)
     const witnessTabs = document.querySelectorAll('.nav-tabs button[data-bs-toggle="tab"][id$="-tab"]');
-    console.log(`Found ${witnessTabs.length} witness tabs`);
+    const validWitnessTabs = Array.from(witnessTabs).filter(tab => !tab.id.startsWith('persons-'));
+    console.log(`Found ${validWitnessTabs.length} witness tabs`);
     
     // Add click handlers to each tab
-    witnessTabs.forEach(tab => {
+    validWitnessTabs.forEach(tab => {
         // Get the witness ID from the tab's ID or target
         const witnessId = tab.id.replace('-tab', '') || 
                          tab.getAttribute('data-bs-target')?.replace('#', '').replace('-meta-data', '');
@@ -1299,13 +1953,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Get base URL without parameters
             const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
             
-            // Create URL with the new witness and current page
-            let newUrl;
-            if (witnessId === 'primary') {
-                newUrl = `${baseUrl}?tab=${pageNumber}primary`;
-            } else {
-                newUrl = `${baseUrl}?tab=${pageNumber}wm${witnessId}`;
-            }
+            // Create URL with the new witness and current page - use actual witness ID
+            const newUrl = `${baseUrl}?tab=${pageNumber}${witnessId}`;
             
             console.log(`Witness tab clicked: ${witnessId}, reloading to page ${pageNumber}`);
             console.log(`Navigating to: ${newUrl}`);
@@ -1313,6 +1962,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Prevent default bootstrap tab behavior
             e.preventDefault();
             e.stopPropagation();
+            
+            // Update global currentWitness before reload
+            window.currentWitness = witnessId;
             
             // Force reload with new URL
             window.location.href = newUrl;
@@ -1327,12 +1979,17 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Setting up witness dropdown handler');
         witnessDropdown.addEventListener('change', function() {
             const selectedWitness = this.value;
+            
             // Always use window.current_page_index for consistency
             const pageNumber = (window.current_page_index !== undefined ? window.current_page_index : 0) + 1;
             const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-            const newUrl = `${baseUrl}?tab=${pageNumber}wm${selectedWitness}`;
+            const newUrl = `${baseUrl}?tab=${pageNumber}${selectedWitness}`;
             
             console.log(`Witness dropdown changed to ${selectedWitness}, navigating to page ${pageNumber}`);
+            
+            // Update global currentWitness before reload
+            window.currentWitness = selectedWitness;
+            
             window.location.href = newUrl;
         });
     }
@@ -1360,3 +2017,20 @@ function refreshWitnessTabs() {
 
 // Expose for other scripts
 window.refreshWitnessTabs = refreshWitnessTabs;
+
+// Helper function to clean witness IDs (remove any prefix if needed)
+function cleanWitnessId(witness, availableWitnesses) {
+    if (!witness) return witness;
+    
+    // Generic check - if we have a witness ID with any prefix and the non-prefixed version exists
+    // in the available witnesses, use the non-prefixed version
+    if (availableWitnesses && availableWitnesses.size > 0) {
+        for (const availableWitness of availableWitnesses) {
+            if (witness !== availableWitness && witness.endsWith(availableWitness)) {
+                return availableWitness;
+            }
+        }
+    }
+    
+    return witness;
+}

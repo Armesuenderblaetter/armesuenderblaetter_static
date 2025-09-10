@@ -325,14 +325,8 @@ function updateCitationSuggestion(page_index) {
   let currentWitness = getCurrentWitness();
   console.log(`🔍 CITATION: Current witness for URL: ${currentWitness}`);
   
-  let pageUrlWithTab;
-  
-  if (currentWitness === 'primary') {
-    pageUrlWithTab = `${baseUrl}?tab=${pageNum}primary`;
-  } else {
-    pageUrlWithTab = `${baseUrl}?tab=${pageNum}wm${currentWitness}`;
-  }
-  
+  // Build URL using the actual witness ID (not forcing wmW/wmR)
+  let pageUrlWithTab = `${baseUrl}?tab=${pageNum}${currentWitness}`;
   console.log(`🌐 CITATION: Generated URL: ${pageUrlWithTab}`);
   
   // Compose citation text with updated URL that includes the current page
@@ -570,124 +564,142 @@ if (document.readyState === 'loading') {
   setTimeout(initializePageView, 100);
 }
 
-// Update the page links based on the current witness
+// Update page links with proper navigation links
 function updatePageLinks() {
-  // Find the witness-pages container and the page links list
-  const pageLinksContainer = document.querySelector('.witness-pages ul.page-links');
-  if (!pageLinksContainer) return;
+  console.log('Updating page links');
   
-  // Get current witness and base URL
-  let currentWitness = getCurrentWitness();
-  const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+  // Get all page links
+  const page_links = document.querySelectorAll('.page-link');
   
-  // DESTROY the old list completely
-  while (pageLinksContainer.firstChild) {
-    pageLinksContainer.removeChild(pageLinksContainer.firstChild);
+  if (!page_links || page_links.length === 0) {
+    console.log('No page links found');
+    return;
   }
   
-  // Create new links
-  pb_elements_array.forEach((pb, index) => {
-    const pageNumber = index + 1;
-    const listItem = document.createElement('li');
-    listItem.className = 'list-inline-item';
+  // Helper to clean witness IDs
+  const cleanWitnessId = function(witness) {
+    if (!witness) return witness;
     
-    const link = document.createElement('a');
-    link.className = 'page-link';
-    // FIX: Use correct URL format for witness links
-    if (currentWitness === 'primary') {
-      // Primary witness format
-      link.href = `${baseUrl}?tab=${pageNumber}primary`;
-    } else {
-      // Regular witness format with wm prefix
-      link.href = `${baseUrl}?tab=${pageNumber}wm${currentWitness}`;
+    // If this starts with "wm" and there's evidence that the base version exists, clean it
+    if (witness.startsWith('wm')) {
+      // Check the available witnesses set
+      if (window.witnessAvailableSet && window.witnessAvailableSet.has(witness.substring(2))) {
+        const cleanVersion = witness.substring(2);
+        console.log(`Cleaning witness ID from "${witness}" to "${cleanVersion}"`);
+        return cleanVersion;
+      }
+      
+      // Check page break sources as well
+      const pbElements = document.querySelectorAll('.pb[source]');
+      let hasCleanVersion = false;
+      
+      if (pbElements && pbElements.length > 0) {
+        const cleanWitness = witness.substring(2);
+        pbElements.forEach(pb => {
+          const source = pb.getAttribute('source') || '';
+          if (source.includes(cleanWitness)) {
+            hasCleanVersion = true;
+          }
+        });
+      }
+      
+      if (hasCleanVersion) {
+        return witness.substring(2);
+      }
     }
     
-    // Set correct data attributes
-    link.setAttribute('data-witness', currentWitness);
-    link.setAttribute('data-page-index', index);
+    return witness;
+  };
+  
+  // Update each link
+  page_links.forEach(link => {
+    // Get the target page index (0-based)
+    const page_index = link.getAttribute('data-page-index');
     
-    // Use lowercase letter for label
-    link.textContent = String.fromCharCode(97 + index);
+    // Get the witness from the link or fall back to the current witness
+    let witness = link.getAttribute('data-witness') || getCurrentWitness();
     
-    // Add click handler to ensure text updates for single-witness documents
-    link.addEventListener('click', function(e) {
-      const pageIndex = parseInt(this.getAttribute('data-page-index'), 10);
+    // Clean the witness ID if it has "wm" prefix but shouldn't
+    witness = cleanWitnessId(witness);
+    
+    if (page_index !== null) {
+      const page_num = parseInt(page_index, 10) + 1; // Convert to 1-based
       
-      // Check if we're in a single-witness document
-      const availableWitnesses = document.querySelectorAll('.tab-pane[id^="witness-"]').length;
-      if (availableWitnesses <= 1 || window.witnessState === 'single') {
-        e.preventDefault();
-        
-        // Update both facsimile and text
-        handle_new_image(pageIndex);
-        handle_page_visibility(pageIndex);
-        
-        // Update URL without page reload
-        const newUrl = this.href;
-        window.history.replaceState(null, '', newUrl);
-        return false;
-      }
-      // For multi-witness docs, let the normal navigation handle it
-    });
-    
-    listItem.appendChild(link);
-    pageLinksContainer.appendChild(listItem);
+      // Build the URL with cleaned witness ID
+      const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+      const newUrl = `${baseUrl}?tab=${page_num}${witness}`;
+      
+      // Update the link
+      link.href = newUrl;
+      console.log(`Updated link to ${newUrl}`);
+    }
   });
   
-  // Mark the current page as active
-  const currentPageLink = pageLinksContainer.querySelector(`[data-page-index="${current_page_index}"]`);
-  if (currentPageLink) {
-    currentPageLink.classList.add('active');
-  }
-  
-  console.log(`Page links rebuilt for witness: ${currentWitness}`);
+  console.log(`Page links rebuilt for ${page_links.length} links, witness:`, getCurrentWitness());
 }
 
 // Helper function to get the current witness
 function getCurrentWitness() {
-  console.log(`🔍 GET_WITNESS: Starting getCurrentWitness()`);
-  
-  // First check URL for witness information
-  const urlParams = new URLSearchParams(window.location.search);
-  const tabParam = urlParams.get('tab');
-  console.log(`🔍 GET_WITNESS: URL tab parameter: "${tabParam}"`);
-  
-  if (tabParam && tabParam.includes('wm')) {
-    const witness = tabParam.match(/wm([A-Za-z0-9]+)/);
-    if (witness && witness[1]) {
-      console.log(`✅ GET_WITNESS: Found witness ${witness[1]} in URL tab parameter`);
-      return witness[1];
+    console.log(`🔍 GET_WITNESS: Starting getCurrentWitness()`);
+    
+    // First check URL for witness information
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    console.log(`🔍 GET_WITNESS: URL tab parameter: "${tabParam}"`);
+    
+    if (tabParam) {
+        // Extract the witness part from the tab parameter
+        // First remove the page number at the beginning
+        const witnessMatch = tabParam.match(/^\d+(.+)$/);
+        if (witnessMatch && witnessMatch[1]) {
+            const witnessFromUrl = witnessMatch[1];
+            console.log(`✅ GET_WITNESS: Found witness ${witnessFromUrl} in URL tab parameter`);
+            return witnessFromUrl;
+        }
     }
-  }
-  
-  // If window.currentWitness is set (by witness_switcher.js), use that
-  if (window.currentWitness) {
-    const cleanWitness = window.currentWitness.replace(/^wm/, '');
-    console.log(`✅ GET_WITNESS: Using window.currentWitness: ${cleanWitness}`);
-    return cleanWitness;
-  }
-  
-  // If not in URL, check for active tab or other indicators
-  const activeTab = document.querySelector('.tab-pane.active');
-  if (activeTab && activeTab.id) {
-    const witnessMatch = activeTab.id.match(/witness-(\w+)/);
-    if (witnessMatch) {
-      console.log(`✅ GET_WITNESS: Found witness ${witnessMatch[1]} from active tab`);
-      return witnessMatch[1];
+    
+    // If window.currentWitness is set (by witness_switcher.js), use that
+    if (window.currentWitness) {
+        console.log(`✅ GET_WITNESS: Using window.currentWitness: ${window.currentWitness}`);
+        return window.currentWitness;
     }
-  }
-  
-  // Check document attribute as a last resort
-  const bodyWitness = document.body.getAttribute('data-active-witness');
-  if (bodyWitness) {
-    const cleanWitness = bodyWitness.replace(/^wm/, '');
-    console.log(`✅ GET_WITNESS: Found witness ${cleanWitness} from body attribute`);
-    return cleanWitness;
-  }
-  
-  // Default to W if nothing else found
-  console.log(`⚠️ GET_WITNESS: No witness found, defaulting to W`);
-  return 'W';
+    
+    // Try to detect witness from page break sources
+    const pbElements = document.querySelectorAll('.pb[source]');
+    if (pbElements && pbElements.length > 0) {
+        const firstPbSource = pbElements[0].getAttribute('source');
+        if (firstPbSource) {
+            const parts = firstPbSource.split('_');
+            if (parts.length >= 4) {
+                const lastPart = parts[parts.length - 1].split('.')[0];
+                if (lastPart) {
+                    console.log(`✅ GET_WITNESS: Detected witness from page break source: ${lastPart}`);
+                    return lastPart;
+                }
+            }
+        }
+    }
+    
+    // If not in URL, check for active tab or other indicators
+    const activeTab = document.querySelector('.tab-pane.active');
+    if (activeTab && activeTab.id) {
+        const witnessMatch = activeTab.id.match(/witness-(\w+)/);
+        if (witnessMatch) {
+            console.log(`✅ GET_WITNESS: Found witness ${witnessMatch[1]} from active tab`);
+            return witnessMatch[1];
+        }
+    }
+    
+    // Check document attribute as a last resort
+    const bodyWitness = document.body.getAttribute('data-active-witness');
+    if (bodyWitness) {
+        console.log(`✅ GET_WITNESS: Found witness ${bodyWitness} from body attribute`);
+        return bodyWitness;
+    }
+    
+    // Default to W if nothing else found
+    console.log(`⚠️ GET_WITNESS: No witness found, defaulting to W`);
+    return 'W';
 }
 
 // Expose the updatePageLinks function globally so witness_switcher.js can call it
