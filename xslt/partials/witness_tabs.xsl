@@ -69,6 +69,7 @@
                             <tr>
                                 <td>Drucker: </td>
                                 <td>
+                                    <!-- Only the first publisher is displayed, even if multiple <tei:publisher> elements exist. -->
                                     <xsl:value-of select="(.//tei:publisher/text())[1]"/>
                                 </td>
                             </tr>
