@@ -81,6 +81,13 @@ class WitnessSwitcher {
                 this.discoverWitnesses();
                 this.setupWitnessToSuffixMapping();
                 
+                // FORCE IMMEDIATE PAGINATION BUILD FOR ALL WITNESSES
+                console.log('🔄 FORCE: Building paginations immediately for all witnesses');
+                this.availableWitnesses.forEach(witness => {
+                    console.log(`🔄 FORCE: Building pagination for witness: ${witness}`);
+                    this.buildPaginationForWitness(witness);
+                });
+                
                 // Create necessary UI elements for witnesses
                 this.availableWitnesses.forEach(witness => {
                     if (!document.getElementById(`${witness}-tab`)) {
@@ -353,18 +360,18 @@ class WitnessSwitcher {
                 }
             }
 
-            // 4. If we're still empty and this is a primary witness, use any available pbs
-            if (witnessPbs.length === 0 && witness === 'primary') {
+            // 4. If we're still empty, use any available pbs (for single witness documents)
+            if (witnessPbs.length === 0) {
                 // If we have data-pb-type="primary", prefer those
                 const primaryPbs = Array.from(document.querySelectorAll('.pb[data-pb-type="primary"][source]'));
                 if (primaryPbs.length > 0) {
-                    console.log(`🔍 GET_PBS: Using ${primaryPbs.length} primary page breaks as fallback`);
+                    console.log(`🔍 GET_PBS: Using ${primaryPbs.length} primary page breaks as fallback for single witness document`);
                     return primaryPbs;
                 }
                 
-                // If still empty, use ANY pbs we can find
+                // If still empty, use ANY pbs we can find (this is important for single witness docs)
                 if (allPbs.length > 0) {
-                    console.log(`🔍 GET_PBS: Using all ${allPbs.length} available page breaks as fallback`);
+                    console.log(`🔍 GET_PBS: Using all ${allPbs.length} available page breaks as fallback for single witness document`);
                     return allPbs;
                 }
             }
@@ -621,26 +628,34 @@ class WitnessSwitcher {
         try {
             console.log(`🔄 PAGINATION: Starting buildPaginationForWitness for "${witness}"`);
             
-            // Debug: Check if the tab content exists
-            const tabContent = document.getElementById(`${witness}-meta-data`);
-            if (!tabContent) {
-                console.error(`❌ PAGINATION: Tab content #${witness}-meta-data not found`);
-                return;
-            }
+            // FIRST: Check if the global .witness-pages container exists
+            let witnessPages = document.querySelector('.witness-pages');
+            console.log(`🔍 PAGINATION: Global .witness-pages container found: ${witnessPages ? 'YES' : 'NO'}`);
             
-            // Debug: Check if the witness-pages container exists
-            const witnessPages = tabContent.querySelector('.witness-pages');
-            if (!witnessPages) {
-                console.error(`❌ PAGINATION: .witness-pages container not found in #${witness}-meta-data`);
-                return;
+            // If global container found, use it
+            if (witnessPages) {
+                console.log(`🔍 PAGINATION: Using global .witness-pages container for witness "${witness}"`);
+            } else {
+                // Try witness-specific tab content as fallback
+                const tabContent = document.getElementById(`${witness}-meta-data`);
+                if (tabContent) {
+                    witnessPages = tabContent.querySelector('.witness-pages');
+                    console.log(`🔍 PAGINATION: Found witness-specific tab content for ${witness}`);
+                }
+                
+                if (!witnessPages) {
+                    console.error(`❌ PAGINATION: No .witness-pages container found anywhere for "${witness}"`);
+                    return;
+                }
             }
             
             // Find the page links container
             const ul = witnessPages.querySelector('.page-links');
             if (!ul) {
-                console.error(`❌ PAGINATION: .page-links container not found in #${witness}-meta-data .witness-pages`);
+                console.error(`❌ PAGINATION: .page-links container not found in .witness-pages`);
                 return;
             }
+            console.log(`✅ PAGINATION: Found .page-links container for witness "${witness}"`);
             
             // Debug: List all the page breaks we have
             console.log(`🔍 PAGINATION: Looking for page breaks for witness "${witness}"`);
@@ -658,6 +673,7 @@ class WitnessSwitcher {
             
             // Clear container
             ul.innerHTML = '';
+            console.log(`🔄 PAGINATION: Cleared existing page links for witness "${witness}"`);
             
             // Create entries from page breaks
             const entries = pbs.map((pb, idx) => {
@@ -672,6 +688,8 @@ class WitnessSwitcher {
                 
                 return { index: idx, tileSource, label, source: src, pb };
             });
+            
+            console.log(`🔄 PAGINATION: Created ${entries.length} entries for witness "${witness}"`);
             
             // Add page links to the UI
             entries.forEach(entry => {
@@ -699,6 +717,10 @@ class WitnessSwitcher {
             // Debug: Confirm the links are actually in the DOM
             const addedLinks = ul.querySelectorAll('.page-link');
             console.log(`🔍 PAGINATION: Verified ${addedLinks.length} page links are in the DOM for witness "${witness}"`);
+            
+            // Final check: can we see the links in the document?
+            const globalLinks = document.querySelectorAll('.page-links .page-link');
+            console.log(`🔍 PAGINATION: Total page links in entire document: ${globalLinks.length}`);
             
             // Refresh links
             this.triggerPageLinksRefresh();
@@ -736,8 +758,16 @@ class WitnessSwitcher {
 
     updatePaginationActiveState(witness, pageIndex) {
         try {
-            const container = document.querySelector(`#${witness}-meta-data .witness-pages`);
+            // Try witness-specific container first
+            let container = document.querySelector(`#${witness}-meta-data .witness-pages`);
+            
+            // If not found, use global .witness-pages for single witness documents
+            if (!container) {
+                container = document.querySelector('.witness-pages');
+            }
+            
             if (!container) return;
+            
             container.querySelectorAll('.page-link').forEach(a => a.classList.remove('active'));
             const current = container.querySelector(`.page-link[data-page-index="${pageIndex}"]`);
             if (current) current.classList.add('active');
