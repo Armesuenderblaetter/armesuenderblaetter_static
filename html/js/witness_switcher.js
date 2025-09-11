@@ -799,13 +799,11 @@ class WitnessSwitcher {
             a.href = `${baseUrl}?tab=${pageNumber}${this.currentWitness}`;
             
             a.className = 'page-link';
-            a.textContent = entry.label;
+            a.textContent = pageNumber; // Use page number (1, 2, 3...) instead of entry.label (a, b, c...)
             a.setAttribute('data-witness', this.currentWitness);
             a.setAttribute('data-page-index', String(entry.index));
-            a.addEventListener('click', (ev) => {
-                ev.preventDefault();
-                this.goToWitnessPage(this.currentWitness, entry.index);
-            });
+            // Let the link naturally reload the page with the ?tab= parameter
+            // No click event handler needed - the href will handle the navigation
             
             li.appendChild(a);
             ul.appendChild(li);
