@@ -576,38 +576,9 @@ function updatePageLinks() {
     return;
   }
   
-  // Helper to clean witness IDs
+  // Helper to keep witness IDs intact - NO MORE CLEANING!
   const cleanWitnessId = function(witness) {
-    if (!witness) return witness;
-    
-    // If this starts with "wm" and there's evidence that the base version exists, clean it
-    if (witness.startsWith('wm')) {
-      // Check the available witnesses set
-      if (window.witnessAvailableSet && window.witnessAvailableSet.has(witness.substring(2))) {
-        const cleanVersion = witness.substring(2);
-        console.log(`Cleaning witness ID from "${witness}" to "${cleanVersion}"`);
-        return cleanVersion;
-      }
-      
-      // Check page break sources as well
-      const pbElements = document.querySelectorAll('.pb[source]');
-      let hasCleanVersion = false;
-      
-      if (pbElements && pbElements.length > 0) {
-        const cleanWitness = witness.substring(2);
-        pbElements.forEach(pb => {
-          const source = pb.getAttribute('source') || '';
-          if (source.includes(cleanWitness)) {
-            hasCleanVersion = true;
-          }
-        });
-      }
-      
-      if (hasCleanVersion) {
-        return witness.substring(2);
-      }
-    }
-    
+    // Always return the witness ID as-is, no more stripping prefixes
     return witness;
   };
   
@@ -642,7 +613,23 @@ function updatePageLinks() {
 function getCurrentWitness() {
     console.log(`🔍 GET_WITNESS: Starting getCurrentWitness()`);
     
-    // First check URL for witness information
+    // HIGHEST PRIORITY: Check if witness_switcher.js has set a current witness
+    if (window.currentWitness) {
+        console.log(`✅ GET_WITNESS: Using window.currentWitness: ${window.currentWitness}`);
+        return window.currentWitness;
+    }
+    
+    // SECOND PRIORITY: Check if we have an active witness switcher instance
+    if (window.witnessAvailableSet && window.witnessAvailableSet.size > 0) {
+        // Check body attribute for active witness (set by witness_switcher.js)
+        const bodyWitness = document.body.getAttribute('data-active-witness');
+        if (bodyWitness && window.witnessAvailableSet.has(bodyWitness)) {
+            console.log(`✅ GET_WITNESS: Found witness ${bodyWitness} from body attribute`);
+            return bodyWitness;
+        }
+    }
+    
+    // THIRD PRIORITY: Check URL for witness information
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
     console.log(`🔍 GET_WITNESS: URL tab parameter: "${tabParam}"`);
@@ -658,13 +645,23 @@ function getCurrentWitness() {
         }
     }
     
-    // If window.currentWitness is set (by witness_switcher.js), use that
-    if (window.currentWitness) {
-        console.log(`✅ GET_WITNESS: Using window.currentWitness: ${window.currentWitness}`);
-        return window.currentWitness;
+    // FOURTH PRIORITY: Try to detect witness from the currently visible page break sources
+    const visiblePbs = document.querySelectorAll('.pb.active-witness-pb[source]');
+    if (visiblePbs && visiblePbs.length > 0) {
+        const firstVisiblePbSource = visiblePbs[0].getAttribute('source');
+        if (firstVisiblePbSource) {
+            const parts = firstVisiblePbSource.split('_');
+            if (parts.length >= 4) {
+                const lastPart = parts[parts.length - 1].split('.')[0];
+                if (lastPart) {
+                    console.log(`✅ GET_WITNESS: Detected witness from visible page break source: ${lastPart}`);
+                    return lastPart;
+                }
+            }
+        }
     }
     
-    // Try to detect witness from page break sources
+    // FIFTH PRIORITY: Try to detect witness from ALL page break sources (fallback)
     const pbElements = document.querySelectorAll('.pb[source]');
     if (pbElements && pbElements.length > 0) {
         const firstPbSource = pbElements[0].getAttribute('source');
@@ -680,24 +677,24 @@ function getCurrentWitness() {
         }
     }
     
-    // If not in URL, check for active tab or other indicators
+    // SIXTH PRIORITY: Check for active tab or other indicators
     const activeTab = document.querySelector('.tab-pane.active');
     if (activeTab && activeTab.id) {
-        const witnessMatch = activeTab.id.match(/witness-(\w+)/);
+        const witnessMatch = activeTab.id.match(/(\w+)-meta-data/);
         if (witnessMatch) {
             console.log(`✅ GET_WITNESS: Found witness ${witnessMatch[1]} from active tab`);
             return witnessMatch[1];
         }
     }
     
-    // Check document attribute as a last resort
-    const bodyWitness = document.body.getAttribute('data-active-witness');
-    if (bodyWitness) {
-        console.log(`✅ GET_WITNESS: Found witness ${bodyWitness} from body attribute`);
-        return bodyWitness;
+    // Default to the first available witness if nothing else found
+    if (window.witnessAvailableSet && window.witnessAvailableSet.size > 0) {
+        const firstWitness = Array.from(window.witnessAvailableSet)[0];
+        console.log(`⚠️ GET_WITNESS: No witness found, using first available: ${firstWitness}`);
+        return firstWitness;
     }
     
-    // Default to W if nothing else found
+    // Final fallback
     console.log(`⚠️ GET_WITNESS: No witness found, defaulting to W`);
     return 'W';
 }

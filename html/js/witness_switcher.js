@@ -83,9 +83,12 @@ class WitnessSwitcher {
                 
                 // FORCE IMMEDIATE PAGINATION BUILD FOR ALL WITNESSES
                 console.log('🔄 FORCE: Building paginations immediately for all witnesses');
+                console.log('🔍 FORCE: Current available witnesses:', Array.from(this.availableWitnesses));
                 this.availableWitnesses.forEach(witness => {
                     console.log(`🔄 FORCE: Building pagination for witness: ${witness}`);
+                    console.log(`🔍 FORCE: Current this.currentWitness before build: "${this.currentWitness}"`);
                     this.buildPaginationForWitness(witness);
+                    console.log(`🔍 FORCE: Current this.currentWitness after build: "${this.currentWitness}"`);
                 });
                 
                 // Create necessary UI elements for witnesses
@@ -172,16 +175,34 @@ class WitnessSwitcher {
                 console.log(`🔍 REFRESH: Found ${witnessPageLinks.length} .page-link elements for current witness "${this.currentWitness}"`);
             }
             
+            // DEBUG: Check what the links look like before calling updatePageLinks
+            console.log(`🔍 REFRESH DEBUG: Links before updatePageLinks():`);
+            allPageLinks.forEach((link, idx) => {
+                console.log(`  Before ${idx}: href="${link.href}", data-witness="${link.getAttribute('data-witness')}"`);
+            });
+            
             if (typeof window.updatePageLinks === 'function') {
                 clearTimeout(this._linksRefreshTimer);
                 this._linksRefreshTimer = setTimeout(() => {
-                    window.updatePageLinks();
-                    console.log('✅ REFRESH: Called window.updatePageLinks()');
+                    console.log(`🚨 REFRESH: About to call window.updatePageLinks() - this might be the culprit!`);
+                    console.log(`🚨 REFRESH: Current witness is "${this.currentWitness}" but updatePageLinks might ignore it!`);
+                    
+                    // DISABLE updatePageLinks temporarily to see if this fixes it
+                    console.log(`🚨 REFRESH: SKIPPING window.updatePageLinks() call to test if it's the problem!`);
+                    // window.updatePageLinks();
+                    
+                    console.log('✅ REFRESH: SKIPPED window.updatePageLinks()');
                     
                     // Debug: Check page links after refresh
                     setTimeout(() => {
                         const afterAllPageLinks = document.querySelectorAll('.page-links .page-link');
                         console.log(`🔍 REFRESH: Found ${afterAllPageLinks.length} total .page-link elements after refresh`);
+                        
+                        // DEBUG: Check what the links look like after NOT calling updatePageLinks
+                        console.log(`🔍 REFRESH DEBUG: Links after SKIPPING updatePageLinks():`);
+                        afterAllPageLinks.forEach((link, idx) => {
+                            console.log(`  After ${idx}: href="${link.href}", data-witness="${link.getAttribute('data-witness')}"`);
+                        });
                         
                         if (this.currentWitness) {
                             const afterWitnessPageLinks = document.querySelectorAll(`#${this.currentWitness}-meta-data .page-links .page-link`);
@@ -204,22 +225,74 @@ class WitnessSwitcher {
         try {
             console.log('🔍 DISCOVER: Starting witness discovery');
             const safeQuerySelectorAll = (selector) => { try { return document.querySelectorAll(selector) || []; } catch { return []; } };
+            
+            // Check explicit witness attributes first
             const variantElements = safeQuerySelectorAll('[data-witness]');
-            variantElements.forEach(el => { const w = el.getAttribute('data-witness'); if (w) this.availableWitnesses.add(w.trim()); });
+            variantElements.forEach(el => { 
+                const w = el.getAttribute('data-witness'); 
+                if (w) {
+                    this.availableWitnesses.add(w.trim());
+                    console.log(`🔍 DISCOVER: Found witness from data-witness: "${w.trim()}"`);
+                }
+            });
+            
             const pbDataWitness = safeQuerySelectorAll('.pb[data-witness]');
-            pbDataWitness.forEach(el => { const w = el.getAttribute('data-witness'); if (w) this.availableWitnesses.add(w.trim()); });
+            pbDataWitness.forEach(el => { 
+                const w = el.getAttribute('data-witness'); 
+                if (w) {
+                    this.availableWitnesses.add(w.trim());
+                    console.log(`🔍 DISCOVER: Found witness from pb data-witness: "${w.trim()}"`);
+                }
+            });
+            
             const pbWit = safeQuerySelectorAll('.pb[wit]');
-            pbWit.forEach(el => { const wit = el.getAttribute('wit'); if (wit) { const w = wit.startsWith('#') ? wit.slice(1) : wit; if (w) this.availableWitnesses.add(w.trim()); } });
+            pbWit.forEach(el => { 
+                const wit = el.getAttribute('wit'); 
+                if (wit) { 
+                    const w = wit.startsWith('#') ? wit.slice(1) : wit; 
+                    if (w) {
+                        this.availableWitnesses.add(w.trim());
+                        console.log(`🔍 DISCOVER: Found witness from wit attribute: "${w.trim()}"`);
+                    }
+                } 
+            });
+            
+            // Check page break sources for FULL witness IDs in filenames - this is the primary method
             const pbs = safeQuerySelectorAll('.pb[source]');
-            pbs.forEach(pb => { const src = pb.getAttribute('source'); if (src) { const parts = src.split('_'); if (parts.length >= 4) { const last = parts[parts.length - 1].split('.')[0]; if (last) this.availableWitnesses.add(last.trim()); } } });
+            pbs.forEach(pb => { 
+                const src = pb.getAttribute('source'); 
+                if (src) { 
+                    const parts = src.split('_'); 
+                    if (parts.length >= 4) { 
+                        const last = parts[parts.length - 1].split('.')[0]; 
+                        if (last && last.length > 0) {
+                            this.availableWitnesses.add(last.trim());
+                            console.log(`🔍 DISCOVER: Found FULL witness from filename: "${last.trim()}" (from source: ${src})`);
+                        }
+                    } 
+                } 
+            });
+            
             // Remove empty strings
             if (this.availableWitnesses.has('')) this.availableWitnesses.delete('');
+            
             // Add primary only if still none
-            if (this.availableWitnesses.size === 0) this.availableWitnesses.add('primary');
+            if (this.availableWitnesses.size === 0) {
+                this.availableWitnesses.add('primary');
+                console.log('🔍 DISCOVER: No witnesses found, added default "primary"');
+            }
+            
             // If more than one witness, drop 'primary'
-            if (this.availableWitnesses.size > 1 && this.availableWitnesses.has('primary')) this.availableWitnesses.delete('primary');
+            if (this.availableWitnesses.size > 1 && this.availableWitnesses.has('primary')) {
+                this.availableWitnesses.delete('primary');
+                console.log('🔍 DISCOVER: Removed "primary" as other witnesses exist');
+            }
+            
             console.log('🔍 DISCOVER: Final witnesses:', Array.from(this.availableWitnesses));
-        } catch (e) { console.error('❌ DISCOVER error', e); if (this.availableWitnesses.size === 0) this.availableWitnesses.add('primary'); }
+        } catch (e) { 
+            console.error('❌ DISCOVER error', e); 
+            if (this.availableWitnesses.size === 0) this.availableWitnesses.add('primary'); 
+        }
     }
 
     /**
@@ -322,72 +395,95 @@ class WitnessSwitcher {
     getWitnessPbs(witness) {
         try {
             console.log(`🔍 GET_PBS: Finding page breaks for witness "${witness}"`);
+            console.log(`🔍 GET_PBS: this.currentWitness = "${this.currentWitness}"`);
             
-            const witnessSuffix = this.witnessToSuffixMap.get(witness);
             let witnessPbs = [];
             
             // For single-witness documents - if there's only one set of page breaks, use those
             const allPbs = Array.from(document.querySelectorAll('.pb[source]') || []);
             console.log(`🔍 GET_PBS: Found ${allPbs.length} total page breaks with source attribute`);
             
-            // 1. Most specific first: wit attribute
+            // DEBUG: Log all page break sources to understand what we're working with
+            console.log(`🔍 GET_PBS DEBUG: All page break sources:`);
+            allPbs.forEach((pb, idx) => {
+                const source = pb.getAttribute('source');
+                const parts = source ? source.split('_') : [];
+                const lastPart = parts.length >= 4 ? parts[parts.length - 1].split('.')[0] : 'N/A';
+                console.log(`  ${idx}: "${source}" -> witness ID: "${lastPart}"`);
+            });
+            
+            // 1. Most specific first: wit attribute matching exactly
             witnessPbs = Array.from(document.querySelectorAll(`.pb[wit="#${witness}"][source]`) || []);
             if (witnessPbs.length > 0) {
                 console.log(`🔍 GET_PBS: Found ${witnessPbs.length} page breaks with wit="#${witness}"`);
+                console.log(`🔍 GET_PBS: Using wit="#${witness}" page breaks for "${witness}"`);
+                return witnessPbs;
             }
 
             // 2. Try data-witness attribute
-            if (witnessPbs.length === 0) {
-                witnessPbs = Array.from(document.querySelectorAll(`.pb[data-witness="${witness}"][source]`) || []);
-                if (witnessPbs.length > 0) {
-                    console.log(`🔍 GET_PBS: Found ${witnessPbs.length} page breaks with data-witness="${witness}"`);
-                }
+            witnessPbs = Array.from(document.querySelectorAll(`.pb[data-witness="${witness}"][source]`) || []);
+            if (witnessPbs.length > 0) {
+                console.log(`🔍 GET_PBS: Found ${witnessPbs.length} page breaks with data-witness="${witness}"`);
+                console.log(`🔍 GET_PBS: Using data-witness="${witness}" page breaks for "${witness}"`);
+                return witnessPbs;
             }
 
-            // 3. Try matching against the filenames directly
-            if (witnessPbs.length === 0) {
+            // 3. Try matching against the filenames directly - exact match for full witness ID
+            witnessPbs = allPbs.filter(pb => {
+                const source = pb.getAttribute('source') || '';
+                const parts = source.split('_');
+                if (parts.length >= 4) {
+                    const lastPart = parts[parts.length - 1].split('.')[0];
+                    const isMatch = lastPart === witness;
+                    if (isMatch) {
+                        console.log(`🔍 GET_PBS: Found exact match: "${source}" -> "${lastPart}" === "${witness}"`);
+                    }
+                    return isMatch;
+                }
+                return false;
+            });
+            if (witnessPbs.length > 0) {
+                console.log(`🔍 GET_PBS: Found ${witnessPbs.length} page breaks with full witness ID "${witness}" in filename`);
+                console.log(`🔍 GET_PBS: Using exact filename matches for "${witness}"`);
+                witnessPbs.forEach((pb, idx) => {
+                    console.log(`  Match ${idx}: "${pb.getAttribute('source')}"`);
+                });
+                return witnessPbs;
+            }
+
+            // 4. If we're still empty and witness is short (like "R" or "W"), try matching by suffix
+            if (witness.length <= 2) {
                 witnessPbs = allPbs.filter(pb => {
                     const source = pb.getAttribute('source') || '';
                     const parts = source.split('_');
                     if (parts.length >= 4) {
                         const lastPart = parts[parts.length - 1].split('.')[0];
-                        return lastPart === witness;
+                        const isMatch = lastPart.endsWith(witness);
+                        if (isMatch) {
+                            console.log(`🔍 GET_PBS: Found suffix match: "${source}" -> "${lastPart}" ends with "${witness}"`);
+                        }
+                        return isMatch;
                     }
                     return false;
                 });
                 if (witnessPbs.length > 0) {
-                    console.log(`🔍 GET_PBS: Found ${witnessPbs.length} page breaks with "${witness}" in filename`);
+                    console.log(`🔍 GET_PBS: Found ${witnessPbs.length} page breaks with witness suffix "${witness}"`);
+                    console.log(`🔍 GET_PBS: Using suffix matches for "${witness}"`);
+                    witnessPbs.forEach((pb, idx) => {
+                        console.log(`  Suffix Match ${idx}: "${pb.getAttribute('source')}"`);
+                    });
+                    return witnessPbs;
                 }
             }
 
-            // 4. If we're still empty, use any available pbs (for single witness documents)
-            if (witnessPbs.length === 0) {
-                // If we have data-pb-type="primary", prefer those
-                const primaryPbs = Array.from(document.querySelectorAll('.pb[data-pb-type="primary"][source]'));
-                if (primaryPbs.length > 0) {
-                    console.log(`🔍 GET_PBS: Using ${primaryPbs.length} primary page breaks as fallback for single witness document`);
-                    return primaryPbs;
-                }
-                
-                // If still empty, use ANY pbs we can find (this is important for single witness docs)
-                if (allPbs.length > 0) {
-                    console.log(`🔍 GET_PBS: Using all ${allPbs.length} available page breaks as fallback for single witness document`);
-                    return allPbs;
-                }
-            }
-            
-            // 5. If still nothing found and we have a witnessSuffix, try less specific pattern matching
-            if (witnessPbs.length === 0 && witnessSuffix) {
-                // Don't be too specific about where the suffix appears in the filename
-                const witnessSuffixLower = witnessSuffix.toLowerCase();
-                witnessPbs = allPbs.filter(pb => {
-                    const src = pb.getAttribute('source') || '';
-                    // Case insensitive check for the suffix anywhere in the source
-                    return src.toLowerCase().includes(witnessSuffixLower);
+            // 5. If we're still empty, use any available pbs (for single witness documents)
+            if (allPbs.length > 0) {
+                console.log(`🔍 GET_PBS: Using all ${allPbs.length} available page breaks as fallback for single witness document`);
+                console.log(`🔍 GET_PBS: FALLBACK WARNING - Using ALL page breaks for "${witness}" because no specific matches found!`);
+                allPbs.forEach((pb, idx) => {
+                    console.log(`  Fallback ${idx}: "${pb.getAttribute('source')}"`);
                 });
-                if (witnessPbs.length > 0) {
-                    console.log(`🔍 GET_PBS: Found ${witnessPbs.length} page breaks containing suffix "${witnessSuffix}"`);
-                }
+                return allPbs;
             }
             
             console.log(`🔍 GET_PBS: Final result - using ${witnessPbs.length} page breaks for "${witness}"`);
@@ -627,106 +723,95 @@ class WitnessSwitcher {
     buildPaginationForWitness(witness) {
         try {
             console.log(`🔄 PAGINATION: Starting buildPaginationForWitness for "${witness}"`);
+            console.log(`🔍 PAGINATION: Current this.currentWitness = "${this.currentWitness}"`);
             
-            // FIRST: Check if the global .witness-pages container exists
-            let witnessPages = document.querySelector('.witness-pages');
-            console.log(`🔍 PAGINATION: Global .witness-pages container found: ${witnessPages ? 'YES' : 'NO'}`);
-            
-            // If global container found, use it
-            if (witnessPages) {
-                console.log(`🔍 PAGINATION: Using global .witness-pages container for witness "${witness}"`);
-            } else {
-                // Try witness-specific tab content as fallback
-                const tabContent = document.getElementById(`${witness}-meta-data`);
-                if (tabContent) {
-                    witnessPages = tabContent.querySelector('.witness-pages');
-                    console.log(`🔍 PAGINATION: Found witness-specific tab content for ${witness}`);
-                }
-                
-                if (!witnessPages) {
-                    console.error(`❌ PAGINATION: No .witness-pages container found anywhere for "${witness}"`);
-                    return;
-                }
-            }
-            
-            // Find the page links container
-            const ul = witnessPages.querySelector('.page-links');
-            if (!ul) {
-                console.error(`❌ PAGINATION: .page-links container not found in .witness-pages`);
-                return;
-            }
-            console.log(`✅ PAGINATION: Found .page-links container for witness "${witness}"`);
-            
-            // Debug: List all the page breaks we have
-            console.log(`🔍 PAGINATION: Looking for page breaks for witness "${witness}"`);
-            const allPbs = document.querySelectorAll('.pb[source]');
-            console.log(`🔍 PAGINATION: Found ${allPbs.length} total page breaks with source`);
-            
-            // Get page breaks specific to this witness
+            // Store data for ALL witnesses, but only build UI for current witness
             const pbs = this.getWitnessPbs(witness);
             if (!pbs || pbs.length === 0) {
                 console.error(`❌ PAGINATION: No page breaks found for witness "${witness}"`);
                 return;
             }
             
-            console.log(`✅ PAGINATION: Found ${pbs.length} page breaks for witness "${witness}"`);
-            
-            // Clear container
-            ul.innerHTML = '';
-            console.log(`🔄 PAGINATION: Cleared existing page links for witness "${witness}"`);
-            
-            // Create entries from page breaks
+            // Create entries from page breaks  
             const entries = pbs.map((pb, idx) => {
                 const src = pb.getAttribute('source');
-                console.log(`🔍 PAGINATION: Processing page break ${idx} with source "${src}"`);
-                
                 const tileSource = src && src.startsWith('http')
                     ? src
                     : `https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/${src}/info.json`;
                 const label = this.deriveLabelFromSource(src, idx, pb);
-                console.log(`🔍 PAGINATION: Derived label for page ${idx}: "${label}"`);
-                
                 return { index: idx, tileSource, label, source: src, pb };
-            });
-            
-            console.log(`🔄 PAGINATION: Created ${entries.length} entries for witness "${witness}"`);
-            
-            // Add page links to the UI
-            entries.forEach(entry => {
-                const li = document.createElement('li');
-                li.className = 'list-inline-item';
-                const a = document.createElement('a');
-                a.href = '#';
-                a.className = 'page-link';
-                a.textContent = entry.label;
-                a.setAttribute('data-witness', witness);
-                a.setAttribute('data-page-index', String(entry.index));
-                a.addEventListener('click', (ev) => {
-                    ev.preventDefault();
-                    this.goToWitnessPage(witness, entry.index);
-                });
-                li.appendChild(a);
-                ul.appendChild(li);
-                console.log(`➕ PAGINATION: Added page link for ${witness}: ${entry.label} (index: ${entry.index})`);
             });
             
             // Store the entries for later use
             this.witnessPagesMap.set(witness, entries);
-            console.log(`✅ PAGINATION: Completed pagination for "${witness}" with ${entries.length} pages`);
+            console.log(`✅ PAGINATION: Stored ${entries.length} entries for witness "${witness}"`);
             
-            // Debug: Confirm the links are actually in the DOM
-            const addedLinks = ul.querySelectorAll('.page-link');
-            console.log(`🔍 PAGINATION: Verified ${addedLinks.length} page links are in the DOM for witness "${witness}"`);
+            // Only build UI if this is the current witness
+            if (this.currentWitness === witness) {
+                this.rebuildPaginationLinksForCurrentWitness();
+            }
             
-            // Final check: can we see the links in the document?
-            const globalLinks = document.querySelectorAll('.page-links .page-link');
-            console.log(`🔍 PAGINATION: Total page links in entire document: ${globalLinks.length}`);
-            
-            // Refresh links
-            this.triggerPageLinksRefresh();
         } catch (e) {
             console.error(`❌ PAGINATION: Error building pagination for "${witness}":`, e);
         }
+    }
+    
+    // Rebuild pagination links for the current witness only
+    rebuildPaginationLinksForCurrentWitness() {
+        if (!this.currentWitness) return;
+        
+        console.log(`🔄 UI: Rebuilding pagination links for current witness "${this.currentWitness}"`);
+        
+        // Find the pagination container (global or witness-specific)
+        let witnessPages = document.querySelector('.witness-pages');
+        if (!witnessPages) {
+            const tabContent = document.getElementById(`${this.currentWitness}-meta-data`);
+            if (tabContent) {
+                witnessPages = tabContent.querySelector('.witness-pages');
+            }
+        }
+        
+        if (!witnessPages) {
+            console.error(`❌ UI: No .witness-pages container found for "${this.currentWitness}"`);
+            return;
+        }
+        
+        const ul = witnessPages.querySelector('.page-links');
+        if (!ul) {
+            console.error(`❌ UI: .page-links container not found`);
+            return;
+        }
+        
+        // Clear existing links
+        ul.innerHTML = '';
+        
+        // Get entries for current witness
+        const entries = this.witnessPagesMap.get(this.currentWitness) || [];
+        
+        // Build links for current witness
+        entries.forEach(entry => {
+            const li = document.createElement('li');
+            li.className = 'list-inline-item';
+            const a = document.createElement('a');
+            
+            const pageNumber = entry.index + 1;
+            const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+            a.href = `${baseUrl}?tab=${pageNumber}${this.currentWitness}`;
+            
+            a.className = 'page-link';
+            a.textContent = entry.label;
+            a.setAttribute('data-witness', this.currentWitness);
+            a.setAttribute('data-page-index', String(entry.index));
+            a.addEventListener('click', (ev) => {
+                ev.preventDefault();
+                this.goToWitnessPage(this.currentWitness, entry.index);
+            });
+            
+            li.appendChild(a);
+            ul.appendChild(li);
+        });
+        
+        console.log(`✅ UI: Built ${entries.length} pagination links for current witness "${this.currentWitness}"`);
     }
 
     // Navigate to a specific page in a witness (switch if needed)
@@ -781,32 +866,29 @@ class WitnessSwitcher {
      */
     switchToWitness(witness) {
         console.log(`🔄 SWITCH: Switching to witness: ${witness}`);
+        
+        // UPDATE: Set the current witness variable FIRST
         this.currentWitness = witness;
+        console.log(`✅ SWITCH: Updated currentWitness to "${this.currentWitness}"`);
 
         // Add witness-active class to body
         document.body.classList.add('witness-active');
         document.body.setAttribute('data-active-witness', witness);
 
-        // Update text display first
+        // UPDATE: Rebuild pagination links for the new current witness
+        this.rebuildPaginationLinksForCurrentWitness();
+
+        // Update text display
         this.updateTextForWitness(witness);
 
-        // Make sure pagination exists before loading images, then load images
-        console.log(`🔄 SWITCH: Ensuring pagination exists for ${witness}`);
+        // Make sure pagination exists and load images
         this.ensurePaginationForWitness(witness);
-        
-        // Force page links refresh after ensuring pagination
-        this.triggerPageLinksRefresh();
-        
-        // Update OSD images
-        console.log(`🔄 SWITCH: Updating OSD images for ${witness}`);
         this.updateOSDImagesForWitness(witness);
 
         // Update tab states
         this.updateTabStates(witness);
 
-        // Ensure page-links reflect the switched witness
         console.log(`✅ SWITCH: Finished switching to witness: ${witness}`);
-        this.triggerPageLinksRefresh();
     }
     
     /**
@@ -1414,11 +1496,28 @@ function reloadPageWithWitness(witness) {
         currentPage = 1;
     }
     
-    // Build the new URL with the witness ID
-    const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-    const newUrl = `${baseUrl}?tab=${currentPage}${witness}`;
+    // Get the FULL witness ID from the available witnesses set
+    let fullWitnessId = witness;
+    if (window.witnessAvailableSet && window.witnessAvailableSet.size > 0) {
+        // Look for a witness ID that ends with our short witnessId or exact match
+        for (const availableWitness of window.witnessAvailableSet) {
+            if (availableWitness === witness) {
+                fullWitnessId = witness;
+                break;
+            }
+            if (availableWitness.endsWith(witness) && availableWitness.length > witness.length) {
+                fullWitnessId = availableWitness;
+                console.log(`🔍 RELOAD: Found full witness ID "${fullWitnessId}" for short ID "${witness}"`);
+                break;
+            }
+        }
+    }
     
-    console.log(`🔄 RELOAD: Reloading page with witness ${witness}, page ${currentPage}`);
+    // Build the new URL with the FULL witness ID
+    const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+    const newUrl = `${baseUrl}?tab=${currentPage}${fullWitnessId}`;
+    
+    console.log(`🔄 RELOAD: Reloading page with witness ${witness} (full: ${fullWitnessId}), page ${currentPage}`);
     console.log(`📄 RELOAD: New URL: ${newUrl}`);
     
     // Update the citation before navigation if available
@@ -1427,8 +1526,8 @@ function reloadPageWithWitness(witness) {
         console.log(`📋 RELOAD: Updating citation with page index ${citationPageIndex} before navigation`);
         
         // Force current witness to be updated to ensure citation has correct witness
-        window.currentWitness = witness;
-        console.log(`📋 RELOAD: Set window.currentWitness = "${witness}" for citation`);
+        window.currentWitness = fullWitnessId;
+        console.log(`📋 RELOAD: Set window.currentWitness = "${fullWitnessId}" for citation`);
         
         try {
             window.updateCitationSuggestion(citationPageIndex);
@@ -1444,7 +1543,7 @@ function reloadPageWithWitness(witness) {
     try {
         const state = {
             pageIndex: currentPage - 1, // Store as 0-based index
-            witness: witness
+            witness: fullWitnessId
         };
         localStorage.setItem('lastWitnessState', JSON.stringify(state));
         console.log(`📋 RELOAD: Saved state to localStorage: ${JSON.stringify(state)}`);
@@ -1530,10 +1629,28 @@ document.addEventListener('DOMContentLoaded', function() {
             // Get base URL without parameters
             const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
             
-            // Create URL with the new witness and current page - use actual witness ID
-            const newUrl = `${baseUrl}?tab=${pageNumber}${witnessId}`;
+            // Get the FULL witness ID from the available witnesses set or extract from filename
+            let fullWitnessId = witnessId;
+            if (window.witnessAvailableSet && window.witnessAvailableSet.size > 0) {
+                // Look for a witness ID that ends with our short witnessId
+                for (const availableWitness of window.witnessAvailableSet) {
+                    if (availableWitness.endsWith(witnessId) && availableWitness.length > witnessId.length) {
+                        fullWitnessId = availableWitness;
+                        console.log(`🔍 Found full witness ID "${fullWitnessId}" for short ID "${witnessId}"`);
+                        break;
+                    }
+                    // Or exact match
+                    if (availableWitness === witnessId) {
+                        fullWitnessId = witnessId;
+                        break;
+                    }
+                }
+            }
             
-            console.log(`Witness tab clicked: ${witnessId}, reloading to page ${pageNumber}`);
+            // Create URL with the new witness and current page - use FULL witness ID
+            const newUrl = `${baseUrl}?tab=${pageNumber}${fullWitnessId}`;
+            
+            console.log(`Witness tab clicked: ${witnessId} (full: ${fullWitnessId}), reloading to page ${pageNumber}`);
             console.log(`Navigating to: ${newUrl}`);
             
             // Prevent default bootstrap tab behavior
@@ -1541,7 +1658,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             
             // Update global currentWitness before reload
-            window.currentWitness = witnessId;
+            window.currentWitness = fullWitnessId;
             
             // Force reload with new URL
             window.location.href = newUrl;
