@@ -1498,7 +1498,7 @@ function reloadPageWithWitness(witness) {
         };
         localStorage.setItem('lastWitnessState', JSON.stringify(state));
     } catch (e) {
-         console.error(`❌ RELOAD: Error saving state to localStorage: ${e.message}`);
+         console.error(`❌ RELOAD: Error saving state to localStorage: ${e}`);
     }
     
     // Force a complete page reload
