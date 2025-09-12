@@ -1484,7 +1484,7 @@ function reloadPageWithWitness(witness) {
         try {
             window.updateCitationSuggestion(citationPageIndex);
         } catch (e) {
-            console.error(`❌ RELOAD: Error updating citation: ${e.message}`);
+            console.error(`❌ RELOAD: Error updating citation: ${e}`);
         }
     } else {
         console.log(`⚠️ RELOAD: window.updateCitationSuggestion is not available`);
