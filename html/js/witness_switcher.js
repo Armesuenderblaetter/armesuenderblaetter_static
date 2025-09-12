@@ -1486,9 +1486,9 @@ function reloadPageWithWitness(witness) {
         } catch (e) {
             console.error(`❌ RELOAD: Error updating citation: ${e.message}`);
         }
-    } // else {
-                 console.log(`⚠️ RELOAD: window.updateCitationSuggestion is not available`);
-    // }
+    } else {
+        console.log(`⚠️ RELOAD: window.updateCitationSuggestion is not available`);
+    }
     
     // Store the target page and witness in localStorage for persistence
     try {
