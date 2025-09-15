@@ -86,7 +86,7 @@
                     
                     <!-- Add empty container for witness pages, to be filled by witness_switcher.js -->
                     <div class="witness-pages mt-3">
-                        <h5>Seiten:</h5>
+                        <xsl:text>Seiten: </xsl:text>
                         <ul class="list-inline page-links">
                             <!-- Page links will be populated dynamically by JavaScript -->
                         </ul>
