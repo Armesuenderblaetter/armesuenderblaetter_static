@@ -302,3 +302,26 @@ body.witness-active .pb:not(.active-witness-pb) {
     34%, 66% { content: ".."; }
     67%, 100% { content: "."; }
 }
+
+#witness_overview {
+    border-bottom: none;
+}
+
+#witness_overview .nav-link {
+    color: #555;
+    border: 1px solid #dee2e6;
+    margin-right: 5px;
+    border-bottom: none;
+}
+
+#witness_overview .nav-link.active {
+    font-weight: bold;
+    color: #000;
+    border-bottom: 1px solid white;
+    margin-bottom: -1px;
+}
+
+/* When a witness is not active, hide its specific page breaks and readings */
+.rdg:not([wit="#wmW"]):not([wit="#wmR"]) {
+    display: none;
+}

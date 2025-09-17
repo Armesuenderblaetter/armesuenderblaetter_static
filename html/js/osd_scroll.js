@@ -130,36 +130,46 @@ creates an array for osd viewer with static images
 var pb_elements = document.getElementsByClassName(page_break_marker_classname);
 var pb_elements_array = Array.from(pb_elements);
 
+// Expose functions for witness_switcher.js
+window.show_only_current_page = show_only_current_page;
+window.updateOsdScrollPageBreaks = (newPbElements) => {
+//   console.log('osd_scroll.js: Updating page breaks from witness switcher.', newPbElements);
+  pb_elements_array = Array.from(newPbElements);
+  max_index = pb_elements_array.length - 1;
+};
+window.getOsdScrollPbElements = () => pb_elements_array;
+
+
 // Debug: Log all page break elements found
-console.log('Total page break elements found:', pb_elements_array.length);
+// console.log('Total page break elements found:', pb_elements_array.length);
 pb_elements_array.forEach((el, index) => {
-  console.log(`Page break ${index}:`, el.getAttribute('source'), el);
+//   console.log(`Page break ${index}:`, el.getAttribute('source'), el);
 });
 
 // Debug: Check if the missing _d_ element exists with different classes
 const editionText = document.getElementById('edition-text');
 if (editionText) {
   const allSpansWithSource = editionText.querySelectorAll('span[source*="_d_"]');
-  console.log('All spans with _d_ in source:', allSpansWithSource.length);
+//   console.log('All spans with _d_ in source:', allSpansWithSource.length);
   allSpansWithSource.forEach((el, index) => {
-    console.log(`_d_ span ${index}:`, el.getAttribute('source'), 'classes:', el.className, el);
+//     console.log(`_d_ span ${index}:`, el.getAttribute('source'), 'classes:', el.className, el);
   });
   
   // Also check for any pb elements regardless of classes
   const allPbElements = editionText.querySelectorAll('span.pb');
-  console.log('All pb elements found:', allPbElements.length);
+//   console.log('All pb elements found:', allPbElements.length);
   const missingD = Array.from(allPbElements).find(el => el.getAttribute('source') && el.getAttribute('source').includes('_d_'));
   if (missingD) {
-    console.log('Found _d_ pb element with classes:', missingD.className, missingD);
+//     console.log('Found _d_ pb element with classes:', missingD.className, missingD);
   } else {
-    console.log('No _d_ pb element found at all');
+//     console.log('No _d_ pb element found at all');
   }
   
   // Check entire document for _d_ elements
   const allDElementsInDoc = document.querySelectorAll('*[source*="_d_"]');
-  console.log('All _d_ elements in entire document:', allDElementsInDoc.length);
+//   console.log('All _d_ elements in entire document:', allDElementsInDoc.length);
   allDElementsInDoc.forEach((el, index) => {
-    console.log(`_d_ element ${index} in document:`, el.getAttribute('source'), 'classes:', el.className, 'parent:', el.parentElement?.id || 'no-id', el);
+//     console.log(`_d_ element ${index} in document:`, el.getAttribute('source'), 'classes:', el.className, 'parent:', el.parentElement?.id || 'no-id', el);
   });
 
   // Set up a mutation observer to watch for dynamically added _d_ elements
@@ -168,12 +178,12 @@ if (editionText) {
       mutation.addedNodes.forEach(function(node) {
         if (node.nodeType === 1) { // Element node
           if (node.getAttribute && node.getAttribute('source') && node.getAttribute('source').includes('_d_')) {
-            console.log('DYNAMIC: _d_ element added:', node.getAttribute('source'), 'classes:', node.className, node);
+//             console.log('DYNAMIC: _d_ element added:', node.getAttribute('source'), 'classes:', node.className, node);
           }
           // Check children too
           const childDElements = node.querySelectorAll ? node.querySelectorAll('*[source*="_d_"]') : [];
           childDElements.forEach(child => {
-            console.log('DYNAMIC: _d_ child element added:', child.getAttribute('source'), 'classes:', child.className, child);
+//             console.log('DYNAMIC: _d_ child element added:', child.getAttribute('source'), 'classes:', child.className, child);
           });
         }
       });
@@ -184,7 +194,7 @@ if (editionText) {
     childList: true,
     subtree: true
   });
-  console.log('Mutation observer set up to watch for _d_ elements');
+//   console.log('Mutation observer set up to watch for _d_ elements');
 }
 
 /*
@@ -227,7 +237,7 @@ locate index of anchor element
 
 // Track the current page index globally
 var current_page_index = 0;
-const max_index = pb_elements_array.length - 1;
+let max_index = pb_elements_array.length - 1;
 var prev = document.querySelector("div[title='Previous page']");
 var next = document.querySelector("div[title='Next page']");
 prev.style.opacity = 1;
@@ -236,11 +246,14 @@ var last_img_url = ""
 
 // Manual navigation with prev/next buttons only
 function handle_new_image(page_index) {
+//   console.log(`🔄 IMAGE: handle_new_image(${page_index})`);
+  
   if (page_index < 0 || page_index >= pb_elements_array.length) {
-    console.log('Invalid page index:', page_index);
+//     console.log('❌ IMAGE: Invalid page index:', page_index);
     return;
   }
   
+//   console.log(`🔄 IMAGE: Setting current_page_index = ${page_index}`);
   current_page_index = page_index;
   const current_pb_element = pb_elements_array[page_index];
   
@@ -249,14 +262,20 @@ function handle_new_image(page_index) {
       page_break_marker_image_attribute
     )
   );
+//   console.log(`🔄 IMAGE: Loading image: ${new_image_url}`);
+  
   old_image = viewer.world.getItemAt(0);
   load_new_image_with_check(new_image_url, old_image);
+  
+  // Update citation with correct page after image change
+//   console.log(`🔄 IMAGE: Updating citation for page ${page_index}`);
+  updateCitationSuggestion(page_index);
 }
 
 // New function to handle page content visibility
 function handle_page_visibility(page_index) {
   if (page_index < 0 || page_index >= pb_elements_array.length) {
-    console.log('Invalid page index for visibility:', page_index);
+//     console.log('Invalid page index for visibility:', page_index);
     return;
   }
   
@@ -269,17 +288,26 @@ function handle_page_visibility(page_index) {
 
 // Generate and update citation suggestion below footnotes
 function updateCitationSuggestion(page_index) {
+//   console.log(`🔍 CITATION: Updating citation for page_index=${page_index}, current_page_index=${current_page_index}`);
+  
   // Find the main container and edition-text element
   const main = document.querySelector('main');
   const editionText = document.getElementById('edition-text');
-  if (!main || !editionText) return;
+  if (!main || !editionText) {
+//     console.log('❌ CITATION: Missing main or edition-text elements');
+    return;
+  }
   
   // Find the current pb element
   const pbEl = pb_elements_array[page_index];
-  if (!pbEl) return;
+  if (!pbEl) {
+//     console.log(`❌ CITATION: No pb element found for index ${page_index}`);
+    return;
+  }
   
   // Get page info for citation
   const pageNum = pbEl.getAttribute('data-page-number') || (page_index + 1);
+//   console.log(`📋 CITATION: Using page number ${pageNum} for citation`);
   
   // Get document title from <title> tag or fallback to filename
   let docTitle = '';
@@ -292,16 +320,22 @@ function updateCitationSuggestion(page_index) {
     docTitle = window.location.pathname.split('/').pop().replace('.html', '');
   }
   
-  // Get current page URL
-  const pageUrl = window.location.href;
+  // Generate URL with the current page number and witness
+  const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+  let currentWitness = getCurrentWitness();
+//   console.log(`🔍 CITATION: Current witness for URL: ${currentWitness}`);
   
-  // Compose citation text
-  const citationText = `${docTitle}. In Claudia Resch. <em>Armesünderblätter Online</em>, 2025, S. ${pageNum}. <a href='${pageUrl}' target='_blank'>${pageUrl}</a>`;
+  // Build URL using the actual witness ID (not forcing wmW/wmR)
+  let pageUrlWithTab = `${baseUrl}?tab=${pageNum}${currentWitness}`;
+//   console.log(`🌐 CITATION: Generated URL: ${pageUrlWithTab}`);
+  
+  // Compose citation text with updated URL that includes the current page
+  const citationText = `${docTitle}. In Claudia Resch. <em>Armesünderblätter Online</em>, 2025, S. ${pageNum}. <a href='${pageUrlWithTab}' target='_blank'>${pageUrlWithTab}</a>`;
   
   // Find the citation div (which is a direct child of main, not edition-text)
   let citationDiv = main.querySelector('div.citation');
   if (!citationDiv) {
-    console.log('Citation div not found in main, creating it');
+//     console.log('📋 CITATION: Citation div not found in main, creating it');
     citationDiv = document.createElement('div');
     citationDiv.className = 'citation';
     main.appendChild(citationDiv);
@@ -313,17 +347,20 @@ function updateCitationSuggestion(page_index) {
   citationDiv.style.marginTop = '1em';
   citationDiv.style.fontSize = 'small';
   citationDiv.style.color = 'grey';
+//   console.log(`✅ CITATION: Citation updated successfully`);
 }
 
 // Function to show only the content of the current page
 function show_only_current_page(current_page_index) {
+//   console.log(`📃 PAGE: show_only_current_page(${current_page_index})`);
+  
   const editionText = document.getElementById('edition-text');
   if (!editionText) {
-    console.log('No edition-text element found');
+//     console.log('❌ PAGE: No edition-text element found');
     return;
   }
   if (pb_elements_array.length === 0) {
-    console.log('No page break elements found');
+//     console.log('❌ PAGE: No page break elements found');
     return;
   }
 
@@ -337,11 +374,10 @@ function show_only_current_page(current_page_index) {
   const nextPbElement = pb_elements_array[current_page_index + 1];
 
   if (!currentPbElement) {
-    console.log('Current page element not found for index:', current_page_index);
+//     console.log('❌ PAGE: Current page element not found for index:', current_page_index);
     return;
   }
 
-  console.log(`Showing page ${current_page_index + 1}, current pb:`, currentPbElement, 'next pb:', nextPbElement);
 
   // 1. Get all elements within edition-text in document order.
   const allElements = Array.from(editionText.querySelectorAll('*'));
@@ -349,7 +385,7 @@ function show_only_current_page(current_page_index) {
   // 2. Find the start and end markers in the flat list.
   const startIndex = allElements.indexOf(currentPbElement);
   if (startIndex === -1) {
-    console.error('Could not find the current page break element in the DOM.');
+//     console.error('❌ PAGE: Could not find the current page break element in the DOM.');
     return;
   }
   
@@ -358,17 +394,17 @@ function show_only_current_page(current_page_index) {
     const nextPbIndex = allElements.indexOf(nextPbElement);
     if (nextPbIndex > startIndex) {
       endIndex = nextPbIndex;
-      console.log(`Page boundary: elements ${startIndex} to ${endIndex - 1} (next page starts at ${endIndex})`);
+//       console.log(`📃 PAGE: Page boundary: elements ${startIndex} to ${endIndex - 1} (next page starts at ${endIndex})`);
     }
   } else {
-    console.log(`Last page: elements ${startIndex} to end (${allElements.length})`);
+//     console.log(`📃 PAGE: Last page: elements ${startIndex} to end (${allElements.length})`);
   }
 
   // 3. Collect all elements for the current page and their ancestors.
   const elementsToShow = new Set();
   const elementsInRange = allElements.slice(startIndex, endIndex);
 
-  console.log(`Elements in range for page ${current_page_index + 1}:`, elementsInRange.length);
+//   console.log(`📃 PAGE: Elements in range for page ${current_page_index + 1}:`, elementsInRange.length);
 
   elementsInRange.forEach(element => {
     elementsToShow.add(element);
@@ -407,7 +443,15 @@ function show_only_current_page(current_page_index) {
     }
   });
 
-  console.log(`Page ${current_page_index + 1}: ${shownCount} elements shown, ${hiddenCount} elements hidden`);
+//   console.log(`📃 PAGE: Page ${current_page_index + 1}: ${shownCount} elements shown, ${hiddenCount} elements hidden`);
+  
+  // Update global current_page_index for tracking
+  window.current_page_index = current_page_index;
+//   console.log(`📃 PAGE: Set window.current_page_index = ${current_page_index}`);
+  
+  // Make sure citation is updated with the correct page number
+//   console.log(`📃 PAGE: Calling updateCitationSuggestion(${current_page_index})`);
+  updateCitationSuggestion(current_page_index);
 }
 
 function load_new_image_with_check(new_image_url, old_image) {
@@ -505,6 +549,9 @@ function initializePageView() {
     show_only_current_page(0);
     updateCitationSuggestion(0);
   }
+  
+  // Initial update of the page links
+  updatePageLinks();
 }
 
 // Make sure DOM is loaded before initializing
@@ -513,4 +560,273 @@ if (document.readyState === 'loading') {
 } else {
   // Add a small delay to ensure everything is rendered
   setTimeout(initializePageView, 100);
+}
+
+// Update page links with proper navigation links
+function updatePageLinks() {
+//   console.log('Updating page links');
+  
+  // Get all page links
+  const page_links = document.querySelectorAll('.page-link');
+  
+  if (!page_links || page_links.length === 0) {
+//     console.log('No page links found');
+    return;
+  }
+  
+  // Helper to keep witness IDs intact - NO MORE CLEANING!
+  const cleanWitnessId = function(witness) {
+    // Always return the witness ID as-is, no more stripping prefixes
+    return witness;
+  };
+  
+  // Update each link
+  page_links.forEach(link => {
+    // Get the target page index (0-based)
+    const page_index = link.getAttribute('data-page-index');
+    
+    // Get the witness from the link or fall back to the current witness
+    let witness = link.getAttribute('data-witness') || getCurrentWitness();
+    
+    // Clean the witness ID if it has "wm" prefix but shouldn't
+    witness = cleanWitnessId(witness);
+    
+    if (page_index !== null) {
+      const page_num = parseInt(page_index, 10) + 1; // Convert to 1-based
+      
+      // Build the URL with cleaned witness ID
+      const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+      const newUrl = `${baseUrl}?tab=${page_num}${witness}`;
+      
+      // Update the link
+      link.href = newUrl;
+//       console.log(`Updated link to ${newUrl}`);
+    }
+  });
+  
+//   console.log(`Page links rebuilt for ${page_links.length} links, witness:`, getCurrentWitness());
+}
+
+// Helper function to get the current witness
+function getCurrentWitness() {
+//     console.log(`🔍 GET_WITNESS: Starting getCurrentWitness()`);
+    
+    // HIGHEST PRIORITY: Check if witness_switcher.js has set a current witness
+    if (window.currentWitness) {
+//         console.log(`✅ GET_WITNESS: Using window.currentWitness: ${window.currentWitness}`);
+        return window.currentWitness;
+    }
+    
+    // SECOND PRIORITY: Check if we have an active witness switcher instance
+    if (window.witnessAvailableSet && window.witnessAvailableSet.size > 0) {
+        // Check body attribute for active witness (set by witness_switcher.js)
+        const bodyWitness = document.body.getAttribute('data-active-witness');
+        if (bodyWitness && window.witnessAvailableSet.has(bodyWitness)) {
+//             console.log(`✅ GET_WITNESS: Found witness ${bodyWitness} from body attribute`);
+            return bodyWitness;
+        }
+    }
+    
+    // THIRD PRIORITY: Check URL for witness information
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+//     console.log(`🔍 GET_WITNESS: URL tab parameter: "${tabParam}"`);
+    
+    if (tabParam) {
+        // Extract the witness part from the tab parameter
+        // First remove the page number at the beginning
+        const witnessMatch = tabParam.match(/^\d+(.+)$/);
+        if (witnessMatch && witnessMatch[1]) {
+            const witnessFromUrl = witnessMatch[1];
+//             console.log(`✅ GET_WITNESS: Found witness ${witnessFromUrl} in URL tab parameter`);
+            return witnessFromUrl;
+        }
+    }
+    
+    // FOURTH PRIORITY: Try to detect witness from the currently visible page break sources
+    const visiblePbs = document.querySelectorAll('.pb.active-witness-pb[source]');
+    if (visiblePbs && visiblePbs.length > 0) {
+        const firstVisiblePbSource = visiblePbs[0].getAttribute('source');
+        if (firstVisiblePbSource) {
+            const parts = firstVisiblePbSource.split('_');
+            if (parts.length >= 4) {
+                const lastPart = parts[parts.length - 1].split('.')[0];
+                if (lastPart) {
+//                     console.log(`✅ GET_WITNESS: Detected witness from visible page break source: ${lastPart}`);
+                    return lastPart;
+                }
+            }
+        }
+    }
+    
+    // FIFTH PRIORITY: Try to detect witness from ALL page break sources (fallback)
+    const pbElements = document.querySelectorAll('.pb[source]');
+    if (pbElements && pbElements.length > 0) {
+        const firstPbSource = pbElements[0].getAttribute('source');
+        if (firstPbSource) {
+            const parts = firstPbSource.split('_');
+            if (parts.length >= 4) {
+                const lastPart = parts[parts.length - 1].split('.')[0];
+                if (lastPart) {
+//                     console.log(`✅ GET_WITNESS: Detected witness from page break source: ${lastPart}`);
+                    return lastPart;
+                }
+            }
+        }
+    }
+    
+    // SIXTH PRIORITY: Check for active tab or other indicators
+    const activeTab = document.querySelector('.tab-pane.active');
+    if (activeTab && activeTab.id) {
+        const witnessMatch = activeTab.id.match(/(\w+)-meta-data/);
+        if (witnessMatch) {
+//             console.log(`✅ GET_WITNESS: Found witness ${witnessMatch[1]} from active tab`);
+            return witnessMatch[1];
+        }
+    }
+    
+    // Default to the first available witness if nothing else found
+    if (window.witnessAvailableSet && window.witnessAvailableSet.size > 0) {
+        const firstWitness = Array.from(window.witnessAvailableSet)[0];
+//         console.log(`⚠️ GET_WITNESS: No witness found, using first available: ${firstWitness}`);
+        return firstWitness;
+    }
+    
+    // Final fallback
+//     console.log(`⚠️ GET_WITNESS: No witness found, defaulting to W`);
+    return 'W';
+}
+
+// Expose the updatePageLinks function globally so witness_switcher.js can call it
+window.updatePageLinks = updatePageLinks;
+
+// Add a new method to set the active witness - update links when witness changes
+function setActiveWitness(witness, pageBreaks) {
+//   console.log(`🔍 osd_scroll: Setting active witness to ${witness}`);
+  
+  // Store witness info
+  window.currentWitness = witness;
+  
+  // Dispatch event
+  document.dispatchEvent(new CustomEvent('osdScrollWitnessChanged', {
+    detail: { witness, pageBreaks }
+  }));
+  
+  // Update page links with new witness
+  setTimeout(updatePageLinks, 100);
+}
+
+// Set up listeners for witness tab changes
+function setupWitnessChangeListeners() {
+//   console.log("Setting up witness change listeners");
+  
+  // DIRECT APPROACH: Find and attach click handlers to all witness tabs
+  const witnessTabLinks = document.querySelectorAll('.nav-tabs a[data-bs-toggle="tab"][href^="#witness-"]');
+//   console.log(`Found ${witnessTabLinks.length} witness tab links`);
+  
+  witnessTabLinks.forEach(tabLink => {
+    tabLink.addEventListener('click', function(e) {
+      // Get the witness code from the link
+      const witnessId = this.getAttribute('href').replace('#witness-', '');
+//       console.log(`Direct tab click on witness: ${witnessId}`);
+      
+      // Get current page number (1-based)
+      const pageNumber = current_page_index + 1;
+      
+      // Build URL and force reload - using current page number
+      const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+      let newUrl = `${baseUrl}?tab=${pageNumber}wm${witnessId}`;
+      
+//       console.log(`RELOADING TO: ${newUrl}`);
+      
+      // Prevent default tab behavior
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Force reload with new URL
+      window.location.replace(newUrl);
+      return false;
+    });
+//     console.log(`Added click handler to ${tabLink.getAttribute('href')}`);
+  });
+  
+  // Keep the old handlers as backup with fix for preserving current page
+  document.addEventListener('click', function(event) {
+    const target = event.target;
+    
+    if (target && 
+        target.getAttribute && 
+        target.getAttribute('data-bs-toggle') === 'tab' && 
+        (target.getAttribute('href')?.startsWith('#witness-') || target.getAttribute('data-witness'))) {
+      
+//       console.log('General click handler caught a tab click');
+      
+      // Extract witness code
+      const witness = target.getAttribute('data-witness') || 
+                     (target.getAttribute('href') ? target.getAttribute('href').replace('#witness-', '') : '');
+      
+      if (witness) {
+//         console.log(`Tab clicked for witness: ${witness}`);
+        
+        // Get current page number (1-based) - FIXED to use the global current_page_index
+        const pageNumber = current_page_index + 1;
+        
+        // Construct URL with current page number
+        const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+        let newUrl = (witness === 'primary') 
+                    ? `${baseUrl}?tab=${pageNumber}primary` 
+                    : `${baseUrl}?tab=${pageNumber}wm${witness}`;
+        
+        // Prevent default and force reload
+        event.preventDefault();
+        event.stopPropagation();
+        
+//         console.log(`FORCE RELOADING to: ${newUrl}`);
+        window.location.replace(newUrl);
+        return false;
+      }
+    }
+  }, true); // Use capturing phase for earlier interception
+  
+  // Witness dropdown handler with page preservation fix
+  const witnessSelect = document.querySelector('#witness-select');
+  if (witnessSelect) {
+    witnessSelect.addEventListener('change', function() {
+      const witness = this.value;
+//       console.log(`Dropdown changed to: ${witness}`);
+      
+      // Get page number and construct URL - FIXED to use current_page_index
+      const pageNumber = current_page_index + 1;
+      const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+      const newUrl = `${baseUrl}?tab=${pageNumber}wm${witness}`;
+      
+//       console.log(`RELOADING TO: ${newUrl}`);
+      window.location.replace(newUrl);
+    });
+//     console.log('Added change handler to witness dropdown');
+  }
+}
+
+// Call this function during initialization
+document.addEventListener('DOMContentLoaded', setupWitnessChangeListeners);
+
+// Replace the old updatePageLinkHrefs function
+function updatePageLinkHrefs() {
+  updatePageLinks();
+}
+
+// Add witness awareness to showPage method
+function showPage(pageNumber) {
+    // ...existing code...
+    
+    // Add this at the end of the method
+    // Notify about the page change with witness info
+    document.dispatchEvent(new CustomEvent('osdScrollPageChanged', {
+        detail: { 
+            pageIndex: pageNumber,
+            witness: this.activeWitness || null
+        }
+    }));
+    
+    return true;
 }
