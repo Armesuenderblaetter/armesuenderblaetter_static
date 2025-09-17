@@ -32,9 +32,9 @@
                             <h4>Drucker</h4>
                             <div id="printer">
                             </div>
-                            <h4>Druckort</h4>
+                            <!--<h4>Druckort</h4>
                             <div id="printing_location">
-                            </div>
+                            </div> -->
                             <h4>Archive</h4>
                             <div id="archives">
                             </div>
