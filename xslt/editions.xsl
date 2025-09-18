@@ -72,7 +72,7 @@
                             <xsl:call-template name="witness_tabs"/>
                             <h3 align="center">
                                 <a href="{$teiSource}">
-                                    <i class="bi bi-download" title="TEI/XML"/>
+                                    <i class="bi bi-filetype-xml" title="XML/TEI"/>
                                 </a>
                             </h3>
                         </div>
