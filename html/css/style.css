@@ -802,7 +802,6 @@ dd {
 .mobile-show {
     display: inline-block ;
 }
-}
 
 button.nav-link {
     background-color: var(--asb-banner-colour)!important;
@@ -829,6 +828,11 @@ button, select{
   line-height: 1!important;
 }
 
+form.ais-SearchBox-form button.ais-SearchBox-submit {
+	border: none!important;
+	background-color: transparent!important;
+	border: none!important ;
+}
 
 option {
     background-color: var(--asb-banner-colour);
