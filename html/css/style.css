@@ -1,3 +1,6 @@
+/* CSS TEST - This should make everything work */
+.title_part {display: block !important; margin: 5px !important; }
+
 :root {
     --editor-font-family: serif;
     --editor-font-color: grey;
@@ -839,17 +842,10 @@ option {
 
 }
 
-
-@mixin background-up-down($color: #000) {
-  $rgb: 'rgb%28#{round(red($color))}, #{round(green($color))}, #{round(blue($color))}%29';
-}
-
-select {
-  &.different {
+select.different {
     background-color: var(--asb-banner-colour);
     box-sizing: border-box;
     padding-right: 1.5em;
-  }
 }
 
 .kwic, .kwic * {
