@@ -1,6 +1,3 @@
-/* CSS TEST - This should make everything work */
-.title_part {display: block !important; margin: 5px !important; }
-
 :root {
     --editor-font-family: serif;
     --editor-font-color: grey;
@@ -20,6 +17,8 @@ main {
     padding-bottom: 4rem;
     padding-top: 4rem;
 }
+
+.title_part {display: block !important; margin: 5px !important; }
 
 .catch {
     display: inline-block;
@@ -805,6 +804,7 @@ dd {
 .mobile-show {
     display: inline-block ;
 }
+}
 
 button.nav-link {
     background-color: var(--asb-banner-colour)!important;
@@ -831,21 +831,23 @@ button, select{
   line-height: 1!important;
 }
 
-form.ais-SearchBox-form button.ais-SearchBox-submit {
-	border: none!important;
-	background-color: transparent!important;
-	border: none!important ;
-}
 
 option {
     background-color: var(--asb-banner-colour);
 
 }
 
-select.different {
+
+@mixin background-up-down($color: #000) {
+  $rgb: 'rgb%28#{round(red($color))}, #{round(green($color))}, #{round(blue($color))}%29';
+}
+
+select {
+  &.different {
     background-color: var(--asb-banner-colour);
     box-sizing: border-box;
     padding-right: 1.5em;
+  }
 }
 
 .kwic, .kwic * {
