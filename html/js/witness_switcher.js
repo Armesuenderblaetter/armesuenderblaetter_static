@@ -23,6 +23,9 @@ class WitnessSwitcher {
         this.pendingNavigation = null;     // { witness, index }
         this._linksRefreshTimer = null; // debounce timer for page-links refresh
         
+        // Store instance globally for minimal external access
+        window.witnessSwitcherInstance = this;
+        
         // Use DOM safety helper if available
         if (typeof DOMSafetyHelper !== 'undefined') {
             DOMSafetyHelper.safeInit(() => this.init(), 'WitnessSwitcher');
@@ -81,20 +84,22 @@ class WitnessSwitcher {
                 this.discoverWitnesses();
                 this.setupWitnessToSuffixMapping();
                 
+                console.log('🔄 INIT: Discovered witnesses:', Array.from(this.availableWitnesses));
+                
                 // FORCE IMMEDIATE PAGINATION BUILD FOR ALL WITNESSES
-//                 console.log('🔄 FORCE: Building paginations immediately for all witnesses');
-//                 console.log('🔍 FORCE: Current available witnesses:', Array.from(this.availableWitnesses));
+                console.log('🔄 FORCE: Building paginations immediately for all witnesses');
+                console.log('🔍 FORCE: Current available witnesses:', Array.from(this.availableWitnesses));
                 this.availableWitnesses.forEach(witness => {
-//                     console.log(`🔄 FORCE: Building pagination for witness: ${witness}`);
-//                     console.log(`🔍 FORCE: Current this.currentWitness before build: "${this.currentWitness}"`);
+                    console.log(`🔄 FORCE: Building pagination for witness: ${witness}`);
+                    console.log(`🔍 FORCE: Current this.currentWitness before build: "${this.currentWitness}"`);
                     this.buildPaginationForWitness(witness);
-//                     console.log(`🔍 FORCE: Current this.currentWitness after build: "${this.currentWitness}"`);
+                    console.log(`🔍 FORCE: Current this.currentWitness after build: "${this.currentWitness}"`);
                 });
                 
                 // Create necessary UI elements for witnesses
                 this.availableWitnesses.forEach(witness => {
                     if (!document.getElementById(`${witness}-tab`)) {
-//                         console.log(`Creating tab for witness: ${witness}`);
+                        console.log(`Creating tab for witness: ${witness}`);
                         this.createWitnessTabs(new Set([witness]));
                     }
                 });
@@ -106,7 +111,7 @@ class WitnessSwitcher {
                 
                 // Debug: Add a slight delay before building paginations
                 setTimeout(() => {
-//                     console.log('🔄 Starting to build all paginations');
+                    console.log('🔄 Starting to build all paginations');
                     
                     // Debug: Check the tab content structure before building paginations
                     this.availableWitnesses.forEach(witness => {
@@ -125,9 +130,29 @@ class WitnessSwitcher {
                     this.setDefaultWitness();
                     this.triggerPageLinksRefresh();
                     
+                    // FORCE PAGINATION CREATION - if no pagination visible, create it aggressively
+                    setTimeout(() => {
+                        const visiblePagination = document.querySelector('.page-links');
+                        if (!visiblePagination && this.currentWitness) {
+                            console.log('🚨 No pagination visible, forcing creation for current witness:', this.currentWitness);
+                            this.forceCreatePaginationContainer();
+                            this.rebuildPaginationLinksForCurrentWitness();
+                        }
+                    }, 100);
                     
                     // Expose available witnesses for other scripts
                     window.witnessAvailableSet = this.availableWitnesses;
+                    
+                    // Expose a global function for osd_scroll.js to trigger pagination creation
+                    window.createPaginationIfMissing = () => {
+                        console.log('🔧 GLOBAL: createPaginationIfMissing called by osd_scroll');
+                        if (this.currentWitness && !document.querySelector('.page-link')) {
+                            console.log('🔧 GLOBAL: Creating pagination for current witness:', this.currentWitness);
+                            this.rebuildPaginationLinksForCurrentWitness();
+                            return true;
+                        }
+                        return false;
+                    };
                 }, 200);
                 
             } catch (e) {
@@ -716,35 +741,92 @@ class WitnessSwitcher {
     
     // Rebuild pagination links for the current witness only
     rebuildPaginationLinksForCurrentWitness() {
-        if (!this.currentWitness) return;
+        if (!this.currentWitness) {
+            console.log('🔄 UI: No currentWitness set, skipping pagination rebuild');
+            return;
+        }
         
-//         console.log(`🔄 UI: Rebuilding pagination links for current witness "${this.currentWitness}"`);
+        console.log(`🔄 UI: Rebuilding pagination links for current witness "${this.currentWitness}"`);
         
-        // Find the pagination container (global or witness-specific)
-        let witnessPages = document.querySelector('.witness-pages');
-        if (!witnessPages) {
-            const tabContent = document.getElementById(`${this.currentWitness}-meta-data`);
-            if (tabContent) {
-                witnessPages = tabContent.querySelector('.witness-pages');
+        // Find the pagination container (witness-specific first, then global fallback)
+        let witnessPages = null;
+        
+        // Try witness-specific container first
+        const tabContent = document.getElementById(`${this.currentWitness}-meta-data`);
+        if (tabContent) {
+            witnessPages = tabContent.querySelector('.witness-pages');
+            // If the witness tab exists but has no pagination container, create it there
+            if (!witnessPages) {
+                try {
+                    witnessPages = document.createElement('div');
+                    witnessPages.className = 'witness-pages mt-3';
+                    tabContent.appendChild(witnessPages);
+                } catch(_) {}
             }
         }
         
+        // Only fall back to global if witness-specific doesn't exist
         if (!witnessPages) {
-//             console.error(`❌ UI: No .witness-pages container found for "${this.currentWitness}"`);
+            witnessPages = document.querySelector('.witness-pages');
+        }
+
+        // As a last resort, if no container exists at all, create a global one
+        if (!witnessPages) {
+            try {
+                const tabContentGlobal = document.querySelector('div.tab-content');
+                const parent = tabContentGlobal || document.querySelector('main') || document.body;
+                witnessPages = document.createElement('div');
+                witnessPages.className = 'witness-pages mt-3';
+                parent.appendChild(witnessPages);
+            } catch(_) {}
+        }
+        
+        if (!witnessPages) {
+            console.error(`❌ UI: No .witness-pages container found for "${this.currentWitness}"`);
+            console.log(`🔍 UI: Available tab content elements:`, Array.from(document.querySelectorAll('[id$="-meta-data"]')).map(el => el.id));
             return;
         }
         
-        const ul = witnessPages.querySelector('.page-links');
-        if (!ul) {
-//             console.error(`❌ UI: .page-links container not found`);
-            return;
+        console.log(`✅ UI: Found .witness-pages container for "${this.currentWitness}"`);
+        console.log(`🔍 UI: Container parent:`, witnessPages.parentElement?.tagName, witnessPages.parentElement?.id);
+        console.log(`🔍 UI: Container visibility:`, getComputedStyle(witnessPages).display, getComputedStyle(witnessPages).visibility);
+        
+        // Stamp container with its witness for clarity (non-breaking)
+        try { witnessPages.setAttribute('data-witness', this.currentWitness); } catch(_) {}
+
+        // Ensure a heading and a .page-links container exist
+        let heading = witnessPages.querySelector('h5');
+        if (!heading) {
+            try {
+                console.log(`🔧 UI: Creating heading for "${this.currentWitness}"`);
+                heading = document.createElement('h5');
+                heading.textContent = 'Seiten:';
+                witnessPages.prepend(heading);
+            } catch(_) {}
         }
+
+        let ul = witnessPages.querySelector('.page-links');
+        if (!ul) {
+            try {
+                console.log(`🔧 UI: Creating .page-links for "${this.currentWitness}"`);
+                ul = document.createElement('ul');
+                ul.className = 'page-links list-inline';
+                witnessPages.appendChild(ul);
+            } catch(_) {}
+        }
+        if (!ul) { 
+            console.error(`❌ UI: Failed to create .page-links for "${this.currentWitness}"`);
+            return; 
+        }
+
+        console.log(`✅ UI: Found .page-links container for "${this.currentWitness}"`);
         
         // Clear existing links
         ul.innerHTML = '';
         
         // Get entries for current witness
         const entries = this.witnessPagesMap.get(this.currentWitness) || [];
+        console.log(`🔍 UI: Found ${entries.length} entries for witness "${this.currentWitness}"`);
         
         // Build links for current witness
         entries.forEach(entry => {
@@ -767,7 +849,16 @@ class WitnessSwitcher {
             ul.appendChild(li);
         });
         
-//         console.log(`✅ UI: Built ${entries.length} pagination links for current witness "${this.currentWitness}"`);
+        console.log(`✅ UI: Built ${entries.length} pagination links for current witness "${this.currentWitness}"`);
+        console.log(`🔍 UI: Final pagination HTML: "${ul.innerHTML}"`);
+        
+        // After creating pagination links, trigger osd_scroll to update them
+        setTimeout(() => {
+            if (typeof window.updatePageLinks === 'function') {
+                console.log('🔧 UI: Calling osd_scroll updatePageLinks after creation');
+                window.updatePageLinks();
+            }
+        }, 10);
     }
 
     // Navigate to a specific page in a witness (switch if needed)
@@ -826,18 +917,16 @@ class WitnessSwitcher {
         // UPDATE: Set the current witness variable FIRST
         this.currentWitness = witness;
 //         console.log(`✅ SWITCH: Updated currentWitness to "${this.currentWitness}"`);
-
+        
         // Add witness-active class to body
         document.body.classList.add('witness-active');
         document.body.setAttribute('data-active-witness', witness);
-
+        
         // UPDATE: Rebuild pagination links for the new current witness
         this.rebuildPaginationLinksForCurrentWitness();
-
+        
         // Update text display
-        this.updateTextForWitness(witness);
-
-        // Make sure pagination exists and load images
+        this.updateTextForWitness(witness);        // Make sure pagination exists and load images
         this.ensurePaginationForWitness(witness);
         this.updateOSDImagesForWitness(witness);
 
@@ -851,24 +940,29 @@ class WitnessSwitcher {
      * Set the default witness based on URL parameters or fallback
      */
     setDefaultWitness() {
-//         console.log('🔍 DEFAULT: Setting default witness (simplified)');
+        console.log('🔍 DEFAULT: Setting default witness (simplified)');
         const urlParams = new URLSearchParams(window.location.search);
         const tab = urlParams.get('tab');
+        console.log('🔍 DEFAULT: tab parameter =', tab);
         if (tab) {
             const m = tab.match(/^(\d+)(.*)$/);
             let pageIndex = 0; let witness = tab;
             if (m) { pageIndex = Math.max(0, parseInt(m[1],10)-1); witness = m[2]; }
+            console.log('🔍 DEFAULT: parsed pageIndex =', pageIndex, 'witness =', witness);
             if (!this.availableWitnesses.has(witness)) {
+                console.log('🔍 DEFAULT: witness not available, falling back. Available:', Array.from(this.availableWitnesses));
                 // fallback first real witness (avoid 'primary' if others)
                 const ordered = Array.from(this.availableWitnesses).filter(w=>w!=='primary');
                 witness = ordered[0] || 'primary';
             }
+            console.log('🔍 DEFAULT: final witness =', witness, 'pageIndex =', pageIndex);
             this.goToWitnessPage(witness, pageIndex);
             return;
         }
         // No tab param: choose first non-primary witness, else primary
         const ordered = Array.from(this.availableWitnesses).filter(w=>w!=='primary');
         const chosen = ordered[0] || 'primary';
+        console.log('🔍 DEFAULT: no tab param, chosen =', chosen);
         this.goToWitnessPage(chosen, 0);
     }
 
@@ -1294,6 +1388,39 @@ class WitnessSwitcher {
         // Standard case: just convert to uppercase for consistent display
         return witnessId.toUpperCase();
     }
+
+    // Force create pagination container when nothing is visible
+    forceCreatePaginationContainer() {
+        try {
+            console.log('🚨 FORCE: Creating pagination container from scratch');
+            
+            // Find or create a suitable parent
+            let parent = document.querySelector('main') || document.querySelector('.container') || document.body;
+            
+            // Create a visible container
+            const container = document.createElement('div');
+            container.className = 'witness-pages mt-3';
+            container.style.cssText = 'display: block !important; visibility: visible !important; padding: 20px; border: 1px solid #ccc; background: #f9f9f9;';
+            
+            const heading = document.createElement('h5');
+            heading.textContent = 'Seiten:';
+            heading.style.cssText = 'display: block !important; margin-bottom: 10px;';
+            container.appendChild(heading);
+            
+            const ul = document.createElement('ul');
+            ul.className = 'page-links list-inline';
+            ul.style.cssText = 'display: block !important; list-style: none; margin: 0; padding: 0;';
+            container.appendChild(ul);
+            
+            parent.appendChild(container);
+            
+            console.log('🚨 FORCE: Created pagination container in:', parent.tagName);
+            return container;
+        } catch (e) {
+            console.error('🚨 FORCE: Error creating pagination container:', e);
+            return null;
+        }
+    }
 }
 
 // Initialize the witness switcher when the class is instantiated
@@ -1301,6 +1428,25 @@ new WitnessSwitcher();
 
 // Keep the initial one-time refresh
 if (window.updatePageLinks) window.updatePageLinks();
+
+// Expose a function for osd_scroll.js to call when no pagination exists
+window.createPaginationIfMissing = function() {
+    const pageLinks = document.querySelectorAll('.page-link');
+    if (pageLinks.length === 0) {
+        // Trigger pagination creation with a small delay
+        setTimeout(() => {
+            if (window.witnessAvailableSet && window.witnessAvailableSet.size > 0) {
+                // Find any existing witness switcher instance and rebuild pagination
+                const witnessInstance = window.witnessSwitcherInstance;
+                if (witnessInstance && witnessInstance.rebuildPaginationLinksForCurrentWitness) {
+                    witnessInstance.rebuildPaginationLinksForCurrentWitness();
+                }
+            }
+        }, 100);
+        return true; // Indicate pagination creation was attempted
+    }
+    return false; // No pagination needed
+};
 
 /**
  * Simple Witness Switcher - Immediately reloads page when witness tabs are clicked
@@ -1677,3 +1823,6 @@ function cleanWitnessId(witness, availableWitnesses) {
     
     return witness;
 }
+
+// Initialize the witness switcher when the DOM is ready (removed duplicate)
+// new WitnessSwitcher();

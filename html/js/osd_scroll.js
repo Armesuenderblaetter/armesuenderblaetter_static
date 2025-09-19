@@ -564,15 +564,41 @@ if (document.readyState === 'loading') {
 
 // Update page links with proper navigation links
 function updatePageLinks() {
-//   console.log('Updating page links');
+  console.log('OSD: Updating page links');
   
   // Get all page links
   const page_links = document.querySelectorAll('.page-link');
   
   if (!page_links || page_links.length === 0) {
-//     console.log('No page links found');
+    console.log('OSD: No page links found, checking if witness_switcher can create them');
+    
+    // If no page links exist, try to trigger witness_switcher to create them
+    if (typeof window.createPaginationIfMissing === 'function') {
+      console.log('OSD: Calling witness_switcher to create pagination');
+      const created = window.createPaginationIfMissing();
+      if (created) {
+        // Retry after creation
+        setTimeout(() => {
+          const retryLinks = document.querySelectorAll('.page-link');
+          if (retryLinks.length > 0) {
+            console.log('OSD: Found', retryLinks.length, 'links after creation, updating them');
+            updatePageLinksActual(retryLinks);
+          }
+        }, 10);
+        return;
+      }
+    }
+    
+    console.log('OSD: No page links found and cannot create them');
     return;
   }
+  
+  updatePageLinksActual(page_links);
+}
+
+// Actual page link updating logic (extracted)
+function updatePageLinksActual(page_links) {
+  console.log('OSD: Updating', page_links.length, 'existing page links');
   
   // Helper to keep witness IDs intact - NO MORE CLEANING!
   const cleanWitnessId = function(witness) {
@@ -580,26 +606,76 @@ function updatePageLinks() {
     return witness;
   };
   
+  const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+  
   // Update each link
   page_links.forEach(link => {
     // Get the target page index (0-based)
     const page_index = link.getAttribute('data-page-index');
     
-    // Get the witness from the link or fall back to the current witness
-    let witness = link.getAttribute('data-witness') || getCurrentWitness();
+    // Determine witness with a conservative priority to preserve correct links
+    // 0) If href already contains ?tab=...{witness}, preserve that witness
+    let witness = null;
+    try {
+      const href = link.getAttribute('href') || '';
+      const mHref = href.match(/[?&]tab=\d+([^&#]+)/);
+      if (mHref && mHref[1]) {
+        witness = mHref[1];
+      }
+    } catch (_) {}
+
+    // 1) Else authoritative if the link already carries data-witness (do not override)
+    if (!witness) {
+      witness = link.getAttribute('data-witness');
+    }
+    
+    // 2) Else prefer the enclosing tab-pane id (e.g., wmR-meta-data -> wmR)
+    if (!witness) {
+      const pane = link.closest('[id$="-meta-data"]');
+      if (pane && pane.id) {
+        const m = pane.id.match(/^(.+)-meta-data$/);
+        if (m && m[1]) {
+          witness = m[1];
+        }
+      }
+    }
+    
+    // 3) Else prefer a stamped container witness
+    if (!witness) {
+      const stamped = link.closest('.witness-pages[data-witness]');
+      if (stamped) {
+        witness = stamped.getAttribute('data-witness');
+      }
+    }
+    
+    // 4) Last resort: use current active witness
+    if (!witness) {
+      witness = getCurrentWitness();
+    }
     
     // Clean the witness ID if it has "wm" prefix but shouldn't
     witness = cleanWitnessId(witness);
     
     if (page_index !== null) {
       const page_num = parseInt(page_index, 10) + 1; // Convert to 1-based
-      
+
+      // If the link already has a matching ?tab page number, do not rewrite it
+      try {
+        const existingHref = link.getAttribute('href') || '';
+        const mExisting = existingHref.match(/[?&]tab=(\d+)([^&#]*)/);
+        if (mExisting && parseInt(mExisting[1], 10) === page_num) {
+          // Keep existing href (and thus its witness) intact
+          return;
+        }
+      } catch (_) {}
+
       // Build the URL with cleaned witness ID
-      const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
       const newUrl = `${baseUrl}?tab=${page_num}${witness}`;
       
       // Update the link
       link.href = newUrl;
+      // Persist resolved witness to avoid future ambiguity
+      try { link.setAttribute('data-witness', witness); } catch(_) {}
 //       console.log(`Updated link to ${newUrl}`);
     }
   });

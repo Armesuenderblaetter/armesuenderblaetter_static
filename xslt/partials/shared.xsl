@@ -120,9 +120,9 @@
     </xsl:template>
 
     <xsl:template match="tei:pb" mode="#all">
-        <xsl:variable name="witness_ref" select="if(@edRef) then substring-after(@edRef, '#') else 'primary'"/>
+        <xsl:variable name="witness_ref" select="if(@edRef) then (if(starts-with(@edRef, '#')) then @edRef else concat('#', @edRef)) else '#primary'"/>
         <xsl:variable name="pb_type" select="if(@type) then @type else 'primary'"/>
-        <span class="pb {$pb_type}" source="{@facs}" wit="#{$witness_ref}" data-pb-type="{$pb_type}"></span>
+        <span class="pb {$pb_type}" source="{@facs}" wit="{$witness_ref}" data-pb-type="{$pb_type}"></span>
     </xsl:template>
     <xsl:template match="tei:pb" mode="app">
         <xsl:text> | </xsl:text>
@@ -211,8 +211,8 @@
         </span>
     </xsl:template>
     <xsl:template match="tei:lb" mode="#all">
-        <xsl:variable name="witness_ref" select="if(@edRef) then substring-after(@edRef, '#') else 'primary'"/>
-        <br class="lb" wit="#{$witness_ref}"/>
+        <xsl:variable name="witness_ref" select="if(@edRef) then (if(starts-with(@edRef, '#')) then @edRef else concat('#', @edRef)) else '#primary'"/>
+        <br class="lb" wit="{$witness_ref}"/>
     </xsl:template>
     <xsl:template match="tei:note">
         <xsl:element name="a">
