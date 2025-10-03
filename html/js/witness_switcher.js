@@ -705,13 +705,9 @@ class WitnessSwitcher {
     // Build pagination UI and data for one witness
     buildPaginationForWitness(witness) {
         try {
-//             console.log(`🔄 PAGINATION: Starting buildPaginationForWitness for "${witness}"`);
-//             console.log(`🔍 PAGINATION: Current this.currentWitness = "${this.currentWitness}"`);
-            
             // Store data for ALL witnesses, but only build UI for current witness
             const pbs = this.getWitnessPbs(witness);
             if (!pbs || pbs.length === 0) {
-//                 console.error(`❌ PAGINATION: No page breaks found for witness "${witness}"`);
                 return;
             }
             
@@ -727,11 +723,15 @@ class WitnessSwitcher {
             
             // Store the entries for later use
             this.witnessPagesMap.set(witness, entries);
-//             console.log(`✅ PAGINATION: Stored ${entries.length} entries for witness "${witness}"`);
+            console.log(`✅ PAGINATION: Stored ${entries.length} entries for witness "${witness}"`);
+            console.log(`🔍 PAGINATION: Entry details:`, entries.map(e => ({index: e.index, source: e.source})));
             
             // Only build UI if this is the current witness
             if (this.currentWitness === witness) {
+                console.log(`🔄 PAGINATION: Building UI for current witness "${witness}"`);
                 this.rebuildPaginationLinksForCurrentWitness();
+            } else {
+                console.log(`⏭️ PAGINATION: Skipping UI build for "${witness}" (current is "${this.currentWitness}")`);
             }
             
         } catch (e) {
@@ -755,6 +755,8 @@ class WitnessSwitcher {
         const tabContent = document.getElementById(`${this.currentWitness}-meta-data`);
         if (tabContent) {
             witnessPages = tabContent.querySelector('.witness-pages');
+            console.log('🔍 UI: Found existing .witness-pages in tab:', witnessPages);
+            console.log('🔍 UI: Existing content:', witnessPages ? witnessPages.innerHTML : 'N/A');
             // If the witness tab exists but has no pagination container, create it there
             if (!witnessPages) {
                 try {
@@ -791,21 +793,42 @@ class WitnessSwitcher {
         console.log(`🔍 UI: Container parent:`, witnessPages.parentElement?.tagName, witnessPages.parentElement?.id);
         console.log(`🔍 UI: Container visibility:`, getComputedStyle(witnessPages).display, getComputedStyle(witnessPages).visibility);
         
+        // Check if the parent tab is actually active
+        const parentTab = witnessPages.closest('.tab-pane');
+        if (parentTab) {
+            console.log('🔍 UI: Parent tab ID:', parentTab.id);
+            console.log('🔍 UI: Parent tab classes:', parentTab.className);
+            console.log('🔍 UI: Parent tab display:', getComputedStyle(parentTab).display);
+            console.log('🔍 UI: Is parent tab active?', parentTab.classList.contains('active'));
+            console.log('🔍 UI: Is parent tab shown?', parentTab.classList.contains('show'));
+        }
+        
         // Stamp container with its witness for clarity (non-breaking)
         try { witnessPages.setAttribute('data-witness', this.currentWitness); } catch(_) {}
 
         // Ensure a heading and a .page-links container exist
         let heading = witnessPages.querySelector('h5');
-        if (!heading) {
+        console.log('🔍 UI: Found h5 heading:', heading);
+        console.log('🔍 UI: witnessPages text content:', witnessPages.textContent.trim());
+        
+        // Only create heading if there's no h5 AND no "Seiten:" text already
+        if (!heading && !witnessPages.textContent.includes('Seiten:')) {
             try {
                 console.log(`🔧 UI: Creating heading for "${this.currentWitness}"`);
                 heading = document.createElement('h5');
                 heading.textContent = 'Seiten:';
                 witnessPages.prepend(heading);
             } catch(_) {}
+        } else {
+            console.log('🔍 UI: Using existing heading/text, not creating new one');
         }
 
         let ul = witnessPages.querySelector('.page-links');
+        console.log('🔍 UI: Found existing .page-links:', ul);
+        if (ul) {
+            console.log('🔍 UI: Existing .page-links content:', ul.innerHTML);
+            console.log('🔍 UI: Existing .page-links children count:', ul.children.length);
+        }
         if (!ul) {
             try {
                 console.log(`🔧 UI: Creating .page-links for "${this.currentWitness}"`);
@@ -829,7 +852,9 @@ class WitnessSwitcher {
         console.log(`🔍 UI: Found ${entries.length} entries for witness "${this.currentWitness}"`);
         
         // Build links for current witness
-        entries.forEach(entry => {
+        console.log(`🔧 UI: About to build ${entries.length} links...`);
+        entries.forEach((entry, idx) => {
+            if (idx < 3) console.log(`🔧 UI: Building link ${idx + 1} for entry:`, {index: entry.index, source: entry.source});
             const li = document.createElement('li');
             li.className = 'list-inline-item';
             const a = document.createElement('a');
@@ -850,13 +875,44 @@ class WitnessSwitcher {
         });
         
         console.log(`✅ UI: Built ${entries.length} pagination links for current witness "${this.currentWitness}"`);
-        console.log(`🔍 UI: Final pagination HTML: "${ul.innerHTML}"`);
+        console.log(`🔍 UI: ul.children.length after build:`, ul.children.length);
+        console.log(`🔍 UI: First 3 links HTML:`, Array.from(ul.children).slice(0, 3).map(li => li.outerHTML));
+        
+        // Multiple checkpoints to catch when links disappear
+        setTimeout(() => {
+            console.log(`🔍 UI: CHECK 1 (50ms) - ul.children.length:`, ul.children.length);
+        }, 50);
+        
+        setTimeout(() => {
+            console.log(`🔍 UI: CHECK 2 (100ms) - ul.children.length:`, ul.children.length);
+        }, 100);
+        
+        setTimeout(() => {
+            console.log(`🔍 UI: CHECK 3 (200ms) - ul.children.length:`, ul.children.length);
+        }, 200);
+        
+        setTimeout(() => {
+            console.log(`🔍 UI: CHECK 4 (500ms) - ul.children.length:`, ul.children.length);
+        }, 500);
+        
+        setTimeout(() => {
+            console.log(`🔍 UI: CHECK 5 (1000ms) - ul.children.length:`, ul.children.length);
+            if (ul.children.length === 0) {
+                console.error(`❌ UI: LINKS DISAPPEARED! ul.innerHTML:`, ul.innerHTML);
+            }
+        }, 1000);
         
         // After creating pagination links, trigger osd_scroll to update them
         setTimeout(() => {
             if (typeof window.updatePageLinks === 'function') {
                 console.log('🔧 UI: Calling osd_scroll updatePageLinks after creation');
                 window.updatePageLinks();
+                
+                // Check again after osd_scroll runs
+                setTimeout(() => {
+                    console.log(`🔍 UI: AFTER OSD - ul.children.length:`, ul.children.length);
+                    console.log(`🔍 UI: AFTER OSD - ul.innerHTML:`, ul.innerHTML);
+                }, 20);
             }
         }, 10);
     }
@@ -912,11 +968,10 @@ class WitnessSwitcher {
      * Switch to a specific witness - SIMPLIFIED VERSION
      */
     switchToWitness(witness) {
-//         console.log(`🔄 SWITCH: Switching to witness: ${witness}`);
+        console.log(`🔄 SWITCH: Switching to witness: ${witness}`);
         
         // UPDATE: Set the current witness variable FIRST
         this.currentWitness = witness;
-//         console.log(`✅ SWITCH: Updated currentWitness to "${this.currentWitness}"`);
         
         // Add witness-active class to body
         document.body.classList.add('witness-active');
@@ -949,6 +1004,7 @@ class WitnessSwitcher {
             let pageIndex = 0; let witness = tab;
             if (m) { pageIndex = Math.max(0, parseInt(m[1],10)-1); witness = m[2]; }
             console.log('🔍 DEFAULT: parsed pageIndex =', pageIndex, 'witness =', witness);
+            console.log('🔍 DEFAULT: Available witnesses:', Array.from(this.availableWitnesses));
             if (!this.availableWitnesses.has(witness)) {
                 console.log('🔍 DEFAULT: witness not available, falling back. Available:', Array.from(this.availableWitnesses));
                 // fallback first real witness (avoid 'primary' if others)
@@ -956,6 +1012,7 @@ class WitnessSwitcher {
                 witness = ordered[0] || 'primary';
             }
             console.log('🔍 DEFAULT: final witness =', witness, 'pageIndex =', pageIndex);
+            console.log('🔍 DEFAULT: About to call goToWitnessPage...');
             this.goToWitnessPage(witness, pageIndex);
             return;
         }
@@ -1295,12 +1352,33 @@ class WitnessSwitcher {
      */
     updateTabStates(witness) {
         try {
-            // Remove active class from all tabs
+            console.log(`🔄 TAB: Activating tab for witness: ${witness}`);
+            
+            // Remove active class from all tab buttons
             document.querySelectorAll('.nav-link').forEach(tab => tab.classList.remove('active'));
-            // Add active class to the current witness tab
+            
+            // Remove active/show classes from all tab content panels
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active', 'show');
+            });
+            
+            // Add active class to the current witness tab button
             const activeTab = document.getElementById(`${witness}-tab`);
             if (activeTab) {
                 activeTab.classList.add('active');
+                console.log(`✅ TAB: Activated tab button: ${witness}-tab`);
+            } else {
+                console.log(`❌ TAB: Tab button not found: ${witness}-tab`);
+            }
+            
+            // Add active and show classes to the current witness tab content
+            const activeTabPane = document.getElementById(`${witness}-meta-data`);
+            if (activeTabPane) {
+                activeTabPane.classList.add('active', 'show');
+                console.log(`✅ TAB: Activated tab content: ${witness}-meta-data`);
+                console.log(`🔍 TAB: Tab content display: ${getComputedStyle(activeTabPane).display}`);
+            } else {
+                console.log(`❌ TAB: Tab content not found: ${witness}-meta-data`);
             }
         } catch (e) {
             console.error('❌ Error updating tab states:', e);
