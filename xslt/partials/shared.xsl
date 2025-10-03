@@ -215,22 +215,33 @@
         <br class="lb" wit="{$witness_ref}"/>
     </xsl:template>
     <xsl:template match="tei:note">
-        <xsl:element name="a">
-            <xsl:attribute name="name">
-                <xsl:text>fna_</xsl:text>
-                <xsl:number level="any" format="1" count="tei:note"/>
-            </xsl:attribute>
-            <xsl:attribute name="href">
-                <xsl:text>#fn</xsl:text>
-                <xsl:number level="any" format="1" count="tei:note"/>
-            </xsl:attribute>
-            <xsl:attribute name="title">
-                <xsl:value-of select="normalize-space(.)"/>
-            </xsl:attribute>
-            <sup>
-                <xsl:number level="any" format="1" count="tei:note"/>
-            </sup>
-        </xsl:element>
+        <xsl:choose>
+            <xsl:when test="@anchored = 'true'">
+                <!-- Anchored notes are displayed as inline text with a special class -->
+                <span class="anchored-note">
+                    <xsl:apply-templates/>
+                </span>
+            </xsl:when>
+            <xsl:otherwise>
+                <!-- Regular notes are displayed as footnote links -->
+                <xsl:element name="a">
+                    <xsl:attribute name="name">
+                        <xsl:text>fna_</xsl:text>
+                        <xsl:number level="any" format="1" count="tei:note[not(@anchored = 'true')]"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="href">
+                        <xsl:text>#fn</xsl:text>
+                        <xsl:number level="any" format="1" count="tei:note[not(@anchored = 'true')]"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="title">
+                        <xsl:value-of select="normalize-space(.)"/>
+                    </xsl:attribute>
+                    <sup>
+                        <xsl:number level="any" format="1" count="tei:note[not(@anchored = 'true')]"/>
+                    </sup>
+                </xsl:element>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     <xsl:template match="tei:list[@type = 'unordered']">
         <xsl:choose>

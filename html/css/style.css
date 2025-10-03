@@ -926,3 +926,23 @@ body[data-active-witness="wmR"] [wit="#wmR"] {
   background-color: rgba(0, 255, 0, 0.1);
   border: 1px solid #4CAF50;
 }
+
+/* --- Anchored Notes Styling --- */
+.anchored-note {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #868277;
+    font-style: italic;
+    margin: 10px 0;
+    min-height: 40px;
+    height: 100% ;
+}
+
+.anchored-note::before {
+    content: "[";
+}
+
+.anchored-note::after {
+    content: "]";
+}
