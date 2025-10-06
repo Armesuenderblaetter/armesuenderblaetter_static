@@ -94,10 +94,10 @@ search.addWidgets([
                   <td><em>Drucker</em></td>
                   <td>${hit.printer}</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                   <td><em>Druckort</em></td>
                   <td>${hit.printing_location}</td>
-                </tr>
+                </tr> --> 
                 <tr>
                   <td><em>Druckdatum</em></td>
                   <td>${hit.print_date}</td>
@@ -251,20 +251,20 @@ search.addWidgets([
       checkbox: "mr-2",
     },*/
   }),
-  instantsearch.widgets.refinementList({
+/*  instantsearch.widgets.refinementList({
     container: "#printing_location",
     attribute: "printing_location",
     sortBy: ['name:asc', 'count:desc'],
     limit: 1000,
     searchable: false,
-    /*cssClasses: {
-      showMore: "btn btn-secondary btn-sm align-content-center",
-      list: "list-unstyled",
-      count: "badge ml-2 badge-secondary hideme",
-      label: "d-flex align-items-baseline text-capitalize",
-      checkbox: "mr-2",
-    },*/
-  }),
+    //cssClasses: {
+    //  showMore: "btn btn-secondary btn-sm align-content-center",
+    //  list: "list-unstyled",
+    //  count: "badge ml-2 badge-secondary hideme",
+    //  label: "d-flex align-items-baseline text-capitalize",
+    //  checkbox: "mr-2",
+    //},
+  }),*/
 ]);
 
 search.start();

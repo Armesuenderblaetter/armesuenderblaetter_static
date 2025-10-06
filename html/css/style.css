@@ -18,6 +18,8 @@ main {
     padding-top: 4rem;
 }
 
+.title_part {display: block !important; margin: 5px !important; }
+
 .catch {
     display: inline-block;
    color: grey;
@@ -187,7 +189,7 @@ div ul.ais-RefinementList-list {
     margin-left: 3rem;
     padding-bottom: 2rem;
     max-width: 45%;
-    /* height: 100vh; */
+    max-height: 100%;
     overflow: hidden; /* Remove scrolling completely */
 }
 
@@ -602,6 +604,10 @@ span.sic:hover::before {
 
 .lb {
   display: block;
+  margin: 0;
+  padding: 0;
+  height: 0;
+  line-height: 0;
 }
 
 
@@ -893,7 +899,7 @@ select {
 #facsimiles {
     position: sticky;
     top: 0;
-/*     height: 100vh; */
+    max-height: 100%;
     overflow: hidden;
 }
 
@@ -923,4 +929,46 @@ body[data-active-witness="wmW"] [wit="#wmW"],
 body[data-active-witness="wmR"] [wit="#wmR"] {
   background-color: rgba(0, 255, 0, 0.1);
   border: 1px solid #4CAF50;
+}
+
+/* --- Anchored Notes Styling --- */
+.anchored-note {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #868277;
+    font-style: italic;
+    margin: 10px 0;
+    min-height: 40px;
+    height: 100% ;
+}
+
+.anchored-note::before {
+    content: "[";
+}
+
+.anchored-note::after {
+    content: "]";
+}
+
+/* Fix for line breaks toggle causing main element height doubling */
+body.pbs-hidden .lb {
+    display: none !important;
+}
+
+body.pbs-hidden br.lb {
+    display: none !important;
+}
+
+/* Ensure line breaks don't affect container height when visible */
+br.lb.current {
+    display: block;
+    content: "";
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    font-size: 0;
+    line-height: 0;
+    height: 0;
+    overflow: hidden;
 }

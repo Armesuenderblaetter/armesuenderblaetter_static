@@ -72,7 +72,7 @@
                             <xsl:call-template name="witness_tabs"/>
                             <h3 align="center">
                                 <a href="{$teiSource}">
-                                    <i class="bi bi-download" title="TEI/XML"/>
+                                    <i class="bi bi-filetype-xml" title="XML/TEI"/>
                                 </a>
                             </h3>
                         </div>
@@ -100,22 +100,22 @@
                             <xsl:apply-templates select="//tei:text/tei:*[not(local-name() = 'fs' or local-name() = 'back')]" />
                         </div>
                     </div>
-                    <xsl:if test="count(//tei:body//tei:note) != 0">
+                    <xsl:if test="count(//tei:body//tei:note[not(@anchored = 'true')]) != 0">
                         <div class="footnotes">
-                            <xsl:for-each select="//tei:body//tei:note">
+                            <xsl:for-each select="//tei:body//tei:note[not(@anchored = 'true')]">
                                 <div class="footnote" id="{local:makeId(.)}">
                                     <xsl:element name="a">
                                         <xsl:attribute name="name">
                                             <xsl:text>fn</xsl:text>
-                                            <xsl:number level="any" format="1" count="tei:note" />
+                                            <xsl:number level="any" format="1" count="tei:note[not(@anchored = 'true')]" />
                                         </xsl:attribute>
                                         <a>
                                             <xsl:attribute name="href">
                                                 <xsl:text>#fna_</xsl:text>
-                                                <xsl:number level="any" format="1" count="tei:note"/>
+                                                <xsl:number level="any" format="1" count="tei:note[not(@anchored = 'true')]"/>
                                             </xsl:attribute>
                                             <span style="font-size:7pt;vertical-align:super; margin-right: 0.4em">
-                                                <xsl:number level="any" format="1" count="tei:note"/>
+                                                <xsl:number level="any" format="1" count="tei:note[not(@anchored = 'true')]"/>
                                             </span>
                                         </a>
                                     </xsl:element>
