@@ -793,16 +793,6 @@ class WitnessSwitcher {
         console.log(`🔍 UI: Container parent:`, witnessPages.parentElement?.tagName, witnessPages.parentElement?.id);
         console.log(`🔍 UI: Container visibility:`, getComputedStyle(witnessPages).display, getComputedStyle(witnessPages).visibility);
         
-        // Check if the parent tab is actually active
-        const parentTab = witnessPages.closest('.tab-pane');
-        if (parentTab) {
-            console.log('🔍 UI: Parent tab ID:', parentTab.id);
-            console.log('🔍 UI: Parent tab classes:', parentTab.className);
-            console.log('🔍 UI: Parent tab display:', getComputedStyle(parentTab).display);
-            console.log('🔍 UI: Is parent tab active?', parentTab.classList.contains('active'));
-            console.log('🔍 UI: Is parent tab shown?', parentTab.classList.contains('show'));
-        }
-        
         // Stamp container with its witness for clarity (non-breaking)
         try { witnessPages.setAttribute('data-witness', this.currentWitness); } catch(_) {}
 
@@ -878,41 +868,11 @@ class WitnessSwitcher {
         console.log(`🔍 UI: ul.children.length after build:`, ul.children.length);
         console.log(`🔍 UI: First 3 links HTML:`, Array.from(ul.children).slice(0, 3).map(li => li.outerHTML));
         
-        // Multiple checkpoints to catch when links disappear
-        setTimeout(() => {
-            console.log(`🔍 UI: CHECK 1 (50ms) - ul.children.length:`, ul.children.length);
-        }, 50);
-        
-        setTimeout(() => {
-            console.log(`🔍 UI: CHECK 2 (100ms) - ul.children.length:`, ul.children.length);
-        }, 100);
-        
-        setTimeout(() => {
-            console.log(`🔍 UI: CHECK 3 (200ms) - ul.children.length:`, ul.children.length);
-        }, 200);
-        
-        setTimeout(() => {
-            console.log(`🔍 UI: CHECK 4 (500ms) - ul.children.length:`, ul.children.length);
-        }, 500);
-        
-        setTimeout(() => {
-            console.log(`🔍 UI: CHECK 5 (1000ms) - ul.children.length:`, ul.children.length);
-            if (ul.children.length === 0) {
-                console.error(`❌ UI: LINKS DISAPPEARED! ul.innerHTML:`, ul.innerHTML);
-            }
-        }, 1000);
-        
         // After creating pagination links, trigger osd_scroll to update them
         setTimeout(() => {
             if (typeof window.updatePageLinks === 'function') {
                 console.log('🔧 UI: Calling osd_scroll updatePageLinks after creation');
                 window.updatePageLinks();
-                
-                // Check again after osd_scroll runs
-                setTimeout(() => {
-                    console.log(`🔍 UI: AFTER OSD - ul.children.length:`, ul.children.length);
-                    console.log(`🔍 UI: AFTER OSD - ul.innerHTML:`, ul.innerHTML);
-                }, 20);
             }
         }, 10);
     }
@@ -1043,14 +1003,14 @@ class WitnessSwitcher {
             // Get pbs for the current witness
             const witnessPbs = this.getWitnessPbs(witness);
             witnessPbs.forEach(pb => {
-                pb.style.display = 'inline';
+                // Don't set inline styles - let showOnlyCurrentPage handle visibility
                 pb.classList.add('active-witness-pb');
             });
 
             // Also show primary pbs if no specific witness pages found
             if (witnessPbs.length === 0) {
                 document.querySelectorAll('.pb[data-pb-type="primary"]').forEach(pb => {
-                    pb.style.display = 'inline';
+                    // Don't set inline styles - let showOnlyCurrentPage handle visibility
                     pb.classList.add('active-witness-pb');
                 });
             }
@@ -1352,33 +1312,12 @@ class WitnessSwitcher {
      */
     updateTabStates(witness) {
         try {
-            console.log(`🔄 TAB: Activating tab for witness: ${witness}`);
-            
-            // Remove active class from all tab buttons
+            // Remove active class from all tabs
             document.querySelectorAll('.nav-link').forEach(tab => tab.classList.remove('active'));
-            
-            // Remove active/show classes from all tab content panels
-            document.querySelectorAll('.tab-pane').forEach(pane => {
-                pane.classList.remove('active', 'show');
-            });
-            
-            // Add active class to the current witness tab button
+            // Add active class to the current witness tab
             const activeTab = document.getElementById(`${witness}-tab`);
             if (activeTab) {
                 activeTab.classList.add('active');
-                console.log(`✅ TAB: Activated tab button: ${witness}-tab`);
-            } else {
-                console.log(`❌ TAB: Tab button not found: ${witness}-tab`);
-            }
-            
-            // Add active and show classes to the current witness tab content
-            const activeTabPane = document.getElementById(`${witness}-meta-data`);
-            if (activeTabPane) {
-                activeTabPane.classList.add('active', 'show');
-                console.log(`✅ TAB: Activated tab content: ${witness}-meta-data`);
-                console.log(`🔍 TAB: Tab content display: ${getComputedStyle(activeTabPane).display}`);
-            } else {
-                console.log(`❌ TAB: Tab content not found: ${witness}-meta-data`);
             }
         } catch (e) {
             console.error('❌ Error updating tab states:', e);
