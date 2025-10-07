@@ -212,12 +212,19 @@ div ul.ais-RefinementList-list {
 }
 
 div.icon_desc {
-    padding: 1rem;
+    /* adding: 1rem;
     background-color: rgb(180, 180, 180);
     color: white;
     border-radius: 3px;
     margin: .5rem 0 .5rem .5rem;
+    font-size: small; */
+    display:grid;
+    justify-content: center;
+    align-items: center;
+    color: #868277;
+    font-style: italic;
     font-size: small;
+    margin: .5rem 0 .5rem .5rem;
 }
 
 
@@ -924,12 +931,12 @@ body[data-active-witness="wmR"] .edition-witness-wmW {
 }
 
 /* --- Active Witness Highlighting --- */
-/* Apply green background to the currently active witness reading */
+/* Apply green background to the currently active witness reading 
 body[data-active-witness="wmW"] [wit="#wmW"],
 body[data-active-witness="wmR"] [wit="#wmR"] {
   background-color: rgba(0, 255, 0, 0.1);
   border: 1px solid #4CAF50;
-}
+}*/
 
 /* --- Anchored Notes Styling --- */
 .anchored-note {
@@ -938,16 +945,17 @@ body[data-active-witness="wmR"] [wit="#wmR"] {
     align-items: center;
     color: #868277;
     font-style: italic;
-    margin: 10px 0;
+     margin: .5rem 0 .5rem .5rem;
     min-height: 40px;
     height: 100% ;
+    font-size: small;
 }
 
-.anchored-note::before {
+.anchored-note::before, div.icon_desc .current-page::before {
     content: "[";
 }
 
-.anchored-note::after {
+.anchored-note::after, div.icon_desc .current-page::after {
     content: "]";
 }
 

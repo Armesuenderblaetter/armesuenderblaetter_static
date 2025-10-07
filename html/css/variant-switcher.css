@@ -16,17 +16,17 @@
     display: none;
 }
 
-/* Hover effects for variant readings */
+/* Hover effects for variant readings 
 .variant-reading:hover {
     background-color: rgba(255, 255, 0, 0.3);
     outline: 1px solid rgba(255, 165, 0, 0.5);
-}
+}*/
 
-/* Active witness styling */
+/* Active witness styling 
 .variant-reading.active-witness {
     background-color: rgba(0, 255, 0, 0.1);
     border: 1px solid #4CAF50;
-}
+}*/
 
 /* Hide inactive variant readings by default */
 .variant-reading.rdg {
@@ -129,21 +129,23 @@ body.witness-active .pb:not(.active-witness-pb) {
     outline: 2px solid #4CAF50;
 }
 
-/* Variant highlighting for better visibility */
+/* Variant highlighting for better visibility
 .variant-highlighted {
     background-color: rgba(255, 215, 0, 0.3) !important;
     border: 1px solid #FFD700 !important;
     font-weight: bold;
-}
+} */
 
-/* Special styling for lem vs rdg */
+/* Special styling for lem vs rdg
 .variant-reading.lem {
     border-left: 3px solid #4CAF50;
-}
+} 
 
 .variant-reading.rdg {
     border-left: 3px solid #2196F3;
 }
+
+*/
 
 /* Enhanced variant anchor links */
 .variant_anchor_link {
@@ -269,13 +271,13 @@ body.witness-active .pb:not(.active-witness-pb) {
     display: block !important;
 }
 
-/* Catch phrase styling */
+/* Catch phrase styling 
 .variant-reading.catch {
     font-style: italic;
     background-color: rgba(255, 248, 220, 0.5);
-}
+}*/
 
-/* Accessibility improvements */
+/* Accessibility improvements 
 .variant-reading:focus {
     outline: 2px solid #4CAF50;
     outline-offset: 1px;
@@ -284,7 +286,7 @@ body.witness-active .pb:not(.active-witness-pb) {
 .witness-tab:focus {
     outline: 2px solid #4CAF50;
     outline-offset: 1px;
-}
+} */
 
 /* Loading state */
 .variant-loading {
