@@ -986,4 +986,17 @@
             </xsl:element>
         </strong>
     </xsl:template> -->
+    
+    <!-- Templates for replace-equals mode -->
+    <xsl:template match="text()" mode="replace-equals">
+        <xsl:value-of select="replace(., '=', '⹀')"/>
+    </xsl:template>
+    
+    <xsl:template match="*" mode="replace-equals">
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates mode="replace-equals"/>
+        </xsl:copy>
+    </xsl:template>
+    
 </xsl:stylesheet>

@@ -11,6 +11,7 @@
     <xsl:import href="./partials/aot-options.xsl"/>
     <xsl:import href="./partials/osd-container.xsl"/>
     <xsl:import href="./partials/witness_tabs.xsl"/>
+    
     <xsl:variable name="full_path">
         <xsl:value-of select="document-uri(/)"/>
     </xsl:variable>
