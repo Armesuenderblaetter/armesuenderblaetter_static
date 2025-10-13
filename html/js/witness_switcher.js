@@ -834,39 +834,155 @@ class WitnessSwitcher {
 
         console.log(`✅ UI: Found .page-links container for "${this.currentWitness}"`);
         
-        // Clear existing links
-        ul.innerHTML = '';
-        
         // Get entries for current witness
         const entries = this.witnessPagesMap.get(this.currentWitness) || [];
         console.log(`🔍 UI: Found ${entries.length} entries for witness "${this.currentWitness}"`);
-        
-        // Build links for current witness
-        console.log(`🔧 UI: About to build ${entries.length} links...`);
-        entries.forEach((entry, idx) => {
-            if (idx < 3) console.log(`🔧 UI: Building link ${idx + 1} for entry:`, {index: entry.index, source: entry.source});
-            const li = document.createElement('li');
-            li.className = 'list-inline-item';
-            const a = document.createElement('a');
-            
-            const pageNumber = entry.index + 1;
-            const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-            a.href = `${baseUrl}?tab=${pageNumber}${this.currentWitness}`;
-            
-            a.className = 'page-link';
-            a.textContent = pageNumber; // Use page number (1, 2, 3...) instead of entry.label (a, b, c...)
-            a.setAttribute('data-witness', this.currentWitness);
-            a.setAttribute('data-page-index', String(entry.index));
-            // Let the link naturally reload the page with the ?tab= parameter
-            // No click event handler needed - the href will handle the navigation
-            
-            li.appendChild(a);
-            ul.appendChild(li);
-        });
-        
-        console.log(`✅ UI: Built ${entries.length} pagination links for current witness "${this.currentWitness}"`);
-        console.log(`🔍 UI: ul.children.length after build:`, ul.children.length);
-        console.log(`🔍 UI: First 3 links HTML:`, Array.from(ul.children).slice(0, 3).map(li => li.outerHTML));
+
+        let isInternalUpdate = false;
+
+        const attachUlObserver = () => {
+            if (!ul) {
+                return;
+            }
+
+            if (ul._linksPersistenceObserver) {
+                try { ul._linksPersistenceObserver.disconnect(); } catch (_) {}
+                delete ul._linksPersistenceObserver;
+            }
+
+            try {
+                const observer = new MutationObserver(mutations => {
+                    if (isInternalUpdate) {
+                        return;
+                    }
+
+                    const childListChange = mutations.some(m => m.type === 'childList');
+                    if (!childListChange) {
+                        return;
+                    }
+
+                    if (!ul || ul.children.length === 0) {
+                        console.warn('⚠️ UI: Pagination links were cleared externally (UL mutation); rebuilding.');
+                        handleExternalReset();
+                    }
+                });
+
+                observer.observe(ul, { childList: true });
+                ul._linksPersistenceObserver = observer;
+            } catch (e) {
+                console.error('❌ UI: Failed to attach UL persistence observer:', e);
+            }
+        };
+
+        const handleExternalReset = () => {
+            if (isInternalUpdate) {
+                return;
+            }
+
+            if (!document.body.contains(witnessPages)) {
+                return;
+            }
+
+            let currentUl = witnessPages.querySelector('.page-links');
+            if (!currentUl) {
+                try {
+                    currentUl = document.createElement('ul');
+                    currentUl.className = 'page-links list-inline';
+                    witnessPages.appendChild(currentUl);
+                    console.warn('⚠️ UI: Recreated missing .page-links container before repopulating.');
+                } catch (creationError) {
+                    console.error('❌ UI: Could not recreate .page-links container during reset:', creationError);
+                    return;
+                }
+            }
+
+            ul = currentUl;
+            populateLinks();
+            attachUlObserver();
+        };
+
+        const ensureContainerObserver = () => {
+            if (!witnessPages) {
+                return;
+            }
+
+            if (witnessPages._linksContainerObserver) {
+                try { witnessPages._linksContainerObserver.disconnect(); } catch (_) {}
+                delete witnessPages._linksContainerObserver;
+            }
+
+            try {
+                const observer = new MutationObserver(mutations => {
+                    if (isInternalUpdate) {
+                        return;
+                    }
+
+                    const childListChange = mutations.some(m => m.type === 'childList');
+                    if (!childListChange) {
+                        return;
+                    }
+
+                    const currentUl = witnessPages.querySelector('.page-links');
+                    if (!currentUl || currentUl.children.length === 0) {
+                        console.warn('⚠️ UI: Pagination container was reset externally; rebuilding.');
+                        handleExternalReset();
+                    }
+                });
+
+                observer.observe(witnessPages, { childList: true });
+                witnessPages._linksContainerObserver = observer;
+            } catch (e) {
+                console.error('❌ UI: Failed to attach container persistence observer:', e);
+            }
+        };
+
+        const populateLinks = () => {
+            if (!ul) {
+                return;
+            }
+
+            isInternalUpdate = true;
+            try {
+                ul.innerHTML = '';
+                console.log(`🔧 UI: About to build ${entries.length} links...`);
+                entries.forEach((entry, idx) => {
+                    if (idx < 3) console.log(`🔧 UI: Building link ${idx + 1} for entry:`, { index: entry.index, source: entry.source });
+                    const li = document.createElement('li');
+                    li.className = 'list-inline-item';
+                    const a = document.createElement('a');
+
+                    const pageNumber = entry.index + 1;
+                    const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+                    a.href = `${baseUrl}?tab=${pageNumber}${this.currentWitness}`;
+
+                    a.className = 'page-link';
+                    a.textContent = pageNumber; // Use page number (1, 2, 3...) instead of entry.label (a, b, c...)
+                    a.setAttribute('data-witness', this.currentWitness);
+                    a.setAttribute('data-page-index', String(entry.index));
+
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                });
+
+                console.log(`✅ UI: Built ${entries.length} pagination links for current witness "${this.currentWitness}"`);
+                console.log(`🔍 UI: ul.children.length after build:`, ul.children.length);
+                console.log(`🔍 UI: First 3 links HTML:`, Array.from(ul.children).slice(0, 3).map(li => li.outerHTML));
+            } finally {
+                isInternalUpdate = false;
+            }
+        };
+
+        populateLinks();
+        attachUlObserver();
+        ensureContainerObserver();
+
+        // Guard against external scripts wiping the links immediately after render
+        setTimeout(() => {
+            if (!isInternalUpdate && entries.length > 0 && (!ul || ul.children.length === 0)) {
+                console.warn('⚠️ UI: Pagination links were cleared externally; rebuilding once more.');
+                handleExternalReset();
+            }
+        }, 50);
         
         // After creating pagination links, trigger osd_scroll to update them
         setTimeout(() => {
@@ -1314,10 +1430,19 @@ class WitnessSwitcher {
         try {
             // Remove active class from all tabs
             document.querySelectorAll('.nav-link').forEach(tab => tab.classList.remove('active'));
+            // Hide all tab panes
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('show', 'active');
+            });
             // Add active class to the current witness tab
             const activeTab = document.getElementById(`${witness}-tab`);
             if (activeTab) {
                 activeTab.classList.add('active');
+            }
+            // Show the corresponding tab pane
+            const activePane = document.getElementById(`${witness}-meta-data`);
+            if (activePane) {
+                activePane.classList.add('show', 'active');
             }
         } catch (e) {
             console.error('❌ Error updating tab states:', e);
