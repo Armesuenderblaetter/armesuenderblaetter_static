@@ -321,12 +321,13 @@ function updateCitationSuggestion(page_index) {
   }
   
   // Generate URL with the current page number and witness
-  const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
   let currentWitness = getCurrentWitness();
 //   console.log(`🔍 CITATION: Current witness for URL: ${currentWitness}`);
   
   // Build URL using the actual witness ID (not forcing wmW/wmR)
-  let pageUrlWithTab = `${baseUrl}?tab=${pageNum}${currentWitness}`;
+  const citationUrl = new URL(window.location.href);
+  citationUrl.searchParams.set('tab', `${pageNum}${currentWitness}`);
+  const pageUrlWithTab = citationUrl.toString();
 //   console.log(`🌐 CITATION: Generated URL: ${pageUrlWithTab}`);
   
   // Compose citation text with updated URL that includes the current page
@@ -606,8 +607,6 @@ function updatePageLinksActual(page_links) {
     return witness;
   };
   
-  const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-  
   // Update each link
   page_links.forEach(link => {
     // Get the target page index (0-based)
@@ -669,8 +668,10 @@ function updatePageLinksActual(page_links) {
         }
       } catch (_) {}
 
-      // Build the URL with cleaned witness ID
-      const newUrl = `${baseUrl}?tab=${page_num}${witness}`;
+  // Build the URL with cleaned witness ID, preserving existing search params like pbs
+  const updatedUrl = new URL(window.location.href);
+  updatedUrl.searchParams.set('tab', `${page_num}${witness}`);
+  const newUrl = updatedUrl.toString();
       
       // Update the link
       link.href = newUrl;
@@ -807,11 +808,12 @@ function setupWitnessChangeListeners() {
 //       console.log(`Direct tab click on witness: ${witnessId}`);
       
       // Get current page number (1-based)
-      const pageNumber = current_page_index + 1;
+  const pageNumber = current_page_index + 1;
       
-      // Build URL and force reload - using current page number
-      const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-      let newUrl = `${baseUrl}?tab=${pageNumber}wm${witnessId}`;
+  // Build URL and force reload - using current page number
+  const newUrlObj = new URL(window.location.href);
+  newUrlObj.searchParams.set('tab', `${pageNumber}wm${witnessId}`);
+  const newUrl = newUrlObj.toString();
       
 //       console.log(`RELOADING TO: ${newUrl}`);
       
@@ -845,13 +847,14 @@ function setupWitnessChangeListeners() {
 //         console.log(`Tab clicked for witness: ${witness}`);
         
         // Get current page number (1-based) - FIXED to use the global current_page_index
-        const pageNumber = current_page_index + 1;
+  const pageNumber = current_page_index + 1;
         
-        // Construct URL with current page number
-        const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-        let newUrl = (witness === 'primary') 
-                    ? `${baseUrl}?tab=${pageNumber}primary` 
-                    : `${baseUrl}?tab=${pageNumber}wm${witness}`;
+  // Construct URL with current page number
+  const newUrlObj = new URL(window.location.href);
+  newUrlObj.searchParams.set('tab', (witness === 'primary')
+        ? `${pageNumber}primary`
+        : `${pageNumber}wm${witness}`);
+  const newUrl = newUrlObj.toString();
         
         // Prevent default and force reload
         event.preventDefault();
@@ -872,9 +875,10 @@ function setupWitnessChangeListeners() {
 //       console.log(`Dropdown changed to: ${witness}`);
       
       // Get page number and construct URL - FIXED to use current_page_index
-      const pageNumber = current_page_index + 1;
-      const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-      const newUrl = `${baseUrl}?tab=${pageNumber}wm${witness}`;
+  const pageNumber = current_page_index + 1;
+  const newUrlObj = new URL(window.location.href);
+  newUrlObj.searchParams.set('tab', `${pageNumber}wm${witness}`);
+  const newUrl = newUrlObj.toString();
       
 //       console.log(`RELOADING TO: ${newUrl}`);
       window.location.replace(newUrl);

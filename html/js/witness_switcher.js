@@ -952,8 +952,9 @@ class WitnessSwitcher {
                     const a = document.createElement('a');
 
                     const pageNumber = entry.index + 1;
-                    const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-                    a.href = `${baseUrl}?tab=${pageNumber}${this.currentWitness}`;
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('tab', `${pageNumber}${this.currentWitness}`);
+                    a.href = url.toString();
 
                     a.className = 'page-link';
                     a.textContent = pageNumber; // Use page number (1, 2, 3...) instead of entry.label (a, b, c...)
@@ -1757,8 +1758,9 @@ function reloadPageWithWitness(witness) {
     }
     
     // Build the new URL with the FULL witness ID
-    const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-    const newUrl = `${baseUrl}?tab=${currentPage}${fullWitnessId}`;
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', `${currentPage}${fullWitnessId}`);
+    const newUrl = url.toString();
     
 
     
@@ -1864,7 +1866,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const pageNumber = pageIndex + 1;
             
             // Get base URL without parameters
-            const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
             
             // Get the FULL witness ID from the available witnesses set or extract from filename
             let fullWitnessId = witnessId;
@@ -1885,7 +1886,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Create URL with the new witness and current page - use FULL witness ID
-            const newUrl = `${baseUrl}?tab=${pageNumber}${fullWitnessId}`;
+            const url = new URL(window.location.href);
+            url.searchParams.set('tab', `${pageNumber}${fullWitnessId}`);
+            const newUrl = url.toString();
             
 //             console.log(`Witness tab clicked: ${witnessId} (full: ${fullWitnessId}), reloading to page ${pageNumber}`);
 //             console.log(`Navigating to: ${newUrl}`);
@@ -1913,8 +1916,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Always use window.current_page_index for consistency
             const pageNumber = (window.current_page_index !== undefined ? window.current_page_index : 0) + 1;
-            const baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-            const newUrl = `${baseUrl}?tab=${pageNumber}${selectedWitness}`;
+            const url = new URL(window.location.href);
+            url.searchParams.set('tab', `${pageNumber}${selectedWitness}`);
+            const newUrl = url.toString();
             
 //             console.log(`Witness dropdown changed to ${selectedWitness}, navigating to page ${pageNumber}`);
             
