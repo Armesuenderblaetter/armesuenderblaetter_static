@@ -43,7 +43,7 @@
                     <annotation-slider opt="ef"></annotation-slider>
                 </li> 
                 <li class="dropdown-item">
-                    <annotation-slider opt="lat"></annotation-slider>
+                    <annotation-slider opt="lat" disabled="true"></annotation-slider>
                 </li>
                 <!---
                 <li class="dropdown-item">

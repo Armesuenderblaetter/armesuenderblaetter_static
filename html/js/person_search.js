@@ -7,6 +7,15 @@ function makeDocLink(hit) {
   return hit.git_file_path;
 }
 
+function getDocumentLink(global_id) {
+  // Convert pers_fb_17380122_ZachariasF_d1 to fb_17380122_ZachariasF.html
+  const match = global_id.match(/^pers_(fb_\d{8}_[^_]+)/);
+  if (match) {
+    return match[1] + '.html';
+  }
+  return '#'; // fallback
+}
+
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   server: {
     apiKey: typesense_search_key,
@@ -89,7 +98,7 @@ search.addWidgets([
           </a>
           <div class="row">
             <div class="col-md-12 col-3  align-items-center">
-              <a href="${hit.id}.html">
+              <a href="${getDocumentLink(hit.global_id)}">
                 <div class="col" >
                   <img
                     src="${iiif_server_base_path + hit.thumbnail + iiif_attribs}"

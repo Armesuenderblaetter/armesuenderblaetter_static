@@ -7,6 +7,35 @@
   display: none;
 }
 
+/* Disabled state styling for annotation-slider */
+annotation-slider[disabled="true"] {
+  opacity: 0.4;
+  pointer-events: none;
+  user-select: none;
+}
+
+annotation-slider[disabled="true"] .switch {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+annotation-slider[disabled="true"] label {
+  color: #999;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+annotation-slider[disabled="true"] input[type="checkbox"] {
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+annotation-slider[disabled="true"] .i-slider {
+  cursor: not-allowed;
+  pointer-events: none;
+  background-color: #e0e0e0 !important;
+}
+
 /* The switch - the box around the slider */
 .switch {
   position: relative;

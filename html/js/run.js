@@ -275,3 +275,50 @@ setTimeout(() => {
     });
   }
 }, 100);
+
+// Handle disabled annotation-sliders
+setTimeout(() => {
+  const disabledSliders = document.querySelectorAll('annotation-slider[disabled="true"]');
+  
+  disabledSliders.forEach(slider => {
+    // Disable the checkbox input
+    const checkbox = slider.querySelector('input[type="checkbox"]');
+    if (checkbox) {
+      checkbox.disabled = true;
+    }
+    
+    // Add disabled class to parent dropdown-item
+    const parentDropdownItem = slider.closest('.dropdown-item');
+    if (parentDropdownItem) {
+      parentDropdownItem.classList.add('disabled-annotation-slider');
+    }
+    
+    // Prevent all click events on the slider
+    slider.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }, true);
+    
+    // Prevent clicks on any child elements
+    const clickables = slider.querySelectorAll('*');
+    clickables.forEach(element => {
+      element.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }, true);
+    });
+    
+    // Prevent clicks on parent dropdown-item
+    if (parentDropdownItem) {
+      parentDropdownItem.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }, true);
+    }
+    
+    console.log('🔒 Disabled annotation-slider:', slider.getAttribute('opt'));
+  });
+}, 200);

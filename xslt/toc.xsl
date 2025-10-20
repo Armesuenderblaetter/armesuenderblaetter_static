@@ -131,7 +131,23 @@
                                             </xsl:choose>
                                         </td>
                                         <td>
-                                            <xsl:value-of select="./tei:desc/tei:placeName/text()"/>
+                                            <xsl:choose>
+                                                <xsl:when test=".//tei:pubPlace">
+                                                    <xsl:for-each select="distinct-values((.//tei:pubPlace/text()[normalize-space(.)], .//tei:pubPlace/tei:placeName/text()[normalize-space(.)]))">
+                                                        <xsl:if test="position() > 1">, </xsl:if>
+                                                        <xsl:value-of select="."/>
+                                                    </xsl:for-each>
+                                                </xsl:when>
+                                                <xsl:when test=".//tei:settlement">
+                                                    <xsl:for-each select="distinct-values(.//tei:settlement/text()[normalize-space(.)])">
+                                                        <xsl:if test="position() > 1">, </xsl:if>
+                                                        <xsl:value-of select="."/>
+                                                    </xsl:for-each>
+                                                </xsl:when>
+                                                <xsl:otherwise>
+                                                    <xsl:text></xsl:text>
+                                                </xsl:otherwise>
+                                            </xsl:choose>
                                         </td>
                                         <!-- <td>
                                             <xsl:value-of select="tokenize($full_path, '/')[last()]" />

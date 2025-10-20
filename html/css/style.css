@@ -700,6 +700,24 @@ dd {
       font-weight: bold;
 }
 
+/* Override dropdown-item styles for disabled annotation-sliders */
+li.dropdown-item:has(annotation-slider[disabled="true"]):active,
+li.dropdown-item:has(annotation-slider[disabled="true"]):hover,
+.dropdown-item:has(annotation-slider[disabled="true"]):active,
+.dropdown-item:has(annotation-slider[disabled="true"]):hover,
+.dropdown-item.disabled-annotation-slider:active,
+.dropdown-item.disabled-annotation-slider:hover,
+.dropdown-item.disabled-annotation-slider:focus,
+.dropdown-item.disabled-annotation-slider {
+    font-weight: normal !important;
+    color: #999 !important;
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+    background-color: var(--asb-background-colour) !important;
+    /* Prevent any background changes */
+    background: var(--asb-background-colour) !important;
+}
+
 .ais-Pagination-item--selected .ais-Pagination-link {
     background-color:  var(--asb-link-colour) !important;
     border-color:  var(--asb-link-colour) !important;
