@@ -33,31 +33,44 @@
         </xsl:for-each>
     </xsl:template>
     <xsl:template match="tei:listWit" name="witness_tabs">
-        <ul class="nav nav-tabs" id="witness_overview" role="tablist">
-            <xsl:call-template name="primary-wit"/>
-            <xsl:call-template name="secondary-wit"/>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="person_overview-tab" data-bs-toggle="tab"
-                    data-bs-target="#person_overview-tab-meta-data" type="button" role="tab"
-                    aria-controls="person_overview-tab-aria" aria-selected="false">
-                    <xsl:text>Personen</xsl:text>
-                </button>
-            </li>
-        </ul>
+        <xsl:variable name="witness_count" select="count(//tei:witness)"/>
+        <xsl:if test="$witness_count &gt;= 2">
+            <ul class="nav nav-tabs" id="witness_overview" role="tablist">
+                <xsl:call-template name="primary-wit"/>
+                <xsl:call-template name="secondary-wit"/>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="person_overview-tab" data-bs-toggle="tab"
+                        data-bs-target="#person_overview-tab-meta-data" type="button" role="tab"
+                        aria-controls="person_overview-tab-aria" aria-selected="false">
+                        <xsl:text>Personen</xsl:text>
+                    </button>
+                </li>
+            </ul>
+        </xsl:if>
         <div class="tab-content">
             <xsl:for-each select="//tei:witness">
                 <xsl:variable name="wit_id">
                     <xsl:value-of select="@xml:id"/>
                 </xsl:variable>
                 <div id="{$wit_id}-meta-data" role="tabpanel" aria-labelledby="#{$wit_id}-tab">
-                    <xsl:attribute name="class">
-                        <xsl:value-of select="'tab-pane fade'"/>
-                    </xsl:attribute>
-                    <xsl:if test="@type = 'primary'">
-                        <xsl:attribute name="class">
-                            <xsl:value-of select="'tab-pane fade show active'"/>
-                        </xsl:attribute>
-                    </xsl:if>
+                    <xsl:choose>
+                        <xsl:when test="$witness_count &gt;= 2">
+                            <xsl:attribute name="class">
+                                <xsl:value-of select="'tab-pane fade'"/>
+                            </xsl:attribute>
+                            <xsl:if test="@type = 'primary'">
+                                <xsl:attribute name="class">
+                                    <xsl:value-of select="'tab-pane fade show active'"/>
+                                </xsl:attribute>
+                            </xsl:if>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <!-- When there are fewer than 2 witnesses, show content without tab classes -->
+                            <xsl:attribute name="class">
+                                <xsl:value-of select="'show'"/>
+                            </xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
                     <table>
                         <tbody>
                             <tr>
@@ -111,9 +124,19 @@
                 </div>
             </xsl:for-each>
             <div id="person_overview-tab-meta-data" role="tabpanel" aria-labelledby="#person_overview-tab">
-                <xsl:attribute name="class">
-                    <xsl:value-of select="'tab-pane fade'"/>
-                </xsl:attribute>
+                <xsl:choose>
+                    <xsl:when test="$witness_count &gt;= 2">
+                        <xsl:attribute name="class">
+                            <xsl:value-of select="'tab-pane fade'"/>
+                        </xsl:attribute>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <!-- When there are fewer than 2 witnesses, show content without tab classes -->
+                        <xsl:attribute name="class">
+                            <xsl:value-of select="'show'"/>
+                        </xsl:attribute>
+                    </xsl:otherwise>
+                </xsl:choose>
                <xsl:call-template name="build_persons_overview"/>
             </div>
         </div>
