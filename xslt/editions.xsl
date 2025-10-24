@@ -89,9 +89,9 @@
                                 </h1>
                             </xsl:if>
                         </div>
-                        <div id="editor-widget">
+                        <!-- <div id="editor-widget">
                                 <xsl:call-template name="annotation-options"/>
-                            </div>
+                            </div> -->
                     </div>
                     <div class="edition-content row body">
                         <div id="facsimiles" class="col-6">

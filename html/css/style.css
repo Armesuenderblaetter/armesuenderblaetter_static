@@ -618,13 +618,8 @@ span.sic:hover::before {
 }
 
 
-.split-word-part-1:has(+ br.lb.current:not([style*="display: none"]))::after {
-    content: "⹀";
-    margin-left: 0px;
-}
-
-/* Show split word indicator when pbs is enabled and element is on current page */
-body:not(.pbs-hidden) .split-word-part-1.current-page:has(+ br.lb.current)::after {
+.split-word-part-1:has(+ br.lb.current:not([style*="display: none"]))::after,
+.split-word-part-1.current-page:has(+ br.lb.current)::after {
     content: "⹀";
     margin-left: 0px;
 }
@@ -980,15 +975,6 @@ body[data-active-witness="wmR"] [wit="#wmR"] {
 
 .anchored-note::after, div.icon_desc .current-page::after {
     content: "]";
-}
-
-/* Fix for line breaks toggle causing main element height doubling */
-body.pbs-hidden .lb {
-    display: none !important;
-}
-
-body.pbs-hidden br.lb {
-    display: none !important;
 }
 
 /* Ensure line breaks don't affect container height when visible */
