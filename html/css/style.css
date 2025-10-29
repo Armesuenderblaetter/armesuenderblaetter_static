@@ -996,14 +996,21 @@ br.lb.current {
 }
 
 .witness-pages {
-	/* Occupy the right half of the available space while keeping the block centered within it */
+	/* Occupy the right half of the available space */
 	width: 50%;
 	margin-left: auto;
 	margin-right: 0;
 }
 
 .witness-pages .witness-pagination {
-	/* Center pagination controls within the constrained witness-pages container */
+	/* Align pagination controls to the left within the right-side container */
 	display: flex;
-	justify-content: center;
+	justify-content: flex-start;
+}
+
+.witness-pages .page-links {
+	/* Make pagination list expand to full width */
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
 }
