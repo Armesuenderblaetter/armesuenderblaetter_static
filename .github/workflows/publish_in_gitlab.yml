@@ -40,6 +40,9 @@ jobs:
         cp -r data_repo/json .
         cp -r data_repo/meta/ data
         ./shellscripts/dl_imprint.sh
+    - name: Filter editions for Vienna executions
+      run: |
+        python pyscripts/filter_editions.py --editions-dir data/editions --events-file data/indices/events.xml
     - name: setup typesense
       run: |
         # ./pyscripts/reverse_name.py ./json/persons.json
