@@ -7,13 +7,28 @@ function makeDocLink(hit) {
   return hit.git_file_path;
 }
 
-function getDocumentLink(global_id) {
-  // Convert pers_fb_17380122_ZachariasF_d1 to fb_17380122_ZachariasF.html
+function getFirstWitness(hit) {
+  if (hit && typeof hit.thumbnail === "string") {
+    const match = hit.thumbnail.match(/_([^.\/]+)\.jp2$/);
+    if (match && match[1]) {
+      return match[1];
+    }
+  }
+  return null;
+}
+
+function getDocumentLink(hit) {
+  const global_id = hit && hit.global_id;
+  if (!global_id) {
+    return '#';
+  }
   const match = global_id.match(/^pers_(fb_\d{8}_[^_]+)/);
   if (match) {
-    return match[1] + '.html';
+    const base = `${match[1]}.html`;
+    const witness = getFirstWitness(hit);
+    return witness ? `${base}?tab=1${witness}` : base;
   }
-  return '#'; // fallback
+  return '#';
 }
 
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
@@ -98,7 +113,7 @@ search.addWidgets([
           </a>
           <div class="row">
             <div class="col-md-12 col-3  align-items-center">
-              <a href="${getDocumentLink(hit.global_id)}">
+              <a href="${getDocumentLink(hit)}">
                 <div class="col" >
                   <img
                     src="${iiif_server_base_path + hit.thumbnail + iiif_attribs}"
@@ -377,7 +392,9 @@ search.addWidgets([
 search.start();
 
 var tsInput = document.querySelector("input[type='search']");
-tsInput.addEventListener("input", updateHeaderUrl);
+if (tsInput) {
+  tsInput.addEventListener("input", updateHeaderUrl);
+}
 
 function listenToPagination() {
   setTimeout(() => {
@@ -395,24 +412,33 @@ setTimeout(() => {
 function updateHeaderUrl() {
   setTimeout(() => {
     var urlToUpdate = document.querySelectorAll(".ais-Hits-item a");
-    var tsInputVal = tsInput.value;
+    var tsInputVal = tsInput ? tsInput.value : "";
 
     urlToUpdate.forEach((el) => {
-      var urlToUpdateHref = el.getAttribute("href");
-      if (urlToUpdateHref.includes("?mark=")) {
-        var newUrl = urlToUpdateHref.replace(
-          /\?mark=\.+$/,
-          `?mark=${tsInputVal}`
-        );
-        el.setAttribute("href", newUrl);
-      } else {
-        var searchParams = new URLSearchParams("?mark=default");
-        searchParams.set("mark", tsInputVal);
-        var url = `${
-          urlToUpdateHref.split("#")[0]
-        }?${searchParams.toString()}#${urlToUpdateHref.split("#")[1]}`;
-        el.setAttribute("href", url);
+      var href = el.getAttribute("href");
+      if (!href || href.startsWith("#")) {
+        return;
       }
+
+      let urlObj;
+      try {
+        urlObj = new URL(href, window.location.href);
+      } catch (_) {
+        return;
+      }
+
+      if (tsInputVal && tsInputVal.length > 0) {
+        urlObj.searchParams.set("mark", tsInputVal);
+      } else {
+        urlObj.searchParams.delete("mark");
+      }
+
+      const relative =
+        urlObj.origin === window.location.origin
+          ? `${urlObj.pathname.replace(/^\//, "")}${urlObj.search}${urlObj.hash}`
+          : urlObj.toString();
+
+      el.setAttribute("href", relative);
     });
 
     listenToPagination();

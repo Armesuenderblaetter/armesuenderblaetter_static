@@ -47,6 +47,25 @@ function get_iif_link(filename) {
   return `${iiif_server_base_path}${filename}${iiif_attribs}`;
 }
 
+function getFirstWitness(hit) {
+  if (hit && typeof hit.thumbnail === "string") {
+    const match = hit.thumbnail.match(/_([^.\/]+)\.jp2$/);
+    if (match && match[1]) {
+      return match[1];
+    }
+  }
+  return null;
+}
+
+function buildDocumentUrl(hit) {
+  const base = `${hit.id}.html`;
+  const witness = getFirstWitness(hit);
+  if (!witness) {
+    return base;
+  }
+  return `${base}?tab=1${witness}`;
+}
+
 search.addWidgets([
   instantsearch.widgets.searchBox({
     container: "#searchbox",
@@ -68,14 +87,15 @@ search.addWidgets([
       item(hit, { html, components }) {
         console.log(hit) ; 
         console.log(get_iif_link(hit.thumbnail));
+        const documentUrl = buildDocumentUrl(hit);
         return html`
-          <a href="${hit.id}.html">
+          <a href="${documentUrl}">
             <h5 style="display: block; padding-bottom: 1rem; font-size: 1.2rem;">
               ${hit.title}
             </h5>
           </a>
           <div class="row align-items-baseline">
-            <a href="${hit.id}.html">
+            <a href="${documentUrl}">
               <div class="col">
                 <img
                   src="${get_iif_link(hit.thumbnail)}"
@@ -270,7 +290,9 @@ search.addWidgets([
 search.start();
 
 var tsInput = document.querySelector("input[type='search']");
-tsInput.addEventListener("input", updateHeaderUrl);
+if (tsInput) {
+  tsInput.addEventListener("input", updateHeaderUrl);
+}
 
 function listenToPagination() {
   setTimeout(() => {
@@ -288,24 +310,33 @@ setTimeout(() => {
 function updateHeaderUrl() {
   setTimeout(() => {
     var urlToUpdate = document.querySelectorAll(".ais-Hits-item a");
-    var tsInputVal = tsInput.value;
+    var tsInputVal = tsInput ? tsInput.value : "";
 
     urlToUpdate.forEach((el) => {
-      var urlToUpdateHref = el.getAttribute("href");
-      if (urlToUpdateHref.includes("?mark=")) {
-        var newUrl = urlToUpdateHref.replace(
-          /\?mark=\.+$/,
-          `?mark=${tsInputVal}`
-        );
-        el.setAttribute("href", newUrl);
-      } else {
-        var searchParams = new URLSearchParams("?mark=default");
-        searchParams.set("mark", tsInputVal);
-        var url = `${
-          urlToUpdateHref.split("#")[0]
-        }?${searchParams.toString()}#${urlToUpdateHref.split("#")[1]}`;
-        el.setAttribute("href", url);
+      var href = el.getAttribute("href");
+      if (!href || href.startsWith("#")) {
+        return;
       }
+
+      let urlObj;
+      try {
+        urlObj = new URL(href, window.location.href);
+      } catch (_) {
+        return;
+      }
+
+      if (tsInputVal && tsInputVal.length > 0) {
+        urlObj.searchParams.set("mark", tsInputVal);
+      } else {
+        urlObj.searchParams.delete("mark");
+      }
+
+      const relative =
+        urlObj.origin === window.location.origin
+          ? `${urlObj.pathname.replace(/^\//, "")}${urlObj.search}${urlObj.hash}`
+          : urlObj.toString();
+
+      el.setAttribute("href", relative);
     });
 
     listenToPagination();

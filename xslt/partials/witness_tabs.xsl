@@ -48,6 +48,7 @@
             </ul>
         </xsl:if>
         <div class="tab-content">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/algolia-min.css" />
             <xsl:for-each select="//tei:witness">
                 <xsl:variable name="wit_id">
                     <xsl:value-of select="@xml:id"/>
@@ -99,10 +100,12 @@
                     
                     <!-- Add empty container for witness pages, to be filled by witness_switcher.js -->
                     <div class="witness-pages mt-3">
-                        <xsl:text>Seiten: </xsl:text>
-                        <ul class="list-inline page-links">
-                            <!-- Page links will be populated dynamically by JavaScript -->
-                        </ul>
+                        <!-- <span class="pagination-label">Seiten:</span> -->
+                        <nav class="witness-pagination ais-Pagination" aria-label="Seitennavigation">
+                            <ul class="page-links ais-Pagination-list">
+                                <!-- Pagination items are injected dynamically -->
+                            </ul>
+                        </nav>
                     </div>
                     
                     <!-- <xsl:if test="@type = 'secondary'">

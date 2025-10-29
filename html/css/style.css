@@ -618,13 +618,8 @@ span.sic:hover::before {
 }
 
 
-.split-word-part-1:has(+ br.lb.current:not([style*="display: none"]))::after {
-    content: "⹀";
-    margin-left: 0px;
-}
-
-/* Show split word indicator when pbs is enabled and element is on current page */
-body:not(.pbs-hidden) .split-word-part-1.current-page:has(+ br.lb.current)::after {
+.split-word-part-1:has(+ br.lb.current:not([style*="display: none"]))::after,
+.split-word-part-1.current-page:has(+ br.lb.current)::after {
     content: "⹀";
     margin-left: 0px;
 }
@@ -982,15 +977,6 @@ body[data-active-witness="wmR"] [wit="#wmR"] {
     content: "]";
 }
 
-/* Fix for line breaks toggle causing main element height doubling */
-body.pbs-hidden .lb {
-    display: none !important;
-}
-
-body.pbs-hidden br.lb {
-    display: none !important;
-}
-
 /* Ensure line breaks don't affect container height when visible */
 br.lb.current {
     display: inline;
@@ -1000,4 +986,24 @@ br.lb.current {
     font-size: inherit;
     line-height: inherit;
     height: auto;
+}
+
+
+.mark-highlight {
+	background-color: #fff6a0;
+	color: inherit;
+	transition: background-color 0.6s ease;
+}
+
+.witness-pages {
+	/* Occupy the right half of the available space while keeping the block centered within it */
+	width: 50%;
+	margin-left: auto;
+	margin-right: 0;
+}
+
+.witness-pages .witness-pagination {
+	/* Center pagination controls within the constrained witness-pages container */
+	display: flex;
+	justify-content: center;
 }

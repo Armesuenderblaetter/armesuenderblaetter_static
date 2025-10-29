@@ -217,7 +217,7 @@ var viewer = OpenSeadragon({
   constrainDuringPan: true,
   visibilityRatio: 1,
   showNavigationControl: true,
-  showSequenceControl: true,
+  showSequenceControl: false,
 });
 
 // if anybody can explain to me, why I need that function

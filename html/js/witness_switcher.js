@@ -796,22 +796,22 @@ class WitnessSwitcher {
         // Stamp container with its witness for clarity (non-breaking)
         try { witnessPages.setAttribute('data-witness', this.currentWitness); } catch(_) {}
 
-        // Ensure a heading and a .page-links container exist
-        let heading = witnessPages.querySelector('h5');
-        console.log('🔍 UI: Found h5 heading:', heading);
-        console.log('🔍 UI: witnessPages text content:', witnessPages.textContent.trim());
-        
-        // Only create heading if there's no h5 AND no "Seiten:" text already
-        if (!heading && !witnessPages.textContent.includes('Seiten:')) {
-            try {
-                console.log(`🔧 UI: Creating heading for "${this.currentWitness}"`);
-                heading = document.createElement('h5');
-                heading.textContent = 'Seiten:';
-                witnessPages.prepend(heading);
-            } catch(_) {}
-        } else {
-            console.log('🔍 UI: Using existing heading/text, not creating new one');
+        // Remove legacy headings so layout stays compact
+        const legacyHeading = witnessPages.querySelector('h5');
+        if (legacyHeading) {
+            console.log('� UI: Removing legacy heading element to avoid duplicate labels');
+            try { legacyHeading.remove(); } catch(_) {}
         }
+
+        const ensureNav = () => {
+            let nav = witnessPages.querySelector('nav.witness-pagination');
+            if (!nav) {
+                nav = document.createElement('nav');
+                nav.className = 'witness-pagination ais-Pagination';
+                witnessPages.appendChild(nav);
+            }
+            return nav;
+        };
 
         let ul = witnessPages.querySelector('.page-links');
         console.log('🔍 UI: Found existing .page-links:', ul);
@@ -822,9 +822,10 @@ class WitnessSwitcher {
         if (!ul) {
             try {
                 console.log(`🔧 UI: Creating .page-links for "${this.currentWitness}"`);
+                const nav = ensureNav();
                 ul = document.createElement('ul');
-                ul.className = 'page-links list-inline';
-                witnessPages.appendChild(ul);
+                ul.className = 'page-links ais-Pagination-list';
+                nav.appendChild(ul);
             } catch(_) {}
         }
         if (!ul) { 
@@ -886,9 +887,10 @@ class WitnessSwitcher {
             let currentUl = witnessPages.querySelector('.page-links');
             if (!currentUl) {
                 try {
+                    const nav = ensureNav();
                     currentUl = document.createElement('ul');
-                    currentUl.className = 'page-links list-inline';
-                    witnessPages.appendChild(currentUl);
+                    currentUl.className = 'page-links ais-Pagination-list';
+                    nav.appendChild(currentUl);
                     console.warn('⚠️ UI: Recreated missing .page-links container before repopulating.');
                 } catch (creationError) {
                     console.error('❌ UI: Could not recreate .page-links container during reset:', creationError);
@@ -945,25 +947,80 @@ class WitnessSwitcher {
             try {
                 ul.innerHTML = '';
                 console.log(`🔧 UI: About to build ${entries.length} links...`);
+
+                const currentIndex = (typeof window.current_page_index === 'number')
+                    ? Math.min(Math.max(window.current_page_index, 0), Math.max(entries.length - 1, 0))
+                    : 0;
+
+                const buildHref = (pageIndex) => {
+                    const pageNumber = pageIndex + 1;
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('tab', `${pageNumber}${this.currentWitness}`);
+                    return url.toString();
+                };
+
+                const addControl = (typeClass, targetIndex, text, ariaLabel) => {
+                    const li = document.createElement('li');
+                    li.className = `ais-Pagination-item ${typeClass}`;
+                    const isDisabled = targetIndex === null;
+                    if (isDisabled) {
+                        li.classList.add('ais-Pagination-item--disabled');
+                        const span = document.createElement('span');
+                        span.className = 'ais-Pagination-link';
+                        span.textContent = text;
+                        li.appendChild(span);
+                    } else {
+                        const a = document.createElement('a');
+                        a.className = 'ais-Pagination-link page-link';
+                        a.textContent = text;
+                        if (ariaLabel) a.setAttribute('aria-label', ariaLabel);
+                        a.href = buildHref(targetIndex);
+                        a.setAttribute('data-witness', this.currentWitness);
+                        a.setAttribute('data-page-index', String(targetIndex));
+                        // Don't prevent default - let the link navigate and reload the page
+                        li.appendChild(a);
+                    }
+                    ul.appendChild(li);
+                };
+
+                const total = entries.length;
+                if (total === 0) {
+                    return;
+                }
+
+                addControl('ais-Pagination-item--firstPage', currentIndex > 0 ? 0 : null, '«', 'First');
+                addControl('ais-Pagination-item--previousPage', currentIndex > 0 ? currentIndex - 1 : null, '‹', 'Previous');
+
                 entries.forEach((entry, idx) => {
                     if (idx < 3) console.log(`🔧 UI: Building link ${idx + 1} for entry:`, { index: entry.index, source: entry.source });
                     const li = document.createElement('li');
-                    li.className = 'list-inline-item';
+                    li.className = 'ais-Pagination-item ais-Pagination-item--page';
+                    if (idx === currentIndex) {
+                        li.classList.add('ais-Pagination-item--selected');
+                    }
                     const a = document.createElement('a');
 
                     const pageNumber = entry.index + 1;
-                    const url = new URL(window.location.href);
-                    url.searchParams.set('tab', `${pageNumber}${this.currentWitness}`);
-                    a.href = url.toString();
+                    a.href = buildHref(entry.index);
 
-                    a.className = 'page-link';
-                    a.textContent = pageNumber; // Use page number (1, 2, 3...) instead of entry.label (a, b, c...)
+                    a.className = 'ais-Pagination-link page-link';
+                    a.textContent = pageNumber;
+                    a.setAttribute('aria-label', String(pageNumber));
                     a.setAttribute('data-witness', this.currentWitness);
                     a.setAttribute('data-page-index', String(entry.index));
+                    if (idx === currentIndex) {
+                        a.classList.add('active');
+                        a.setAttribute('aria-current', 'page');
+                    }
+
+                    // Don't prevent default - let the link navigate and reload the page
 
                     li.appendChild(a);
                     ul.appendChild(li);
                 });
+
+                addControl('ais-Pagination-item--nextPage', currentIndex < total - 1 ? currentIndex + 1 : null, '›', 'Next');
+                addControl('ais-Pagination-item--lastPage', currentIndex < total - 1 ? total - 1 : null, '»', 'Last');
 
                 console.log(`✅ UI: Built ${entries.length} pagination links for current witness "${this.currentWitness}"`);
                 console.log(`🔍 UI: ul.children.length after build:`, ul.children.length);
@@ -1006,8 +1063,10 @@ class WitnessSwitcher {
             this.navigateViewerToIndex(index);
             this.syncTextWithPage(index); // This will update the text display
         }
+        window.current_page_index = index;
         this.updatePaginationActiveState(witness, index);
         this.updateBrowserState(witness, index);
+        this.rebuildPaginationLinksForCurrentWitness();
     }
 
     navigateViewerToIndex(index) {
@@ -1033,9 +1092,19 @@ class WitnessSwitcher {
             
             if (!container) return;
             
-            container.querySelectorAll('.page-link').forEach(a => a.classList.remove('active'));
+            container.querySelectorAll('.page-link').forEach(a => {
+                a.classList.remove('active');
+                a.removeAttribute('aria-current');
+                const parent = a.closest('.ais-Pagination-item');
+                if (parent) parent.classList.remove('ais-Pagination-item--selected');
+            });
             const current = container.querySelector(`.page-link[data-page-index="${pageIndex}"]`);
-            if (current) current.classList.add('active');
+            if (current) {
+                current.classList.add('active');
+                current.setAttribute('aria-current', 'page');
+                const parent = current.closest('.ais-Pagination-item');
+                if (parent) parent.classList.add('ais-Pagination-item--selected');
+            }
         } catch (e) {
             // console.error('❌ updatePaginationActiveState error:', e);
         }
@@ -1498,8 +1567,8 @@ class WitnessSwitcher {
                 const tabPane = document.createElement('div'); tabPane.className='tab-pane fade'; tabPane.id = `${witnessId}-meta-data`;
                 tabPane.setAttribute('role','tabpanel'); tabPane.setAttribute('aria-labelledby', `${witnessId}-tab`);
                 const witnessPages = document.createElement('div'); witnessPages.className='witness-pages mt-3';
-                const heading = document.createElement('h5'); heading.textContent = 'Seiten:'; witnessPages.appendChild(heading);
-                const pageLinks = document.createElement('ul'); pageLinks.className='page-links list-inline'; witnessPages.appendChild(pageLinks);
+                const nav = document.createElement('nav'); nav.className = 'witness-pagination ais-Pagination'; witnessPages.appendChild(nav);
+                const pageLinks = document.createElement('ul'); pageLinks.className='page-links ais-Pagination-list'; nav.appendChild(pageLinks);
                 tabPane.appendChild(witnessPages); contentContainer.appendChild(tabPane);
             });
         } catch(e) { console.error('❌ createWitnessTabs error', e); }
@@ -1545,15 +1614,15 @@ class WitnessSwitcher {
             container.className = 'witness-pages mt-3';
             container.style.cssText = 'display: block !important; visibility: visible !important; padding: 20px; border: 1px solid #ccc; background: #f9f9f9;';
             
-            const heading = document.createElement('h5');
-            heading.textContent = 'Seiten:';
-            heading.style.cssText = 'display: block !important; margin-bottom: 10px;';
-            container.appendChild(heading);
-            
+            const nav = document.createElement('nav');
+            nav.className = 'witness-pagination ais-Pagination';
+            nav.style.cssText = 'display:block !important;';
+            container.appendChild(nav);
+
             const ul = document.createElement('ul');
-            ul.className = 'page-links list-inline';
+            ul.className = 'page-links ais-Pagination-list';
             ul.style.cssText = 'display: block !important; list-style: none; margin: 0; padding: 0;';
-            container.appendChild(ul);
+            nav.appendChild(ul);
             
             parent.appendChild(container);
             
@@ -1571,6 +1640,101 @@ new WitnessSwitcher();
 
 // Keep the initial one-time refresh
 if (window.updatePageLinks) window.updatePageLinks();
+
+// Highlight search terms passed via ?mark= query parameter
+function getMarkSearchTerms() {
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const rawMark = params.get('mark');
+        if (!rawMark) return [];
+        return rawMark
+            .split(/\s+/)
+            .map(term => term.trim())
+            .filter(term => term.length > 1);
+    } catch (_) {
+        return [];
+    }
+}
+
+function clearExistingHighlights(container) {
+    const existing = container.querySelectorAll('span.mark-highlight');
+    existing.forEach(span => {
+        const parent = span.parentNode;
+        if (!parent) return;
+        while (span.firstChild) {
+            parent.insertBefore(span.firstChild, span);
+        }
+        parent.removeChild(span);
+    });
+}
+
+function highlightTerm(container, term) {
+    if (!term) return;
+    const safeTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    if (!safeTerm) return;
+    const regex = new RegExp(safeTerm, 'gi');
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+    const targets = [];
+    let node;
+    while ((node = walker.nextNode())) {
+        if (node.parentElement && node.parentElement.closest('.pb')) {
+            // Skip page break tokens to avoid corrupting markup
+            continue;
+        }
+        if (regex.test(node.textContent)) {
+            targets.push(node);
+        }
+        regex.lastIndex = 0;
+    }
+
+    targets.forEach(textNode => {
+        const originalText = textNode.textContent;
+        if (!originalText) return;
+        regex.lastIndex = 0;
+        const fragment = document.createDocumentFragment();
+        let lastIndex = 0;
+        let match;
+        while ((match = regex.exec(originalText)) !== null) {
+            const before = originalText.slice(lastIndex, match.index);
+            if (before) fragment.appendChild(document.createTextNode(before));
+            const markSpan = document.createElement('span');
+            markSpan.className = 'mark-highlight';
+            markSpan.textContent = match[0];
+            fragment.appendChild(markSpan);
+            lastIndex = match.index + match[0].length;
+        }
+        const after = originalText.slice(lastIndex);
+        if (after) fragment.appendChild(document.createTextNode(after));
+        textNode.parentNode.replaceChild(fragment, textNode);
+    });
+}
+
+function scrollToFirstHighlight(container) {
+    const firstHighlight = container.querySelector('.mark-highlight');
+    if (!firstHighlight) return;
+    const rect = firstHighlight.getBoundingClientRect();
+    const offsetTop = rect.top + window.scrollY;
+    const navbar = document.querySelector('.navbar');
+    const navbarHeight = navbar ? navbar.offsetHeight : 0;
+    window.scrollTo({
+        top: Math.max(0, offsetTop - navbarHeight - 40),
+        behavior: 'smooth'
+    });
+}
+
+function applySearchHighlights() {
+    const terms = getMarkSearchTerms();
+    if (terms.length === 0) return;
+    const editionText = document.getElementById('edition-text') || document.querySelector('main');
+    if (!editionText) return;
+    clearExistingHighlights(editionText);
+    terms.forEach(term => highlightTerm(editionText, term));
+    scrollToFirstHighlight(editionText);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(applySearchHighlights, 400);
+});
 
 // Expose a function for osd_scroll.js to call when no pagination exists
 window.createPaginationIfMissing = function() {
