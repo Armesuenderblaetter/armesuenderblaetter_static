@@ -99,6 +99,11 @@
                         </div>
                         <div id="edition-text" class="col-6">
                             <xsl:apply-templates select="//tei:text/tei:*[not(local-name() = 'fs' or local-name() = 'back')]" />
+                            <xsl:for-each select="//tei:back">
+                                <div class="tei-back">
+                                    <xsl:apply-templates/>
+                                </div>
+                            </xsl:for-each>
                         </div>
                     </div>
                     <xsl:if test="count(//tei:body//tei:note[not(@anchored = 'true')]) != 0">
@@ -210,11 +215,6 @@
                         </div>
                     </xsl:if> -->
                 <xsl:call-template name="place_fullimages"/>
-                <xsl:for-each select="//tei:back">
-                    <div class="tei-back">
-                        <xsl:apply-templates/>
-                    </div>
-                </xsl:for-each>
                 <div class="citation" />
             </main>
             <xsl:call-template name="html_footer"/>

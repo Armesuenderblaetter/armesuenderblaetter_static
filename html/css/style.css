@@ -987,3 +987,23 @@ br.lb.current {
     line-height: inherit;
     height: auto;
 }
+
+
+.mark-highlight {
+	background-color: #fff6a0;
+	color: inherit;
+	transition: background-color 0.6s ease;
+}
+
+.witness-pages {
+	/* Occupy the right half of the available space while keeping the block centered within it */
+	width: 50%;
+	margin-left: auto;
+	margin-right: 0;
+}
+
+.witness-pages .witness-pagination {
+	/* Center pagination controls within the constrained witness-pages container */
+	display: flex;
+	justify-content: center;
+}
