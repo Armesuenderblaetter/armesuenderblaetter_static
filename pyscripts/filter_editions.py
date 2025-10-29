@@ -82,7 +82,10 @@ def filter_editions(editions_dir: Path, events_file: Path) -> int:
 
         places = edition_places.get(edition_id, set())
 
-        valid_places = places and all(place in ALLOWED_PLACES for place in places)
+        if places:
+            valid_places = all(place in ALLOWED_PLACES for place in places)
+        else:
+            valid_places = True
         printed_in_vienna = False
 
         if valid_places:
