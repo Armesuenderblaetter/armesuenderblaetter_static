@@ -322,6 +322,7 @@ search.addWidgets([
     container: "#occupation",
     attribute: "occupation",
     searchable: false,
+    limit: 1000,
      sortBy: ['name:asc', 'count:desc'],
     cssClasses: {
       list: "facet-list-scroll",
