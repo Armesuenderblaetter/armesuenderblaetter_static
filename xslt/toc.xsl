@@ -38,10 +38,10 @@
                         <table class="table" id="myTable">
                             <thead>
                                 <tr>
-                                    <th scope="col" />
-                                    <th scope="col">Titel</th>
-                                    <th scope="col">Datum</th>
-                                    <th scope="col">Ort</th>
+                                    <th scope="col" data-field="thumbnail" tabulator-field="thumbnail" data-tabulator-sortable="false" tabulator-sortable="false" />
+                                    <th scope="col" data-field="titel" tabulator-field="titel">Titel</th>
+                                    <th scope="col" data-field="datum" tabulator-field="datum">Datum</th>
+                                    <th scope="col" data-field="ort" tabulator-field="ort">Ort</th>
                                     <!-- <th scope="col" tabulator-headerFilter="input">Dateiname</th> -->
                                 </tr>
                             </thead>
@@ -69,6 +69,9 @@
                                             </img>
                                         </td>
                                         <td>
+                                            <xsl:attribute name="tabulator-data-sort">
+                                                <xsl:value-of select="normalize-space(.//tei:titleStmt/tei:title[1]/text())"/>
+                                            </xsl:attribute>
                                             <a>
                                                 <xsl:attribute name="href">
                                                     <xsl:value-of select="replace(tokenize($full_path, '/')[last()], '.xml', '.html')" />
