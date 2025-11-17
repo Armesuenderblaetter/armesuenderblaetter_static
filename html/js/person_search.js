@@ -336,43 +336,8 @@ search.addWidgets([
   }),
 
   instantsearch.widgets.refinementList({
-    container: "#offences",
-    attribute: "offences",
-    searchable: false,
-     sortBy: ['name:asc', 'count:desc'],
-    cssClasses: {
-      list: "facet-list-scroll",
-    },
-    /*cssClasses: {
-      showMore: "btn btn-secondary btn-sm align-content-center",
-      list: "list-unstyled",
-      count: "badge ml-2 badge-secondary hideme",
-      label: "d-flex align-items-center text-capitalize",
-      checkbox: "mr-2",
-    },*/
-  }),
-
-  instantsearch.widgets.refinementList({
     container: "#execution",
     attribute: "execution",
-    limit: 1000,
-    searchable: false,
-     sortBy: ['name:asc', 'count:desc'],
-    cssClasses: {
-      list: "facet-list-scroll",
-    },
-    /*cssClasses: {
-      showMore: "btn btn-secondary btn-sm align-content-center",
-      list: "list-unstyled",
-      count: "badge ml-2 badge-secondary hideme",
-      label: "d-flex align-items-center text-capitalize",
-      checkbox: "mr-2",
-    },*/
-  }),
-
-  instantsearch.widgets.refinementList({
-    container: "#punishments",
-    attribute: "punishments",
     limit: 1000,
     searchable: false,
      sortBy: ['name:asc', 'count:desc'],
