@@ -216,10 +216,22 @@ search.addWidgets([
   instantsearch.widgets.sortBy({
     container: "#sort-by",
     items: [
-      { label: "Jahr (absteigend)", value: "flugblaetter_todesurteile" },
-      {label: "Jahr (aufsteigend)", value: "flugblaetter_todesurteile/sort/sorting_date:asc",},
-      { label: "Titel (absteigend)", value: "flugblaetter_todesurteile" },
-      {label: "Titel (aufsteigend)", value: "flugblaetter_todesurteile/sort/titel:asc",},
+      {
+        label: "Jahr (absteigend)",
+        value: "flugblaetter_todesurteile/sort/sorting_date:desc",
+      },
+      {
+        label: "Jahr (aufsteigend)",
+        value: "flugblaetter_todesurteile/sort/sorting_date:asc",
+      },
+      {
+        label: "Titel (absteigend)",
+        value: "flugblaetter_todesurteile/sort/title:desc",
+      },
+      {
+        label: "Titel (aufsteigend)",
+        value: "flugblaetter_todesurteile/sort/title:asc",
+      },
     ],
   }),
 
