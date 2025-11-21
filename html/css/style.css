@@ -900,6 +900,17 @@ select {
     text-align: center;
 }
 
+.kwic-left-cell {
+    display: flex;
+    justify-content: flex-end;
+    overflow: hidden;
+}
+
+.kwic-left-text {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
 
 @media screen and (max-width: 1399) {
     .ais-Hits-item {   

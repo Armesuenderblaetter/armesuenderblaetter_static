@@ -3,7 +3,46 @@ var cellClassFormatter = function(cell, formatterParams){
   return cell.getValue();  // Don't forget to return content!
 };
 
+var kwicLeftStyleId = "tabulator-kwic-left-style";
 
+// Keep the styling bootstrap separate so Tabulator can rebuild safely on SPA navigation.
+function ensureKwicLeftStyle(){
+  if (document.getElementById(kwicLeftStyleId)) {
+    return;
+  }
+  var style = document.createElement("style");
+  style.id = kwicLeftStyleId;
+  style.textContent = "" +
+    ".tabulator-cell .kwic-left{" +
+    "display:inline-block;" +
+    "width:100%;" +
+    "direction:rtl;" +
+    "text-align:left;" +
+    "overflow:hidden;" +
+    "text-overflow:ellipsis;" +
+    "white-space:nowrap;" +
+    "line-height:inherit;" +
+    "}" +
+    ".tabulator-cell .kwic-left-inner{" +
+    "display:inline;" +
+    "direction:ltr;" +
+    "unicode-bidi:plaintext;" +
+    "}";
+  document.head.appendChild(style);
+}
+
+function leftContextFormatter(cell){
+  ensureKwicLeftStyle();
+  var value = cell.getValue();
+  var safeValue = value == null ? "" : String(value);
+  var outer = document.createElement("span");
+  outer.className = "kwic-left";
+  var inner = document.createElement("span");
+  inner.className = "kwic-left-inner";
+  inner.textContent = safeValue;
+  outer.appendChild(inner);
+  return outer;
+}
 
 var config = {
     //height: 800,
@@ -16,7 +55,7 @@ var config = {
     columns:[
         {title:"Datei", field:"datei", formatter:"html", download:"false", visible:"false"}, 
         {title:"Titel", field:"titel", headerFilter:"input", formatter:"html", headerSort:"true", download:"false", headerSort:"true"},
-        {title:"Linker Kotext", field:"left", headerFilter:"input", formatter:"html",download:"false", headerSort:"true"},
+        {title:"Linker Kotext", field:"left", headerFilter:"input", formatter:leftContextFormatter, download:"false", headerSort:"true", hozAlign:"right"},
         {title:"Stichwort", field:"kwic", headerFilter:"input", download:"false",  formatter:cellClassFormatter, headerSort:"true"},
         {title:"Rechter Kotext", field:"right", headerFilter:"input", formatter:"html", download:"false", headerSort:"true"}, 
     ],
