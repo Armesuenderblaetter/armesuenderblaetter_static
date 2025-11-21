@@ -829,6 +829,338 @@ var h = {
   left: "text-sm text-gray-500 p-2 text-right",
   right: "text-sm text-gray-500 p-2 text-left",
 };
+
+const THUMB_IIIF_BASE = "https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/";
+const THUMB_IIIF_SUFFIX = "/full/260,/0/default.jpg";
+const ARCHIVE_CODE_MAP = {
+  "Wienbibliothek im Rathaus": "wb",
+  "Wiener Stadt- und Landesbibliothek": "wb",
+  "Österreichische Nationalbibliothek": "oenb",
+  "Oesterreichische Nationalbibliothek": "oenb",
+  "Österreichische National-Bibliothek": "oenb",
+  "Wien Museum": "wmW",
+  "Wiener Museum": "wmW",
+  "Wien Museum Wien": "wmW",
+};
+
+const NORMALISED_ARCHIVE_CODE_MAP = Object.entries(ARCHIVE_CODE_MAP).reduce(
+  (acc, [name, code]) => {
+    acc[normaliseArchiveName(name)] = code;
+    return acc;
+  },
+  {}
+);
+
+const TYPESENSE_ENTRIES_URL = (() => {
+  try {
+    if (typeof window !== "undefined" && window.location) {
+      return new URL("../data_repo/json/typesense_entries.json", window.location.href).href;
+    }
+  } catch (error) {
+    console.warn("Unable to resolve Typesense entries URL", error);
+  }
+  return "../data_repo/json/typesense_entries.json";
+})();
+
+const typesenseMetadataState = {
+  data: null,
+  promise: null,
+  error: null,
+};
+
+let deferredThumbnailUpdateScheduled = false;
+
+function normaliseArchiveName(value) {
+  if (typeof value !== "string") return "";
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function mapArchiveNameToCode(name) {
+  if (typeof name !== "string" || name.trim().length === 0) return null;
+  const trimmed = name.trim();
+  if (ARCHIVE_CODE_MAP[trimmed]) return ARCHIVE_CODE_MAP[trimmed];
+  const normalised = normaliseArchiveName(trimmed);
+  return NORMALISED_ARCHIVE_CODE_MAP[normalised] || null;
+}
+
+function ensureTypesenseEntriesLoaded() {
+  if (typesenseMetadataState.data) {
+    return Promise.resolve(typesenseMetadataState.data);
+  }
+  if (typesenseMetadataState.promise) {
+    return typesenseMetadataState.promise;
+  }
+  if (typeof fetch !== "function") {
+    typesenseMetadataState.data = {};
+    return Promise.resolve(typesenseMetadataState.data);
+  }
+  typesenseMetadataState.promise = fetch(TYPESENSE_ENTRIES_URL)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Unexpected response status ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((json) => {
+      typesenseMetadataState.data = json || {};
+      return typesenseMetadataState.data;
+    })
+    .catch((error) => {
+      console.warn("Failed to load Typesense entries", error);
+      typesenseMetadataState.error = error;
+      typesenseMetadataState.data = {};
+      return typesenseMetadataState.data;
+    });
+  return typesenseMetadataState.promise;
+}
+
+function getTypesenseEntry(docId) {
+  if (!docId) return null;
+  if (typesenseMetadataState.data && typesenseMetadataState.data[docId]) {
+    return typesenseMetadataState.data[docId];
+  }
+  return null;
+}
+
+function getThumbnailFromTypesenseEntry(entry) {
+  if (!entry || typeof entry !== "object") return null;
+  if (typeof entry.thumbnail === "string" && entry.thumbnail.trim().length > 0) {
+    return entry.thumbnail.trim();
+  }
+  const candidates = entry.thumbnails || entry.doc_thumbnails || entry.docThumbnails;
+  if (Array.isArray(candidates)) {
+    const direct = candidates.find((value) => typeof value === "string" && value.trim().length > 0);
+    if (direct) return direct.trim();
+  } else if (candidates && typeof candidates === "object") {
+    for (const value of Object.values(candidates)) {
+      if (typeof value === "string" && value.trim().length > 0) {
+        return value.trim();
+      }
+    }
+  }
+  return null;
+}
+
+function scheduleResolveThumbnails() {
+  if (deferredThumbnailUpdateScheduled) return;
+  if (typeof document === "undefined") return;
+  deferredThumbnailUpdateScheduled = true;
+  Promise.resolve().then(() => {
+    deferredThumbnailUpdateScheduled = false;
+    resolveDeferredThumbnailCells();
+  });
+}
+
+function resolveDeferredThumbnailCells() {
+  if (typeof document === "undefined") return;
+  const cells = Array.from(
+    document.querySelectorAll('td[data-noske-thumbnail-cell="1"][data-noske-needs-resolution="1"]')
+  );
+  if (cells.length === 0) return;
+  ensureTypesenseEntriesLoaded()
+    .then(() => {
+      cells.forEach((cell) => {
+        if (!cell.isConnected) return;
+        const docIdAttr = cell.getAttribute("data-noske-doc-id");
+        const docId = docIdAttr ? decodeURIComponent(docIdAttr) : null;
+        const entry = getTypesenseEntry(docId);
+        if (!entry) return;
+        const archiveNameList = Array.isArray(entry.archives)
+          ? entry.archives
+          : typeof entry.archives === "string"
+          ? [entry.archives]
+          : [];
+        let archiveCode = null;
+        for (const name of archiveNameList) {
+          const code = mapArchiveNameToCode(name);
+          if (code) {
+            archiveCode = code;
+            break;
+          }
+        }
+    const thumbnailFilename = getThumbnailFromTypesenseEntry(entry);
+    const titleAttr = cell.getAttribute("data-noske-doc-title");
+    const storedTitle = titleAttr ? decodeURIComponent(titleAttr) : null;
+    const docTitle = entry.title || storedTitle || docId;
+        const hrefTarget = (() => {
+          const anchor = cell.querySelector("a");
+          return anchor ? anchor.getAttribute("href") : "#";
+        })();
+        const thumbUrl = buildThumbnailUrlFromDocId(docId, archiveCode, thumbnailFilename);
+        if (!thumbUrl) return;
+        const anchor = cell.querySelector("a") || (() => {
+          const link = document.createElement("a");
+          link.href = hrefTarget || "#";
+          cell.innerHTML = "";
+          cell.appendChild(link);
+          return link;
+        })();
+        const img = anchor.querySelector("img") || document.createElement("img");
+        img.src = thumbUrl;
+        img.loading = "lazy";
+        img.style.maxWidth = "6rem";
+        img.style.height = "auto";
+        img.style.display = "block";
+        img.style.margin = "0 auto";
+        const altText = docTitle ? `Deckblatt von ${docTitle}` : "Deckblatt des Flugblattes";
+        img.alt = altText;
+        if (!anchor.contains(img)) {
+          anchor.innerHTML = "";
+          anchor.appendChild(img);
+        }
+        if (docTitle) {
+          anchor.setAttribute("aria-label", docTitle);
+          anchor.setAttribute("title", docTitle);
+          cell.setAttribute("data-noske-doc-title", encodeURIComponent(docTitle));
+        }
+        cell.setAttribute("data-noske-needs-resolution", "0");
+      });
+    })
+    .catch((error) => {
+      console.warn("Unable to resolve deferred thumbnails", error);
+    });
+}
+
+const htmlEntityDecoder = (() => {
+  let textarea;
+  return (value) => {
+    if (value === void 0 || value === null) {
+      return "";
+    }
+    if (!textarea) {
+      textarea = document.createElement("textarea");
+    }
+    textarea.innerHTML = value;
+    return textarea.value;
+  };
+})();
+
+function escapeHtmlAttr(value) {
+  if (value === void 0 || value === null) return "";
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function extractDocAttrs(refs) {
+  if (!Array.isArray(refs)) return {};
+  const entry = refs.find((ref) => ref.startsWith("doc.attrs="));
+  if (!entry) return {};
+  const raw = entry.slice("doc.attrs=".length);
+  if (!raw) return {};
+  const decoded = htmlEntityDecoder(raw);
+  const replacements = (value) =>
+    value
+      .replace(/&quot;/g, '"')
+      .replace(/&#34;/g, '"')
+      .replace(/&apos;/g, "'")
+      .replace(/&#39;/g, "'")
+      .replace(/&amp;/g, "&");
+  const candidates = [];
+  const normalised = replacements(decoded);
+  candidates.push(normalised);
+  candidates.push(normalised.replace(/'/g, '"'));
+  if (normalised.includes("%7B")) {
+    try {
+      candidates.push(replacements(decodeURIComponent(normalised)));
+    } catch (e) {
+      console.warn("Unable to decode URI component for doc.attrs", {
+        value: normalised,
+        error: e,
+      });
+    }
+  }
+  if (decoded.includes("%7B") && !normalised.includes("%7B")) {
+    try {
+      candidates.push(replacements(decodeURIComponent(decoded)));
+    } catch (e) {
+      console.warn("Unable to decode original doc.attrs string", {
+        value: decoded,
+        error: e,
+      });
+    }
+  }
+  for (const candidate of candidates) {
+    if (typeof candidate !== "string" || candidate.trim() === "") continue;
+    try {
+      const parsed = JSON.parse(candidate);
+      if (parsed && typeof parsed === "object") {
+        return parsed;
+      }
+    } catch (error) {
+      continue;
+    }
+  }
+  console.warn("Unable to parse doc.attrs", { raw, decoded, candidates });
+  return {};
+}
+
+function resolveArchiveCodeFromAttrs(attrs) {
+  if (!attrs || typeof attrs !== "object") return null;
+  const archives = Array.isArray(attrs.archives)
+    ? attrs.archives
+    : typeof attrs.archives === "string" && attrs.archives.trim().length > 0
+    ? attrs.archives.split("|").map((value) => value.trim()).filter((value) => value.length > 0)
+    : [];
+  for (const archiveName of archives) {
+    const code = mapArchiveNameToCode(archiveName);
+    if (code) return code;
+  }
+  if (typeof attrs.archive === "string") {
+    const code = mapArchiveNameToCode(attrs.archive);
+    if (code) return code;
+  }
+  return null;
+}
+
+function getThumbnailFilenameFromAttrs(attrs) {
+  if (!attrs || typeof attrs !== "object") return null;
+  const direct = attrs.thumbnail || attrs.doc_thumbnail || attrs.docThumbnail;
+  if (typeof direct === "string" && direct.trim().length > 0) {
+    return direct.trim();
+  }
+  const thumbs = attrs.thumbnails || attrs.doc_thumbnails || attrs.docThumbnails;
+  if (Array.isArray(thumbs) && thumbs.length > 0) {
+    const candidate = thumbs.find((value) => typeof value === "string" && value.trim().length > 0);
+    if (candidate) {
+      return candidate.trim();
+    }
+  }
+  if (thumbs && typeof thumbs === "object") {
+    for (const value of Object.values(thumbs)) {
+      if (typeof value === "string" && value.trim().length > 0) {
+        return value.trim();
+      }
+    }
+  }
+  return null;
+}
+
+function buildThumbnailUrlFromDocId(docId, archiveCode, thumbnailFilename) {
+  const trimmedThumbnail = typeof thumbnailFilename === "string" ? thumbnailFilename.trim() : null;
+  if (trimmedThumbnail && trimmedThumbnail.length > 0) {
+    const sanitized = trimmedThumbnail.replace(/^\/*/, "").replace(/^fb_/, "");
+    return `${THUMB_IIIF_BASE}${sanitized}${THUMB_IIIF_SUFFIX}`;
+  }
+  if (!docId || typeof docId !== "string") return null;
+  const cleaned = docId.replace(/^fb_/, "");
+  const code = archiveCode || "wb";
+  return `${THUMB_IIIF_BASE}${cleaned}_a_${code}.jp2${THUMB_IIIF_SUFFIX}`;
+}
+
+function getDocTitleFromRefs(refs) {
+  if (!Array.isArray(refs)) return "";
+  const entry = refs.find((ref) => ref.startsWith("doc.title="));
+  return entry ? entry.slice("doc.title=".length) : "";
+}
 function B(r, e, t, s, o = !1, n = !1, i) {
   let a = document.querySelector(`#${t}`);
   a.innerHTML = `
@@ -848,6 +1180,7 @@ function B(r, e, t, s, o = !1, n = !1, i) {
 							<th class="${i.css?.th || h.th}">Stichwort</th>
 							<th class="${i.css?.th || h.th}">Rechter Kotext</th>`,
     f = "";
+  let requiresDeferredThumbnails = !1;
   let x = r
       .map((m) => {
         let b = m.left,
@@ -858,30 +1191,61 @@ function B(r, e, t, s, o = !1, n = !1, i) {
           N = O(E, !0),
           J = O(E, !1),
           j = s.endsWith("/") ? s : s + "/";
-		  const labels = i.labels || {};
-		  f = E.filter(w => w.length > 0 && !w.startsWith("doc.delinquent_sexes=")).map(w => {
-        const key = w.split("=")[0];
-        return `<th class="${i.css?.th || h.th}">${labels[key] || key}</th>`;
-      }).join("");
+        const labels = i.labels || {};
+        f = E.filter((w) => w.length > 0 && !w.startsWith("doc.delinquent_sexes=")).map((w) => {
+          const key = w.split("=")[0];
+          return `<th class="${i.css?.th || h.th}">${labels[key] || key}</th>`;
+        }).join("");
+        const pidEntry = E.find((w) => w.startsWith("p.id="));
+        const docidEntry = E.find((w) => w.startsWith("doc.id="));
+        const docTitleValue = getDocTitleFromRefs(E);
+        const docAttrs = extractDocAttrs(E);
+        const archiveCode = resolveArchiveCodeFromAttrs(docAttrs);
+        const thumbnailFilename = getThumbnailFilenameFromAttrs(docAttrs);
+        const ppid = pidEntry ? pidEntry.split("=")[1] : "";
+        const docIdValue = docidEntry ? docidEntry.split("=")[1] : "";
+        const baseHref = docIdValue ? `${docIdValue}.html#${ppid}` : "";
         let V = E.filter((w) => w.length > 0 && !w.startsWith("doc.delinquent_sexes="))
           .map((w) => {
             const [key, value] = w.split("=");
-            // Find p.id and doc.id values for this row
-            const pidEntry = E.find(e => e.startsWith("p.id="));
-            const docidEntry = E.find(e => e.startsWith("doc.id="));
-            const ppid = pidEntry ? pidEntry.split("=")[1] : "";
-            const pvalue = docidEntry ? docidEntry.split("=")[1] : "";
             if (key === "p.id") {
-              // Extract the number after _p_0* using regex
               const match = value.match(/_p_0*(\d+)$/);
               const pageNum = match ? match[1] : value;
               return `<td class="${i.css?.td || h.td}">${pageNum}</td>`;
             }
             if (key === "doc.id") {
-              return `<td class="${i.css?.td || h.td}"><a href="${value}.html#${ppid}">${value}</a></td>`;
+              const href = value ? `${value}.html#${ppid}` : baseHref || "#";
+              const hasThumbnailFilename = typeof thumbnailFilename === "string" && thumbnailFilename.trim().length > 0;
+              const thumbUrl = buildThumbnailUrlFromDocId(value, archiveCode, thumbnailFilename);
+              const needsDeferredResolution = !hasThumbnailFilename || !thumbUrl;
+              if (needsDeferredResolution) {
+                requiresDeferredThumbnails = !0;
+              }
+              const anchorLabelRaw = docTitleValue || value || href;
+              const safeLabelAttr = escapeHtmlAttr(anchorLabelRaw);
+              const altTextRaw = docTitleValue
+                ? `Deckblatt von ${docTitleValue}`
+                : "Deckblatt des Flugblattes";
+              const safeAltAttr = escapeHtmlAttr(altTextRaw);
+              const docIdDataAttr = value ? encodeURIComponent(value) : "";
+              const docTitleDataAttr = anchorLabelRaw ? encodeURIComponent(anchorLabelRaw) : "";
+              const tdClass = i.css?.td || h.td;
+              const tdAttributes = [
+                `class="${tdClass}"`,
+                'data-noske-thumbnail-cell="1"',
+                `data-noske-doc-id="${docIdDataAttr}"`,
+                `data-noske-doc-title="${docTitleDataAttr}"`,
+                `data-noske-needs-resolution="${needsDeferredResolution ? "1" : "0"}"`,
+              ].join(" ");
+              if (thumbUrl) {
+                return `<td ${tdAttributes}><a href="${href}" aria-label="${safeLabelAttr}" title="${safeLabelAttr}"><img src="${thumbUrl}" alt="${safeAltAttr}" loading="lazy" style="max-width:6rem;height:auto;display:block;margin:0 auto;"></a></td>`;
+              }
+              const fallbackText = escapeHtmlAttr(anchorLabelRaw || value || href);
+              return `<td ${tdAttributes}><a href="${href}" aria-label="${safeLabelAttr}" title="${safeLabelAttr}">${fallbackText}</a></td>`;
             }
-            // For other keys, use the found doc.id and p.id for the link
-            return `<td class="${i.css?.td || h.td}"><a href="${pvalue}.html#${ppid}">${value}</a></td>`;
+            const href = baseHref || "#";
+            if (href === "#") return `<td class="${i.css?.td || h.td}">${value}</td>`;
+            return `<td class="${i.css?.td || h.td}"><a href="${href}">${value}</a></td>`;
           })
           .join("");
         if (n) var v = n(m);
@@ -925,6 +1289,7 @@ function B(r, e, t, s, o = !1, n = !1, i) {
     l = f + c,
     y = document.querySelector("#hits-header-row");
   (y.innerHTML = l), (u.innerHTML = x);
+  requiresDeferredThumbnails && scheduleResolveThumbnails();
 }
 var W = class {
   constructor(e) {
