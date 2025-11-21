@@ -851,21 +851,44 @@ const NORMALISED_ARCHIVE_CODE_MAP = Object.entries(ARCHIVE_CODE_MAP).reduce(
   {}
 );
 
-const TYPESENSE_ENTRIES_URL = (() => {
-  try {
-    if (typeof window !== "undefined" && window.location) {
-      return new URL("../data_repo/json/typesense_entries.json", window.location.href).href;
-    }
-  } catch (error) {
-    console.warn("Unable to resolve Typesense entries URL", error);
+const TYPESENSE_ENTRIES_PATH_CANDIDATES = [
+  "../json/typesense_entries.json",
+  "./json/typesense_entries.json",
+  "json/typesense_entries.json",
+  "/json/typesense_entries.json",
+  "../data_repo/json/typesense_entries.json",
+];
+
+function resolveTypesenseCandidateUrls() {
+  if (typeof window === "undefined" || !window.location) {
+    return [...TYPESENSE_ENTRIES_PATH_CANDIDATES];
   }
-  return "../data_repo/json/typesense_entries.json";
-})();
+  const resolved = [];
+  const seen = new Set();
+  TYPESENSE_ENTRIES_PATH_CANDIDATES.forEach((candidate) => {
+    try {
+      const url = new URL(candidate, window.location.href).href;
+      if (!seen.has(url)) {
+        seen.add(url);
+        resolved.push(url);
+      }
+    } catch (error) {
+      console.warn("Skipping invalid Typesense URL candidate", {
+        candidate,
+        error,
+      });
+    }
+  });
+  return resolved.length > 0
+    ? resolved
+    : [...TYPESENSE_ENTRIES_PATH_CANDIDATES];
+}
 
 const typesenseMetadataState = {
   data: null,
   promise: null,
   error: null,
+  resolvedUrl: null,
 };
 
 let deferredThumbnailUpdateScheduled = false;
@@ -899,19 +922,43 @@ function ensureTypesenseEntriesLoaded() {
     typesenseMetadataState.data = {};
     return Promise.resolve(typesenseMetadataState.data);
   }
-  typesenseMetadataState.promise = fetch(TYPESENSE_ENTRIES_URL)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Unexpected response status ${response.status}`);
+  const candidateUrls = resolveTypesenseCandidateUrls();
+  typesenseMetadataState.promise = (async () => {
+    let lastError = null;
+    for (const url of candidateUrls) {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          lastError = new Error(`Unexpected response status ${response.status}`);
+          console.warn("Typesense entries fetch returned unexpected status", {
+            url,
+            status: response.status,
+            statusText: response.statusText,
+          });
+          continue;
+        }
+        const json = await response.json();
+        typesenseMetadataState.resolvedUrl = url;
+        typesenseMetadataState.data = json || {};
+        return typesenseMetadataState.data;
+      } catch (error) {
+        lastError = error;
+        console.warn("Failed to load Typesense entries", {
+          url,
+          error,
+        });
       }
-      return response.json();
-    })
-    .then((json) => {
-      typesenseMetadataState.data = json || {};
-      return typesenseMetadataState.data;
-    })
+    }
+    if (lastError) {
+      throw lastError;
+    }
+    return {};
+  })()
     .catch((error) => {
-      console.warn("Failed to load Typesense entries", error);
+      console.warn("Unable to resolve Typesense entries from any known path", {
+        candidates: candidateUrls,
+        error,
+      });
       typesenseMetadataState.error = error;
       typesenseMetadataState.data = {};
       return typesenseMetadataState.data;
@@ -956,20 +1003,60 @@ function scheduleResolveThumbnails() {
   });
 }
 
+let thumbnailObserver = null;
+function setupThumbnailObserver() {
+  if (thumbnailObserver || typeof document === "undefined") return;
+  thumbnailObserver = new MutationObserver((mutations) => {
+    let shouldUpdate = false;
+    for (const mutation of mutations) {
+      if (mutation.addedNodes.length > 0) {
+        shouldUpdate = true;
+        break;
+      }
+    }
+    if (shouldUpdate) {
+      scheduleResolveThumbnails();
+    }
+  });
+  thumbnailObserver.observe(document.body, { childList: true, subtree: true });
+}
+setupThumbnailObserver();
+
 function resolveDeferredThumbnailCells() {
   if (typeof document === "undefined") return;
-  const cells = Array.from(
-    document.querySelectorAll('td[data-noske-thumbnail-cell="1"][data-noske-needs-resolution="1"]')
-  );
-  if (cells.length === 0) return;
+  
+  const selectors = [
+    'a[data-noske-thumbnail-cell="1"]',
+    'div[tabulator-field="datei"] a'
+  ];
+  
+  const anchors = Array.from(document.querySelectorAll(selectors.join(",")));
+  
+  if (anchors.length === 0) return;
+  
   ensureTypesenseEntriesLoaded()
     .then(() => {
-      cells.forEach((cell) => {
-        if (!cell.isConnected) return;
-        const docIdAttr = cell.getAttribute("data-noske-doc-id");
-        const docId = docIdAttr ? decodeURIComponent(docIdAttr) : null;
+      anchors.forEach((anchor) => {
+        if (!anchor.isConnected) return;
+        
+        let docId = anchor.getAttribute("data-noske-doc-id") || 
+                    anchor.parentElement?.getAttribute("data-noske-doc-id");
+        
+        if (docId) {
+            docId = decodeURIComponent(docId);
+        } else {
+            const href = anchor.getAttribute("href");
+            if (href) {
+                const match = href.match(/(fb_[^.]+)\.html/);
+                if (match) docId = match[1];
+            }
+        }
+        
+        if (!docId) return;
+
         const entry = getTypesenseEntry(docId);
         if (!entry) return;
+        
         const archiveNameList = Array.isArray(entry.archives)
           ? entry.archives
           : typeof entry.archives === "string"
@@ -983,42 +1070,64 @@ function resolveDeferredThumbnailCells() {
             break;
           }
         }
-    const thumbnailFilename = getThumbnailFromTypesenseEntry(entry);
-    const titleAttr = cell.getAttribute("data-noske-doc-title");
-    const storedTitle = titleAttr ? decodeURIComponent(titleAttr) : null;
-    const docTitle = entry.title || storedTitle || docId;
-        const hrefTarget = (() => {
-          const anchor = cell.querySelector("a");
-          return anchor ? anchor.getAttribute("href") : "#";
-        })();
+        
+        const thumbnailFilename = getThumbnailFromTypesenseEntry(entry);
+        const titleAttr =
+          anchor.getAttribute("data-noske-doc-title") ||
+          anchor.parentElement?.getAttribute("data-noske-doc-title");
+        const storedTitle = titleAttr ? decodeURIComponent(titleAttr) : null;
+        const docTitle = entry.title || storedTitle || docId;
+        const hrefTarget = anchor.getAttribute("href") || "#";
         const thumbUrl = buildThumbnailUrlFromDocId(docId, archiveCode, thumbnailFilename);
+        
         if (!thumbUrl) return;
-        const anchor = cell.querySelector("a") || (() => {
-          const link = document.createElement("a");
-          link.href = hrefTarget || "#";
-          cell.innerHTML = "";
-          cell.appendChild(link);
-          return link;
-        })();
-        const img = anchor.querySelector("img") || document.createElement("img");
-        img.src = thumbUrl;
+        
+        let img = anchor.querySelector("img");
+        if (!img) {
+          img = document.createElement("img");
+          anchor.innerHTML = "";
+          anchor.appendChild(img);
+        }
+        
+        // Only update if different to avoid flickering/reloading
+        if (img.src !== thumbUrl) {
+            img.src = thumbUrl;
+        }
+        
         img.loading = "lazy";
         img.style.maxWidth = "6rem";
         img.style.height = "auto";
         img.style.display = "block";
         img.style.margin = "0 auto";
+        
         const altText = docTitle ? `Deckblatt von ${docTitle}` : "Deckblatt des Flugblattes";
         img.alt = altText;
+        
         if (!anchor.contains(img)) {
           anchor.innerHTML = "";
           anchor.appendChild(img);
         }
+        
         if (docTitle) {
           anchor.setAttribute("aria-label", docTitle);
           anchor.setAttribute("title", docTitle);
-          cell.setAttribute("data-noske-doc-title", encodeURIComponent(docTitle));
+          anchor.setAttribute("data-noske-doc-title", encodeURIComponent(docTitle));
         }
-        cell.setAttribute("data-noske-needs-resolution", "0");
+        
+        anchor.setAttribute("data-noske-needs-resolution", "0");
+        
+        const wrapper = anchor.closest('[data-noske-thumbnail-wrapper="1"]');
+        if (wrapper) {
+          wrapper.setAttribute("data-noske-needs-resolution", "0");
+          wrapper.setAttribute("data-noske-doc-id", encodeURIComponent(docId));
+          if (docTitle) {
+            wrapper.setAttribute("data-noske-doc-title", encodeURIComponent(docTitle));
+          }
+        }
+        
+        if (!anchor.getAttribute("href")) {
+          anchor.setAttribute("href", hrefTarget || "#");
+        }
       });
     })
     .catch((error) => {
@@ -1232,16 +1341,26 @@ function B(r, e, t, s, o = !1, n = !1, i) {
               const tdClass = i.css?.td || h.td;
               const tdAttributes = [
                 `class="${tdClass}"`,
+                'data-noske-thumbnail-wrapper="1"',
+                'data-noske-thumbnail-cell="1"',
+                `data-noske-doc-id="${docIdDataAttr}"`,
+                `data-noske-doc-title="${docTitleDataAttr}"`,
+                `data-noske-needs-resolution="${needsDeferredResolution ? "1" : "0"}"`,
+              ].join(" ");
+              const anchorAttributes = [
+                `href="${href}"`,
+                `aria-label="${safeLabelAttr}"`,
+                `title="${safeLabelAttr}"`,
                 'data-noske-thumbnail-cell="1"',
                 `data-noske-doc-id="${docIdDataAttr}"`,
                 `data-noske-doc-title="${docTitleDataAttr}"`,
                 `data-noske-needs-resolution="${needsDeferredResolution ? "1" : "0"}"`,
               ].join(" ");
               if (thumbUrl) {
-                return `<td ${tdAttributes}><a href="${href}" aria-label="${safeLabelAttr}" title="${safeLabelAttr}"><img src="${thumbUrl}" alt="${safeAltAttr}" loading="lazy" style="max-width:6rem;height:auto;display:block;margin:0 auto;"></a></td>`;
+                return `<td ${tdAttributes}><a ${anchorAttributes}><img src="${thumbUrl}" alt="${safeAltAttr}" loading="lazy" style="max-width:6rem;height:auto;display:block;margin:0 auto;"></a></td>`;
               }
               const fallbackText = escapeHtmlAttr(anchorLabelRaw || value || href);
-              return `<td ${tdAttributes}><a href="${href}" aria-label="${safeLabelAttr}" title="${safeLabelAttr}">${fallbackText}</a></td>`;
+              return `<td ${tdAttributes}><a ${anchorAttributes}>${fallbackText}</a></td>`;
             }
             const href = baseHref || "#";
             if (href === "#") return `<td class="${i.css?.td || h.td}">${value}</td>`;
