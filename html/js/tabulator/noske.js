@@ -51,6 +51,21 @@ var config = {
     dataLoader: true,
     pagination: true,
     paginationSize: 50,
+    paginationButtonCount: 5,
+    langs:{
+        "default":{
+            "pagination":{
+                "first":"«",
+                "first_title":"First Page",
+                "last":"»",
+                "last_title":"Last Page",
+                "prev":"‹",
+                "prev_title":"Prev Page",
+                "next":"›",
+                "next_title":"Next Page",
+            },
+        },
+    },
     autoColumns: false,
     columns:[
         {title:"Datei", field:"datei", formatter:"html", download:"false", visible:"false"}, 
