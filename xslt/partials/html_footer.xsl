@@ -47,7 +47,7 @@
                                 <span class="visually-hidden">Telefon</span>&#160;<a href="tel:+431515812200">+43 1 51581-2200</a>
                                 <xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
                                 <i class="bi bi-envelope-at" aria-hidden="true" />
-                                <span class="visually-hidden">E-Mail</span>&#160;<a href="mailto:acdh-ch-helpdesk@oeaw.ac.at">acdh-ch-helpdesk@oeaw.ac.at</a>
+                                <span class="visually-hidden">E-Mail</span>&#160;<a href="mailto:acdh-office@oeaw.ac.at">ACDH-Office@oeaw.ac.at</a>
                             </p>
                         </div>
                         <div class="col-md-2 col-0 text-right align-right mobile-hide">

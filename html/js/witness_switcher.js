@@ -1147,8 +1147,45 @@ class WitnessSwitcher {
         console.log('🔍 DEFAULT: tab parameter =', tab);
         if (tab) {
             const m = tab.match(/^(\d+)(.*)$/);
-            let pageIndex = 0; let witness = tab;
-            if (m) { pageIndex = Math.max(0, parseInt(m[1],10)-1); witness = m[2]; }
+            let pageIndex = -1; 
+            let witness = tab;
+            
+            if (m) { 
+                pageIndex = Math.max(0, parseInt(m[1],10)-1); 
+                witness = m[2]; 
+            } else {
+                // No page number in tab. Check hash for page index.
+                if (window.location.hash) {
+                     try {
+                        const targetId = window.location.hash.substring(1);
+                        const targetEl = document.getElementById(targetId);
+                        if (targetEl && window.getOsdScrollPbElements) {
+                             const pbs = window.getOsdScrollPbElements();
+                             let bestPbIndex = 0;
+                             for (let i = 0; i < pbs.length; i++) {
+                                 const pb = pbs[i];
+                                 // Check if targetEl follows pb
+                                 if (pb.compareDocumentPosition(targetEl) & Node.DOCUMENT_POSITION_FOLLOWING) {
+                                     bestPbIndex = i;
+                                 } else {
+                                     // Once we find a pb that is AFTER the target, or target is inside it (unlikely for empty pb),
+                                     // we stop. The previous one was the correct page.
+                                     // But wait, if target is inside the page content following pb[i], 
+                                     // then pb[i] is before target.
+                                     // If pb[i+1] is after target, then target is on page i.
+                                     // So we just keep updating bestPbIndex as long as pb is before target.
+                                 }
+                             }
+                             pageIndex = bestPbIndex;
+                             console.log('🔍 DEFAULT: Detected page index from hash:', pageIndex);
+                        }
+                     } catch (e) {
+                         console.error('Error detecting page from hash:', e);
+                     }
+                }
+                if (pageIndex === -1) pageIndex = 0;
+            }
+
             console.log('🔍 DEFAULT: parsed pageIndex =', pageIndex, 'witness =', witness);
             console.log('🔍 DEFAULT: Available witnesses:', Array.from(this.availableWitnesses));
             if (!this.availableWitnesses.has(witness)) {

@@ -3,6 +3,19 @@
 import { NoskeSearch } from "./noske.js";
 const search = new NoskeSearch({ container: "noske-search", autocomplete: false,  wordlistattr: ["word","lemma","pos","vocab","id"]});
 
+const ARCHIVE_CODE_MAP = {
+  "Wienbibliothek im Rathaus": "wb",
+  "Wiener Stadt- und Landesbibliothek": "wb",
+  "Österreichische Nationalbibliothek": "oenb",
+  "Oesterreichische Nationalbibliothek": "oenb",
+  "Österreichische National-Bibliothek": "oenb",
+  "Wien Museum": "wmW",
+  "Wiener Museum": "wmW",
+  "Wien Museum Wien": "wmW",
+  "Wiener Stadt- und Landesarchiv": "wstla",
+  "Stadtarchiv Regensburg": "wmR"
+};
+
 function return_url(line) {
   if (!line.kwic_attr || !line.refs) {
     console.error("Invalid line object:", line);
@@ -16,7 +29,37 @@ function return_url(line) {
     return "#";
   }
   let doc_id = doc_id_entry.split("=")[1];
-  return `./${doc_id}.html#${token_id}`;
+
+  // Extract witness/archive
+  let witness = "oenb"; // Default
+  let doc_archive_entry = line.refs.find((ref) => ref.startsWith("doc.archive"));
+  if (doc_archive_entry) {
+    let archive_name = doc_archive_entry.split("=")[1];
+    if (ARCHIVE_CODE_MAP[archive_name]) {
+        witness = ARCHIVE_CODE_MAP[archive_name];
+    } else {
+        for (const [name, code] of Object.entries(ARCHIVE_CODE_MAP)) {
+            if (archive_name.includes(name)) {
+                witness = code;
+                break;
+            }
+        }
+    }
+  } else {
+      // Fallback: check doc.attrs for archive name
+      let doc_attrs_entry = line.refs.find((ref) => ref.startsWith("doc.attrs"));
+      if (doc_attrs_entry) {
+          let attrs = doc_attrs_entry.split("=")[1];
+          for (const [name, code] of Object.entries(ARCHIVE_CODE_MAP)) {
+              if (attrs.includes(name)) {
+                  witness = code;
+                  break;
+              }
+          }
+      }
+  }
+
+  return `./${doc_id}.html?tab=${witness}#${token_id}`;
 }
 
 search.search({
@@ -26,7 +69,7 @@ search.search({
     corpname: "flugblaetter",
     attrs: "word,lemma,pos,vocab,id",
     structs: "doc,head,p,lg,l,placeName,quote,bibl,persName,date,cit,g",
-    refs: "doc.id,doc.title,doc.attrs,persName.id",
+    refs: "doc.id,doc.title,doc.attrs,persName.id,doc.archive",
     kwicrightctx: "45#",
     kwicleftctx: "45#",
     pagesize: 100000000,
