@@ -257,8 +257,8 @@ var current_page_index = 0;
 let max_index = pb_elements_array.length - 1;
 var prev = document.querySelector("div[title='Previous page']");
 var next = document.querySelector("div[title='Next page']");
-prev.style.opacity = 1;
-next.style.opacity = 1;
+if (prev) prev.style.opacity = 1;
+if (next) next.style.opacity = 1;
 var last_img_url = ""
 
 // Manual navigation with prev/next buttons only
@@ -378,6 +378,8 @@ function show_only_current_page(current_page_index) {
   // Ensure all bare text nodes are wrapped before proceeding
   wrap_all_text_nodes(editionText);
 
+  const currentWitness = getCurrentWitness();
+
   // Hide everything by default
   Array.from(editionText.children).forEach(child => {
     child.style.setProperty('display', 'none', 'important');
@@ -391,10 +393,18 @@ function show_only_current_page(current_page_index) {
   // and the main content between currentPb and nextPb
   let node = currentPb;
   let show = false;
+    const nodesInRange = new Set();
   while (node) {
-    // Show catchword row before pb (footer)
-    if (node.classList && node.classList.contains('row') && node.classList.contains('layer_counter')) {
-      node.style.setProperty('display', '');
+    // Show catchword row before pb (footer) only if the following pb is for current witness
+    if (node.classList && ((node.classList.contains('row') && node.classList.contains('layer_counter')) || node.classList.contains('catch'))) {
+      let next = node.nextSibling;
+      while (next && next.nodeType !== Node.ELEMENT_NODE) next = next.nextSibling;
+      if (next && next.classList.contains('pb')) {
+        const wit = next.getAttribute('wit');
+        if (wit === '#' + currentWitness) {
+          node.style.setProperty('display', '');
+        }
+      }
     }
     if (node === currentPb) {
       node.style.setProperty('display', '');
@@ -404,13 +414,53 @@ function show_only_current_page(current_page_index) {
     }
     if (node === nextPb) break;
     if (show && node.nodeType === Node.ELEMENT_NODE) {
-      node.style.setProperty('display', '');
+      const dw = node.dataset.witness;
+      let shouldShow = true;
+      if (dw) {
+        shouldShow = dw === currentWitness;
+      } else {
+        // No data-witness: default to shared (show for all witnesses)
+        if (node.classList.contains('pb')) {
+          // For pb elements, check wit attribute to decide
+          const wit = node.getAttribute('wit');
+          shouldShow = wit === '#' + currentWitness;
+        } else {
+          shouldShow = true;
+        }
+      }
+        if (shouldShow) {
+        node.style.setProperty('display', '');
+        try { nodesInRange.add(node); } catch (e) {}
+      }
     }
     if (show && node.nodeType === Node.TEXT_NODE && node.parentElement) {
       node.parentElement.style.setProperty('display', '');
+      try { nodesInRange.add(node.parentElement); } catch (e) {}
     }
     node = node.nextSibling;
   }
+
+    // Ensure pb elements with mismatching witness are hidden
+    Array.from(editionText.querySelectorAll('span.pb')).forEach(pb => {
+      const wit = pb.getAttribute('wit');
+      if (wit && wit !== ('#' + currentWitness)) {
+        pb.style.setProperty('display', 'none', 'important');
+      } else {
+        pb.style.removeProperty('display');
+      }
+    });
+
+    // Hide catchwords ('col catch fw') when the following pb belongs to a different witness
+    Array.from(editionText.querySelectorAll('.col.catch.fw')).forEach(catchEl => {
+      const pbs = Array.from(editionText.querySelectorAll('span.pb'));
+      const nextPb = pbs.find(pb => (catchEl.compareDocumentPosition(pb) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0);
+      if (nextPb) {
+        const wit = nextPb.getAttribute('wit');
+        if (wit && wit !== ('#' + currentWitness)) {
+          catchEl.style.setProperty('display', 'none', 'important');
+        }
+      }
+    });
 
   // Update global current_page_index for tracking
   window.current_page_index = current_page_index;
@@ -447,12 +497,16 @@ but has been removed to disable automatic scrolling behavior*/
 /*
  Manual navigation only - no scrolling, just content updates
 */
-prev.addEventListener("click", () => {
-  navigate_prev();
-});
-next.addEventListener("click", () => {
-  navigate_next();
-});
+if (prev) {
+  prev.addEventListener("click", () => {
+    navigate_prev();
+  });
+}
+if (next) {
+  next.addEventListener("click", () => {
+    navigate_next();
+  });
+}
 
 // Keyboard navigation
 document.addEventListener("keydown", (event) => {
