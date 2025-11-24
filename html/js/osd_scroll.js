@@ -33,19 +33,36 @@ function isVisible(el) {
 }
 
 function wrap_all_text_nodes(element) {
-    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
-    const textNodes = [];
+    // Accepts either a selector string or an element
+    const root = typeof element === 'string' ? document.querySelector(element) : element;
+    if (!root) return;
+    // Wrap all direct child text nodes of root
+    Array.from(root.childNodes).forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') {
+        const span = document.createElement('span');
+        span.className = 'wrapped-text';
+        node.parentNode.replaceChild(span, node);
+        span.appendChild(node);
+      }
+    });
+    // Now walk descendants for any further bare text nodes
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(node) {
+        if (!node.textContent.trim()) return NodeFilter.FILTER_REJECT;
+        if (node.parentElement && node.parentElement.classList.contains('wrapped-text')) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
     let node;
-    while(node = walker.nextNode()) {
-        if (node.textContent.trim() !== '') {
-            textNodes.push(node);
-        }
+    const nodesToWrap = [];
+    while (node = walker.nextNode()) {
+      nodesToWrap.push(node);
     }
-    
-    textNodes.forEach(textNode => {
-        const wrapper = document.createElement('span');
-        textNode.parentNode.insertBefore(wrapper, textNode);
-        wrapper.appendChild(textNode);
+    nodesToWrap.forEach(textNode => {
+      const span = document.createElement('span');
+      span.className = 'wrapped-text';
+      textNode.parentNode.replaceChild(span, textNode);
+      span.appendChild(textNode);
     });
 }
 
@@ -353,105 +370,50 @@ function updateCitationSuggestion(page_index) {
 
 // Function to show only the content of the current page
 function show_only_current_page(current_page_index) {
-//   console.log(`📃 PAGE: show_only_current_page(${current_page_index})`);
-  
+
   const editionText = document.getElementById('edition-text');
-  if (!editionText) {
-//     console.log('❌ PAGE: No edition-text element found');
-    return;
-  }
-  if (pb_elements_array.length === 0) {
-//     console.log('❌ PAGE: No page break elements found');
-    return;
-  }
+  if (!editionText) return;
+  if (pb_elements_array.length === 0) return;
 
-  // Hide all horizontal rules to prevent visual artifacts.
-  editionText.querySelectorAll('hr').forEach(hr => hr.style.display = 'none');
+  // Ensure all bare text nodes are wrapped before proceeding
+  wrap_all_text_nodes(editionText);
 
-  // Remove 'current' from all line break elements to reset the state.
-  editionText.querySelectorAll('br.lb').forEach(br => br.classList.remove('current'));
-
-  const currentPbElement = pb_elements_array[current_page_index];
-  const nextPbElement = pb_elements_array[current_page_index + 1];
-
-  if (!currentPbElement) {
-//     console.log('❌ PAGE: Current page element not found for index:', current_page_index);
-    return;
-  }
-
-
-  // 1. Get all elements within edition-text in document order.
-  const allElements = Array.from(editionText.querySelectorAll('*'));
-  
-  // 2. Find the start and end markers in the flat list.
-  const startIndex = allElements.indexOf(currentPbElement);
-  if (startIndex === -1) {
-//     console.error('❌ PAGE: Could not find the current page break element in the DOM.');
-    return;
-  }
-  
-  let endIndex = allElements.length;
-  if (nextPbElement) {
-    const nextPbIndex = allElements.indexOf(nextPbElement);
-    if (nextPbIndex > startIndex) {
-      endIndex = nextPbIndex;
-//       console.log(`📃 PAGE: Page boundary: elements ${startIndex} to ${endIndex - 1} (next page starts at ${endIndex})`);
-    }
-  } else {
-//     console.log(`📃 PAGE: Last page: elements ${startIndex} to end (${allElements.length})`);
-  }
-
-  // 3. Collect all elements for the current page and their ancestors.
-  const elementsToShow = new Set();
-  const elementsInRange = allElements.slice(startIndex, endIndex);
-
-//   console.log(`📃 PAGE: Elements in range for page ${current_page_index + 1}:`, elementsInRange.length);
-
-  elementsInRange.forEach(element => {
-    elementsToShow.add(element);
-    // Add 'current' class to visible line breaks and mark split words.
-    if (element.tagName === 'BR' && element.classList.contains('lb')) {
-      element.classList.add('current');
-      const parent = element.parentElement;
-      if (parent && parent.classList.contains('token')) {
-        const prevSibling = element.previousElementSibling;
-        if (prevSibling && prevSibling.tagName === 'SPAN') {
-          prevSibling.classList.add('split-word-part-1');
-        }
-      }
-    }
-    let parent = element.parentElement;
-    // Traverse up the DOM tree to ensure all parent containers are also shown.
-    while (parent && parent !== editionText) {
-      elementsToShow.add(parent);
-      parent = parent.parentElement;
-    }
+  // Hide everything by default
+  Array.from(editionText.children).forEach(child => {
+    child.style.setProperty('display', 'none', 'important');
   });
 
-  // 4. Apply visibility based on the collected set.
-  let hiddenCount = 0;
-  let shownCount = 0;
-  allElements.forEach(element => {
-    // No need to check for citation div here as it's not inside edition-text
-    if (elementsToShow.has(element)) {
-      element.style.cssText = ''; // Reset to default display style.
-      element.classList.add('current-page');
-      shownCount++;
-    } else {
-      element.style.cssText = 'display: none !important;';
-      element.classList.remove('current-page');
-      hiddenCount++;
-    }
-  });
+  // Show the current pb (page break) and its content until the next pb
+  const currentPb = pb_elements_array[current_page_index];
+  const nextPb = pb_elements_array[current_page_index + 1] || null;
 
-//   console.log(`📃 PAGE: Page ${current_page_index + 1}: ${shownCount} elements shown, ${hiddenCount} elements hidden`);
-  
+  // Show the catchword row for this page (row.layer_counter.fw)
+  // and the main content between currentPb and nextPb
+  let node = currentPb;
+  let show = false;
+  while (node) {
+    // Show catchword row before pb (footer)
+    if (node.classList && node.classList.contains('row') && node.classList.contains('layer_counter')) {
+      node.style.setProperty('display', '');
+    }
+    if (node === currentPb) {
+      node.style.setProperty('display', '');
+      show = true;
+      node = node.nextSibling;
+      continue;
+    }
+    if (node === nextPb) break;
+    if (show && node.nodeType === Node.ELEMENT_NODE) {
+      node.style.setProperty('display', '');
+    }
+    if (show && node.nodeType === Node.TEXT_NODE && node.parentElement) {
+      node.parentElement.style.setProperty('display', '');
+    }
+    node = node.nextSibling;
+  }
+
   // Update global current_page_index for tracking
   window.current_page_index = current_page_index;
-//   console.log(`📃 PAGE: Set window.current_page_index = ${current_page_index}`);
-  
-  // Make sure citation is updated with the correct page number
-//   console.log(`📃 PAGE: Calling updateCitationSuggestion(${current_page_index})`);
   updateCitationSuggestion(current_page_index);
 }
 
@@ -557,10 +519,19 @@ function initializePageView() {
 
 // Make sure DOM is loaded before initializing
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializePageView);
+  document.addEventListener('DOMContentLoaded', function() {
+    // Wrap all bare text nodes in #edition-text, including direct children
+    const editionText = document.getElementById('edition-text');
+    if (editionText) wrap_all_text_nodes(editionText);
+    initializePageView();
+  });
 } else {
   // Add a small delay to ensure everything is rendered
-  setTimeout(initializePageView, 100);
+  setTimeout(function() {
+    const editionText = document.getElementById('edition-text');
+    if (editionText) wrap_all_text_nodes(editionText);
+    initializePageView();
+  }, 100);
 }
 
 // Update page links with proper navigation links
@@ -886,6 +857,8 @@ function setupWitnessChangeListeners() {
 //     console.log('Added change handler to witness dropdown');
   }
 }
+
+
 
 // Call this function during initialization
 document.addEventListener('DOMContentLoaded', setupWitnessChangeListeners);
