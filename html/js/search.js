@@ -84,49 +84,58 @@ search.addWidgets([
     },*/
     templates: {
       empty: "Keine Resultate für <q>{{ query }}</q>",
-      item(hit, { html, components }) {
-          // Determine year: prefer label_date, fallback to print_date
-          const year = hit.label_date || hit.print_date || "";
-          // Printer value only
-          const printer = hit.printer || "";
-          // Archive value only (may be array or string)
-          let archive = "";
-          if (Array.isArray(hit.archives)) {
-            archive = hit.archives.join(", ");
-          } else if (typeof hit.archives === "string") {
-            archive = hit.archives;
-          }
-          const documentUrl = buildDocumentUrl(hit);
-          return html`
+      item(hit, { html, components, results }) {
+        // On fresh load, filter to unique titles only (like an index)
+        if (results && results.hits) {
+          const uniqueTitles = new Set();
+          results.hits = results.hits.filter(h => {
+            if (uniqueTitles.has(h.title)) return false;
+            uniqueTitles.add(h.title);
+            return true;
+          });
+        }
+        // Determine year: prefer label_date, fallback to print_date
+        const year = hit.label_date || hit.print_date || "";
+        // Printer value only
+        const printer = hit.printer || "";
+        // Archive value only (may be array or string)
+        let archive = "";
+        if (Array.isArray(hit.archives)) {
+          archive = hit.archives.join(", ");
+        } else if (typeof hit.archives === "string") {
+          archive = hit.archives;
+        }
+        const documentUrl = buildDocumentUrl(hit);
+        return html`
+          <a href="${documentUrl}">
+            <h5 style="display: block; padding-bottom: 1rem; font-size: 1.2rem;">
+              ${hit.title}
+            </h5>
+          </a>
+          <div class="row align-items-baseline">
             <a href="${documentUrl}">
-              <h5 style="display: block; padding-bottom: 1rem; font-size: 1.2rem;">
-                ${hit.title}
-              </h5>
+              <div class="col">
+                <img
+                  src="${get_iif_link(hit.thumbnail)}"
+                  alt="Deckblatt/Erste Seite des Armesünderblattes"
+                  style="max-width:80%; height:auto;"
+                />
+              </div>
             </a>
-            <div class="row align-items-baseline">
-              <a href="${documentUrl}">
-                <div class="col">
-                  <img
-                    src="${get_iif_link(hit.thumbnail)}"
-                    alt="Deckblatt/Erste Seite des Armesünderblattes"
-                    style="max-width:80%; height:auto;"
-                  />
-                </div>
-              </a>
-              <div class="col" style="padding-top: 1rem;">
-                <div>${year}</div>
-                <div>${printer}</div>
-                <div>${archive}</div>
-              </div>
-              <div class="col-md-12 p-0 m-0">
-                <p>
-                  ${hit._snippetResult.fulltext.matchedWords.length > 0
-                    ? components.Snippet({ hit, attribute: "fulltext" })
-                    : ""}
-                </p>
-              </div>
+            <div class="col" style="padding-top: 1rem;">
+              <div>${year}</div>
+              <div>${printer}</div>
+              <div>${archive}</div>
             </div>
-          `;
+            <div class="col-md-12 p-0 m-0">
+              <p>
+                ${hit._snippetResult.fulltext.matchedWords.length > 0
+                  ? components.Snippet({ hit, attribute: "fulltext" })
+                  : ""}
+              </p>
+            </div>
+          </div>
+        `;
       },
     },
   }),
