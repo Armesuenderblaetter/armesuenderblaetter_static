@@ -54,7 +54,7 @@
                 <xsl:call-template name="nav_bar"/>
                 <main class="flex-shrink-0 container">
                     <div class="row title">
-                        <div class="col-md-2 col-lg-2 col-sm-12">
+                        <div class="col-md-2 col-lg-2 col-sm-2">
                             <xsl:if test="ends-with($prev, '.html')">
                                 <h1>
                                     <a>
@@ -66,7 +66,7 @@
                                 </h1>
                             </xsl:if>
                         </div>
-                        <div class="col-12 col-lg-12 col-sm-12">
+                        <div class="col-8 col-lg-8 col-sm-8">
                             <h1 align="center">
                                 <xsl:value-of select="$doc_title"/>
                             </h1>
@@ -77,7 +77,7 @@
                                 </a>
                             </h3>
                         </div>
-                        <div class="col-md-2 col-lg-2 col-sm-12" style="text-align:right">
+                        <div class="col-md-2 col-lg-2 col-sm-2" style="text-align:right">
                             <xsl:if test="ends-with($next, '.html')">
                                 <h1>
                                     <a>
