@@ -421,9 +421,9 @@ function show_only_current_page(current_page_index) {
       } else {
         // No data-witness: default to shared (show for all witnesses)
         if (node.classList.contains('pb')) {
-          // For pb elements, check wit attribute to decide
+          // For pb elements, check wit attribute to decide; treat #primary as shared
           const wit = node.getAttribute('wit');
-          shouldShow = wit === '#' + currentWitness;
+          shouldShow = !wit || wit === '#' + currentWitness || wit === '#primary';
         } else {
           shouldShow = true;
         }
@@ -443,7 +443,8 @@ function show_only_current_page(current_page_index) {
     // Ensure pb elements with mismatching witness are hidden
     Array.from(editionText.querySelectorAll('span.pb')).forEach(pb => {
       const wit = pb.getAttribute('wit');
-      if (wit && wit !== ('#' + currentWitness)) {
+      // Treat #primary as shared; hide only pbs that are explicitly for another witness
+      if (wit && wit !== ('#' + currentWitness) && wit !== '#primary') {
         pb.style.setProperty('display', 'none', 'important');
       } else {
         pb.style.removeProperty('display');
@@ -456,7 +457,8 @@ function show_only_current_page(current_page_index) {
       const nextPb = pbs.find(pb => (catchEl.compareDocumentPosition(pb) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0);
       if (nextPb) {
         const wit = nextPb.getAttribute('wit');
-        if (wit && wit !== ('#' + currentWitness)) {
+        // Treat #primary as shared; only hide if the next pb is explicitly another witness
+        if (wit && wit !== ('#' + currentWitness) && wit !== '#primary') {
           catchEl.style.setProperty('display', 'none', 'important');
         }
       }
