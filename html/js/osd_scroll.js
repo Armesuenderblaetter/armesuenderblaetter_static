@@ -465,6 +465,38 @@ function show_only_current_page(current_page_index) {
     if (show && node.nodeType === Node.ELEMENT_NODE) {
       const dw = node.dataset.witness;
       let shouldShow = true;
+
+      // Signature/counter rows are typically witness-specific but often lack data-witness.
+      // Decide their visibility by looking at the next *primary* page-break (or any pb as fallback).
+      if (node.classList && node.classList.contains('row') && node.classList.contains('layer_counter')) {
+        let nextEl = node.nextSibling;
+        while (nextEl && nextEl.nodeType !== Node.ELEMENT_NODE) nextEl = nextEl.nextSibling;
+
+        // Find next primary pb in the following siblings
+        let ownerPb = null;
+        let scan = nextEl;
+        while (scan) {
+          if (scan.nodeType === Node.ELEMENT_NODE && scan.classList && scan.classList.contains('pb')) {
+            if (scan.classList.contains('primary')) {
+              ownerPb = scan;
+              break;
+            }
+            // Keep first pb as a fallback if no primary pb exists later
+            if (!ownerPb) ownerPb = scan;
+          }
+          scan = scan.nextSibling;
+        }
+
+        if (ownerPb) {
+          const wit = ownerPb.getAttribute('wit');
+          // Treat #primary as shared; otherwise only show for current witness
+          shouldShow = !wit || wit === ('#' + currentWitness) || wit === '#primary';
+        } else {
+          // No following pb -> safest is to hide
+          shouldShow = false;
+        }
+      }
+
       if (dw) {
         shouldShow = dw === currentWitness;
       } else {
@@ -474,7 +506,8 @@ function show_only_current_page(current_page_index) {
           const wit = node.getAttribute('wit');
           shouldShow = !wit || wit === '#' + currentWitness || wit === '#primary';
         } else {
-          shouldShow = true;
+          // Keep whatever decision was computed above (e.g., layer_counter logic).
+          // Default remains "shared" because shouldShow starts as true.
         }
       }
         if (shouldShow) {
@@ -500,13 +533,23 @@ function show_only_current_page(current_page_index) {
       }
     });
 
-    // Hide catchwords ('col catch fw') when the following pb belongs to a different witness
+    // Hide catchwords ('col catch fw') only when the *next pb for the active witness*
+    // indicates they belong to a different witness.
+    //
+    // Important: in multi-witness documents, a pb for another witness can appear first
+    // in the DOM (e.g., wmW before wmR). Using the first following pb would incorrectly
+    // hide shared catchwords for the active witness.
     Array.from(editionText.querySelectorAll('.col.catch.fw')).forEach(catchEl => {
-      const pbs = Array.from(editionText.querySelectorAll('span.pb'));
-      const nextPb = pbs.find(pb => (catchEl.compareDocumentPosition(pb) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0);
-      if (nextPb) {
-        const wit = nextPb.getAttribute('wit');
-        // Treat #primary as shared; only hide if the next pb is explicitly another witness
+      const witnessPbs = Array.from(
+        editionText.querySelectorAll(`span.pb[wit="#${currentWitness}"], span.pb[wit="#primary"]`)
+      );
+
+      const nextWitnessPb = witnessPbs.find(pb =>
+        (catchEl.compareDocumentPosition(pb) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0
+      );
+
+      if (nextWitnessPb) {
+        const wit = nextWitnessPb.getAttribute('wit');
         if (wit && wit !== ('#' + currentWitness) && wit !== '#primary') {
           catchEl.style.setProperty('display', 'none', 'important');
         }
