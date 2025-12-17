@@ -270,9 +270,12 @@
         </xsl:variable>
         <xsl:choose>
             <xsl:when test="@type = 'catch'">
-                <div class="col catch {$rendering} fw">
+                <xsl:variable name="is_inline_context" as="xs:boolean"
+                    select="exists(ancestor::tei:l | ancestor::tei:p | ancestor::tei:head)"/>
+                <xsl:element name="{if ($is_inline_context) then 'span' else 'div'}">
+                    <xsl:attribute name="class" select="normalize-space(concat('col catch ', $rendering, ' fw'))"/>
                     <xsl:apply-templates/>
-                </div>
+                </xsl:element>
             </xsl:when>
             <xsl:when test="@type = 'footer'">
                 <div class="row layer_counter {$rendering} fw">

@@ -66,6 +66,51 @@ function wrap_all_text_nodes(element) {
     });
 }
 
+// Normalize page break placement so that each pb marker becomes a direct child of #edition-text.
+// This enables sibling-based paging logic (show_only_current_page) to work even when TEI pb
+// occurs inside inline structures like verse spans.
+function normalize_page_break_nesting(editionText) {
+  try {
+    const root = editionText || document.getElementById('edition-text');
+    if (!root) return;
+
+    const pbs = Array.from(root.querySelectorAll('span.pb.primary'));
+    if (pbs.length === 0) return;
+
+    const liftPbToRoot = (pb) => {
+      // Lift the pb node up the ancestor chain until it is a direct child of root.
+      while (pb && pb.parentElement && pb.parentElement !== root) {
+        const parent = pb.parentElement;
+        const grand = parent.parentElement;
+        if (!grand) break;
+
+        // Split parent into a left clone (nodes before pb) and the remaining parent (pb + after).
+        const left = parent.cloneNode(false);
+        try { left.removeAttribute('id'); } catch (_) {}
+
+        let movedAny = false;
+        while (parent.firstChild && parent.firstChild !== pb) {
+          left.appendChild(parent.firstChild);
+          movedAny = true;
+        }
+
+        if (movedAny) {
+          grand.insertBefore(left, parent);
+        }
+
+        // Move pb out of parent into grand, directly before the remaining parent.
+        try { parent.removeChild(pb); } catch (_) { break; }
+        grand.insertBefore(pb, parent);
+      }
+    };
+
+    // Iterate over a snapshot because lifting mutates the DOM.
+    pbs.forEach(liftPbToRoot);
+  } catch (e) {
+    console.error('❌ normalize_page_break_nesting error:', e);
+  }
+}
+
 // Removed isInViewport function as it's no longer needed for automatic scrolling
 
 // Removed debounce function as it's no longer needed for automatic scrolling
@@ -151,6 +196,10 @@ var pb_elements_array = Array.from(pb_elements);
 window.show_only_current_page = show_only_current_page;
 window.updateOsdScrollPageBreaks = (newPbElements) => {
 //   console.log('osd_scroll.js: Updating page breaks from witness switcher.', newPbElements);
+  const editionText = document.getElementById('edition-text');
+  if (editionText) {
+    normalize_page_break_nesting(editionText);
+  }
   pb_elements_array = Array.from(newPbElements);
   max_index = pb_elements_array.length - 1;
 };
@@ -578,14 +627,24 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', function() {
     // Wrap all bare text nodes in #edition-text, including direct children
     const editionText = document.getElementById('edition-text');
-    if (editionText) wrap_all_text_nodes(editionText);
+    if (editionText) {
+      wrap_all_text_nodes(editionText);
+      normalize_page_break_nesting(editionText);
+      pb_elements_array = Array.from(document.getElementsByClassName(page_break_marker_classname));
+      max_index = pb_elements_array.length - 1;
+    }
     initializePageView();
   });
 } else {
   // Add a small delay to ensure everything is rendered
   setTimeout(function() {
     const editionText = document.getElementById('edition-text');
-    if (editionText) wrap_all_text_nodes(editionText);
+    if (editionText) {
+      wrap_all_text_nodes(editionText);
+      normalize_page_break_nesting(editionText);
+      pb_elements_array = Array.from(document.getElementsByClassName(page_break_marker_classname));
+      max_index = pb_elements_array.length - 1;
+    }
     initializePageView();
   }, 100);
 }
