@@ -386,19 +386,16 @@ span.token:hover::before{
 }
 
 span.empty_lemma a.variant_anchor_link::after {
-    /* content: "↓"; */
-    content: "\00a0";
+    /* hidden: keep no visible placeholder */
+    content: "" !important;
 }
 
 span.empty_lemma {
-    word-wrap: normal;
-    display: inline-block;
-    text-indent: 0;
+    display: none !important;
 }
 
 span.empty_lemma::after {
-    background-color: inherit;
-    content: "\00a0";
+    content: "" !important;
 }
 
 span.image_preview img {
