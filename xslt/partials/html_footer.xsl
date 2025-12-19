@@ -5,49 +5,35 @@
         <footer class="footer mt-auto py-3 bg-body-tertiary">
             <div class="wrapper" id="wrapper-footer-full">
                 <div class="container" id="footer-full-content" tabindex="-1">
-                    <div class="footer-separator">
-                        <span class="texts">KONTAKT</span>
-                        <hr/>
-                    </div>
                     <div class="row">
-                        <div class="col-md-2 col-12 text-left">
-                            <div class="row">
-                                <div class="row col-12" style="margin-bottom: 2em; padding-righ:0px;">
-                                    <div class="col-md-12 col-6 logo">
-                                        <a href="https://www.oeaw.ac.at/acdh">
-                                            <img src="images/logo_acdh.png" width="90" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-0 col-6 logo mobile-show align-right" style="padding-right: 0px">
-                                        <a class="mobile-show" href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
-                                            <img src="images/logo_oeaw.png" width="120" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
-                                        </a>
-                                    </div>
-                                </div>
-                                <!-- <div class="col-md-0 col-6" /> -->
+                        <div class="col-3 text-left">
+                            <div class="footer-1">
+                                LTW – LITERATUR- UND TEXZTWISSENSCHAFT<br/>
+                                ÖSTERREICHISCHE AKADEMIE DER WISSENSCHAFTEN
                             </div>
+                            <div class="footer-2">Bäckerstraße 13<br/>
+                            1010 Wien
+                            </div>
+                            <div class="footer-3">T: +43 1 51581-2223<br/>
+                            E: ace@oeaw.ac.at</div>
                         </div>
-                        <div class="col-md-8 col-12 texts">
-                            <p class="top-par">
-                           ACDH – ÖAW<xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
-                           Austrian Centre for Digital Humanities<xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
-                           Österreichische Akademie der Wissenschaften
-                            </p>
-                            <p class="mid-par">
-                           Bäckerstraße 13, 1010 Wien
-                            </p>
-                            <p class="link-in-footer bottom-par">
-                                <i class="bi bi-telephone" aria-hidden="true"/>
-                                <span class="visually-hidden">Telefon</span>&#160;<a href="tel:+431515812200">+43 1 51581-2200</a>
-                                <xsl:value-of disable-output-escaping="yes">&lt;br /&gt;</xsl:value-of>
-                                <i class="bi bi-envelope-at" aria-hidden="true" />
-                                <span class="visually-hidden">E-Mail</span>&#160;<a href="mailto:acdh-office@oeaw.ac.at">ACDH-Office@oeaw.ac.at</a>
-                            </p>
-                        </div>
-                        <div class="col-md-2 col-0 text-right align-right mobile-hide">
-                            <a class="text-right" href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
+                        <div class="col-3 logo" style="padding-right: 0px">
+                                <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
                                 <img src="images/logo_oeaw.png" width="120" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
                             </a>
+                            <div class="footer-2">Österreichische Akademie der Wissenschaften</div>
+                        </div>
+                          <div class="col-3 logo" style="padding-right: 0px">
+                                <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
+                                <img src="images/logo_oeaw.png" width="120" alt="Austrian Corpora and Editions" title="Austrian Corpora and Editions"/>
+                            </a>
+                            <div class="footer-2">Austrian Corpora and Editions</div>
+                        </div>
+                        <div class="col-3 logo">
+                            <a href="https://www.oeaw.ac.at/acdh">
+                            <img src="images/logo_acdh.png" width="90" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
+                            </a>
+                             <div class="footer-2">Austrian Centre for Digital Humanities</div>
                         </div>
                     </div>
                 </div>

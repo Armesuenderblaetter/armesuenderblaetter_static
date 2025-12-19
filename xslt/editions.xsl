@@ -50,7 +50,7 @@
                  <link rel="stylesheet" href="css/micro-editor.css" />
                  <link rel="stylesheet" href="css/variant-switcher.css" />   
             </head>
-            <body class="d-flex flex-column h-100">
+            <body class="d-flex flex-column h-100 has-site-top">
                 <xsl:call-template name="nav_bar"/>
                 <main class="flex-shrink-0 container">
                     <div class="row title">

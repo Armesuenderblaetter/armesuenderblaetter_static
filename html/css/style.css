@@ -23,12 +23,208 @@
 
 body {
     font-family: var(--bs-body-font-family);
+    background-color: var(--asb-background-colour);
+}
+
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: auto;
+    z-index: 20000;
+    padding: 0;
+    margin: 0;
+}
+
+.site-header-inner {
+    display: flex;
+    align-items: center;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.site-burger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border: 0 !important;
+    background-color: var(--asb-background-colour-button) !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none;
+
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: transparent;
+    --bs-btn-hover-bg: transparent;
+    --bs-btn-hover-border-color: transparent;
+    --bs-btn-active-bg: transparent;
+    --bs-btn-active-border-color: transparent;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: transparent;
+}
+
+body.has-site-top .site-burger {
+    background-color: var(--asb-background-colour-button-banner) !important;
+}
+
+body.has-site-top .site-burger:hover,
+body.has-site-top .site-burger:active,
+body.has-site-top .site-burger:focus {
+    background-color: var(--asb-background-colour-button-banner) !important;
+}
+
+.site-burger:hover,
+.site-burger:active,
+.site-burger:focus {
+    background-color: var(--asb-background-colour-button) !important;
+    box-shadow: none !important;
+}
+
+.site-burger .bi {
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--bs-white);
+}
+
+.site-burger:focus-visible {
+    outline: 2px solid var(--bs-white);
+    outline-offset: 2px;
+}
+
+.site-offcanvas {
+    width: clamp(280px, 34vw, 360px);
+    background-color: var(--asb-background-colour);
+    color: var(--asb-link-colour);
+}
+
+.site-menu-section {
+    font-variant: small-caps;
+    letter-spacing: 0.02em;
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+    color: var(--asb-link-colour);
+}
+
+.site-menu-link {
+    display: block;
+    padding: 0.25rem 0;
+    color: var(--asb-link-colour);
+    text-decoration: none;
+}
+
+.site-menu-link:hover,
+.site-menu-link:focus {
+    text-decoration: underline;
+}
+
+.site-top {
+    background-color: var(--asb-background-colour-banner);
+    padding: 5rem 0 0;
+}
+
+.site-top-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 2rem;
+    align-items: center;
+}
+
+.site-top-title-link {
+    display: inline-block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.site-top-title {
+    margin: 0;
+    color: var(--bs-white);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 0.95;
+    font-size: clamp(2.6rem, 5vw, 4rem);
+}
+
+.site-top-title > span {
+    display: block;
+}
+
+.site-top-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.site-top-project-button {
+    display: inline-block;
+    padding: 1.50em 1.50em;
+    border: 0 !important;
+    background-color: var(--asb-background-colour-button-banner);
+    color: var(--bs-white) !important;
+    text-decoration: none;
+    border-radius: 9999px;
+    line-height: 1;
+}
+
+/* When a site-top style button is used inside content sections (type=content),
+   use the matching button token for that background. */
+.landing-section--light .site-top-project-button {
+    background-color: var(--asb-background-colour-button);
+}
+
+a.site-top-project-button:visited {
+    color: var(--bs-white) !important;
+}
+
+.site-top-project-button:hover,
+.site-top-project-button:focus {
+    text-decoration: underline;
+}
+
+.site-top-image {
+    width: min(840px, 100%);
+    height: auto;
+    border: 0;
+    background-color: transparent;
+}
+
+.site-top-strip {
+    margin: 2rem 0 0;
+    height: 168px;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    background-image: url('../images/banner.png');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    background-color: var(--asb-background-colour-banner);
+}
+
+/* Reuse landing section spacing on non-landing pages too */
+.landing-section {
+    padding: 2.25rem 0;
+}
+
+.landing-section--light {
+    background-color: var(--asb-background-colour);
+}
+
+@media (max-width: 768px) {
+    .site-top {
+        padding-top: 4.5rem;
+    }
+
+    .site-top-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
 }
 
 main {
-    max-width: 1920px;
-    padding-bottom: 4rem;
-    padding-top: 4rem;
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .title_part {display: block !important; margin: 5px !important; }
@@ -96,9 +292,24 @@ html {
 
 .footer{
     margin-top: auto!important;
-    background-color: var(--asb-banner-colour)!important;
+    background-color: var(--asb-background-colour-button-banner)!important;
+    font-family: var(--bs-font-sans-serif) !important;
 }
 
+.footer-1{
+    font-weight: bold;
+    font-size: large;
+    color: black;
+
+}
+.footer-2 {
+    padding: 0.5rem 0;
+    color: black;
+}   
+
+.footer-3 {
+   color: white;
+}
 .footer-separator {
     padding-top: 1rem;
 }
@@ -129,9 +340,6 @@ html {
 
 div#searchPage {
     padding: 2rem;
-}
-
-div#searchContainer {
 }
 
 div#searchContainer>div {
@@ -220,8 +428,7 @@ div ul.ais-RefinementList-list {
 }
 
 .navbar * {
-    background-color: var(--asb-banner-colour);
-    var(--asb-banner-colour)!important, rgba(var(--bs-tertiary-bg-rgb),var(--bs-bg-opacity)) !important ;
+    background-color: var(--asb-banner-colour) !important;
 }
 
 body.landing main {
@@ -324,11 +531,14 @@ body.landing .landing-top-grid {
 body.landing .landing-top-title {
     margin: 0;
     color: var(--bs-white);
-    font-weight: 700;
     letter-spacing: 0.03em;
     text-transform: uppercase;
     line-height: 0.95;
     font-size: clamp(2.6rem, 5vw, 4rem);
+}
+
+body.landing .landing-top-title > span {
+    display: block;
 }
 
 body.landing .landing-top-right {
@@ -337,7 +547,7 @@ body.landing .landing-top-right {
 }
 
 body.landing .landing-top-image {
-    width: min(420px, 100%);
+    width: min(840px, 100%);
     height: auto;
     border: 0;
     background-color: transparent;
@@ -411,11 +621,17 @@ body.landing .landing-cta {
 
 body.landing .landing-button {
     display: inline-block;
-    padding: 0.65rem 1.1rem;
-    border: 1px solid var(--asb-border-color);
+    padding: 1em 1.25em;
+    border: 0 !important;
     background-color: var(--asb-background-colour-button);
-    color: var(--asb-link-colour);
+    color: var(--bs-white) !important;
     text-decoration: none;
+    border-radius: 9999px;
+    line-height: 1;
+}
+
+body.landing a.landing-button:visited {
+    color: var(--bs-white) !important;
 }
 
 body.landing .landing-section--mid .landing-button {
@@ -1034,20 +1250,12 @@ li.dropdown-item:has(annotation-slider[disabled="true"]):hover,
 } */
  .tabulator-headers{
     padding: 0!important;
-    max-width: 100%,
+    max-width: 100%;
  }
 
 .tabulator-footer-contents {
 	background-color: white; 
 
-}
-.tabulator-header .tabulator-header-contents .tabulator-headers .tabulator-col{
-    /* background-color: var(--asb-banner-colour) ; */
-}
-
-
-.tabulator.table:not(.thead-light) .tabulator-header, .tabulator.table:not(.thead-light) .tabulator-header .tabulator-col {
-/* background-color: var(--asb-banner-colour)!important ; */
 }
 
 .tabulator-row {
@@ -1125,28 +1333,43 @@ li.dropdown-item:has(annotation-slider[disabled="true"]):hover,
 }
 
 button.nav-link {
-    background-color: var(--asb-banner-colour)!important;
-    color: var(--asb-link-visited-colour) !important ;
+    background-color: var(--asb-background-colour-button)!important;
+    color: var(--bs-white) !important;
 }
 .nav-item{margin:auto;}
 
 button.nav-link.active {
-    background-color: var(--asb-banner-colour)!important;
-    color: black !important;
+    background-color: var(--asb-background-colour-button)!important;
+        color: var(--bs-white) !important;
 }
 
-button, select{
-  border: solid var(--asb-link-colour) 3px !important;
-  border-radius: 15px !important;
-  background-color: var(--asb-banner-colour)!important;
+button:not(.btn-close):not(.site-burger):not(.landing-burger){
+    border: 0 !important;
+    border-radius: 9999px !important;
+    background-color: var(--asb-background-colour-button)!important;
   max-width: unset!important;
-  padding: 0.5rem!important;
+        padding: 1em 1.25em!important;
   word-wrap: normal;
   text-transform: none;
   margin: 0;
   font-family: inherit;
   font-size: inherit;
   line-height: 1!important;
+    color: var(--bs-white) !important;
+}
+
+select{
+    border: solid var(--asb-link-colour) 3px !important;
+    border-radius: 15px !important;
+    background-color: var(--asb-background-colour-button)!important;
+    max-width: unset!important;
+    padding: 0.5rem!important;
+    word-wrap: normal;
+    text-transform: none;
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: 1!important;
 }
 
 
@@ -1156,16 +1379,10 @@ option {
 }
 
 
-@mixin background-up-down($color: #000) {
-  $rgb: 'rgb%28#{round(red($color))}, #{round(green($color))}, #{round(blue($color))}%29';
-}
-
-select {
-  &.different {
-    background-color: var(--asb-banner-colour);
-    box-sizing: border-box;
-    padding-right: 1.5em;
-  }
+select.different {
+        background-color: var(--asb-banner-colour);
+        box-sizing: border-box;
+        padding-right: 1.5em;
 }
 
 .kwic, .kwic * {
