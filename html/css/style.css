@@ -65,6 +65,52 @@ body {
     --bs-btn-disabled-border-color: transparent;
 }
 
+/* Make the offcanvas close button match the burger's size and colors */
+.site-close,
+button.btn-close.site-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border: 0 !important;
+    background-color: var(--asb-background-colour-button) !important;
+    background-image: none !important;
+    color: var(--bs-white) !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none;
+    opacity: 1 !important;
+}
+.site-close .bi {
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--bs-white);
+}
+
+.site-close:focus-visible {
+    outline: 2px solid var(--bs-white);
+    outline-offset: 2px;
+}
+
+/* match burger hover/active states */
+.site-close:hover,
+.site-close:active,
+.site-close:focus {
+    background-color: var(--asb-background-colour-button) !important;
+    color: var(--bs-white) !important;
+}
+
+/* banner variant when header has site-top */
+body.has-site-top .site-close {
+    background-color: var(--asb-background-colour-button-banner) !important;
+}
+body.has-site-top .site-close:hover,
+body.has-site-top .site-close:focus,
+body.has-site-top .site-close:active {
+    background-color: var(--asb-background-colour-button-banner) !important;
+}
+
 body.has-site-top .site-burger {
     background-color: var(--asb-background-colour-button-banner) !important;
 }
@@ -93,30 +139,42 @@ body.has-site-top .site-burger:focus {
     outline-offset: 2px;
 }
 
-.site-offcanvas {
-    width: clamp(280px, 34vw, 360px);
-    background-color: var(--asb-background-colour);
-    color: var(--asb-link-colour);
+/* Hide burger immediately when the trigger is expanded (no JS needed) */
+.site-burger[aria-expanded="true"],
+body:has(.offcanvas-backdrop) .site-burger {
+    display: none !important;
 }
 
+.site-offcanvas {
+    width: clamp(280px, 34vw, 360px);
+    /* restore menu background and foreground to the original colourway */
+    background-color: var(--asb-dropdown-link-colour) !important;
+    color: var(--bs-white) !important;
+}
+
+
+.site-menu {
+    padding-left: 4rem;
+}
 .site-menu-section {
     font-variant: small-caps;
+    font-size: 2rem;
     letter-spacing: 0.02em;
     margin-top: 1rem;
     margin-bottom: 0.25rem;
-    color: var(--asb-link-colour);
 }
 
-.site-menu-link {
+/* Close-X button shown inside the offcanvas at the upper-left corner */
+.site-menu-link,
+.site-menu-link:hover,
+.site-menu-link:focus,
+.site-menu-link:visited{
     display: block;
     padding: 0.25rem 0;
-    color: var(--asb-link-colour);
     text-decoration: none;
-}
-
-.site-menu-link:hover,
-.site-menu-link:focus {
-    text-decoration: underline;
+    color: white!important;
+    background-color: transparent;
+    font-size: 1.5rem;
 }
 
 .site-top {

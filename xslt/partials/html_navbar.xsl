@@ -20,31 +20,40 @@
                 <h2 class="offcanvas-title h5" id="siteMenuLabel">
                     <xsl:value-of select="$fraktur_title"/>
                 </h2>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Schließen"></button>
+                <!-- make the offcanvas close visually match the site burger -->
+                <button type="button" class="btn-close site-close" data-bs-dismiss="offcanvas" aria-label="Schließen">
+                    <i class="bi bi-x" aria-hidden="true"></i>
+                </button>
             </div>
             <div class="offcanvas-body">
                 <nav class="site-menu" aria-label="Hauptmenü">
-                    <div class="site-menu-section">Edition</div>
-                    <a class="site-menu-link" href="about.html">Armesünderblätter</a>
-                    <a class="site-menu-link" href="goals.html">Ziele</a>
-                    <a class="site-menu-link" href="toc.html">Übersicht</a>
-                    <a class="site-menu-link" href="punishments.html">Strafen</a>
+                    <div class="site-menu-section">Das Projekt</div>
+                    <a class="site-menu-link" href="toc.html">Armersünderblätter</a>
+                    <a class="site-menu-link" href="about.html">Über das Projekt</a>
+                    <a class="site-menu-link" href="publications.html">Publikationen</a>
+                    <a class="site-menu-link" href="citation.html">Zitiervorschlag</a>
+                    <a class="site-menu-link" href="team.html">Team</a>
 
-                    <div class="site-menu-section">Dokumentation</div>
-                    <a class="site-menu-link" href="edition.html">Erschließung</a>
+  <div class="site-menu-section">Suche</div>
+                    <a class="site-menu-link" href="person_search.html">Personensuche</a>
+                    <!-- <a class="site-menu-link" href="search.html">Volltextsuche</a> -->
+                    <a class="site-menu-link" href="./nosketch.html?corpname=flugblaetter&amp;q=q%3Cdoc%3E%22.*%22+&amp;viewmode=kwic&amp;attrs=word%2Clemma%2Cpos%2Cvocab%2Cid&amp;format=json&amp;structs=doc%2Chead%2Cp%2Clg%2Cl%2CplaceName%2Cquote%2Cbibl%2CpersName%2Cdate%2Ccit%2Cg&amp;kwicrightctx=45%23&amp;kwicleftctx=45%23&amp;refs=doc.id%2Cl.id%2Cp.id%2CplaceName.id%2CpersName.id%2Cdate.id%2Cdoc.title%2Cdoc.delinquent_sexes%2Cdoc.attrs%2Clg.type&amp;pagesize=10&amp;fromp=1&amp;selectQueryValue=url">Volltextsuche/Linguistische Suche</a>
+                    <!-- <a class="site-menu-link" href="goals.html">Ziele</a>
+                    <a class="site-menu-link" href="toc.html">Übersicht</a>
+                    <a class="site-menu-link" href="punishments.html">Strafen</a> -->
+
+                    <div class="site-menu-section">Info</div>
+                    <a class="site-menu-link" href="imprint.html">Impressum</a>
+                    <a class="site-menu-link" href="imprint.html">Datenschutzt</a>
+                    <!-- <a class="site-menu-link" href="edition.html">Erschließung</a>
                     <a class="site-menu-link" href="usage.html">Nutzung</a>
                     <a class="site-menu-link" href="data.html">Daten</a>
 
-                    <div class="site-menu-section">Suche</div>
-                    <a class="site-menu-link" href="person_search.html">Personensuche</a>
-                    <a class="site-menu-link" href="search.html">Volltextsuche</a>
-                    <a class="site-menu-link" href="./nosketch.html?corpname=flugblaetter&amp;q=q%3Cdoc%3E%22.*%22+&amp;viewmode=kwic&amp;attrs=word%2Clemma%2Cpos%2Cvocab%2Cid&amp;format=json&amp;structs=doc%2Chead%2Cp%2Clg%2Cl%2CplaceName%2Cquote%2Cbibl%2CpersName%2Cdate%2Ccit%2Cg&amp;kwicrightctx=45%23&amp;kwicleftctx=45%23&amp;refs=doc.id%2Cl.id%2Cp.id%2CplaceName.id%2CpersName.id%2Cdate.id%2Cdoc.title%2Cdoc.delinquent_sexes%2Cdoc.attrs%2Clg.type&amp;pagesize=10&amp;fromp=1&amp;selectQueryValue=url">Linguistische Suche</a>
+                  
 
                     <div class="site-menu-section">Über das Projekt</div>
-                    <a class="site-menu-link" href="team.html">Team</a>
-                    <a class="site-menu-link" href="contact.html">Kontakt</a>
-                    <a class="site-menu-link" href="publications.html">Publikationen</a>
-                    <a class="site-menu-link" href="imprint.html">Impressum</a>
+                    
+                    <a class="site-menu-link" href="contact.html">Kontakt</a> -->              
                 </nav>
             </div>
         </div>
@@ -76,5 +85,6 @@
                 <div class="site-top-strip" aria-hidden="true"></div>
             </div>
         </section>
+        <!-- script removed: offcanvas toggle behavior reverted -->
     </xsl:template>
 </xsl:stylesheet>
