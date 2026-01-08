@@ -74,15 +74,18 @@
                             <a class="landing-thumb" href="fb_17350215_JohannFerdinandH.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350215_JohannFerdinandH_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Johann Ferdinand H."/></a>
                             <a class="landing-thumb" href="fb_17350720_CasparB.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350720_CasparB_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Caspar B."/></a>
 
-                            <div class="landing-thumb landing-thumb--cta" role="group" aria-label="Armesünderblätter ansehen">
-                                <div class="landing-thumbs-cta-title"><span>ARME</span><span>SÜNDER</span><span>BLÄTTER</span></div>
-                                <a class="landing-thumbs-cta-button" href="toc.html">Ansehen</a>
-                            </div>
-                            <!--<a class="landing-thumb" href="fb_17351006_MathiasH.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17351006_MathiasH_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Mathias H."/></a>
+<a class="landing-thumb" href="fb_17351006_MathiasH.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17351006_MathiasH_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Mathias H."/></a>
                             <a class="landing-thumb" href="fb_17351123_AnnaClaraE.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17351123_AnnaClaraE_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Anna Clara E."/></a>
                             <a class="landing-thumb" href="fb_17360103_PaulK.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17360103_PaulK_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Paul K."/></a>
                              <a class="landing-thumb" href="fb_17580818_CatharinaO.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17580818_CatharinaO_a_oenb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Catharina O."/></a>
                             <a class="landing-thumb" href="fb_17520707_JohannGeorgH.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17520707_JohannGeorgH_a_oenb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Johann Georg H."/></a>
+
+
+                            <div class="landing-thumb landing-thumb--cta" role="group" aria-label="Armesünderblätter ansehen">
+                                <div class="landing-thumbs-cta-title"><span>ARME</span><span>SÜNDER</span><span>BLÄTTER</span></div>
+                                <a class="landing-thumbs-cta-button" href="toc.html">Ansehen</a>
+                            </div>
+                            <!--
                             <a class="landing-thumb" href="fb_17850228_Hora_Kloczka.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17850228_Hora-Kloczka_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Hora-Kloczka"/></a>
                             <a class="landing-thumb" href="fb_17741110_KarlL.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17741110_KarlL_a_wb1.jp2/full/260,/0/default.jpg" alt="Deckblatt: Karl L."/></a>
                             <a class="landing-thumb" href="fb_17571022_NiclasSt.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17571022_NiclasSt_a_oenb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Niclas St."/></a>
@@ -100,7 +103,7 @@
             <xsl:apply-templates select="node()" mode="landing"/>
             <xsl:if test="@type = 'contents' and not(preceding-sibling::tei:div[@type = 'contents'])">
                 <div class="landing-cta">
-                    <a class="site-top-project-button" href="about.html">Mehr über das Prokekt</a>
+                    <a class="site-top-project-button" href="about.html">Mehr über das Projekt</a>
                 </div>
             </xsl:if>
         </div>
