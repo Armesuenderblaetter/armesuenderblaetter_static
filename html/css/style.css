@@ -98,6 +98,63 @@ button.btn-close.site-close {
     outline-offset: 2px;
 }
 
+/* Bottom-right action button placed inside `.site-top-strip` */
+.site-bottom-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border: 0 !important;
+    /* semi-transparent variant of the burger color (rgba fallback + color-mix) */
+    background-color: rgba(199,182,165,0.85) !important; /* fallback for #c7b6a5 */
+    background-color: color-mix(in srgb, var(--asb-background-colour-button) 85%, transparent) !important;
+    background-image: none !important;
+    color: var(--bs-white) !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none;
+    font-size: 1.8rem;
+    line-height: 1;
+    position: absolute;
+    right: 0rem;
+    bottom: 0rem;
+    z-index: 2000;
+}
+
+
+.site-bottom-button:focus-visible { outline: 2px solid var(--bs-white); outline-offset: 2px; }
+
+.site-bottom-button:hover,
+.site-bottom-button:active,
+.site-bottom-button:focus {
+    /* on hover/active/focus: make the background fully opaque; keep text/icon solid white */
+    background-color: var(--asb-background-colour-button) !important;
+    background-image: none !important;
+    color: var(--bs-white) !important;
+}
+
+.site-bottom-button .bi {
+    font-size: 2.625rem;
+    line-height: 1;
+}
+
+body.has-site-top .site-bottom-button {
+    /* when the header shows the site-top, use the banner color semitransparent */
+    background-color: color-mix(in srgb, var(--asb-background-colour-button-banner) 85%, transparent) !important;
+    background-image: none !important;
+    color: var(--bs-white) !important;
+}
+
+body.has-site-top .site-bottom-button:hover,
+body.has-site-top .site-bottom-button:active,
+body.has-site-top .site-bottom-button:focus {
+    /* on hover in banner variant, use opaque banner color */
+    background-color: var(--asb-background-colour-button-banner) !important;
+    background-image: none !important;
+    color: var(--bs-white) !important;
+}
+
 /* match burger hover/active states */
 .site-close:hover,
 .site-close:active,
@@ -340,6 +397,7 @@ a.site-top-project-button:visited {
     background-repeat: repeat-x;
     background-size: auto 100%;
     background-color: var(--asb-background-colour-banner);
+    position: relative;
 }
 
 /* Reuse landing section spacing on non-landing pages too */
@@ -1590,7 +1648,7 @@ button.nav-link.active {
         color: var(--bs-white) !important;
 }
 
-button:not(.btn-close):not(.site-burger):not(.landing-burger){
+button:not(.btn-close):not(.site-burger):not(.landing-burger):not(.site-bottom-button){
     border: 0 !important;
     border-radius: 9999px !important;
     background-color: var(--asb-background-colour-button)!important;

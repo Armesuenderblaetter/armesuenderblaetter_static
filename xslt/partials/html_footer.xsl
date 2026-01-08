@@ -48,5 +48,34 @@
         <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/openseadragon@4.1/build/openseadragon/openseadragon.min.js"></script>
+        <script><![CDATA[
+            (function(){
+                function setCTAWidth(){
+                    try{
+                        var $first = document.querySelector('.landing-thumbs.landing-thumbs--carousel .landing-thumb:not(.landing-thumb--cta)');
+                        var $ctas = document.querySelectorAll('.landing-thumb--cta');
+                        if(!$first || !$ctas.length) return;
+                        var w = $first.getBoundingClientRect().width;
+                        $ctas.forEach(function(el){ el.style.width = w + 'px'; el.style.flex = '0 0 ' + w + 'px'; });
+                    }catch(e){ if(window && window.console) window.console.error(e); }
+                }
+                var resizeTimer;
+                document.addEventListener('DOMContentLoaded', function(){
+                    setCTAWidth();
+                    // images might load after DOMContentLoaded
+                    window.setTimeout(setCTAWidth, 250);
+                });
+                window.addEventListener('resize', function(){
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(setCTAWidth, 150);
+                });
+                // also update when images in the carousel finish loading
+                document.addEventListener('load', function(e){
+                    if(e.target && e.target.closest && e.target.closest('.landing-thumbs-viewport')){
+                        setCTAWidth();
+                    }
+                }, true);
+            })();
+        ]]></script>
     </xsl:template>
 </xsl:stylesheet>

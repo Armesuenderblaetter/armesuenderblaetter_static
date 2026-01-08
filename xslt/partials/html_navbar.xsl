@@ -82,7 +82,11 @@
                         </xsl:choose>
                     </div>
                 </div>
-                <div class="site-top-strip" aria-hidden="true"></div>
+                <div class="site-top-strip" aria-hidden="true">
+                    <a class="btn site-bottom-button" href="toc.html" role="button" aria-label="Schnellvorlauf">
+                        <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
+                    </a>
+                </div>
             </div>
         </section>
         <!-- script removed: offcanvas toggle behavior reverted -->
