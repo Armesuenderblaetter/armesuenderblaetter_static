@@ -64,16 +64,45 @@
     <xsl:template name="landing_carousel">
         <section class="landing-section landing-section--mid landing-section--banner" aria-label="Blätter">
             <div class="container landing-section-inner">
-                <div class="landing-thumbs" aria-label="Auswahl an Armesünderblättern">
-                    <a class="landing-thumb" href="fb_17000316_HanssGeorgWagner.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17000316_HanssGeorgWagner_a_oenb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Hanß Georg Wagner"/></a>
-                    <a class="landing-thumb" href="fb_17240808_FrantzCasparScheff.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17240808_FrantzCasparScheffner_a_wmW.jp2/full/260,/0/default.jpg" alt="Deckblatt: Frantz Caspar Scheffner"/></a>
-                    <a class="landing-thumb" href="fb_17350114_AndreN.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350114_AndreN_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Andre N."/></a>
-                    <a class="landing-thumb" href="fb_17350128_JohannK.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350128_JohannK_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Johann K."/></a>
-                    <a class="landing-thumb" href="fb_17350215_JohannFerdinandH.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350215_JohannFerdinandH_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Johann Ferdinand H."/></a>
-                    <a class="landing-thumb" href="fb_17350720_CasparB.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350720_CasparB_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Caspar B."/></a>
-                    <a class="landing-thumb" href="fb_17351006_MathiasH.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17351006_MathiasH_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Mathias H."/></a>
-                    <a class="landing-thumb" href="fb_17351123_AnnaClaraE.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17351123_AnnaClaraE_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Anna Clara E."/></a>
-                    <a class="landing-thumb" href="toc.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17360103_PaulK_a_wb.jp2/full/260,/0/default.jpg" alt="Weitere Blätter anzeigen"/></a>
+                <div class="landing-thumbs landing-thumbs--carousel" aria-label="Auswahl an Armesünderblättern">
+                    <div class="landing-thumbs-strip">
+                        <a class="landing-thumb" href="fb_17000316_HanssGeorgWagner.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17000316_HanssGeorgWagner_a_oenb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Hanß Georg Wagner"/></a>
+                        <a class="landing-thumb" href="fb_17240808_FrantzCasparScheff.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17240808_FrantzCasparScheffner_a_wmW.jp2/full/260,/0/default.jpg" alt="Deckblatt: Frantz Caspar Scheffner"/></a>
+                        <a class="landing-thumb" href="fb_17350114_AndreN.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350114_AndreN_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Andre N."/></a>
+                        <a class="landing-thumb" href="fb_17350128_JohannK.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350128_JohannK_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Johann K."/></a>
+                        <a class="landing-thumb" href="fb_17350215_JohannFerdinandH.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350215_JohannFerdinandH_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Johann Ferdinand H."/></a>
+                        <a class="landing-thumb" href="fb_17350720_CasparB.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350720_CasparB_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Caspar B."/></a>
+                        <a class="landing-thumb" href="fb_17351006_MathiasH.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17351006_MathiasH_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Mathias H."/></a>
+                        <a class="landing-thumb" href="fb_17351123_AnnaClaraE.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17351123_AnnaClaraE_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Anna Clara E."/></a>
+
+                        <a class="landing-thumb" href="fb_17580818_CatharinaO.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17580818_CatharinaO_a_oenb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Catharina O."/></a>
+                        <a class="landing-thumb" href="fb_17520707_JohannGeorgH.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17520707_JohannGeorgH_a_oenb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Johann Georg H."/></a>
+                        <a class="landing-thumb" href="fb_17850228_Hora_Kloczka.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17850228_Hora-Kloczka_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Hora-Kloczka"/></a>
+                        <a class="landing-thumb" href="fb_17741110_KarlL.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17741110_KarlL_a_wb1.jp2/full/260,/0/default.jpg" alt="Deckblatt: Karl L."/></a>
+                        <a class="landing-thumb" href="fb_17571022_NiclasSt.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17571022_NiclasSt_a_oenb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Niclas St."/></a>
+                        <a class="landing-thumb" href="fb_17720917_LeopoldS.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17720917_LeopoldS_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Leopold S."/></a>
+
+                        <a class="landing-thumb" href="toc.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17360103_PaulK_a_wb.jp2/full/260,/0/default.jpg" alt="Weitere Blätter anzeigen"/></a>
+
+                        <!-- duplicate the sequence for a seamless CSS loop -->
+                        <a class="landing-thumb" href="fb_17000316_HanssGeorgWagner.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17000316_HanssGeorgWagner_a_oenb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Hanß Georg Wagner"/></a>
+                        <a class="landing-thumb" href="fb_17240808_FrantzCasparScheff.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17240808_FrantzCasparScheffner_a_wmW.jp2/full/260,/0/default.jpg" alt="Deckblatt: Frantz Caspar Scheffner"/></a>
+                        <a class="landing-thumb" href="fb_17350114_AndreN.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350114_AndreN_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Andre N."/></a>
+                        <a class="landing-thumb" href="fb_17350128_JohannK.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350128_JohannK_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Johann K."/></a>
+                        <a class="landing-thumb" href="fb_17350215_JohannFerdinandH.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350215_JohannFerdinandH_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Johann Ferdinand H."/></a>
+                        <a class="landing-thumb" href="fb_17350720_CasparB.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350720_CasparB_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Caspar B."/></a>
+                        <a class="landing-thumb" href="fb_17351006_MathiasH.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17351006_MathiasH_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Mathias H."/></a>
+                        <a class="landing-thumb" href="fb_17351123_AnnaClaraE.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17351123_AnnaClaraE_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Anna Clara E."/></a>
+
+                        <a class="landing-thumb" href="fb_17580818_CatharinaO.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17580818_CatharinaO_a_oenb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Catharina O."/></a>
+                        <a class="landing-thumb" href="fb_17520707_JohannGeorgH.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17520707_JohannGeorgH_a_oenb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Johann Georg H."/></a>
+                        <a class="landing-thumb" href="fb_17850228_Hora_Kloczka.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17850228_Hora-Kloczka_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Hora-Kloczka"/></a>
+                        <a class="landing-thumb" href="fb_17741110_KarlL.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17741110_KarlL_a_wb1.jp2/full/260,/0/default.jpg" alt="Deckblatt: Karl L."/></a>
+                        <a class="landing-thumb" href="fb_17571022_NiclasSt.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17571022_NiclasSt_a_oenb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Niclas St."/></a>
+                        <a class="landing-thumb" href="fb_17720917_LeopoldS.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17720917_LeopoldS_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Leopold S."/></a>
+
+                        <a class="landing-thumb" href="toc.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17360103_PaulK_a_wb.jp2/full/260,/0/default.jpg" alt="Weitere Blätter anzeigen"/></a>
+                    </div>
                 </div>
             </div>
         </section>

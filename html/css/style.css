@@ -654,6 +654,42 @@ body.landing .landing-thumbs {
     padding: 1rem 0.25rem 0;
 }
 
+body.landing .landing-thumbs.landing-thumbs--carousel {
+    --duration: 18s;
+    --landing-carousel-step: calc(260px + 0.75rem);
+    display: block;
+    overflow: hidden;
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-strip {
+    display: flex;
+    gap: 0.75rem;
+    width: max-content;
+    animation: landingThumbScroll var(--duration) linear infinite;
+    animation-play-state: paused;
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel:hover .landing-thumbs-strip,
+body.landing .landing-thumbs.landing-thumbs--carousel:focus-within .landing-thumbs-strip {
+    animation-play-state: running;
+}
+
+@keyframes landingThumbScroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        /* move exactly one (15-item) sequence; the second sequence is the duplicate */
+        transform: translateX(calc(-15 * var(--landing-carousel-step)));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-strip {
+        animation: none;
+    }
+}
+
 body.landing .landing-thumb {
     flex: 0 0 auto;
     display: block;
