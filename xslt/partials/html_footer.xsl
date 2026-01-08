@@ -15,25 +15,26 @@
                             1010 Wien
                             </div>
                             <div class="footer-3">T: +43 1 51581-2223<br/>
-                            E: ace@oeaw.ac.at</div>
-                        </div>
-                        <div class="col-3 logo" style="padding-right: 0px">
-                                <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
-                                <img src="images/logo_oeaw.png" width="120" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
-                            </a>
-                            <div class="footer-2">Österreichische Akademie der Wissenschaften</div>
+                                E: <a href="mailto:ace@oeaw.ac.at">ace@oeaw.ac.at</a>
+                            </div>
                         </div>
                           <div class="col-3 logo" style="padding-right: 0px">
-                                <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
+                                <!-- <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
                                 <img src="images/logo_oeaw.png" width="120" alt="Austrian Corpora and Editions" title="Austrian Corpora and Editions"/>
                             </a>
-                            <div class="footer-2">Austrian Corpora and Editions</div>
+                            <div class="footer-2">Austrian Corpora and Editions</div> -->
                         </div>
-                        <div class="col-3 logo">
-                            <a href="https://www.oeaw.ac.at/acdh">
+                         <div class="col-3 logo" style="padding-right: 0px">
+                                <a href="https://www.oeaw.ac.at/acdh">
                             <img src="images/logo_acdh.png" width="90" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
                             </a>
                              <div class="footer-2">Austrian Centre for Digital Humanities</div>
+                        </div>
+                        <div class="col-3 logo">
+                         <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
+                                <img src="images/logo_oeaw.png" width="120" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
+                            </a>
+                            <div class="footer-2">Österreichische Akademie der Wissenschaften</div>
                         </div>
                     </div>
                 </div>
