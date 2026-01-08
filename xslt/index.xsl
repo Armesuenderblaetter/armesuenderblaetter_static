@@ -74,10 +74,10 @@
                             <a class="landing-thumb" href="fb_17350215_JohannFerdinandH.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350215_JohannFerdinandH_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Johann Ferdinand H."/></a>
                             <a class="landing-thumb" href="fb_17350720_CasparB.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17350720_CasparB_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Caspar B."/></a>
 
-                            <a class="landing-thumb landing-thumb--cta" href="toc.html" aria-label="Armesünderblätter ansehen">
+                            <div class="landing-thumb landing-thumb--cta" role="group" aria-label="Armesünderblätter ansehen">
                                 <div class="landing-thumbs-cta-title"><span>ARME</span><span>SÜNDER</span><span>BLÄTTER</span></div>
-                                <span class="landing-thumbs-cta-button">Ansehen</span>
-                            </a>
+                                <a class="landing-thumbs-cta-button" href="toc.html">Ansehen</a>
+                            </div>
                             <!--<a class="landing-thumb" href="fb_17351006_MathiasH.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17351006_MathiasH_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Mathias H."/></a>
                             <a class="landing-thumb" href="fb_17351123_AnnaClaraE.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17351123_AnnaClaraE_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Anna Clara E."/></a>
                             <a class="landing-thumb" href="fb_17360103_PaulK.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17360103_PaulK_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Paul K."/></a>
