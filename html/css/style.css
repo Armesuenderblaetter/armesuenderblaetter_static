@@ -7,15 +7,30 @@
     --asb-banner-colour: #e6e2d6;
     --asb-link-colour: #565247;
     --asb-background-colour: #e6e2d6;
-    --asb-dropdown-link-colour: #565247;
     --asb-link-visited-colour: #868277;
     --asb-border-color: #868277 ;
     --asb-background-colour: #ddd2c9 ;
-    --asb-background-colour-banner:  #c0ac9a ;
-    --asb-background-colour-fronted:  #d3c5b8;
-    --asb-background-colour-button-banner: #ad947d ;
-    --asb-background-colour-button-fronted: #b19983 ;
+    --asb-background-colour-1:  #d3c5b8;
+    --asb-background-colour-2: #c0ac9a ;
+    --asb-background-colour-3: #565247;
+    --asb-background-colour-button-2: #ad947d ;
+    --asb-background-colour-button-1: #b19983 ;
     --asb-background-colour-button: #c7b6a5 ;
+    --asb-background-colour-button-1-hover: #a98f76 ;
+    --asb-background-colour-button-2: #c8b6a6 ;
+    --asb-background-colour-button-2-hover: #c0ac9a ;
+
+    /* Backwards-compatible aliases (older token names used across the codebase) */
+    --asb-dropdown-link-colour: var(--asb-background-colour-3);
+    --asb-background-colour-banner: var(--asb-background-colour-2);
+    --asb-background-colour-fronted: var(--asb-background-colour-1);
+    --asb-background-colour-button-banner: var(--asb-background-colour-button-2);
+    --asb-background-colour-button-fronted: var(--asb-background-colour-button-1);
+    --asb-background-colour-button-hover: var(--asb-background-colour-button-1-hover);
+
+    /* Shared sizes for square/icon buttons (burger/close/action) */
+    --asb-square-btn-size: 4.5rem;
+    --asb-square-btn-icon-size: 2.625rem;
 
     /* Ensure the whole site uses a serif font (also picked up by Bootstrap) */
     --bs-body-font-family: var(--editor-font-family);
@@ -46,18 +61,34 @@ body {
     margin: 0 !important;
 }
 
-.site-burger {
+/* =========================================================
+    Square / icon buttons
+    All square button visuals live on `.site-button`.
+    Variants:
+    - `.semitrans`: translucent by default, solid on hover
+    ========================================================= */
+
+:is(.site-button, .site-burger, .site-close, .site-bottom-button) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 4.5rem;
-    height: 4.5rem;
+    width: var(--asb-square-btn-size);
+    height: var(--asb-square-btn-size);
     border: 0 !important;
-    background-color: var(--asb-background-colour-button) !important;
     border-radius: 0 !important;
     padding: 0 !important;
     box-shadow: none;
+    background-image: none !important;
+    color: var(--bs-white) !important;
+    opacity: 1 !important;
 
+    /* Defaults (overridden per-button via custom properties / .semitrans) */
+    --asb-square-btn-bg: var(--asb-background-colour-button);
+    --asb-square-btn-bg-hover: var(--asb-background-colour-button-hover);
+
+    background-color: var(--asb-square-btn-bg) !important;
+
+    /* Ensure Bootstrap .btn doesn't introduce hover/active backgrounds */
     --bs-btn-bg: transparent;
     --bs-btn-border-color: transparent;
     --bs-btn-hover-bg: transparent;
@@ -68,52 +99,51 @@ body {
     --bs-btn-disabled-border-color: transparent;
 }
 
-/* Make the offcanvas close button match the burger's size and colors */
+:is(.site-button, .site-burger, .site-close, .site-bottom-button):focus-visible {
+    outline: 2px solid var(--bs-white);
+    outline-offset: 2px;
+}
+
+:is(.site-button, .site-burger, .site-close, .site-bottom-button):hover,
+:is(.site-button, .site-burger, .site-close, .site-bottom-button):active,
+:is(.site-button, .site-burger, .site-close, .site-bottom-button):focus {
+    background-color: var(--asb-square-btn-bg-hover) !important;
+    color: var(--bs-white) !important;
+    box-shadow: none !important;
+}
+
+:is(.site-button, .site-burger, .site-close, .site-bottom-button) .bi {
+    font-size: var(--asb-square-btn-icon-size);
+    line-height: 1;
+    color: var(--bs-white);
+}
+
+/* Semi-transparent square buttons: translucent by default, solid on hover */
+:is(.site-button, .site-bottom-button).semitrans,
+.site-bottom-button {
+    /* rgba fallback + color-mix (preferred) */
+    --asb-square-btn-bg: rgba(199, 182, 165, 0.85);
+    --asb-square-btn-bg: color-mix(in srgb, var(--asb-background-colour-button) 85%, transparent);
+    --asb-square-btn-bg-hover: var(--asb-background-colour-button);
+}
+
+/* Banner variant for semi-transparent square buttons */
+body.has-site-top :is(.site-button, .site-bottom-button).semitrans,
+body.has-site-top .site-bottom-button {
+    --asb-square-btn-bg: color-mix(in srgb, var(--asb-background-colour-button-banner) 85%, transparent);
+    --asb-square-btn-bg-hover: var(--asb-background-colour-button-banner);
+}
+
+/* Offcanvas close button: hidden by default; shown/positioned when menu opens */
 .site-close,
 button.btn-close.site-close {
     /* by default keep the element present in the DOM but hidden at its original location
        — we'll show and position it outside the offcanvas when the menu opens */
     display: none !important;
-    align-items: center;
-    justify-content: center;
-    width: 4.5rem;
-    height: 4.5rem;
-    border: 0 !important;
-    background-color: var(--asb-background-colour-button) !important;
-    background-image: none !important;
-    color: var(--bs-white) !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
-    box-shadow: none;
-    opacity: 1 !important;
-}
-.site-close .bi {
-    font-size: 2.625rem;
-    line-height: 1;
-    color: var(--bs-white);
-}
-
-.site-close:focus-visible {
-    outline: 2px solid var(--bs-white);
-    outline-offset: 2px;
 }
 
 /* Bottom-right action button placed inside `.site-top-strip` */
 .site-bottom-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 4.5rem;
-    height: 4.5rem;
-    border: 0 !important;
-    /* semi-transparent variant of the burger color (rgba fallback + color-mix) */
-    background-color: rgba(199,182,165,0.85) !important; /* fallback for #c7b6a5 */
-    background-color: color-mix(in srgb, var(--asb-background-colour-button) 85%, transparent) !important;
-    background-image: none !important;
-    color: var(--bs-white) !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
-    box-shadow: none;
     font-size: 1.8rem;
     line-height: 1;
     position: absolute;
@@ -122,63 +152,12 @@ button.btn-close.site-close {
     z-index: 2000;
 }
 
-
-.site-bottom-button:focus-visible { outline: 2px solid var(--bs-white); outline-offset: 2px; }
-
-.site-bottom-button:hover,
-.site-bottom-button:active,
-.site-bottom-button:focus {
-    /* on hover/active/focus: make the background fully opaque; keep text/icon solid white */
-    background-color: var(--asb-background-colour-button) !important;
-    background-image: none !important;
-    color: var(--bs-white) !important;
-}
-
-.site-bottom-button .bi {
-    font-size: 2.625rem;
-    line-height: 1;
-}
-
-body.has-site-top .site-bottom-button {
-    /* when the header shows the site-top, use the banner color semitransparent */
-    background-color: color-mix(in srgb, var(--asb-background-colour-button-banner) 85%, transparent) !important;
-    background-image: none !important;
-    color: var(--bs-white) !important;
-}
-
-body.has-site-top .site-bottom-button:hover,
-body.has-site-top .site-bottom-button:active,
-body.has-site-top .site-bottom-button:focus {
-    /* on hover in banner variant, use opaque banner color */
-    background-color: var(--asb-background-colour-button-banner) !important;
-    background-image: none !important;
-    color: var(--bs-white) !important;
-}
-
-/* match burger hover/active states */
-.site-close:hover,
-.site-close:active,
-.site-close:focus {
-    background-color: var(--asb-background-colour-button) !important;
-    color: var(--bs-white) !important;
-}
-
-/* banner variant when header has site-top */
-body.has-site-top .site-close {
-    background-color: var(--asb-background-colour-button-banner) !important;
-}
-body.has-site-top .site-close:hover,
-body.has-site-top .site-close:focus,
-body.has-site-top .site-close:active {
-    background-color: var(--asb-background-colour-button-banner) !important;
-}
-
 /* When the offcanvas is showing, place the close button outside it so
    its left margin sits at the offcanvas right edge and its top at the page top. */
 /* Show and position the close button as soon as the offcanvas has the `show` class.
    Using `.site-offcanvas.show` avoids relying on `:has()` and triggers immediately. */
-.site-offcanvas.show .site-close,
-.offcanvas.show .site-close {
+.site-offcanvas.show [data-bs-dismiss="offcanvas"],
+.offcanvas.show [data-bs-dismiss="offcanvas"] {
     display: inline-flex !important;
     /* position it exactly at the offcanvas' right edge regardless of viewport */
     position: absolute !important;
@@ -190,9 +169,21 @@ body.has-site-top .site-close:active {
     transition: left 480ms cubic-bezier(.22,1,.36,1), opacity 220ms ease-in-out;
 }
 
+/* Also support legacy `.site-close` toggling */
+.site-offcanvas.show .site-close,
+.offcanvas.show .site-close {
+    display: inline-flex !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 100% !important;
+    margin: 0 !important;
+    z-index: 20001 !important;
+    transition: left 480ms cubic-bezier(.22,1,.36,1), opacity 220ms ease-in-out;
+}
+
 /* Show the close button immediately when the offcanvas backdrop exists
    (Bootstrap inserts the backdrop before the offcanvas transition starts). */
-body:has(.offcanvas-backdrop) .site-close {
+body:has(.offcanvas-backdrop) .offcanvas [data-bs-dismiss="offcanvas"] {
     display: inline-flex !important;
     /* keep the button positioned relative to the offcanvas so it moves
        together during the slide-in animation; use absolute (not fixed). */
@@ -206,42 +197,26 @@ body:has(.offcanvas-backdrop) .site-close {
 }
 
 /* Ensure the icon inside remains white against the (dark) menu background */
-.site-offcanvas.show .site-close .bi,
-.offcanvas.show .site-close .bi {
+.site-offcanvas.show [data-bs-dismiss="offcanvas"] .bi,
+.offcanvas.show [data-bs-dismiss="offcanvas"] .bi {
     color: var(--bs-white) !important;
 }
 
-body.has-site-top .site-burger {
-    background-color: var(--asb-background-colour-button-banner) !important;
+/* Banner variant for the header/offcanvas square buttons */
+body.has-site-top .site-header .site-button,
+body.has-site-top .offcanvas [data-bs-dismiss="offcanvas"],
+body.has-site-top :is(.site-burger, .site-close) {
+    --asb-square-btn-bg: var(--asb-background-colour-button-banner);
+    --asb-square-btn-bg-hover: var(--asb-background-colour-button-banner);
 }
 
-body.has-site-top .site-burger:hover,
-body.has-site-top .site-burger:active,
-body.has-site-top .site-burger:focus {
-    background-color: var(--asb-background-colour-button-banner) !important;
-}
 
-.site-burger:hover,
-.site-burger:active,
-.site-burger:focus {
-    background-color: var(--asb-background-colour-button) !important;
-    box-shadow: none !important;
-}
-
-.site-burger .bi {
-    font-size: 2.625rem;
-    line-height: 1;
-    color: var(--bs-white);
-}
-
-.site-burger:focus-visible {
-    outline: 2px solid var(--bs-white);
-    outline-offset: 2px;
-}
 
 /* Hide burger immediately when the trigger is expanded (no JS needed) */
 .site-burger[aria-expanded="true"],
-body:has(.offcanvas-backdrop) .site-burger {
+body:has(.offcanvas-backdrop) .site-burger,
+.site-header .site-button[aria-expanded="true"],
+body:has(.offcanvas-backdrop) .site-header .site-button[data-bs-toggle="offcanvas"] {
     display: none !important;
 }
 
@@ -285,7 +260,7 @@ body:has(.offcanvas-backdrop) .site-burger {
 }
 
 .site-top {
-    background-color: var(--asb-background-colour-banner);
+    background-color: var(--asb-background-colour-2);
     padding: 5rem 0 0;
 }
 
@@ -396,7 +371,7 @@ a.site-top-project-button:visited {
     background-image: url('../images/banner.png');
     background-repeat: repeat-x;
     background-size: auto 100%;
-    background-color: var(--asb-background-colour-banner);
+    background-color: var(--asb-background-colour-2);
     position: relative;
 }
 
@@ -712,7 +687,7 @@ body.landing .landing-offcanvas .btn-close {
 }
 
 body.landing .landing-top {
-    background-color: var(--asb-background-colour-banner);
+    background-color: var(--asb-background-colour-2);
     padding: 5rem 0 0;
 }
 
@@ -768,7 +743,7 @@ body.landing .landing-top-strip {
     background-image: url('../images/banner.png');
     background-repeat: repeat-x;
     background-size: auto 100%;
-    background-color: var(--asb-background-colour-banner);
+    background-color: var(--asb-background-colour-2);
 }
 
 body.landing .landing-section {
@@ -780,7 +755,7 @@ body.landing .landing-section--light {
 }
 
 body.landing .landing-section--mid {
-    background-color: var(--asb-background-colour-fronted);
+    background-color: var(--asb-background-colour-1);
 }
 
 body.landing .landing-section--banner {
@@ -973,7 +948,7 @@ body.landing .landing-thumb img {
 }
 
 body.landing footer.footer {
-    background-color: var(--asb-background-colour-banner) !important;
+    background-color: var(--asb-background-colour-2) !important;
     color: var(--asb-link-colour);
 }
 
@@ -1477,18 +1452,7 @@ dd {
     padding: .2rem 0rem 1rem 10rem;
 }
 
-.dropdown-item {
-    background-color: var(--asb-background-colour)!important;
-    color: var(--asb-dropdown-link-colour)!important;
-}
 
-.dropdown-item:active,  .dropdown-item:hover {
-    color: black!important;
-}
-
-.dropdown-item:active {
-      font-weight: bold;
-}
 
 /* Override dropdown-item styles for disabled annotation-sliders */
 li.dropdown-item:has(annotation-slider[disabled="true"]):active,
@@ -1648,7 +1612,7 @@ button.nav-link.active {
         color: var(--bs-white) !important;
 }
 
-button:not(.btn-close):not(.site-burger):not(.landing-burger):not(.site-bottom-button){
+button:not(.btn-close):not(.site-button):not(.site-burger):not(.site-close):not(.site-bottom-button):not(.landing-burger){
     border: 0 !important;
     border-radius: 9999px !important;
     background-color: var(--asb-background-colour-button)!important;

@@ -9,7 +9,7 @@
 
         <header class="site-header">
             <div class="container-fluid site-header-inner">
-                <button class="btn site-burger" type="button" data-bs-toggle="offcanvas" data-bs-target="#siteMenu" aria-controls="siteMenu" aria-label="Menü öffnen">
+                <button class="site-button site-burger" type="button" data-bs-toggle="offcanvas" data-bs-target="#siteMenu" aria-controls="siteMenu" aria-label="Menü öffnen">
                     <i class="bi bi-list" aria-hidden="true"></i>
                 </button>
             </div>
@@ -21,7 +21,7 @@
                     <xsl:value-of select="$fraktur_title"/>
                 </h2>
                 <!-- make the offcanvas close visually match the site burger -->
-                <button type="button" class="btn-close site-close" data-bs-dismiss="offcanvas" aria-label="Schließen">
+                <button type="button" class="site-button site-close" data-bs-dismiss="offcanvas" aria-label="Schließen">
                     <i class="bi bi-x" aria-hidden="true"></i>
                 </button>
             </div>
@@ -83,7 +83,7 @@
                     </div>
                 </div>
                 <div class="site-top-strip" aria-hidden="true">
-                    <a class="btn site-bottom-button" href="toc.html" role="button" aria-label="Schnellvorlauf">
+                    <a class="site-button site-bottom-button semitrans" href="toc.html" role="button" aria-label="Schnellvorlauf">
                         <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
                     </a>
                 </div>
