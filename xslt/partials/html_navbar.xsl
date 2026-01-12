@@ -77,7 +77,7 @@
                                 <img class="site-top-image" src="images/vienna.png" alt="Titelbild"/>
                             </xsl:when>
                             <xsl:otherwise>
-                                <a class="site-top-project-button" href="about.html">Mehr über das Projekt</a>
+                                <a class="section-button bgc site-top-project-button" href="about.html">Mehr über das Projekt</a>
                             </xsl:otherwise>
                         </xsl:choose>
                     </div>

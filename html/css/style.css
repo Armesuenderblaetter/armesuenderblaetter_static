@@ -4,30 +4,24 @@
     /*  --variant-marker-color: rgb(203, 231, 255); */
     --variant-marker-color: #868277 ;
     --catch-offset-right: -75%;
-    --asb-banner-colour: #e6e2d6;
-    --asb-link-colour: #565247;
-    --asb-background-colour: #e6e2d6;
-    --asb-link-visited-colour: #868277;
-    --asb-border-color: #868277 ;
-    --asb-background-colour: #ddd2c9 ;
-    --asb-background-colour-1:  #d3c5b8;
+
+    --asb-background-colour-0: #ddd2c9;
+    --asb-background-colour-1: #d2c4b9;
     --asb-background-colour-2: #c0ac9a ;
     --asb-background-colour-3: #565247;
-    --asb-background-colour-button-2: #ad947d ;
-    --asb-background-colour-button-1: #b19983 ;
-    --asb-background-colour-button: #c7b6a5 ;
-    --asb-background-colour-button-1-hover: #a98f76 ;
-    --asb-background-colour-button-2: #c8b6a6 ;
-    --asb-background-colour-button-2-hover: #c0ac9a ;
+    --asb-background-colour-0-button: #c8b6a6 ;
+    --asb-background-colour-1-button: #b19983 ; 
+    --asb-background-colour-2-button: #a98f76 ;;
 
-    /* Backwards-compatible aliases (older token names used across the codebase) */
-    --asb-dropdown-link-colour: var(--asb-background-colour-3);
-    --asb-background-colour-banner: var(--asb-background-colour-2);
-    --asb-background-colour-fronted: var(--asb-background-colour-1);
-    --asb-background-colour-button-banner: var(--asb-background-colour-button-2);
-    --asb-background-colour-button-fronted: var(--asb-background-colour-button-1);
-    --asb-background-colour-button-hover: var(--asb-background-colour-button-1-hover);
+    --asb-background-colour-0-button-hover: #c0ac9a ;
+    --asb-background-colour-1-button-hover: #a98f76 ;
+    --asb-background-colour-2-button-hover: #a08066 ;
 
+    --asb-link-colour: #565247;
+    --asb-link-visited-colour: #868277;
+    --asb-border-color: #868277 ;
+
+    
     /* Shared sizes for square/icon buttons (burger/close/action) */
     --asb-square-btn-size: 4.5rem;
     --asb-square-btn-icon-size: 2.625rem;
@@ -41,7 +35,7 @@
 
 body {
     font-family: var(--bs-body-font-family);
-    background-color: var(--asb-background-colour);
+    background-color: var(--asb-background-colour-0);
 }
 
 .site-header {
@@ -61,6 +55,25 @@ body {
     margin: 0 !important;
 }
 
+
+.bga{
+    --button-bg: var(--asb-background-colour-0-button);
+    --button-bg-hover: var(--asb-background-colour-0-button-hover);
+}
+
+
+.bgb{
+    --button-bg: var(--asb-background-colour-1-button);
+    --button-bg-hover: var(--asb-background-colour-1-button-hover);
+}
+
+
+.bgc{
+    --button-bg: var(--asb-background-colour-2-button);
+    --button-bg-hover: var(--asb-background-colour-2-button-hover);
+}
+
+
 /* =========================================================
     Square / icon buttons
     All square button visuals live on `.site-button`.
@@ -68,8 +81,8 @@ body {
     - `.semitrans`: translucent by default, solid on hover
     ========================================================= */
 
-:is(.site-button, .site-burger, .site-close, .site-bottom-button) {
-    display: inline-flex;
+.site-button {
+ display: inline-flex;
     align-items: center;
     justify-content: center;
     width: var(--asb-square-btn-size);
@@ -80,59 +93,34 @@ body {
     box-shadow: none;
     background-image: none !important;
     color: var(--bs-white) !important;
-    opacity: 1 !important;
-
-    /* Defaults (overridden per-button via custom properties / .semitrans) */
-    --asb-square-btn-bg: var(--asb-background-colour-button);
-    --asb-square-btn-bg-hover: var(--asb-background-colour-button-hover);
-
-    background-color: var(--asb-square-btn-bg) !important;
-
-    /* Ensure Bootstrap .btn doesn't introduce hover/active backgrounds */
-    --bs-btn-bg: transparent;
-    --bs-btn-border-color: transparent;
-    --bs-btn-hover-bg: transparent;
-    --bs-btn-hover-border-color: transparent;
-    --bs-btn-active-bg: transparent;
-    --bs-btn-active-border-color: transparent;
-    --bs-btn-disabled-bg: transparent;
-    --bs-btn-disabled-border-color: transparent;
+    background-color: var(--asb-background-colour-1-button) !important;
+     font-size: var(--asb-square-btn-icon-size);
+    line-height: 1;
 }
 
-:is(.site-button, .site-burger, .site-close, .site-bottom-button):focus-visible {
+
+
+
+.site-button:focus-visible {
     outline: 2px solid var(--bs-white);
     outline-offset: 2px;
 }
 
-:is(.site-button, .site-burger, .site-close, .site-bottom-button):hover,
-:is(.site-button, .site-burger, .site-close, .site-bottom-button):active,
-:is(.site-button, .site-burger, .site-close, .site-bottom-button):focus {
-    background-color: var(--asb-square-btn-bg-hover) !important;
+.site-button:hover  .site-button:active .site-button:focus {
+    background-color: var(--asb-background-colour-1-button-hover) !important;
     color: var(--bs-white) !important;
     box-shadow: none !important;
 }
 
-:is(.site-button, .site-burger, .site-close, .site-bottom-button) .bi {
-    font-size: var(--asb-square-btn-icon-size);
-    line-height: 1;
-    color: var(--bs-white);
-}
+
 
 /* Semi-transparent square buttons: translucent by default, solid on hover */
-:is(.site-button, .site-bottom-button).semitrans,
-.site-bottom-button {
-    /* rgba fallback + color-mix (preferred) */
-    --asb-square-btn-bg: rgba(199, 182, 165, 0.85);
-    --asb-square-btn-bg: color-mix(in srgb, var(--asb-background-colour-button) 85%, transparent);
-    --asb-square-btn-bg-hover: var(--asb-background-colour-button);
+.site-button.semitrans {
+  /*semitrans */
+  color: var(--bs-white) !important;
 }
 
-/* Banner variant for semi-transparent square buttons */
-body.has-site-top :is(.site-button, .site-bottom-button).semitrans,
-body.has-site-top .site-bottom-button {
-    --asb-square-btn-bg: color-mix(in srgb, var(--asb-background-colour-button-banner) 85%, transparent);
-    --asb-square-btn-bg-hover: var(--asb-background-colour-button-banner);
-}
+
 
 /* Offcanvas close button: hidden by default; shown/positioned when menu opens */
 .site-close,
@@ -150,6 +138,7 @@ button.btn-close.site-close {
     right: 0rem;
     bottom: 0rem;
     z-index: 2000;
+    
 }
 
 /* When the offcanvas is showing, place the close button outside it so
@@ -169,7 +158,7 @@ button.btn-close.site-close {
     transition: left 480ms cubic-bezier(.22,1,.36,1), opacity 220ms ease-in-out;
 }
 
-/* Also support legacy `.site-close` toggling */
+/* Also support legacy `.site-close` toggling 
 .site-offcanvas.show .site-close,
 .offcanvas.show .site-close {
     display: inline-flex !important;
@@ -179,7 +168,7 @@ button.btn-close.site-close {
     margin: 0 !important;
     z-index: 20001 !important;
     transition: left 480ms cubic-bezier(.22,1,.36,1), opacity 220ms ease-in-out;
-}
+}*/
 
 /* Show the close button immediately when the offcanvas backdrop exists
    (Bootstrap inserts the backdrop before the offcanvas transition starts). */
@@ -202,14 +191,6 @@ body:has(.offcanvas-backdrop) .offcanvas [data-bs-dismiss="offcanvas"] {
     color: var(--bs-white) !important;
 }
 
-/* Banner variant for the header/offcanvas square buttons */
-body.has-site-top .site-header .site-button,
-body.has-site-top .offcanvas [data-bs-dismiss="offcanvas"],
-body.has-site-top :is(.site-burger, .site-close) {
-    --asb-square-btn-bg: var(--asb-background-colour-button-banner);
-    --asb-square-btn-bg-hover: var(--asb-background-colour-button-banner);
-}
-
 
 
 /* Hide burger immediately when the trigger is expanded (no JS needed) */
@@ -223,7 +204,7 @@ body:has(.offcanvas-backdrop) .site-header .site-button[data-bs-toggle="offcanva
 .site-offcanvas {
     width: var(--site-offcanvas-width);
     /* restore menu background and foreground to the original colourway */
-    background-color: var(--asb-dropdown-link-colour) !important;
+    background-color: var(--asb-background-colour-3) !important;
     color: var(--bs-white) !important;
     /* keep the offcanvas positioned by Bootstrap (don't force `position: relative`) so
        it does not occupy document flow when hidden; allow the close button to sit
@@ -234,7 +215,9 @@ body:has(.offcanvas-backdrop) .site-header .site-button[data-bs-toggle="offcanva
     transition: width 480ms cubic-bezier(.22,1,.36,1);
 }
 
-
+.site-button{
+    
+}
 .site-menu {
     padding-left: 4rem;
 }
@@ -299,33 +282,31 @@ body:has(.offcanvas-backdrop) .site-header .site-button[data-bs-toggle="offcanva
     position: relative;
 }
 
-.site-top-project-button {
+.section-button, .section.button:visited{
     display: inline-flex;
     align-items: center;
     justify-content: center;
     height: var(--site-top-action-height);
     padding: 0 1.50em;
     border: 0 !important;
-    background-color: var(--asb-background-colour-button-banner);
+    background-color: var(--button-bg) !important;
+    font-size: 1.25rem;
     color: var(--bs-white) !important;
     text-decoration: none;
     border-radius: 9999px;
 }
 
-/* When a site-top style button is used inside content sections (type=content),
-   use the matching button token for that background. */
-.landing-section--light .site-top-project-button {
-    background-color: var(--asb-background-colour-button);
-}
-
-a.site-top-project-button:visited {
-    color: var(--bs-white) !important;
+.section-button:hover{
+    background-color: var(--button-bg-hover)!important;
 }
 
 .site-top-project-button:hover,
 .site-top-project-button:focus {
-    text-decoration: underline;
+    text-decoration: none;
 }
+
+
+
 
 .site-top-image {
     /* keep the image at its natural size and allow it to overflow the
@@ -380,9 +361,6 @@ a.site-top-project-button:visited {
     padding: 2.25rem 0;
 }
 
-.landing-section--light {
-    background-color: var(--asb-background-colour);
-}
 
 
 .landing-section--banner .landing-section-inner {
@@ -390,6 +368,7 @@ a.site-top-project-button:visited {
     margin-right: 2rem!important;
     max-width: 100vw!important  ;
 }
+
 @media (max-width: 768px) {
     .site-top {
         padding-top: 4.5rem;
@@ -765,6 +744,8 @@ body.landing .landing-section--banner {
     --landing-carousel-banner-height: calc(168px * 1.3);
     --landing-carousel-banner-overlap: calc(var(--landing-carousel-tile-width) * 0.3);
     padding-top: 2.25rem;
+        background-color: var(--asb-background-colour-1)!important;
+
     padding-bottom: calc(var(--landing-carousel-banner-height) - var(--landing-carousel-banner-overlap));
 }
 
@@ -878,7 +859,7 @@ body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumb--cta {
      flex: 0 0 var(--landing-carousel-tile-width);
      width: auto;
      box-sizing: border-box;
-     background-color: var(--asb-background-colour-button-banner);
+     background-color: var(--asb-background-colour-2-button);
      color: var(--bs-white);
      display: flex;
      flex-direction: column;
@@ -900,7 +881,7 @@ body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-title 
     display: block;
 }
 
-body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button {
+.cta-button {
     display: inline-block;
     padding: 0.65em 1.1em;
     border: 2px solid var(--bs-white);
@@ -909,6 +890,7 @@ body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button
     text-decoration: none;
     border-radius: 9999px;
     line-height: 1;
+    text-decoration: none   ;
 }
 
 body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button:hover,
@@ -1070,7 +1052,7 @@ a {
 }
 
 a:visited {
-    color: var(--asb-link-visited-colour)!important;
+    color: var(--asb-link-visited-colour);
 }
 
 a.navbar-brand {
