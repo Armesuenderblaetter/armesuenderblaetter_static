@@ -83,7 +83,7 @@
 
                             <div class="landing-thumb landing-thumb--cta bgb" role="group" aria-label="Armesünderblätter ansehen">
                                 <div class="landing-thumbs-cta-title"><span>ARME</span><span>SÜNDER</span><span>BLÄTTER</span></div>
-                                <a class="cta-button" href="toc.html">Ansehen</a>
+                                <a class="cta-button" href="search.html">Ansehen</a>
                             </div>
                             <!--
                             <a class="landing-thumb" href="fb_17850228_Hora_Kloczka.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17850228_Hora-Kloczka_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Hora-Kloczka"/></a>

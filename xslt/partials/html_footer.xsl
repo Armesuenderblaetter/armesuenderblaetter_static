@@ -14,9 +14,9 @@
                             <div class="footer-2">Bäckerstraße 13<br/>
                             1010 Wien
                             </div>
-                            <div class="footer-3">T: +43 1 51581-2223<br/>
-                                E: <a href="mailto:ace@oeaw.ac.at">ace@oeaw.ac.at</a>
-                            </div>
+                            <!-- <div class="footer-3"><div>T: +43 1 51581-2223</div><div>
+                                E: <a href="mailto:ace@oeaw.ac.at">ace@oeaw.ac.at</a></div>
+                            </div> -->
                         </div>
                           <div class="col-3 logo" style="padding-right: 0px">
                                 <!-- <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">

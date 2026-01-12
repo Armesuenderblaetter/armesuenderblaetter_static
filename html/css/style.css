@@ -28,7 +28,7 @@
 
     /* Ensure the whole site uses a serif font (also picked up by Bootstrap) */
     --bs-body-font-family: var(--editor-font-family);
-    --site-offcanvas-width: clamp(280px, 34vw, 360px);
+    --site-offcanvas-width: clamp(280px, 34vw, 400px);
     /* target height used for the action in the site-top (button or image) */
     --site-top-action-height: clamp(2.6rem, 4vw, 3.5rem);
 }
@@ -46,6 +46,12 @@ body {
     z-index: 20000;
     padding: 0;
     margin: 0;
+}
+
+/* Search only: place burger in column 2 (right of the left filter column) */
+body.page-search .site-header,
+#searchPage #searchContainer .site-header {
+    left: var(--site-offcanvas-width);
 }
 
 .site-header-inner {
@@ -158,6 +164,31 @@ button.btn-close.site-close {
     transition: left 480ms cubic-bezier(.22,1,.36,1), opacity 220ms ease-in-out;
 }
 
+/* When closing starts Bootstrap may keep `.show` while adding `.hiding`.
+   In that phase we want the burger back and the X gone. */
+.site-offcanvas.show.hiding [data-bs-dismiss="offcanvas"],
+.offcanvas.show.hiding [data-bs-dismiss="offcanvas"] {
+    display: none !important;
+}
+
+/* Also show during the opening transition (Bootstrap uses `.showing`) */
+.site-offcanvas.showing [data-bs-dismiss="offcanvas"],
+.offcanvas.showing [data-bs-dismiss="offcanvas"] {
+    display: inline-flex !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 100% !important;
+    margin: 0 !important;
+    z-index: 20001 !important;
+    transition: left 480ms cubic-bezier(.22,1,.36,1), opacity 220ms ease-in-out;
+}
+
+/* Default: keep hidden while closing (Bootstrap uses `.hiding`) */
+.site-offcanvas.hiding [data-bs-dismiss="offcanvas"],
+.offcanvas.hiding [data-bs-dismiss="offcanvas"] {
+    display: none !important;
+}
+
 /* Also support legacy `.site-close` toggling 
 .site-offcanvas.show .site-close,
 .offcanvas.show .site-close {
@@ -170,21 +201,6 @@ button.btn-close.site-close {
     transition: left 480ms cubic-bezier(.22,1,.36,1), opacity 220ms ease-in-out;
 }*/
 
-/* Show the close button immediately when the offcanvas backdrop exists
-   (Bootstrap inserts the backdrop before the offcanvas transition starts). */
-body:has(.offcanvas-backdrop) .offcanvas [data-bs-dismiss="offcanvas"] {
-    display: inline-flex !important;
-    /* keep the button positioned relative to the offcanvas so it moves
-       together during the slide-in animation; use absolute (not fixed). */
-    position: absolute !important;
-    top: 0 !important;
-    left: 100% !important; /* align to offcanvas right edge */
-    margin: 0 !important;
-    z-index: 20001 !important;
-    /* avoid delaying visibility — show instantly */
-    transition: none !important;
-}
-
 /* Ensure the icon inside remains white against the (dark) menu background */
 .site-offcanvas.show [data-bs-dismiss="offcanvas"] .bi,
 .offcanvas.show [data-bs-dismiss="offcanvas"] .bi {
@@ -195,9 +211,9 @@ body:has(.offcanvas-backdrop) .offcanvas [data-bs-dismiss="offcanvas"] {
 
 /* Hide burger immediately when the trigger is expanded (no JS needed) */
 .site-burger[aria-expanded="true"],
-body:has(.offcanvas-backdrop) .site-burger,
+body:has(.offcanvas.show:not(.hiding), .offcanvas.showing) .site-burger,
 .site-header .site-button[aria-expanded="true"],
-body:has(.offcanvas-backdrop) .site-header .site-button[data-bs-toggle="offcanvas"] {
+body:has(.offcanvas.show:not(.hiding), .offcanvas.showing) .site-header .site-button[data-bs-toggle="offcanvas"] {
     display: none !important;
 }
 
@@ -213,10 +229,6 @@ body:has(.offcanvas-backdrop) .site-header .site-button[data-bs-toggle="offcanva
     /* smooth the elastic resizing when the viewport changes; use a custom
        cubic-bezier for a slightly slower easing near the ends */
     transition: width 480ms cubic-bezier(.22,1,.36,1);
-}
-
-.site-button{
-    
 }
 .site-menu {
     padding-left: 4rem;
@@ -242,6 +254,28 @@ body:has(.offcanvas-backdrop) .site-header .site-button[data-bs-toggle="offcanva
     font-size: 1.5rem;
 }
 
+/* Leaf entries: chevron bullet that animates without shifting text */
+.site-menu .site-menu-link--leaf {
+    position: relative;
+}
+
+.site-menu .site-menu-link--leaf .site-menu-bullet {
+    position: absolute;
+    left: -2rem;
+    top: 50%;
+    transform: translate3d(0, -50%, 0);
+    transition: transform 320ms ease;
+    pointer-events: none;
+    display: inline-flex;
+    width: 1.5rem;
+    justify-content: center;
+}
+
+.site-menu .site-menu-link--leaf:hover .site-menu-bullet,
+.site-menu .site-menu-link--leaf:focus .site-menu-bullet {
+    transform: translate3d(.5rem, -50%, 0);
+}
+
 .site-top {
     background-color: var(--asb-background-colour-2);
     padding: 5rem 0 0;
@@ -252,6 +286,43 @@ body:has(.offcanvas-backdrop) .site-header .site-button[data-bs-toggle="offcanva
     grid-template-columns: 1.15fr 0.85fr;
     gap: 2rem;
     align-items: center;
+    padding-left: calc(2rem);
+    padding-right: calc(2rem);
+    /* Match Bootstrap .container max-widths */
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (min-width: 576px) {
+    .site-top-grid {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .site-top-grid {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .site-top-grid {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .site-top-grid {
+        max-width: 1140px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .site-top-grid {
+        max-width: 1320px;
+    }
 }
 
 .site-top-title-link {
@@ -265,7 +336,7 @@ body:has(.offcanvas-backdrop) .site-header .site-button[data-bs-toggle="offcanva
     color: var(--bs-white);
     letter-spacing: 0.03em;
     text-transform: uppercase;
-    line-height: 0.95;
+    line-height: 1.2;
     font-size: clamp(2.6rem, 5vw, 4rem);
 }
 
@@ -346,14 +417,19 @@ body:has(.offcanvas-backdrop) .site-header .site-button[data-bs-toggle="offcanva
 .site-top-strip {
     margin: 2rem 0 0;
     height: 168px;
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
-    background-image: url('../images/banner.png');
-    background-repeat: repeat-x;
-    background-size: auto 100%;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;   
+  
+   
     background-color: var(--asb-background-colour-2);
     position: relative;
+}
+
+.site-top-strip.bild{
+    background-image: url('../images/banner.png');
+      background-repeat: repeat-x;
+       background-size: auto 100%;
 }
 
 /* Reuse landing section spacing on non-landing pages too */
@@ -452,7 +528,7 @@ html {
 
 .footer{
     margin-top: auto!important;
-    background-color: var(--asb-background-colour-button-banner)!important;
+    background-color: var(--asb-background-colour-2)!important;
     font-family: var(--bs-font-sans-serif) !important;
 }
 
@@ -502,14 +578,43 @@ div#searchPage {
     padding: 2rem;
 }
 
-div#searchContainer>div {
-    padding: 1rem;
-    margin: 1rem;
-    border: solid var(--variant-marker-color) 3px;
-    border-radius: 15px;
+/* Search only: remove outer padding so the left column aligns with the offcanvas */
+body.page-search #searchPage {
+    padding: 0;
 }
 
+div#searchContainer>div {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+}
 
+/* Search page columns: left matches the open menu width, right fills remaining space */
+#searchContainer.search-container {
+    display: flex;
+    width: 100%;
+}
+
+#searchContainer.search-container .search-col-left {
+    flex: 0 0 var(--site-offcanvas-width);
+    width: var(--site-offcanvas-width);
+    background-color: white;
+    padding: 1rem;
+}
+
+#searchContainer.search-container .search-col-right {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.container.site-top-inner {
+    margin-left: 0!important;
+    margin-right: 0!important;
+    padding-left: 0;
+    padding-right: 0;
+    max-width: 100%
+}
 
 div#searchContainer div.col-3>div {
     padding-bottom: 2rem;
