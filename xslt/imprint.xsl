@@ -25,22 +25,26 @@
                 </xsl:call-template>
             </head>
 
-            <body class="d-flex flex-column h-100">
+            <body class="d-flex flex-column h-100 has-site-top">
                 <xsl:call-template name="nav_bar"/>
-                <main class="flex-shrink-0 container">
-                    <div class="title">
-                        <h1>
-                            <xsl:value-of select="$doc_title"/>
-                        </h1>
-                    </div>
-                    <div class="body">
-<xsl:copy>
-  <xsl:apply-templates select="@* | node()"/>
-</xsl:copy>
+                <main class="flex-shrink-0">
+                    <div class="container body">
+                        <xsl:apply-templates select="/*/*"/>
                     </div>
                 </main>
                 <xsl:call-template name="html_footer"/>
             </body>
         </html>
+    </xsl:template>
+
+    <xsl:template match="*">
+        <xsl:element name="{local-name()}" namespace="http://www.w3.org/1999/xhtml">
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates/>
+        </xsl:element>
+    </xsl:template>
+
+    <xsl:template match="text()">
+        <xsl:value-of select="."/>
     </xsl:template>
 </xsl:stylesheet>

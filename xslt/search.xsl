@@ -15,16 +15,11 @@
                 </xsl:call-template>
             </head>
 
-            <body class="d-flex flex-column h-100">
-                <xsl:call-template name="nav_bar"/>
-                <main id="searchPage" class="container flex-shrink-0">
-                    <div class="title">
-                        <h1>
-                            <xsl:value-of select="$doc_title"/>
-                        </h1>
-                    </div>
-                    <div id="searchContainer" class="row body">
-                        <div class="col-3">
+            <body class="d-flex flex-column h-100 has-site-top page-search">
+                <main id="searchPage">
+                    <div id="searchContainer" class="search-container">
+                        <div class="search-col-left">
+                            <div id="searchview">  Steckbriefansicht</div>
                             <div id="searchbox"></div>
                             <h4>Jahr</h4>
                             <div id="decade">
@@ -42,7 +37,8 @@
                             <div id="sort-by"></div>
                             <div id="clear-refinements"></div>
                         </div>
-                        <div class="col-8">
+                        <div class="search-col-right">
+                            <xsl:call-template name="nav_bar"/>
                             <div>
                                 <div class="d-flex flex-column align-items-center" id="current-refinements"></div>
                             </div>

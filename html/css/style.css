@@ -4,18 +4,465 @@
     /*  --variant-marker-color: rgb(203, 231, 255); */
     --variant-marker-color: #868277 ;
     --catch-offset-right: -75%;
-    --asb-banner-colour: #e6e2d6;
+
+    --asb-background-colour-0: #ddd2c9;
+    --asb-background-colour-1: #d2c4b9;
+    --asb-background-colour-2: #c0ac9a ;
+    --asb-background-colour-3: #565247;
+    --asb-background-colour-0-button: #c8b6a6 ;
+    --asb-background-colour-1-button: #b19983 ; 
+    --asb-background-colour-2-button: #a98f76 ;;
+
+    --asb-background-colour-0-button-hover: #c0ac9a ;
+    --asb-background-colour-1-button-hover: #a98f76 ;
+    --asb-background-colour-2-button-hover: #a08066 ;
+
     --asb-link-colour: #565247;
-    --asb-background-colour: #e6e2d6;
-    --asb-dropdown-link-colour: #565247;
     --asb-link-visited-colour: #868277;
     --asb-border-color: #868277 ;
+
+    
+    /* Shared sizes for square/icon buttons (burger/close/action) */
+    --asb-square-btn-size: 4.5rem;
+    --asb-square-btn-icon-size: 2.625rem;
+
+    /* Ensure the whole site uses a serif font (also picked up by Bootstrap) */
+    --bs-body-font-family: var(--editor-font-family);
+    --site-offcanvas-width: clamp(280px, 34vw, 400px);
+    /* target height used for the action in the site-top (button or image) */
+    --site-top-action-height: clamp(2.6rem, 4vw, 3.5rem);
+}
+
+body {
+    font-family: var(--bs-body-font-family);
+    background-color: var(--asb-background-colour-0);
+}
+
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: auto;
+    z-index: 20000;
+    padding: 0;
+    margin: 0;
+}
+
+/* Search only: place burger in column 2 (right of the left filter column) */
+body.page-search .site-header,
+#searchPage #searchContainer .site-header {
+    left: var(--site-offcanvas-width);
+}
+
+.site-header-inner {
+    display: flex;
+    align-items: center;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+
+.bga{
+    --button-bg: var(--asb-background-colour-0-button);
+    --button-bg-hover: var(--asb-background-colour-0-button-hover);
+}
+
+
+.bgb{
+    --button-bg: var(--asb-background-colour-1-button);
+    --button-bg-hover: var(--asb-background-colour-1-button-hover);
+}
+
+
+.bgc{
+    --button-bg: var(--asb-background-colour-2-button);
+    --button-bg-hover: var(--asb-background-colour-2-button-hover);
+}
+
+
+/* =========================================================
+    Square / icon buttons
+    All square button visuals live on `.site-button`.
+    Variants:
+    - `.semitrans`: translucent by default, solid on hover
+    ========================================================= */
+
+.site-button {
+ display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--asb-square-btn-size);
+    height: var(--asb-square-btn-size);
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none;
+    background-image: none !important;
+    color: var(--bs-white) !important;
+    background-color: var(--asb-background-colour-1-button) !important;
+     font-size: var(--asb-square-btn-icon-size);
+    line-height: 1;
+}
+
+
+
+
+.site-button:focus-visible {
+    outline: 2px solid var(--bs-white);
+    outline-offset: 2px;
+}
+
+.site-button:hover  .site-button:active .site-button:focus {
+    background-color: var(--asb-background-colour-1-button-hover) !important;
+    color: var(--bs-white) !important;
+    box-shadow: none !important;
+}
+
+
+
+/* Semi-transparent square buttons: translucent by default, solid on hover */
+.site-button.semitrans {
+  /*semitrans */
+  color: var(--bs-white) !important;
+}
+
+
+
+/* Offcanvas close button: hidden by default; shown/positioned when menu opens */
+.site-close,
+button.btn-close.site-close {
+    /* by default keep the element present in the DOM but hidden at its original location
+       — we'll show and position it outside the offcanvas when the menu opens */
+    display: none !important;
+}
+
+/* Bottom-right action button placed inside `.site-top-strip` */
+.site-bottom-button {
+    font-size: 1.8rem;
+    line-height: 1;
+    position: absolute;
+    right: 0rem;
+    bottom: 0rem;
+    z-index: 2000;
+    
+}
+
+/* When the offcanvas is showing, place the close button outside it so
+   its left margin sits at the offcanvas right edge and its top at the page top. */
+/* Show and position the close button as soon as the offcanvas has the `show` class.
+   Using `.site-offcanvas.show` avoids relying on `:has()` and triggers immediately. */
+.site-offcanvas.show [data-bs-dismiss="offcanvas"],
+.offcanvas.show [data-bs-dismiss="offcanvas"] {
+    display: inline-flex !important;
+    /* position it exactly at the offcanvas' right edge regardless of viewport */
+    position: absolute !important;
+    top: 0 !important;
+    left: 100% !important; /* sits immediately to the right of the offcanvas */
+    margin: 0 !important;
+    z-index: 20001 !important;
+    /* animate the close button when it moves in/out so it feels less abrupt */
+    transition: left 480ms cubic-bezier(.22,1,.36,1), opacity 220ms ease-in-out;
+}
+
+/* When closing starts Bootstrap may keep `.show` while adding `.hiding`.
+   In that phase we want the burger back and the X gone. */
+.site-offcanvas.show.hiding [data-bs-dismiss="offcanvas"],
+.offcanvas.show.hiding [data-bs-dismiss="offcanvas"] {
+    display: none !important;
+}
+
+/* Also show during the opening transition (Bootstrap uses `.showing`) */
+.site-offcanvas.showing [data-bs-dismiss="offcanvas"],
+.offcanvas.showing [data-bs-dismiss="offcanvas"] {
+    display: inline-flex !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 100% !important;
+    margin: 0 !important;
+    z-index: 20001 !important;
+    transition: left 480ms cubic-bezier(.22,1,.36,1), opacity 220ms ease-in-out;
+}
+
+/* Default: keep hidden while closing (Bootstrap uses `.hiding`) */
+.site-offcanvas.hiding [data-bs-dismiss="offcanvas"],
+.offcanvas.hiding [data-bs-dismiss="offcanvas"] {
+    display: none !important;
+}
+
+/* Also support legacy `.site-close` toggling 
+.site-offcanvas.show .site-close,
+.offcanvas.show .site-close {
+    display: inline-flex !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 100% !important;
+    margin: 0 !important;
+    z-index: 20001 !important;
+    transition: left 480ms cubic-bezier(.22,1,.36,1), opacity 220ms ease-in-out;
+}*/
+
+/* Ensure the icon inside remains white against the (dark) menu background */
+.site-offcanvas.show [data-bs-dismiss="offcanvas"] .bi,
+.offcanvas.show [data-bs-dismiss="offcanvas"] .bi {
+    color: var(--bs-white) !important;
+}
+
+
+
+/* Hide burger immediately when the trigger is expanded (no JS needed) */
+.site-burger[aria-expanded="true"],
+body:has(.offcanvas.show:not(.hiding), .offcanvas.showing) .site-burger,
+.site-header .site-button[aria-expanded="true"],
+body:has(.offcanvas.show:not(.hiding), .offcanvas.showing) .site-header .site-button[data-bs-toggle="offcanvas"] {
+    display: none !important;
+}
+
+.site-offcanvas {
+    width: var(--site-offcanvas-width);
+    /* restore menu background and foreground to the original colourway */
+    background-color: var(--asb-background-colour-3) !important;
+    color: var(--bs-white) !important;
+    /* keep the offcanvas positioned by Bootstrap (don't force `position: relative`) so
+       it does not occupy document flow when hidden; allow the close button to sit
+       outside by permitting overflow to be visible. */
+    overflow: visible !important; /* let the close button sit outside the offcanvas bounds */
+    /* smooth the elastic resizing when the viewport changes; use a custom
+       cubic-bezier for a slightly slower easing near the ends */
+    transition: width 480ms cubic-bezier(.22,1,.36,1);
+}
+.site-menu {
+    padding-left: 4rem;
+}
+.site-menu-section {
+    font-variant: small-caps;
+    font-size: 2rem;
+    letter-spacing: 0.02em;
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+    /* Align with bullet points (which sit 2rem left of link text) */
+    margin-left: -2rem;
+}
+
+/* Close-X button shown inside the offcanvas at the upper-left corner */
+.site-menu-link,
+.site-menu-link:hover,
+.site-menu-link:focus,
+.site-menu-link:visited{
+    display: block;
+    padding: 0.25rem 0;
+    text-decoration: none;
+    color: white!important;
+    background-color: transparent;
+    font-size: 1.5rem;
+}
+
+/* Leaf entries: chevron bullet that animates without shifting text */
+.site-menu .site-menu-link--leaf {
+    position: relative;
+}
+
+.site-menu .site-menu-link--leaf .site-menu-bullet {
+    position: absolute;
+    left: -2rem;
+    top: 50%;
+    transform: translate3d(0, -50%, 0);
+    transition: transform 320ms ease;
+    pointer-events: none;
+    display: inline-flex;
+    width: 1.5rem;
+    justify-content: center;
+}
+
+.site-menu .site-menu-link--leaf:hover .site-menu-bullet,
+.site-menu .site-menu-link--leaf:focus .site-menu-bullet {
+    transform: translate3d(.5rem, -50%, 0);
+}
+
+.site-top {
+    background-color: var(--asb-background-colour-2);
+    padding: 5rem 0 0;
+}
+
+.site-top-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 2rem;
+    align-items: center;
+    padding-left: calc(2rem);
+    padding-right: calc(2rem);
+    /* Match Bootstrap .container max-widths */
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (min-width: 576px) {
+    .site-top-grid {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .site-top-grid {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .site-top-grid {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .site-top-grid {
+        max-width: 1140px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .site-top-grid {
+        max-width: 1320px;
+    }
+}
+
+.site-top-title-link {
+    display: inline-block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.site-top-title {
+    margin: 0;
+    color: var(--bs-white);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    font-size: clamp(2.6rem, 5vw, 4rem);
+}
+
+.site-top-title > span {
+    display: block;
+}
+
+.site-top-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    /* create a positioning context so the image can be absolutely positioned
+       and overflow visually without changing document flow */
+    position: relative;
+}
+
+.section-button, .section.button:visited{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--site-top-action-height);
+    padding: 0 1.50em;
+    border: 0 !important;
+    background-color: var(--button-bg) !important;
+    font-size: 1.25rem;
+    color: var(--bs-white) !important;
+    text-decoration: none;
+    border-radius: 9999px;
+}
+
+.section-button:hover{
+    background-color: var(--button-bg-hover)!important;
+}
+
+.site-top-project-button:hover,
+.site-top-project-button:focus {
+    text-decoration: none;
+}
+
+
+
+
+.site-top-image {
+    /* keep the image at its natural size and allow it to overflow the
+       `site-top-right` container (which is constrained to the action height) */
+    width: auto;
+    height: auto;
+    max-width: min(840px, 100%);
+    border: 0;
+    background-color: transparent;
+    object-fit: contain;
+    display: inline-block;
+    vertical-align: middle;
+
+    /* remove the image from normal flow so it doesn't affect parent layout */
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* avoid accidental interactions when it overlaps */
+}
+
+@media (max-width: 768px) {
+    /* on small screens keep normal flow so layout stacks nicely */
+    .site-top-right {
+        position: static;
+    }
+    .site-top-image {
+        position: static;
+        transform: none;
+        pointer-events: auto;
+        max-width: 100%;
+        height: auto;
+        display: inline-block;
+    }
+}
+
+.site-top-strip {
+    margin: 2rem 0 0;
+    height: 168px;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;   
+  
+   
+    background-color: var(--asb-background-colour-2);
+    position: relative;
+}
+
+.site-top-strip.bild{
+    background-image: url('../images/banner.png');
+      background-repeat: repeat-x;
+       background-size: auto 100%;
+}
+
+/* Reuse landing section spacing on non-landing pages too */
+.landing-section {
+    padding: 2.25rem 0;
+}
+
+
+
+.landing-section--banner .landing-section-inner {
+    margin-left: 2rem!important;
+    margin-right: 2rem!important;
+    max-width: 100vw!important  ;
+}
+
+@media (max-width: 768px) {
+    .site-top {
+        padding-top: 4.5rem;
+    }
+
+    .site-top-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
 }
 
 main {
-    max-width: 1920px;
-    padding-bottom: 4rem;
-    padding-top: 4rem;
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .title_part {display: block !important; margin: 5px !important; }
@@ -74,7 +521,7 @@ html {
 }
 
 .showBanner {
-    background: url('../images/banner.jpg') repeat-x;
+    background: url('../images/banner.png') repeat-x;
     background-size: contain;
     height: 15vh;
     width: 100% ;
@@ -83,9 +530,24 @@ html {
 
 .footer{
     margin-top: auto!important;
-    background-color: var(--asb-banner-colour)!important;
+    background-color: var(--asb-background-colour-2)!important;
+    font-family: var(--bs-font-sans-serif) !important;
 }
 
+.footer-1{
+    font-weight: bold;
+    font-size: large;
+    color: black;
+
+}
+.footer-2 {
+    padding: 0.5rem 0;
+    color: black;
+}   
+
+.footer-3 {
+   color: white;
+}
 .footer-separator {
     padding-top: 1rem;
 }
@@ -118,17 +580,43 @@ div#searchPage {
     padding: 2rem;
 }
 
-div#searchContainer {
+/* Search only: remove outer padding so the left column aligns with the offcanvas */
+body.page-search #searchPage {
+    padding: 0;
 }
 
 div#searchContainer>div {
-    padding: 1rem;
-    margin: 1rem;
-    border: solid var(--variant-marker-color) 3px;
-    border-radius: 15px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
 }
 
+/* Search page columns: left matches the open menu width, right fills remaining space */
+#searchContainer.search-container {
+    display: flex;
+    width: 100%;
+}
 
+#searchContainer.search-container .search-col-left {
+    flex: 0 0 var(--site-offcanvas-width);
+    width: var(--site-offcanvas-width);
+    background-color: white;
+    padding: 1rem;
+}
+
+#searchContainer.search-container .search-col-right {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.container.site-top-inner {
+    margin-left: 0!important;
+    margin-right: 0!important;
+    padding-left: 0;
+    padding-right: 0;
+    max-width: 100%
+}
 
 div#searchContainer div.col-3>div {
     padding-bottom: 2rem;
@@ -207,8 +695,382 @@ div ul.ais-RefinementList-list {
 }
 
 .navbar * {
+    background-color: var(--asb-banner-colour) !important;
+}
+
+body.landing main {
+    max-width: none;
+    padding: 0;
+}
+
+body.landing .landing-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: auto;
+    z-index: 20000;
+    padding: 0;
+    margin: 0;
+}
+
+body.landing .landing-header-inner {
+    display: flex;
+    align-items: center;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+body.landing .landing-burger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border: 3px solid var(--asb-background-colour-button-banner) !important;
+    background-color: var(--asb-background-colour-button-banner) !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none;
+
+    /* Ensure Bootstrap .btn doesn't introduce hover/active backgrounds */
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: transparent;
+    --bs-btn-hover-bg: transparent;
+    --bs-btn-hover-border-color: transparent;
+    --bs-btn-active-bg: transparent;
+    --bs-btn-active-border-color: transparent;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: transparent;
+}
+
+body.landing .landing-burger:hover,
+body.landing .landing-burger:active,
+body.landing .landing-burger:focus {
+    background-color: var(--asb-background-colour-button-banner) !important;
+    border-color: var(--asb-background-colour-button-banner) !important;
+    box-shadow: none !important;
+}
+
+body.landing .landing-burger .bi {
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--bs-white);
+}
+
+body.landing .landing-burger:focus-visible {
+    outline: 2px solid var(--bs-white);
+    outline-offset: 2px;
+}
+
+body.landing .landing-offcanvas {
+    width: clamp(280px, 34vw, 360px);
+    background-color: var(--asb-background-colour);
+    color: var(--asb-link-colour);
+}
+
+body.landing .landing-offcanvas .btn-close {
+    filter: none;
+}
+
+body.landing .landing-top {
+    background-color: var(--asb-background-colour-2);
+    padding: 5rem 0 0;
+}
+
+body.landing .landing-top-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 2rem;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    body.landing .landing-top {
+        padding-top: 4.5rem;
+    }
+
+    body.landing .landing-top-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+}
+
+body.landing .landing-top-title {
+    margin: 0;
+    color: var(--bs-white);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 0.95;
+    font-size: clamp(2.6rem, 5vw, 4rem);
+}
+
+body.landing .landing-top-title > span {
+    display: block;
+}
+
+body.landing .landing-top-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+body.landing .landing-top-image {
+    width: min(840px, 100%);
+    height: auto;
+    border: 0;
+    background-color: transparent;
+}
+
+body.landing .landing-top-strip {
+    margin: 2rem 0 0;
+    height: 168px;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    background-image: url('../images/banner.png');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    background-color: var(--asb-background-colour-2);
+}
+
+body.landing .landing-section {
+    padding: 2.25rem 0;
+}
+
+body.landing .landing-section--light {
+    background-color: var(--asb-background-colour);
+}
+
+body.landing .landing-section--mid {
+    background-color: var(--asb-background-colour-1);
+}
+
+body.landing .landing-section--banner {
+    position: relative;
+    isolation: isolate;
+    --landing-carousel-tile-width: calc(360px * 1.2);
+    --landing-carousel-banner-height: calc(168px * 1.3);
+    --landing-carousel-banner-overlap: calc(var(--landing-carousel-tile-width) * 0.3);
+    padding-top: 2.25rem;
+        background-color: var(--asb-background-colour-1)!important;
+
+    padding-bottom: calc(var(--landing-carousel-banner-height) - var(--landing-carousel-banner-overlap));
+}
+
+body.landing .landing-section--banner::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--landing-carousel-banner-height);
+    background-image: url('../images/banner_bg1.png');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+body.landing .landing-section--banner .landing-section-inner {
+    position: relative;
+    z-index: 1;
+}
+
+body.landing .landing-section-title {
+    margin: 0 0 1rem;
+    color: var(--bs-black);
+    letter-spacing: 0.02em;
+}
+
+body.landing .landing-section-text p {
+    margin: 0;
+}
+
+body.landing .landing-cta {
+    margin-top: 1.25rem;
+}
+
+body.landing .landing-button {
+    display: inline-block;
+    padding: 1em 1.25em;
+    border: 0 !important;
+    background-color: var(--asb-background-colour-button);
+    color: var(--bs-white) !important;
+    text-decoration: none;
+    border-radius: 9999px;
+    line-height: 1;
+}
+
+body.landing a.landing-button:visited {
+    color: var(--bs-white) !important;
+}
+
+body.landing .landing-section--mid .landing-button {
+    background-color: var(--asb-background-colour-button-fronted);
+}
+
+body.landing .landing-top .landing-button {
+    background-color: var(--asb-background-colour-button-banner);
+}
+
+body.landing .landing-button:hover,
+body.landing .landing-button:focus {
+    text-decoration: underline;
+}
+
+body.landing .landing-thumbs {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 1rem 0.25rem 0;
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel {
+    --duration: 4.5s;
+    --landing-carousel-gap: 0.75rem;
+    /* Elastic overshoot applied at both ends */
+    --landing-carousel-elastic: 0.75rem;
+    display: block;
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-viewport {
+    overflow: hidden;
+    /* Always show 6 picture tiles; CTA is the 7th tile to the right */
+    width: 100%;
+    --landing-carousel-tile-width: calc((100% - (5 * var(--landing-carousel-gap))) / 6);
+    --landing-carousel-step: calc(var(--landing-carousel-tile-width) + var(--landing-carousel-gap));
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-strip {
+    display: flex;
+    gap: var(--landing-carousel-gap);
+    width: max-content;
+    /* Provide real left/right elastic padding so overshoot is visible */
+    padding-left: var(--landing-carousel-elastic);
+    padding-right: var(--landing-carousel-elastic);
+    box-sizing: content-box;
+    /* smoother, symmetric animation and small extra overshoot at both ends */
+    animation: landingThumbScroll var(--duration) ease-in-out infinite;
+    animation-direction: alternate;
+    animation-play-state: paused;
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel:hover .landing-thumbs-strip,
+body.landing .landing-thumbs.landing-thumbs--carousel:focus-within .landing-thumbs-strip {
+    animation-play-state: running;
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumb--cta {
+     /* Use the carousel tile flex-basis (no !important). Keep width:auto so
+         the flex layout determines the final size and other tiles aren't
+         affected by overrides. */
+     flex: 0 0 var(--landing-carousel-tile-width);
+     width: auto;
+     box-sizing: border-box;
+     background-color: var(--asb-background-colour-2-button);
+     color: var(--bs-white);
+     display: flex;
+     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0.75rem;
+}
+
+
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-title {
+    line-height: 1.05;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-title > span {
+    display: block;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 0.65em 1.1em;
+    border: 2px solid var(--bs-white);
+    background-color: var(--asb-background-colour-button-banner);
+    color: var(--bs-white) !important;
+    text-decoration: none;
+    border-radius: 9999px;
+    line-height: 1;
+    text-decoration: none   ;
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button:hover,
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button:focus {
+    text-decoration: underline;
+}
+
+@keyframes landingThumbScroll {
+    /* include a small positive offset at the start so the left elastic
+       padding is visible when the animation returns; the end position
+       includes the right elastic padding as an extra offset */
+    from {
+        transform: translateX(var(--landing-carousel-elastic));
+    }
+    to {
+        transform: translateX(calc(-.35 * (6 * var(--landing-carousel-step)) - var(--landing-carousel-elastic)));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-strip {
+        animation: none;
+    }
+}
+
+body.landing .landing-thumb {
+    flex: 0 0 auto;
+    display: block;
+    border: 0;
     background-color: var(--asb-banner-colour);
-    var(--asb-banner-colour)!important, rgba(var(--bs-tertiary-bg-rgb),var(--bs-bg-opacity)) !important ;
+}
+
+body.landing .landing-thumb img {
+    display: block;
+    width: 100% ;
+    height: auto !important;
+}
+
+body.landing footer.footer {
+    background-color: var(--asb-background-colour-2) !important;
+    color: var(--asb-link-colour);
+}
+
+body.landing footer.footer a {
+    color: var(--asb-link-colour);
+}
+
+body.landing .landing-menu-section {
+    font-variant: small-caps;
+    letter-spacing: 0.02em;
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+    color: var(--asb-link-colour);
+}
+
+body.landing .landing-menu-link {
+    display: block;
+    padding: 0.25rem 0;
+    color: var(--asb-link-colour);
+    text-decoration: none;
+}
+
+body.landing .landing-menu-link:hover,
+body.landing .landing-menu-link:focus {
+    text-decoration: underline;
+}
+
+body.landing .landing-cta {
+    margin-top: 1.25rem;
+}
+
+body.landing .landing-cta-link {
+    color: var(--asb-link-colour);
 }
 
 div.icon_desc {
@@ -297,7 +1159,7 @@ a {
 }
 
 a:visited {
-    color: var(--asb-link-visited-colour)!important;
+    color: var(--asb-link-visited-colour);
 }
 
 a.navbar-brand {
@@ -679,18 +1541,7 @@ dd {
     padding: .2rem 0rem 1rem 10rem;
 }
 
-.dropdown-item {
-    background-color: var(--asb-background-colour)!important;
-    color: var(--asb-dropdown-link-colour)!important;
-}
 
-.dropdown-item:active,  .dropdown-item:hover {
-    color: black!important;
-}
-
-.dropdown-item:active {
-      font-weight: bold;
-}
 
 /* Override dropdown-item styles for disabled annotation-sliders */
 li.dropdown-item:has(annotation-slider[disabled="true"]):active,
@@ -757,20 +1608,12 @@ li.dropdown-item:has(annotation-slider[disabled="true"]):hover,
 } */
  .tabulator-headers{
     padding: 0!important;
-    max-width: 100%,
+    max-width: 100%;
  }
 
 .tabulator-footer-contents {
 	background-color: white; 
 
-}
-.tabulator-header .tabulator-header-contents .tabulator-headers .tabulator-col{
-    /* background-color: var(--asb-banner-colour) ; */
-}
-
-
-.tabulator.table:not(.thead-light) .tabulator-header, .tabulator.table:not(.thead-light) .tabulator-header .tabulator-col {
-/* background-color: var(--asb-banner-colour)!important ; */
 }
 
 .tabulator-row {
@@ -848,28 +1691,43 @@ li.dropdown-item:has(annotation-slider[disabled="true"]):hover,
 }
 
 button.nav-link {
-    background-color: var(--asb-banner-colour)!important;
-    color: var(--asb-link-visited-colour) !important ;
+    background-color: var(--asb-background-colour-button)!important;
+    color: var(--bs-white) !important;
 }
 .nav-item{margin:auto;}
 
 button.nav-link.active {
-    background-color: var(--asb-banner-colour)!important;
-    color: black !important;
+    background-color: var(--asb-background-colour-button)!important;
+        color: var(--bs-white) !important;
 }
 
-button, select{
-  border: solid var(--asb-link-colour) 3px !important;
-  border-radius: 15px !important;
-  background-color: var(--asb-banner-colour)!important;
+button:not(.btn-close):not(.site-button):not(.site-burger):not(.site-close):not(.site-bottom-button):not(.landing-burger){
+    border: 0 !important;
+    border-radius: 9999px !important;
+    background-color: var(--asb-background-colour-button)!important;
   max-width: unset!important;
-  padding: 0.5rem!important;
+        padding: 1em 1.25em!important;
   word-wrap: normal;
   text-transform: none;
   margin: 0;
   font-family: inherit;
   font-size: inherit;
   line-height: 1!important;
+    color: var(--bs-white) !important;
+}
+
+select{
+    border: solid var(--asb-link-colour) 3px !important;
+    border-radius: 15px !important;
+    background-color: var(--asb-background-colour-button)!important;
+    max-width: unset!important;
+    padding: 0.5rem!important;
+    word-wrap: normal;
+    text-transform: none;
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: 1!important;
 }
 
 
@@ -879,16 +1737,10 @@ option {
 }
 
 
-@mixin background-up-down($color: #000) {
-  $rgb: 'rgb%28#{round(red($color))}, #{round(green($color))}, #{round(blue($color))}%29';
-}
-
-select {
-  &.different {
-    background-color: var(--asb-banner-colour);
-    box-sizing: border-box;
-    padding-right: 1.5em;
-  }
+select.different {
+        background-color: var(--asb-banner-colour);
+        box-sizing: border-box;
+        padding-right: 1.5em;
 }
 
 .kwic, .kwic * {

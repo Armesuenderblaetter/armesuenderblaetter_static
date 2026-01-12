@@ -25,7 +25,7 @@
                 </xsl:call-template>
             </head>
 
-            <body class="d-flex flex-column h-100">
+            <body class="d-flex flex-column h-100 has-site-top">
                 <xsl:call-template name="nav_bar"/>
                 <main class="flex-shrink-0 container">
                     <div class="title">

@@ -16,7 +16,7 @@
             <xsl:value-of select=".//tei:title[@type='main'][1]/text()"/>
         </xsl:variable>
 
-
+        <xsl:variable name="is_about" as="xs:boolean" select="ends-with(base-uri(/), '/about.xml')"/>
 
         <html class="h-100" lang="de">
 
@@ -26,18 +26,17 @@
                 </xsl:call-template>
             </head>
 
-            <body class="d-flex flex-column h-100">
-                <xsl:call-template name="nav_bar"/>
-                <main class="flex-shrink-0 container">
-                    <div class="title">
-                        <h1>
-                            <xsl:value-of select="$doc_title"/>
-                        </h1>
-                    </div>
-                    <div class="body">
-                        <xsl:apply-templates select=".//tei:body"></xsl:apply-templates>
+            <body class="d-flex flex-column h-100 has-site-top">
+                <xsl:call-template name="nav_bar">
+                    <xsl:with-param name="site_top_variant" select="if ($is_about) then 'image' else 'button'"/>
+                </xsl:call-template>
+
+                <main class="flex-shrink-0">
+                    <div class="container body">
+                        <xsl:apply-templates select=".//tei:body"/>
                     </div>
                 </main>
+
                 <xsl:call-template name="html_footer"/>
             </body>
         </html>
@@ -46,10 +45,38 @@
     <!-- <xsl:template match="tei:p">
         <p id="{generate-id()}"><xsl:apply-templates/></p>
     </xsl:template> -->
-    <xsl:template match="tei:div">
-        <div id="{generate-id()}">
+    <xsl:template match="tei:div[@type = 'contents' or starts-with(@type, 'content') or ends-with(@type, 'contact')]">
+        <section class="landing-section landing-section--light">
             <xsl:apply-templates/>
-        </div>
+        </section>
+    </xsl:template>
+
+    <xsl:template match="tei:div">
+        <xsl:apply-templates/>
+    </xsl:template>
+
+    <xsl:template match="tei:head" mode="#all">
+        <h2>
+            <xsl:apply-templates/>
+        </h2>
+    </xsl:template>
+
+    <xsl:template match="tei:h2" mode="#all">
+        <h2>
+            <xsl:apply-templates/>
+        </h2>
+    </xsl:template>
+
+    <xsl:template match="tei:h3" mode="#all">
+        <h3>
+            <xsl:apply-templates/>
+        </h3>
+    </xsl:template>
+
+    <xsl:template match="tei:h4" mode="#all">
+        <h4>
+            <xsl:apply-templates/>
+        </h4>
     </xsl:template>
     <xsl:template match="tei:lb">
         <br/>
