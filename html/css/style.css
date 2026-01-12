@@ -239,6 +239,8 @@ body:has(.offcanvas.show:not(.hiding), .offcanvas.showing) .site-header .site-bu
     letter-spacing: 0.02em;
     margin-top: 1rem;
     margin-bottom: 0.25rem;
+    /* Align with bullet points (which sit 2rem left of link text) */
+    margin-left: -2rem;
 }
 
 /* Close-X button shown inside the offcanvas at the upper-left corner */
