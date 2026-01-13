@@ -112,7 +112,9 @@ body.page-search .site-header,
     outline-offset: 2px;
 }
 
-.site-button:hover  .site-button:active .site-button:focus {
+.site-button:hover,
+.site-button:active,
+.site-button:focus {
     background-color: var(--asb-background-colour-1-button-hover) !important;
     color: var(--bs-white) !important;
     box-shadow: none !important;
@@ -120,10 +122,26 @@ body.page-search .site-header,
 
 
 
-/* Semi-transparent square buttons: translucent by default, solid on hover */
-.site-button.semitrans {
-  /*semitrans */
+
+
+/* Generic semitrans utility (in case used outside `.site-button`) */
+.semitrans {
+    /*opacity: 0.80; */
+    /* transition: opacity 150ms ease; */
   color: var(--bs-white) !important;
+  background-color: rgba(200, 182, 166, 0.8)!important;
+}
+
+.semitrans .bi {
+ color: rgba(255,255,255,1)!important;
+}
+
+
+.semitrans:hover,
+.semitrans:focus,
+.semitrans:focus-visible,
+.semitrans:active {
+     background-color: rgba(200, 182, 166, 1);
 }
 
 
