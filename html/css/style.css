@@ -105,7 +105,30 @@ body.page-search .site-header,
 }
 
 
-
+.site-button-bis {
+ display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--asb-square-btn-size);
+    height: calc(var(--asb-square-btn-size) * 2);
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none;
+    font-family: var(--bs-font-sans-serif) !important;
+    background-image: none !important;
+    color: var(--bs-white) !important;
+    background-color: var(--asb-background-colour-0)!important;
+    font-size: var(--asb-square-btn-icon-size);
+    font-size:small;
+    text-decoration: none!important ;
+    line-height: 1;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    white-space: nowrap;
+}
 
 .site-button:focus-visible {
     outline: 2px solid var(--bs-white);
@@ -856,6 +879,14 @@ body.landing .landing-section {
 
 body.landing .landing-section--light {
     background-color: var(--asb-background-colour);
+    position: relative;
+}
+
+body.landing .landing-section--light .site-button-bis {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
 }
 
 body.landing .landing-section--mid {
