@@ -102,57 +102,42 @@ search.addWidgets([
     templates: {
       empty: "Keine Resultate für <q>{{ query }}</q>",
       item(hit, { html, components }) {
-        let offences = return_html_list(hit.offences);
-        let execution = return_html_list(hit.execution);
-        let punishments = return_html_list(hit.punishments);
+        function valueOrDash(value) {
+          if (Array.isArray(value)) {
+            return value.length ? value.join(", ") : "–";
+          }
+          if (value === null || value === undefined) return "–";
+          const s = String(value).trim();
+          return s.length ? s : "–";
+        }
+
+        const fullName = valueOrDash(hit.fullname);
+        const fullNameUpper = String(fullName).toLocaleUpperCase("de-DE");
+        const detailUrl = getDocumentLink(hit);
+        const imageUrl = iiif_server_base_path + hit.thumbnail + iiif_attribs;
+
         return `
-          <a href="${hit.global_id}.html">
-            <h5 style="display: block; padding-bottom: 1rem; font-size: 1.2rem">
-              ${hit.fullname}
-            </h5>
-          </a>
-          <div class="row">
-            <div class="col-md-12 col-3  align-items-center">
-              <a href="${getDocumentLink(hit)}">
-                <div class="col" >
-                  <img
-                    src="${iiif_server_base_path + hit.thumbnail + iiif_attribs}"
-                    alt="Deckblatt/Erste Seite des Armesünderblattes"
-                    style="max-width:80%;height:auto;" />
-                </div>
-              </a>
-            </div>
-            <div class="col-md-12 col-8">
-              <table class="table table-sm">
-                <tr>
-                  <td><em>Geschlecht</em></td>
-                  <td>${hit.sex}</td>
-                </tr>
-                <tr>
-                  <td><em>Alter</em></td>
-                  <td>${hit.age}</td>
-                </tr>
-                <tr>
-                  <td><em>Geburtsort</em></td>
-                  <td>${hit.birth_place}</td>
-                </tr>
-                <!-- <tr>
-                  <td><em>Stand</em></td>
-                  <td>${hit.type}</td>
-                </tr> -->
-                <tr>
-                  <td><em>Familienstand</em></td>
-                  <td>${hit.marriage_status}</td>
-                </tr>
-                <tr>
-                  <td><em>Konfession</em></td>
-                  <td>${hit.faith}</td>
-                </tr>
-                <tr>
-                  <td><em>Beruf</em></td>
-                  <td>${hit.occupation}</td>
-                </tr>
-              </table>
+          <div class="person-hit-card">
+            <a class="person-hit-link" href="${detailUrl}" aria-label="Details zu ${fullName}">
+              <img class="person-hit-image" src="${imageUrl}" alt="Deckblatt/Erste Seite des Armesünderblattes" />
+            </a>
+
+            <div class="person-hit-overlay">
+              <h4 class="person-hit-title">${fullNameUpper}</h4>
+              <ul class="person-hit-list">
+                <li><span class="person-hit-label">Alter:</span> <span class="person-hit-value">${valueOrDash(hit.age)}</span></li>
+                <li><span class="person-hit-label">Geburtsort:</span> <span class="person-hit-value">${valueOrDash(hit.birth_place)}</span></li>
+                <li><span class="person-hit-label">Familienstand:</span> <span class="person-hit-value">${valueOrDash(hit.marriage_status)}</span></li>
+                <li><span class="person-hit-label">Konfession:</span> <span class="person-hit-value">${valueOrDash(hit.faith)}</span></li>
+                <li>
+                  <span class="person-hit-label">Beruf:</span> <span class="person-hit-value">${valueOrDash(hit.occupation)}</span>
+                  <br/>
+                  <span class="person-hit-label">Hinr.-Ort.:</span> <span class="person-hit-value">${valueOrDash(hit.execution_places)}</span>
+                </li>
+              </ul>
+              <div class="person-hit-cta">
+                <a class="cta-button" href="${detailUrl}">DETAILS</a>
+              </div>
             </div>
           </div>
         `;

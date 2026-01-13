@@ -15,43 +15,39 @@
                 </xsl:call-template>
             </head>
 
-            <body class="d-flex flex-column h-100 has-site-top">
-                <xsl:call-template name="nav_bar"/>
-                <main class="flex-shrink-0 container" id="searchPage">
-                    <div class="title">
-                        <h1>
-                            <xsl:value-of select="$doc_title"/>
-                        </h1>
-                    </div>
-                    <div id="searchContainer" class="row body">
-                        <div class="col-md-2 col-12">
-                            <h4>Name</h4>
+            <body class="d-flex flex-column h-100 has-site-top page-search page-person-search">
+                <main id="searchPage">
+                    <div id="searchContainer" class="search-container">
+                        <div class="search-col-left">
+                            <div id="searchview">Personensuche</div>
+                            <h3>Name</h3>
                             <div id="searchbox"></div>
-                            <div id="name_list"/>
+                            <div id="name_list"></div>
                             <h4>Geschlecht</h4>
-                            <div id="sex"/>
+                            <div id="sex"></div>
                             <h4>Alter</h4>
-                            <div id="decade_age"/>
+                            <div id="decade_age"></div>
                             <h4>Geburtsort</h4>
-                            <div id="birth_place"/>
+                            <div id="birth_place"></div>
                             <h4>Familienstand</h4>
-                            <div id="marriage_status"/>
+                            <div id="marriage_status"></div>
                             <h4>Konfession</h4>
-                            <div id="faith"/>
+                            <div id="faith"></div>
                             <h4>Beruf</h4>
-                            <div id="occupation"/>
+                            <div id="occupation"></div>
                             <h4>Vergehen</h4>
-                            <div id="offences"/>
+                            <div id="offences"></div>
                             <h4>Hinrichtung</h4>
-                            <div id="execution"/>
+                            <div id="execution"></div>
                             <h4>Hinrichtungsort</h4>
-                            <div id="execution_places"/>
+                            <div id="execution_places"></div>
                             <h4>Bestrafungen</h4>
-                            <div id="punishments"/>
+                            <div id="punishments"></div>
                             <div id="sort-by"></div>
                             <div id="clear-refinements"></div>
                         </div>
-                        <div class="col-md-9 col-12">
+                        <div class="search-col-right">
+                            <xsl:call-template name="nav_bar"/>
                             <div>
                                 <div class="d-flex flex-column align-items-center" id="current-refinements"></div>
                             </div>

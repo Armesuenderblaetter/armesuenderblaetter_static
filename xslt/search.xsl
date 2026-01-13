@@ -20,7 +20,7 @@
                     <div id="searchContainer" class="search-container">
                         <div class="search-col-left">
                             <div id="searchview">  Steckbriefansicht</div>
-                            <div id="searchbox"></div>
+                            <div id="searchbox"></div>in 
                             <h4>Jahr</h4>
                             <div id="decade">
                             </div>

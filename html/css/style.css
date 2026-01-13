@@ -8,14 +8,17 @@
     --asb-background-colour-0: #ddd2c9;
     --asb-background-colour-1: #d2c4b9;
     --asb-background-colour-2: #c0ac9a ;
-    --asb-background-colour-3: #565247;
+    --asb-background-colour-3: #5f554c;
+    --asb-background-colour-4: #565247;
+
     --asb-background-colour-0-button: #c8b6a6 ;
     --asb-background-colour-1-button: #b19983 ; 
-    --asb-background-colour-2-button: #a98f76 ;;
+    --asb-background-colour-2-button: #a98f76 ;
 
     --asb-background-colour-0-button-hover: #c0ac9a ;
     --asb-background-colour-1-button-hover: #a98f76 ;
     --asb-background-colour-2-button-hover: #a08066 ;
+    --asb-background-color-3-button-hover: #695a4b ;
 
     --asb-link-colour: #565247;
     --asb-link-visited-colour: #868277;
@@ -118,7 +121,7 @@ body.page-search .site-header,
     box-shadow: none;
     font-family: var(--bs-font-sans-serif) !important;
     background-image: none !important;
-    color: var(--bs-white) !important;
+    color: var(--asb-background-colour-1-button-hover) !important;
     background-color: var(--asb-background-colour-0)!important;
     font-size: var(--asb-square-btn-icon-size);
     font-size:small;
@@ -261,7 +264,7 @@ body:has(.offcanvas.show:not(.hiding), .offcanvas.showing) .site-header .site-bu
 .site-offcanvas {
     width: var(--site-offcanvas-width);
     /* restore menu background and foreground to the original colourway */
-    background-color: var(--asb-background-colour-3) !important;
+    background-color: var(--asb-background-colour-4) !important;
     color: var(--bs-white) !important;
     /* keep the offcanvas positioned by Bootstrap (don't force `position: relative`) so
        it does not occupy document flow when hidden; allow the close button to sit
@@ -270,6 +273,20 @@ body:has(.offcanvas.show:not(.hiding), .offcanvas.showing) .site-header .site-bu
     /* smooth the elastic resizing when the viewport changes; use a custom
        cubic-bezier for a slightly slower easing near the ends */
     transition: width 480ms cubic-bezier(.22,1,.36,1);
+}
+
+/* Hide the (thin) scrollbar inside the menu while keeping scroll usable */
+.site-offcanvas .offcanvas-body,
+body.landing .landing-offcanvas .offcanvas-body {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge legacy */
+}
+
+.site-offcanvas .offcanvas-body::-webkit-scrollbar,
+body.landing .landing-offcanvas .offcanvas-body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
 }
 .site-menu {
     padding-left: 4rem;
@@ -649,6 +666,122 @@ div#searchContainer>div {
 #searchContainer.search-container .search-col-right {
     flex: 1 1 auto;
     min-width: 0;
+}
+
+/* Add breathing room around InstantSearch hits */
+body.page-search .ais-Hits {
+    padding: 4rem;
+}
+
+/* 4rem spacing between hit cards */
+body.page-search .ais-Hits-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+body.page-search .ais-Hits-item {
+    margin: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Person search hit cards: image-only by default, details on hover */
+body.page-person-search .ais-Hits-item {
+    padding: 0 !important;
+    overflow: hidden;
+    position: relative;
+    /* Make cards smaller and let the list center them */
+    width: auto !important;
+    flex: 0 1 22rem;
+    max-width: 22rem;
+    /* Fixed height so images can crop/fill consistently */
+    height: clamp(18rem, 40vw, 30rem);
+}
+
+body.page-person-search .person-hit-card {
+    position: static;
+    width: 100%;
+    height: 100%;
+}
+
+body.page-person-search .person-hit-link {
+    display: block;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+}
+
+body.page-person-search .person-hit-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+body.page-person-search .person-hit-overlay {
+    position: absolute;
+    inset: 0;
+    padding: 1rem;
+    background-color: var(--asb-background-colour-3);
+    color: var(--bs-white);
+    display: none;
+    flex-direction: column;
+}
+
+body.page-person-search .ais-Hits-item:hover .person-hit-overlay,
+body.page-person-search .ais-Hits-item:focus-within .person-hit-overlay {
+    display: flex;
+}
+
+body.page-person-search .person-hit-title {
+    margin: 0 0 0.75rem;
+    color: var(--bs-white);
+    font-size: 1.2rem;
+}
+
+body.page-person-search .person-hit-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+body.page-person-search .person-hit-list li {
+    margin: 0.25rem 0;
+}
+
+body.page-person-search .person-hit-label {
+    font-variant: small-caps;
+}
+
+body.page-person-search .person-hit-value {
+    font-variant: normal;
+}
+
+body.page-person-search .person-hit-cta {
+    margin-top: auto;
+    text-align: center;
+}
+
+body.page-person-search .person-hit-overlay a,
+body.page-person-search .person-hit-overlay a:visited {
+    color: var(--bs-white) !important;
+}
+
+/* Person search overlay DETAILS button: same bg as overlay, custom hover bg */
+body.page-person-search .person-hit-overlay .cta-button {
+    background-color: var(--asb-background-colour-3);
+}
+
+body.page-person-search .person-hit-overlay .cta-button:hover,
+body.page-person-search .person-hit-overlay .cta-button:focus {
+    background-color: var(--asb-background-color-3-button-hover);
+    text-decoration: none;
 }
 
 .container.site-top-inner {
@@ -1832,6 +1965,14 @@ select.different {
 
     .facettes {
         height: fit-content !important ;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    body.page-person-search .ais-Hits-item {
+        width: 100% !important;
+        flex-basis: 100%;
+        max-width: 32rem;
     }
 }
 

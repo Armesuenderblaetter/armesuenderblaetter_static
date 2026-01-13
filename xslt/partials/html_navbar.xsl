@@ -85,7 +85,7 @@
                 <xsl:choose>
                  <xsl:when test="$site_top_variant = 'image'">
                 <div class="site-top-strip bild" aria-hidden="true">
-                    <a class="site-button site-bottom-button semitrans" href="toc.html" role="button" aria-label="Schnellvorlauf">
+                    <a class="site-button site-bottom-button semitrans" href="search.html" role="button" aria-label="Schnellvorlauf">
                         <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
                     </a>
                 </div>

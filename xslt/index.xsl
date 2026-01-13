@@ -45,7 +45,7 @@
                         <section class="landing-section landing-section--light">
                             <div class="container landing-section-inner">
                                 <xsl:if test="position() = 1">
-                                    <a class="sitebutton site-button-bis" href="toc.html" role="button" aria-label="Zum Inhaltsverzeichnis">
+                                    <a class="sitebutton site-button-bis" href="search.html" role="button" aria-label="Zum Inhaltsverzeichnis">
                                         ZUR EDITION
                                     </a>
                                 </xsl:if>
