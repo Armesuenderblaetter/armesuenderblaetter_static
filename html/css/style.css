@@ -1350,7 +1350,8 @@ body.page-person-search .search-col-left .facet-list-scroll {
     gap: 0.5rem;
     padding: 0;
     max-height: 14rem;
-    border-color: var(--asb-background-colour-2-button);
+    border: 0 !important;
+    border-radius: 0 !important;
 }
 
 body.page-person-search .person-left-tailpiece {
