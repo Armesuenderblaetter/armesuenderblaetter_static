@@ -19,9 +19,23 @@
                 <main id="searchPage">
                     <div id="searchContainer" class="search-container">
                         <div class="search-col-left">
-                            <div id="searchview">Personensuche</div>
-                            <h3>Name</h3>
-                            <div id="searchbox"></div>
+                            <div class="person-left-togglebar">
+                                <label class="person-view-toggle" for="personViewToggle">
+                                    <input type="checkbox" id="personViewToggle" checked="checked" />
+                                    <span class="person-view-toggle-text">Steckbriefansicht</span>
+                                </label>
+                            </div>
+
+                            <div class="person-left-section person-left-section--name">
+                                <h3 class="person-left-heading">NAME</h3>
+                                <div class="person-name-search">
+                                    <div class="person-name-search-inner">
+                                        <div id="searchbox"></div>
+                                        <button type="button" class="person-view-list-btn" id="personViewListBtn">Als Liste<br/>zeigen</button>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div id="name_list"></div>
                             <h4>Geschlecht</h4>
                             <div id="sex"></div>

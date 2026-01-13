@@ -673,6 +673,14 @@ body.page-search .ais-Hits {
     padding: 4rem;
 }
 
+/* Person search: let the results overlap into the site-top area
+   up to the top edge of `.site-top-strip` (strip height 168px + its 2rem top gap). */
+body.page-person-search #hits {
+    margin-top: calc(-1 * (168px + 2rem));
+    position: relative;
+    z-index: 1;
+}
+
 /* 4rem spacing between hit cards */
 body.page-search .ais-Hits-list {
     display: flex;
@@ -734,8 +742,40 @@ body.page-person-search .person-hit-overlay {
     flex-direction: column;
 }
 
+/* List view: show details as normal flow, hide image */
+body.page-person-search.person-view-list .ais-Hits-item {
+    height: auto;
+    max-width: none;
+    flex-basis: 100%;
+}
+
+body.page-person-search.person-view-list .person-hit-link {
+    display: none;
+}
+
+body.page-person-search.person-view-list .person-hit-overlay {
+    position: static;
+    display: flex;
+    background-color: var(--bs-white);
+    color: var(--asb-link-colour);
+}
+
+body.page-person-search.person-view-list .person-hit-title {
+    color: var(--asb-link-colour);
+}
+
+body.page-person-search.person-view-list .person-hit-overlay a,
+body.page-person-search.person-view-list .person-hit-overlay a:visited {
+    color: var(--asb-link-colour) !important;
+}
+
 body.page-person-search .ais-Hits-item:hover .person-hit-overlay,
 body.page-person-search .ais-Hits-item:focus-within .person-hit-overlay {
+    display: flex;
+}
+
+/* Steckbriefansicht: keep grid, show details overlay always */
+body.page-person-search.person-view-steckbrief .person-hit-overlay {
     display: flex;
 }
 
@@ -766,6 +806,127 @@ body.page-person-search .person-hit-value {
 body.page-person-search .person-hit-cta {
     margin-top: auto;
     text-align: center;
+}
+
+/* Person search (left column): toggle row + NAME pill search */
+body.page-person-search .person-left-togglebar {
+    background-color: transparent;
+    border-bottom: 1px solid var(--asb-background-colour-0);
+    min-height: var(--asb-square-btn-size); /* match burger button height */
+    display: flex;
+    align-items: center;
+    margin: -1rem -1rem 0;
+    padding: 0 1rem;
+}
+
+body.page-person-search .person-view-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    cursor: pointer;
+    color: var(--asb-link-colour);
+    font-size: 1.5rem;
+}
+
+body.page-person-search .person-view-toggle input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    background-color: transparent;
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+}
+
+body.page-person-search .person-view-toggle input::after {
+    content: "";
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 9999px;
+    transform: scale(0);
+    transition: transform 120ms ease-in-out;
+    background-color: var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .person-view-toggle input:checked::after {
+    transform: scale(1);
+}
+
+body.page-person-search .person-view-toggle input:focus-visible {
+    outline: 2px solid var(--asb-background-colour-2-button);
+    outline-offset: 3px;
+}
+
+body.page-person-search .person-left-section {
+    background-color: transparent;
+    padding: 2rem 1rem 1.25rem;
+    border-bottom: 1px solid var(--asb-background-colour-0);
+    margin: 0 -1rem 1rem;
+}
+
+body.page-person-search .person-left-heading {
+    margin: 0 0 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+body.page-person-search .person-name-search-inner {
+    display: flex;
+    align-items: stretch;
+    border: 3px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    overflow: hidden;
+    background-color: var(--bs-white);
+}
+
+body.page-person-search .person-name-search-inner #searchbox {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+body.page-person-search .person-name-search-inner .ais-SearchBox-form {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    border: 0;
+    background: transparent;
+}
+
+body.page-person-search .person-name-search-inner .ais-SearchBox-submit,
+body.page-person-search .person-name-search-inner .ais-SearchBox-reset {
+    background: transparent;
+    border: 0;
+    padding: 0.75rem;
+}
+
+body.page-person-search .person-name-search-inner .ais-SearchBox-input {
+    border: 0;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    width: 100%;
+    padding: 0.75rem 0.75rem;
+    font-size: 1.25rem;
+}
+
+body.page-person-search .person-view-list-btn {
+    border: 0;
+    background-color: var(--asb-background-colour-2-button);
+    color: var(--bs-white);
+    padding: 0 1.25rem;
+    font-variant: small-caps;
+    font-size: 1.1rem;
+    line-height: 1.05;
+}
+
+body.page-person-search .person-view-list-btn:focus,
+body.page-person-search .person-view-list-btn:hover {
+    background-color: var(--asb-background-colour-2-button-hover);
 }
 
 body.page-person-search .person-hit-overlay a,

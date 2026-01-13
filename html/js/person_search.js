@@ -342,6 +342,46 @@ search.addWidgets([
 
 search.start();
 
+// View toggle
+// - "Steckbriefansicht" keeps the grid, but shows the overlay permanently.
+// - "Als Liste zeigen" switches to the list layout.
+(function initPersonViewToggle() {
+  const checkbox = document.getElementById("personViewToggle");
+  const listBtn = document.getElementById("personViewListBtn");
+  if (!checkbox && !listBtn) return;
+
+  function applySteckbriefView() {
+    const enabled = !!checkbox && checkbox.checked;
+    document.body.classList.remove("person-view-list");
+    document.body.classList.toggle("person-view-steckbrief", enabled);
+  }
+
+  function setListView(enabled) {
+    if (enabled) {
+      if (checkbox) checkbox.checked = false;
+      document.body.classList.remove("person-view-steckbrief");
+      document.body.classList.add("person-view-list");
+    } else {
+      document.body.classList.remove("person-view-list");
+    }
+  }
+
+  if (checkbox) {
+    checkbox.addEventListener("change", () => {
+      applySteckbriefView();
+    });
+  }
+
+  if (listBtn) {
+    listBtn.addEventListener("click", () => {
+      const enable = !document.body.classList.contains("person-view-list");
+      setListView(enable);
+    });
+  }
+
+  applySteckbriefView();
+})();
+
 var tsInput = document.querySelector("input[type='search']");
 if (tsInput) {
   tsInput.addEventListener("input", updateHeaderUrl);
