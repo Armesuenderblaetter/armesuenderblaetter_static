@@ -1140,7 +1140,7 @@ body.page-person-search .person-view-list-btn {
     white-space: nowrap;
 }
 
-body.page-person-search .person-view-list-btn:focus,
+
 body.page-person-search .person-view-list-btn:hover {
     background-color: var(--asb-background-color-4-button-hover) !important;
 }
