@@ -28,7 +28,7 @@
             <div class="offcanvas-body">
                 <nav class="site-menu" aria-label="Hauptmenü">
                     <div class="site-menu-section">Das Projekt</div>
-                    <a class="site-menu-link site-menu-link--leaf" href="search.html"><span class="site-menu-bullet" aria-hidden="true"><i class="bi bi-chevron-double-right" aria-hidden="true"></i></span><span class="site-menu-text">Armersünderblätter</span></a>
+                    <a class="site-menu-link site-menu-link--leaf" href="toc.html"><span class="site-menu-bullet" aria-hidden="true"><i class="bi bi-chevron-double-right" aria-hidden="true"></i></span><span class="site-menu-text">Armersünderblätter</span></a>
                     <a class="site-menu-link site-menu-link--leaf" href="about.html"><span class="site-menu-bullet" aria-hidden="true"><i class="bi bi-chevron-double-right" aria-hidden="true"></i></span><span class="site-menu-text">Über das Projekt</span></a>
                     <a class="site-menu-link site-menu-link--leaf" href="publications.html"><span class="site-menu-bullet" aria-hidden="true"><i class="bi bi-chevron-double-right" aria-hidden="true"></i></span><span class="site-menu-text">Publikationen</span></a>
                     <a class="site-menu-link site-menu-link--leaf" href="citation.html"><span class="site-menu-bullet" aria-hidden="true"><i class="bi bi-chevron-double-right" aria-hidden="true"></i></span><span class="site-menu-text">Zitiervorschlag</span></a>
@@ -85,7 +85,7 @@
                 <xsl:choose>
                  <xsl:when test="$site_top_variant = 'image'">
                 <div class="site-top-strip bild" aria-hidden="true">
-                    <a class="site-button site-bottom-button semitrans" href="search.html" role="button" aria-label="Schnellvorlauf">
+                    <a class="site-button site-bottom-button semitrans" href="toc.html" role="button" aria-label="Schnellvorlauf">
                         <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
                     </a>
                 </div>

@@ -18,7 +18,8 @@
     --asb-background-colour-0-button-hover: #c0ac9a ;
     --asb-background-colour-1-button-hover: #a98f76 ;
     --asb-background-colour-2-button-hover: #a08066 ;
-    --asb-background-color-3-button-hover: #695a4b ;
+    --asb-background-color-3-button-hover: #886848 ;
+    --asb-background-color-4-button-hover: #695a4b ;
 
     --asb-link-colour: #565247;
     --asb-link-visited-colour: #868277;
@@ -793,14 +794,20 @@ body.page-person-search .person-hit-list {
 
 body.page-person-search .person-hit-list li {
     margin: 0.25rem 0;
+    display: grid;
+    grid-template-columns: 11.5rem 1fr;
+    column-gap: 0.75rem;
+    align-items: baseline;
 }
 
 body.page-person-search .person-hit-label {
     font-variant: small-caps;
+    white-space: nowrap;
 }
 
 body.page-person-search .person-hit-value {
     font-variant: normal;
+    min-width: 0;
 }
 
 body.page-person-search .person-hit-cta {
@@ -811,12 +818,22 @@ body.page-person-search .person-hit-cta {
 /* Person search (left column): toggle row + NAME pill search */
 body.page-person-search .person-left-togglebar {
     background-color: transparent;
-    border-bottom: 1px solid var(--asb-background-colour-0);
     min-height: var(--asb-square-btn-size); /* match burger button height */
     display: flex;
     align-items: center;
-    margin: -1rem -1rem 0;
+    margin: 0;
     padding: 0 1rem;
+    position: relative;
+}
+
+body.page-person-search .person-left-togglebar::after {
+    content: "";
+    position: absolute;
+    left: -1rem;
+    right: -1rem;
+    bottom: 0;
+    height: 1px;
+    background-color: var(--asb-background-colour-0);
 }
 
 body.page-person-search .person-view-toggle {
@@ -827,6 +844,11 @@ body.page-person-search .person-view-toggle {
     cursor: pointer;
     color: var(--asb-link-colour);
     font-size: 1.5rem;
+}
+
+body.page-person-search .person-view-toggle-text {
+    font-family: var(--bs-font-sans-serif) !important;
+    color: var(--asb-background-colour-2-button);
 }
 
 body.page-person-search .person-view-toggle input {
@@ -844,8 +866,8 @@ body.page-person-search .person-view-toggle input {
 
 body.page-person-search .person-view-toggle input::after {
     content: "";
-    width: 0.55rem;
-    height: 0.55rem;
+    width: 0.75rem;
+    height: 0.75rem;
     border-radius: 9999px;
     transform: scale(0);
     transition: transform 120ms ease-in-out;
@@ -864,8 +886,32 @@ body.page-person-search .person-view-toggle input:focus-visible {
 body.page-person-search .person-left-section {
     background-color: transparent;
     padding: 2rem 1rem 1.25rem;
-    border-bottom: 1px solid var(--asb-background-colour-0);
-    margin: 0 -1rem 1rem;
+    margin: 0 0 1rem;
+    position: relative;
+}
+
+body.page-person-search .person-left-section::after {
+    content: "";
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0;
+    height: 1px;
+    background-color: var(--asb-background-colour-0);
+}
+
+body.page-person-search .person-left-section.person-left-section--name::after {
+    content: none;
+    display: none;
+}
+
+/* NAME list: hidden by default; shown via "Als Liste zeigen" */
+body.page-person-search #name_list {
+    display: none;
+}
+
+body.page-person-search.name-list-visible #name_list {
+    display: block;
 }
 
 body.page-person-search .person-left-heading {
@@ -877,10 +923,162 @@ body.page-person-search .person-left-heading {
 body.page-person-search .person-name-search-inner {
     display: flex;
     align-items: stretch;
-    border: 3px solid var(--asb-background-colour-2-button);
+    border: 2px solid var(--asb-background-colour-2-button);
     border-radius: 9999px;
     overflow: hidden;
+    background-color: var(--asb-background-colour-2-button);
+    padding: 0;
+    min-height: 2.3rem;
+}
+
+body.page-person-search .person-name-search-inner > * {
+    background-color: inherit;
+}
+
+body.page-person-search .person-name-search-inner .ais-SearchBox {
+    flex: 1 1 auto;
+    min-width: 0;
     background-color: var(--bs-white);
+    border-radius: 9999px;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+}
+
+/* Alter slider pill */
+body.page-person-search .person-age-hidden {
+    display: none;
+}
+
+body.page-person-search .person-age-pill {
+    display: flex;
+    align-items: stretch;
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    overflow: visible;
+    background-color: var(--asb-background-colour-2-button);
+    min-height: 2.3rem;
+}
+
+body.page-person-search .person-age-pill-slider {
+    flex: 1 1 auto;
+    min-width: 0;
+    background-color: var(--bs-white);
+    border-radius: 9999px;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    padding: 0 1.1rem;
+    box-shadow: inset 0 0 0 2px var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .person-age-pill-count {
+    flex: 0 0 auto;
+    color: var(--bs-white);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    font-variant: small-caps;
+    font-size: 0.85rem;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+/* noUiSlider theme for Alter */
+body.page-person-search .person-age-pill-slider .noUi-target {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    width: 100%;
+    /* Inset so the circular handles remain fully inside the white pill */
+    margin: 0 0.7rem;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-horizontal {
+    height: 1.4rem;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-base,
+body.page-person-search .person-age-pill-slider .noUi-connects {
+    height: 100%;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-connects {
+    background: transparent;
+    position: relative;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-connects::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    transform: translateY(-50%);
+    background-color: var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .person-age-pill-slider .noUi-connect {
+    background: transparent;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-handle {
+    width: 1.1rem;
+    height: 1.1rem;
+    box-sizing: border-box;
+    border-radius: 9999px;
+    background: var(--asb-background-colour-0);
+    border: 2px solid var(--asb-background-colour-2-button);
+    box-shadow: none;
+}
+
+/* noUi's default theme offsets the handle (top/right) for its own handle size.
+   Re-center for our circular handle so it sits on the line. */
+body.page-person-search .person-age-pill-slider .noUi-horizontal .noUi-handle {
+    top: calc(50% + 0.55rem);
+    margin-top: 0;
+    transform: translateY(-50%);
+    right: -0.55rem;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-handle::before,
+body.page-person-search .person-age-pill-slider .noUi-handle::after {
+    display: none;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-touch-area {
+    border-radius: 9999px;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-tooltip {
+    background: transparent;
+    border: 0;
+    color: var(--asb-background-colour-2-button);
+    font-size: 0.75rem;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    pointer-events: none;
+    white-space: nowrap;
+    /* push labels above the white pill */
+    bottom: calc(100% + 0.6rem);
+}
+
+/* Birth place + execution place lists: hidden by default; shown via their buttons */
+body.page-person-search #birth_place,
+body.page-person-search #execution_places {
+    display: none;
+}
+
+body.page-person-search.birth-place-list-visible #birth_place {
+    display: block;
+}
+
+body.page-person-search.execution-place-list-visible #execution_places {
+    display: block;
 }
 
 body.page-person-search .person-name-search-inner #searchbox {
@@ -890,18 +1088,25 @@ body.page-person-search .person-name-search-inner #searchbox {
 
 body.page-person-search .person-name-search-inner .ais-SearchBox-form {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     width: 100%;
     margin: 0;
     border: 0;
     background: transparent;
+    height: 100%;
 }
 
 body.page-person-search .person-name-search-inner .ais-SearchBox-submit,
 body.page-person-search .person-name-search-inner .ais-SearchBox-reset {
     background: transparent;
     border: 0;
-    padding: 0.75rem;
+    padding: 0.35rem;
+    min-width: 0;
+    width: 1.8rem;
+    height: 1.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 body.page-person-search .person-name-search-inner .ais-SearchBox-input {
@@ -910,23 +1115,255 @@ body.page-person-search .person-name-search-inner .ais-SearchBox-input {
     box-shadow: none;
     background: transparent;
     width: 100%;
-    padding: 0.75rem 0.75rem;
-    font-size: 1.25rem;
+    padding: 0.35rem 0.5rem;
+    font-size: 1rem;
+    line-height: 1.1;
+    height: 100%;
 }
 
 body.page-person-search .person-view-list-btn {
     border: 0;
-    background-color: var(--asb-background-colour-2-button);
+    background-color: inherit !important;
     color: var(--bs-white);
-    padding: 0 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem !important;
     font-variant: small-caps;
-    font-size: 1.1rem;
-    line-height: 1.05;
+    font-size: 0.85rem;
+    line-height: 1;
+    min-height: 0;
+    align-self: stretch;
+    height: auto;
+    border-radius: 9999px !important;
+    flex: 0 0 auto;
+    white-space: nowrap;
 }
 
 body.page-person-search .person-view-list-btn:focus,
 body.page-person-search .person-view-list-btn:hover {
-    background-color: var(--asb-background-colour-2-button-hover);
+    background-color: var(--asb-background-color-4-button-hover) !important;
+}
+
+body.page-person-search .person-view-list-btn br {
+    display: none;
+}
+
+/* Person search left column: facet sections with separators */
+body.page-person-search .search-col-left .person-left-facet > h3 {
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.02em;
+    margin: 2rem 0 1rem;
+    padding-top: 1.5rem;
+    position: relative;
+}
+
+body.page-person-search .search-col-left .person-left-facet > h3::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0.75rem;
+    right: 0.75rem;
+    height: 1px;
+    background-color: var(--asb-background-colour-0);
+}
+
+/* Person search: pill-shaped refinement list items */
+body.page-person-search .search-col-left .ais-RefinementList-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-item {
+    margin: 0;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-label:hover {
+    color: var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-checkbox {
+    /* Hide default checkbox, show custom checkmark via label */
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+    margin: 0;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-label::before {
+    content: "";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 9999px;
+    background-color: var(--bs-white);
+    border: 2px solid var(--asb-background-colour-2-button);
+    color: var(--bs-black);
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-item--selected .ais-RefinementList-label::before {
+    content: "✓";
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-count {
+    background-color: var(--asb-background-colour-2-button);
+    color: var(--bs-white);
+    font-size: 0.9rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    margin-left: 0;
+    order: 0;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-count::before,
+body.page-person-search .search-col-left .ais-RefinementList-count::after {
+    content: none;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-labelText {
+    order: 1;
+}
+
+/* Person search: range slider for ALTER */
+body.page-person-search .search-col-left .ais-RangeSlider {
+    padding: 1rem 0.5rem 0.5rem;
+}
+
+body.page-person-search .search-col-left .ais-RangeSlider .rheostat {
+    margin: 0;
+}
+
+body.page-person-search .search-col-left .ais-RangeSlider .rheostat-background {
+    background-color: var(--asb-background-colour-1);
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    height: 0.5rem;
+}
+
+body.page-person-search .search-col-left .ais-RangeSlider .rheostat-progress {
+    background-color: var(--asb-background-colour-2-button);
+    height: 100%;
+    border-radius: 9999px;
+}
+
+body.page-person-search .search-col-left .ais-RangeSlider .rheostat-handle {
+    background-color: var(--asb-background-colour-1);
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    width: 1.25rem;
+    height: 1.25rem;
+    top: -0.4rem;
+}
+
+body.page-person-search .search-col-left .ais-RangeSlider-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--asb-link-colour);
+}
+
+/* Person search: range input fallback styling */
+body.page-person-search .search-col-left .ais-RangeInput {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+body.page-person-search .search-col-left .ais-RangeInput-input {
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    padding: 0.4rem 0.75rem;
+    width: 5rem;
+    text-align: center;
+    background-color: var(--bs-white);
+}
+
+body.page-person-search .search-col-left .ais-RangeInput-separator {
+    color: var(--asb-link-colour);
+}
+
+body.page-person-search .search-col-left .ais-RangeInput-submit {
+    border-radius: 9999px !important;
+    padding: 0.4rem 1rem !important;
+}
+
+/* Person search: facets with search (birth_place, execution_places) - pill search style */
+body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox {
+    margin-bottom: 0.75rem;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox-form {
+    display: flex;
+    align-items: stretch;
+    border: 3px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    overflow: hidden;
+    background-color: var(--bs-white);
+}
+
+body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox-input {
+    border: 0;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox-submit,
+body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox-reset {
+    background: transparent;
+    border: 0;
+    padding: 0.5rem;
+}
+
+/* Scrollable facet lists keep their border but adjust for pill layout */
+body.page-person-search .search-col-left .facet-list-scroll {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0;
+    max-height: 14rem;
+    border-color: var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .person-left-tailpiece {
+    display: block;
+    width: 100%;
+    height: 3rem;
+    margin: 2.5rem 0 0.75rem;
+    opacity: 0.35;
+    pointer-events: none;
+    background-image: url('../images/tailpiece.png');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    background-position: center;
 }
 
 body.page-person-search .person-hit-overlay a,
@@ -941,7 +1378,7 @@ body.page-person-search .person-hit-overlay .cta-button {
 
 body.page-person-search .person-hit-overlay .cta-button:hover,
 body.page-person-search .person-hit-overlay .cta-button:focus {
-    background-color: var(--asb-background-color-3-button-hover);
+    background-color: var(--asb-background-color-4-button-hover);
     text-decoration: none;
 }
 
@@ -1272,6 +1709,7 @@ body.landing .landing-thumbs.landing-thumbs--carousel {
     --landing-carousel-gap: 0.75rem;
     /* Elastic overshoot applied at both ends */
     --landing-carousel-elastic: 0.75rem;
+    --landing-carousel-max-shift: 0px;
     display: block;
 }
 
@@ -1290,7 +1728,7 @@ body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-strip {
     /* Provide real left/right elastic padding so overshoot is visible */
     padding-left: var(--landing-carousel-elastic);
     padding-right: var(--landing-carousel-elastic);
-    box-sizing: content-box;
+    box-sizing: border-box;
     /* smoother, symmetric animation and small extra overshoot at both ends */
     animation: landingThumbScroll var(--duration) ease-in-out infinite;
     animation-direction: alternate;
@@ -1349,14 +1787,11 @@ body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button
 }
 
 @keyframes landingThumbScroll {
-    /* include a small positive offset at the start so the left elastic
-       padding is visible when the animation returns; the end position
-       includes the right elastic padding as an extra offset */
     from {
-        transform: translateX(var(--landing-carousel-elastic));
+        transform: translateX(0px);
     }
     to {
-        transform: translateX(calc(-.35 * (6 * var(--landing-carousel-step)) - var(--landing-carousel-elastic)));
+        transform: translateX(calc(-1 * var(--landing-carousel-max-shift)));
     }
 }
 
@@ -2032,7 +2467,7 @@ li.dropdown-item:has(annotation-slider[disabled="true"]):hover,
     display: inline-block ;
 }
 }
-
+/*
 button.nav-link {
     background-color: var(--asb-background-colour-button)!important;
     color: var(--bs-white) !important;
@@ -2057,8 +2492,8 @@ button:not(.btn-close):not(.site-button):not(.site-burger):not(.site-close):not(
   font-size: inherit;
   line-height: 1!important;
     color: var(--bs-white) !important;
-}
-
+} 
+    
 select{
     border: solid var(--asb-link-colour) 3px !important;
     border-radius: 15px !important;

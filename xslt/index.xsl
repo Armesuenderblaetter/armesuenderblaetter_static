@@ -45,7 +45,7 @@
                         <section class="landing-section landing-section--light">
                             <div class="container landing-section-inner">
                                 <xsl:if test="position() = 1">
-                                    <a class="sitebutton site-button-bis" href="search.html" role="button" aria-label="Zum Inhaltsverzeichnis">
+                                    <a class="sitebutton site-button-bis" href="toc.html" role="button" aria-label="Zum Inhaltsverzeichnis">
                                         ZUR EDITION
                                     </a>
                                 </xsl:if>
@@ -88,7 +88,7 @@
 
                             <div class="landing-thumb landing-thumb--cta bgb" role="group" aria-label="Armesünderblätter ansehen">
                                 <div class="landing-thumbs-cta-title"><span>ARME</span><span>SÜNDER</span><span>BLÄTTER</span></div>
-                                <a class="cta-button" href="search.html">Ansehen</a>
+                                <a class="cta-button" href="toc.html">Ansehen</a>
                             </div>
                             <!--
                             <a class="landing-thumb" href="fb_17850228_Hora_Kloczka.html"><img src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/17850228_Hora-Kloczka_a_wb.jp2/full/260,/0/default.jpg" alt="Deckblatt: Hora-Kloczka"/></a>
