@@ -1781,6 +1781,26 @@ body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumb--cta {
     padding: 0.75rem;
 }
 
+/* CTA tile is a link; keep it from inheriting global link styles */
+body.landing .landing-thumbs.landing-thumbs--carousel a.landing-thumb--cta,
+body.landing .landing-thumbs.landing-thumbs--carousel a.landing-thumb--cta:visited {
+    color: var(--bs-white) !important;
+    text-decoration: none;
+}
+
+/* Button-looking element inside the CTA tile */
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button {
+    display: inline-block;
+    padding: 0.65em 1.1em;
+    border: 2px solid var(--bs-white);
+    background-color: var(--asb-background-colour-button-banner);
+    color: var(--bs-white);
+    text-decoration: none;
+    border-radius: 9999px;
+    line-height: 1;
+    cursor: pointer;
+}
+
 
 body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-title {
     line-height: 1.05;
@@ -1816,9 +1836,23 @@ body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button
     text-decoration: none   ;
 }
 
+/* Landing carousel CTA uses `.cta-button` (not `.landing-thumbs-cta-button`).
+   Keep it looking like a button even for visited/hover states. */
+body.landing .cta-button:visited {
+    color: var(--bs-white) !important;
+    text-decoration: none;
+}
+
+body.landing .cta-button:hover,
+body.landing .cta-button:focus {
+    background-color: var(--asb-background-color-4-button-hover);
+    text-decoration: none;
+}
+
 body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button:hover,
 body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button:focus {
-    text-decoration: underline;
+    background-color: var(--asb-background-color-4-button-hover);
+    text-decoration: none;
 }
 
 
