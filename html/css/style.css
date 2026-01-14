@@ -1710,12 +1710,15 @@ body.landing .landing-thumbs.landing-thumbs--carousel {
     --landing-carousel-gap: 0.75rem;
     /* Elastic overshoot applied at both ends */
     --landing-carousel-elastic: 0.75rem;
-    --landing-carousel-max-shift: 0px;
     display: block;
+    /* The scroll container is the viewport element, not this wrapper. */
+    overflow-x: visible;
 }
 
 body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-viewport {
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
     /* Always show 6 picture tiles; CTA is the 7th tile to the right */
     width: 100%;
     --landing-carousel-tile-width: calc((100% - (5 * var(--landing-carousel-gap))) / 6);
@@ -1729,11 +1732,12 @@ body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-strip {
     /* Provide real left/right elastic padding so overshoot is visible */
     padding-left: var(--landing-carousel-elastic);
     padding-right: var(--landing-carousel-elastic);
-    box-sizing: border-box;
-    /* smoother, symmetric animation and small extra overshoot at both ends */
-    animation: landingThumbScroll var(--duration) ease-in-out infinite;
+    box-sizing: content-box;
+    animation: landingThumbScroll var(--duration) cubic-bezier(.22,1,.36,1) infinite;
     animation-direction: alternate;
     animation-play-state: paused;
+    /* JS overwrites this with an exact pixel value so the animation reaches the real end */
+    --landing-carousel-max-translate: calc(-1 * (var(--landing-carousel-step) + (23 * var(--landing-carousel-elastic))));
 }
 
 body.landing .landing-thumbs.landing-thumbs--carousel:hover .landing-thumbs-strip,
@@ -1745,8 +1749,8 @@ body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumb--cta {
      /* Use the carousel tile flex-basis (no !important). Keep width:auto so
          the flex layout determines the final size and other tiles aren't
          affected by overrides. */
-     flex: 0 0 var(--landing-carousel-tile-width);
-     width: auto;
+    flex: 0 0 auto;
+    width: auto;
      box-sizing: border-box;
      background-color: var(--asb-background-colour-2-button);
      color: var(--bs-white);
@@ -1770,6 +1774,17 @@ body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-title 
     display: block;
 }
 
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button {
+    display: inline-block;
+    padding: 0.65em 1.1em;
+    border: 2px solid var(--bs-white);
+    background-color: var(--asb-background-colour-button-banner);
+    color: var(--bs-white) !important;
+    text-decoration: none;
+    border-radius: 9999px;
+    line-height: 1;
+}
+
 .cta-button {
     display: inline-block;
     padding: 0.65em 1.1em;
@@ -1787,20 +1802,7 @@ body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button
     text-decoration: underline;
 }
 
-@keyframes landingThumbScroll {
-    from {
-        transform: translateX(0px);
-    }
-    to {
-        transform: translateX(calc(-1 * var(--landing-carousel-max-shift)));
-    }
-}
 
-@media (prefers-reduced-motion: reduce) {
-    body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-strip {
-        animation: none;
-    }
-}
 
 body.landing .landing-thumb {
     flex: 0 0 auto;
@@ -1813,6 +1815,24 @@ body.landing .landing-thumb img {
     display: block;
     width: 100% ;
     height: auto !important;
+}
+
+@keyframes landingThumbScroll {
+    from {
+        /* start with the left padding in place */
+        transform: translateX(0);
+    }
+    to {
+        /* JS sets `--landing-carousel-max-translate` to the exact pixel distance needed
+           (strip.scrollWidth - viewport.clientWidth). Fallback is defined on the strip. */
+        transform: translateX(var(--landing-carousel-max-translate));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-strip {
+        animation: none;
+    }
 }
 
 body.landing footer.footer {

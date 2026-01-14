@@ -24,5 +24,6 @@
         <link rel="stylesheet" href="css/style.css" type="text/css"/>
         <link rel="stylesheet" href="css/noske_style.css" type="text/css"/>
         <link rel="stylesheet" href="css/micro-editor.css" type="text/css"/>
+        <script src="js/landing-carousel.js" defer="defer"></script>
     </xsl:template>
 </xsl:stylesheet>

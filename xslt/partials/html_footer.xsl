@@ -59,20 +59,40 @@
                         $ctas.forEach(function(el){ el.style.width = w + 'px'; el.style.flex = '0 0 ' + w + 'px'; });
                     }catch(e){ if(window && window.console) window.console.error(e); }
                 }
+
+                function setCarouselMaxTranslate(){
+                    try{
+                        var $carousels = document.querySelectorAll('.landing-thumbs.landing-thumbs--carousel');
+                        if(!$carousels || !$carousels.length) return;
+                        $carousels.forEach(function($carousel){
+                            var $viewport = $carousel.querySelector('.landing-thumbs-viewport');
+                            var $strip = $carousel.querySelector('.landing-thumbs-strip');
+                            if(!$viewport || !$strip) return;
+                            var maxShift = Math.max(0, $strip.scrollWidth - $viewport.clientWidth);
+                            $strip.style.setProperty('--landing-carousel-max-translate', (-1 * maxShift) + 'px');
+                        });
+                    }catch(e){ if(window && window.console) window.console.error(e); }
+                }
                 var resizeTimer;
                 document.addEventListener('DOMContentLoaded', function(){
                     setCTAWidth();
+                    setCarouselMaxTranslate();
                     // images might load after DOMContentLoaded
                     window.setTimeout(setCTAWidth, 250);
+                    window.setTimeout(setCarouselMaxTranslate, 250);
                 });
                 window.addEventListener('resize', function(){
                     clearTimeout(resizeTimer);
-                    resizeTimer = setTimeout(setCTAWidth, 150);
+                    resizeTimer = setTimeout(function(){
+                        setCTAWidth();
+                        setCarouselMaxTranslate();
+                    }, 150);
                 });
                 // also update when images in the carousel finish loading
                 document.addEventListener('load', function(e){
                     if(e.target && e.target.closest && e.target.closest('.landing-thumbs-viewport')){
                         setCTAWidth();
+                        setCarouselMaxTranslate();
                     }
                 }, true);
             })();
