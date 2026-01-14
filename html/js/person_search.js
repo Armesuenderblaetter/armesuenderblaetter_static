@@ -54,6 +54,137 @@ const search = instantsearch({
   routing: true,
 });
 
+function createDecadeAgeSliderWidget({
+  sliderContainer,
+  countContainer,
+  attribute,
+}) {
+  return {
+    init({ helper }) {
+      this.helper = helper;
+      this.sliderEl = document.querySelector(sliderContainer);
+      this.countEl = document.querySelector(countContainer);
+      this.attribute = attribute;
+      this.values = null;
+      this.slider = null;
+      this.isSyncing = false;
+
+      if (this.helper && this.attribute) {
+        // Ensure the attribute is treated as disjunctive facet.
+        try {
+          this.helper.addDisjunctiveFacet(this.attribute);
+        } catch (e) {
+          // Ignore; helper implementation may already include it.
+        }
+      }
+    },
+
+    render({ results, state }) {
+      if (this.countEl && results && typeof results.nbHits === "number") {
+        this.countEl.textContent = String(results.nbHits);
+      }
+
+      if (!this.sliderEl) return;
+      if (!window.noUiSlider) return;
+
+      if (!this.values && results && typeof results.getFacetValues === "function") {
+        let facetValues = [];
+        try {
+          facetValues = results.getFacetValues(this.attribute) || [];
+        } catch (e) {
+          facetValues = [];
+        }
+
+        // Keep only decade-like labels (e.g., "20–29"); ignore "k. A.".
+        const decadeRe = /^\d+–\d+$/;
+        const decades = (Array.isArray(facetValues) ? facetValues : [])
+          .map((v) => (v && v.name ? String(v.name) : ""))
+          .filter((name) => decadeRe.test(name))
+          .sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+
+        this.values = decades;
+
+        if (!this.values.length) {
+          this.sliderEl.style.display = "none";
+          return;
+        }
+
+        const maxIndex = this.values.length - 1;
+
+        const tooltipFormat = {
+          to: (value) => {
+            const idx = Math.round(Number(value));
+            return this.values && this.values[idx] ? this.values[idx] : "";
+          },
+          from: (value) => Number(value),
+        };
+
+        window.noUiSlider.create(this.sliderEl, {
+          start: [0, maxIndex],
+          connect: true,
+          step: 1,
+          range: {
+            min: 0,
+            max: maxIndex,
+          },
+          behaviour: "tap-drag",
+          tooltips: [tooltipFormat, tooltipFormat],
+        });
+
+        this.slider = this.sliderEl.noUiSlider;
+
+        this.slider.on("change", (rawValues) => {
+          if (!this.helper || !this.attribute || !Array.isArray(this.values) || !this.values.length) {
+            return;
+          }
+          if (this.isSyncing) return;
+
+          const minIndex = Math.max(0, Math.round(Number(rawValues[0])));
+          const maxIndex2 = Math.min(this.values.length - 1, Math.round(Number(rawValues[1])));
+
+          const isFullRange = minIndex === 0 && maxIndex2 === this.values.length - 1;
+          const selected = isFullRange ? [] : this.values.slice(minIndex, maxIndex2 + 1);
+
+          this.helper.clearRefinements(this.attribute);
+          for (const label of selected) {
+            this.helper.addDisjunctiveFacetRefinement(this.attribute, label);
+          }
+          this.helper.search();
+        });
+      }
+
+      if (!this.slider || !this.values || !this.values.length) return;
+
+      // Sync slider position to current refinements (e.g., when using back/forward).
+      const refinements =
+        (state && state.disjunctiveFacetsRefinements && state.disjunctiveFacetsRefinements[this.attribute]) || [];
+
+      const active = (Array.isArray(refinements) ? refinements : [])
+        .map((v) => String(v))
+        .filter((v) => this.values.includes(v));
+
+      const maxIndex = this.values.length - 1;
+      let target = [0, maxIndex];
+      if (active.length) {
+        const indices = active
+          .map((v) => this.values.indexOf(v))
+          .filter((i) => i >= 0)
+          .sort((a, b) => a - b);
+        if (indices.length) {
+          target = [indices[0], indices[indices.length - 1]];
+        }
+      }
+
+      const current = this.slider.get().map((v) => Math.round(Number(v)));
+      if (current[0] !== target[0] || current[1] !== target[1]) {
+        this.isSyncing = true;
+        this.slider.set(target);
+        this.isSyncing = false;
+      }
+    },
+  };
+}
+
 const iiif_server_base_path =
   "https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/";
 const iiif_attribs = "/full/260,/0/default.jpg";
@@ -94,6 +225,12 @@ search.addWidgets([
     },*/
   }),
 
+  createDecadeAgeSliderWidget({
+    sliderContainer: "#decadeAgeSlider",
+    countContainer: "#decadeAgeCount",
+    attribute: "decade_age",
+  }),
+
   instantsearch.widgets.hits({
     container: "#hits",
     /*cssClasses: {
@@ -125,15 +262,12 @@ search.addWidgets([
             <div class="person-hit-overlay">
               <h4 class="person-hit-title">${fullNameUpper}</h4>
               <ul class="person-hit-list">
-                <li><span class="person-hit-label">Alter:</span> <span class="person-hit-value">${valueOrDash(hit.age)}</span></li>
-                <li><span class="person-hit-label">Geburtsort:</span> <span class="person-hit-value">${valueOrDash(hit.birth_place)}</span></li>
-                <li><span class="person-hit-label">Familienstand:</span> <span class="person-hit-value">${valueOrDash(hit.marriage_status)}</span></li>
-                <li><span class="person-hit-label">Konfession:</span> <span class="person-hit-value">${valueOrDash(hit.faith)}</span></li>
-                <li>
-                  <span class="person-hit-label">Beruf:</span> <span class="person-hit-value">${valueOrDash(hit.occupation)}</span>
-                  <br/>
-                  <span class="person-hit-label">Hinr.-Ort.:</span> <span class="person-hit-value">${valueOrDash(hit.execution_places)}</span>
-                </li>
+                <li><span class="person-hit-label">GESCHLECHT</span><span class="person-hit-value">${valueOrDash(hit.sex)}</span></li>
+                <li><span class="person-hit-label">ALTER</span><span class="person-hit-value">${valueOrDash(hit.age)}</span></li>
+                <li><span class="person-hit-label">FAMILIENSTAND</span><span class="person-hit-value">${valueOrDash(hit.marriage_status)}</span></li>
+                <li><span class="person-hit-label">GEBURTSORT</span><span class="person-hit-value">${valueOrDash(hit.birth_place)}</span></li>
+                <li><span class="person-hit-label">KONFESSION</span><span class="person-hit-value">${valueOrDash(hit.faith)}</span></li>
+                <li><span class="person-hit-label">HINRICHTUNGSORT</span><span class="person-hit-value">${valueOrDash(hit.execution_places)}</span></li>
               </ul>
               <div class="person-hit-cta">
                 <a class="cta-button" href="${detailUrl}">DETAILS</a>
@@ -303,41 +437,7 @@ search.addWidgets([
     },*/
   }),
 
-  instantsearch.widgets.refinementList({
-    container: "#occupation",
-    attribute: "occupation",
-    searchable: false,
-    limit: 1000,
-     sortBy: ['name:asc', 'count:desc'],
-    cssClasses: {
-      list: "facet-list-scroll",
-    },
-    /*cssClasses: {
-      showMore: "btn btn-secondary btn-sm align-content-center",
-      list: "list-unstyled",
-      count: "badge ml-2 badge-secondary hideme",
-      label: "d-flex align-items-center text-capitalize",
-      checkbox: "mr-2",
-    },*/
-  }),
-
-  instantsearch.widgets.refinementList({
-    container: "#execution",
-    attribute: "execution",
-    limit: 1000,
-    searchable: false,
-     sortBy: ['name:asc', 'count:desc'],
-    cssClasses: {
-      list: "facet-list-scroll",
-    },
-    /*cssClasses: {
-      showMore: "btn btn-secondary btn-sm align-content-center",
-      list: "list-unstyled",
-      count: "badge ml-2 badge-secondary hideme",
-      label: "d-flex align-items-center text-capitalize",
-      checkbox: "mr-2",
-    },*/
-  }),
+  // Removed from left column: offences + execution
 ]);
 
 search.start();
@@ -350,20 +450,23 @@ search.start();
   const listBtn = document.getElementById("personViewListBtn");
   if (!checkbox && !listBtn) return;
 
+  const NAME_LIST_CLASS = "name-list-visible";
+
+  function setListBtnLabel() {
+    if (!listBtn) return;
+    const open = document.body.classList.contains(NAME_LIST_CLASS);
+    listBtn.textContent = open ? "Einklappen" : "Als Liste zeigen";
+  }
+
   function applySteckbriefView() {
     const enabled = !!checkbox && checkbox.checked;
-    document.body.classList.remove("person-view-list");
     document.body.classList.toggle("person-view-steckbrief", enabled);
   }
 
-  function setListView(enabled) {
-    if (enabled) {
-      if (checkbox) checkbox.checked = false;
-      document.body.classList.remove("person-view-steckbrief");
-      document.body.classList.add("person-view-list");
-    } else {
-      document.body.classList.remove("person-view-list");
-    }
+  function toggleNameList() {
+    const enabled = !document.body.classList.contains(NAME_LIST_CLASS);
+    document.body.classList.toggle(NAME_LIST_CLASS, enabled);
+    setListBtnLabel();
   }
 
   if (checkbox) {
@@ -374,17 +477,93 @@ search.start();
 
   if (listBtn) {
     listBtn.addEventListener("click", () => {
-      const enable = !document.body.classList.contains("person-view-list");
-      setListView(enable);
+      toggleNameList();
     });
   }
 
   applySteckbriefView();
+  setListBtnLabel();
 })();
 
-var tsInput = document.querySelector("input[type='search']");
-if (tsInput) {
+// Facet list toggles + client-side filtering for long lists
+(function initFacetLists() {
+  function bindToggleAndFilter(options) {
+    const {
+      buttonId,
+      inputId,
+      bodyClass,
+      containerSelector,
+    } = options;
+
+    const button = document.getElementById(buttonId);
+    const input = document.getElementById(inputId);
+    const container = document.querySelector(containerSelector);
+    if (!button || !input || !container) return;
+
+    function setButtonLabel() {
+      const open = document.body.classList.contains(bodyClass);
+      button.textContent = open ? "Einklappen" : "Als Liste zeigen";
+    }
+
+    function applyFilter() {
+      const q = (input.value || "").trim().toLowerCase();
+      const items = container.querySelectorAll(".ais-RefinementList-item");
+      items.forEach((item) => {
+        const label = item.querySelector(".ais-RefinementList-labelText")?.textContent || "";
+        const match = q.length === 0 || label.toLowerCase().includes(q);
+        item.style.display = match ? "" : "none";
+      });
+    }
+
+    // Re-apply filter when InstantSearch re-renders the list.
+    const observer = new MutationObserver(() => {
+      applyFilter();
+    });
+    observer.observe(container, { childList: true, subtree: true });
+
+    input.addEventListener("input", applyFilter);
+    button.addEventListener("click", () => {
+      const enabled = !document.body.classList.contains(bodyClass);
+      document.body.classList.toggle(bodyClass, enabled);
+      setButtonLabel();
+      if (enabled) {
+        // focus the filter box when opening
+        window.setTimeout(() => input.focus(), 0);
+      }
+    });
+
+    // initial filter state
+    applyFilter();
+    setButtonLabel();
+  }
+
+  bindToggleAndFilter({
+    buttonId: "birthPlaceListBtn",
+    inputId: "birthPlaceFilter",
+    bodyClass: "birth-place-list-visible",
+    containerSelector: "#birth_place",
+  });
+
+  bindToggleAndFilter({
+    buttonId: "executionPlaceListBtn",
+    inputId: "executionPlaceFilter",
+    bodyClass: "execution-place-list-visible",
+    containerSelector: "#execution_places",
+  });
+})();
+
+var tsInput;
+function bindMainSearchInput() {
+  tsInput = document.querySelector("#searchbox input[type='search']");
+  if (!tsInput) return false;
+  tsInput.removeEventListener("input", updateHeaderUrl);
   tsInput.addEventListener("input", updateHeaderUrl);
+  return true;
+}
+// The InstantSearch input is rendered after search.start().
+if (!bindMainSearchInput()) {
+  setTimeout(bindMainSearchInput, 0);
+  setTimeout(bindMainSearchInput, 250);
 }
 
 function listenToPagination() {
