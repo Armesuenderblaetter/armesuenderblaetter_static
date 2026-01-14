@@ -682,6 +682,17 @@ body.page-person-search #hits {
     z-index: 1;
 }
 
+/* Person search hit card sizing */
+body.page-person-search {
+    --person-hit-card-max-width: 22rem;
+}
+
+@media screen and (max-width: 1920px) {
+    body.page-person-search {
+        --person-hit-card-max-width: 20rem;
+    }
+}
+
 /* 4rem spacing between hit cards */
 body.page-search .ais-Hits-list {
     display: flex;
@@ -693,6 +704,15 @@ body.page-search .ais-Hits-list {
     margin: 0;
 }
 
+/* Person search (grid view): use a real grid so multiple cards fit per row at large widths.
+   Keep list view as flex (see `.person-view-list`). */
+body.page-person-search:not(.person-view-list) .ais-Hits-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, var(--person-hit-card-max-width));
+    justify-content: center;
+    gap: 4rem;
+}
+
 body.page-search .ais-Hits-item {
     margin: 0 !important;
     border: 0 !important;
@@ -700,14 +720,13 @@ body.page-search .ais-Hits-item {
 }
 
 /* Person search hit cards: image-only by default, details on hover */
-body.page-person-search .ais-Hits-item {
+body.page-person-search:not(.person-view-list) .ais-Hits-item {
     padding: 0 !important;
     overflow: hidden;
     position: relative;
     /* Make cards smaller and let the list center them */
-    width: auto !important;
-    flex: 0 1 22rem;
-    max-width: 22rem;
+    width: 100% !important;
+    max-width: var(--person-hit-card-max-width);
     /* Fixed height so images can crop/fill consistently */
     height: clamp(18rem, 40vw, 30rem);
 }
@@ -2560,25 +2579,24 @@ select.different {
 }
 
 
-@media screen and (max-width: 1399) {
-    .ais-Hits-item {   
-        width: 30%!important;
+@media screen and (max-width: 1399px) {
+    body:not(.page-person-search) .ais-Hits-item {
+        width: 30% !important;
     }
-}  
+}
 
 
-@media screen and (max-width: 1199) {
-    .ais-Hits-item {   
-        width: 45%!important;
+@media screen and (max-width: 1199px) {
+    body:not(.page-person-search) .ais-Hits-item {
+        width: 45% !important;
     }
-}  
+}
 
 
 @media screen and (max-width: 991px) {
-    .ais-Hits-item
-    {   
+    body:not(.page-person-search) .ais-Hits-item {
         width: 100% !important;
-    }   
+    }
 
     .facettes {
         height: fit-content !important ;
@@ -2586,10 +2604,20 @@ select.different {
 }
 
 @media screen and (max-width: 991px) {
-    body.page-person-search .ais-Hits-item {
+    body.page-person-search:not(.person-view-list) .ais-Hits {
+        padding: 1.5rem;
+    }
+
+    body.page-person-search:not(.person-view-list) .ais-Hits-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.25rem;
+    }
+
+    body.page-person-search:not(.person-view-list) .ais-Hits-item {
         width: 100% !important;
-        flex-basis: 100%;
-        max-width: 32rem;
+        max-width: none;
+        min-width: 0;
+        height: clamp(14rem, 48vw, 24rem);
     }
 }
 
