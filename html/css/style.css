@@ -501,8 +501,8 @@ body.landing .landing-offcanvas .offcanvas-body::-webkit-scrollbar {
 
 
 .landing-section--banner .landing-section-inner {
-    margin-left: 2rem!important;
-    margin-right: 2rem!important;
+    /* margin-left: 2rem!important;
+    margin-right: 2rem!important; */
     max-width: 100vw!important  ;
 }
 
