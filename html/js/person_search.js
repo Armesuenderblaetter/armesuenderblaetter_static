@@ -44,6 +44,7 @@ const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   },
   additionalSearchParameters: {
     query_by: "fullname",
+    per_page: 20,
   },
 });
 
@@ -231,53 +232,74 @@ search.addWidgets([
     attribute: "decade_age",
   }),
 
-  instantsearch.widgets.hits({
-    container: "#hits",
-    /*cssClasses: {
-      item: "w-20 border border-light rounded m-2 p-2 d-flex flex-column hover-shadow",
-    },*/
-    templates: {
-      empty: "Keine Resultate für <q>{{ query }}</q>",
-      item(hit, { html, components }) {
-        function valueOrDash(value) {
-          if (Array.isArray(value)) {
-            return value.length ? value.join(", ") : "–";
-          }
-          if (value === null || value === undefined) return "–";
-          const s = String(value).trim();
-          return s.length ? s : "–";
+  // Custom infiniteHits using connector to expose showMore function
+  (function() {
+    // Store showMore function globally so our load-more button can use it
+    window.__infiniteHitsShowMore = null;
+    window.__infiniteHitsIsLastPage = true;
+
+    const connectInfiniteHits = instantsearch.connectors.connectInfiniteHits;
+
+    const renderInfiniteHits = (renderOptions, isFirstRender) => {
+      const { hits, showMore, isLastPage, widgetParams } = renderOptions;
+      const container = document.querySelector(widgetParams.container);
+
+      // Store for our custom button
+      window.__infiniteHitsShowMore = showMore;
+      window.__infiniteHitsIsLastPage = isLastPage;
+
+      if (!container) return;
+
+      function valueOrDash(value) {
+        if (Array.isArray(value)) {
+          return value.length ? value.join(", ") : "–";
         }
+        if (value === null || value === undefined) return "–";
+        const s = String(value).trim();
+        return s.length ? s : "–";
+      }
 
-        const fullName = valueOrDash(hit.fullname);
-        const fullNameUpper = String(fullName).toLocaleUpperCase("de-DE");
-        const detailUrl = getDocumentLink(hit);
-        const imageUrl = iiif_server_base_path + hit.thumbnail + iiif_attribs;
+      const hitsHtml = hits.length === 0
+        ? '<div class="ais-InfiniteHits-empty">Keine Resultate für diese Suche</div>'
+        : `<ol class="ais-InfiniteHits-list">${hits.map(hit => {
+            const fullName = valueOrDash(hit.fullname);
+            const fullNameUpper = String(fullName).toLocaleUpperCase("de-DE");
+            const detailUrl = getDocumentLink(hit);
+            const imageUrl = iiif_server_base_path + hit.thumbnail + iiif_attribs;
 
-        return `
-          <div class="person-hit-card">
-            <a class="person-hit-link" href="${detailUrl}" aria-label="Details zu ${fullName}">
-              <img class="person-hit-image" src="${imageUrl}" alt="Deckblatt/Erste Seite des Armesünderblattes" />
-            </a>
-
-            <div class="person-hit-overlay">
-              <h4 class="person-hit-title">${fullNameUpper}</h4>
-              <ul class="person-hit-list">
-                <li><span class="person-hit-label">GESCHLECHT</span><span class="person-hit-value">${valueOrDash(hit.sex)}</span></li>
-                <li><span class="person-hit-label">ALTER</span><span class="person-hit-value">${valueOrDash(hit.age)}</span></li>
-                <li><span class="person-hit-label">FAMILIENSTAND</span><span class="person-hit-value">${valueOrDash(hit.marriage_status)}</span></li>
-                <li><span class="person-hit-label">GEBURTSORT</span><span class="person-hit-value">${valueOrDash(hit.birth_place)}</span></li>
-                <li><span class="person-hit-label">KONFESSION</span><span class="person-hit-value">${valueOrDash(hit.faith)}</span></li>
-                <li><span class="person-hit-label">HINRICHTUNGSORT</span><span class="person-hit-value">${valueOrDash(hit.execution_places)}</span></li>
-              </ul>
-              <div class="person-hit-cta">
-                <a class="cta-button" href="${detailUrl}">DETAILS</a>
+            return `<li class="ais-InfiniteHits-item">
+              <div class="person-hit-card">
+                <a class="person-hit-link" href="${detailUrl}" aria-label="Details zu ${fullName}">
+                  <img class="person-hit-image" src="${imageUrl}" alt="Deckblatt/Erste Seite des Armesünderblattes" />
+                </a>
+                <div class="person-hit-overlay">
+                  <h4 class="person-hit-title">${fullNameUpper}</h4>
+                  <ul class="person-hit-list">
+                    <li><span class="person-hit-label">GESCHLECHT</span><span class="person-hit-value">${valueOrDash(hit.sex)}</span></li>
+                    <li><span class="person-hit-label">ALTER</span><span class="person-hit-value">${valueOrDash(hit.age)}</span></li>
+                    <li><span class="person-hit-label">FAMILIENSTAND</span><span class="person-hit-value">${valueOrDash(hit.marriage_status)}</span></li>
+                    <li><span class="person-hit-label">GEBURTSORT</span><span class="person-hit-value">${valueOrDash(hit.birth_place)}</span></li>
+                    <li><span class="person-hit-label">KONFESSION</span><span class="person-hit-value">${valueOrDash(hit.faith)}</span></li>
+                    <li><span class="person-hit-label">HINRICHTUNGSORT</span><span class="person-hit-value">${valueOrDash(hit.execution_places)}</span></li>
+                  </ul>
+                  <div class="person-hit-cta">
+                    <a class="cta-button" href="${detailUrl}">DETAILS</a>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        `;
-      },
-    },
-  }),
+            </li>`;
+          }).join('')}</ol>`;
+
+      container.innerHTML = `<div class="ais-InfiniteHits">${hitsHtml}</div>`;
+
+      // Dispatch event so load-more button can update
+      window.dispatchEvent(new CustomEvent('infiniteHitsRendered'));
+    };
+
+    return connectInfiniteHits(renderInfiniteHits)({
+      container: "#hits",
+    });
+  })(),
   // <tr>
   //   <td><em>Verbrechen</em></td>
   //   <td>${offences}</td>
@@ -290,10 +312,6 @@ search.addWidgets([
   //   <td><em>Bestrafungen</em></td>
   //   <td>${punishments}</td>
   // </tr>
-
-  instantsearch.widgets.pagination({
-    container: "#pagination",
-  }),
 
   instantsearch.widgets.clearRefinements({
     container: "#clear-refinements",
@@ -441,6 +459,135 @@ search.addWidgets([
 ]);
 
 search.start();
+
+// Create a "Load More" button in #pagination
+(function initLoadMoreButton() {
+  const paginationEl = document.getElementById("pagination");
+  if (!paginationEl) return;
+
+  // Create the button immediately
+  const loadMoreWrapper = document.createElement("div");
+  loadMoreWrapper.className = "load-more-wrapper";
+  loadMoreWrapper.style.display = "none"; // Hidden until we know there are more results
+
+  const loadMoreBtn = document.createElement("button");
+  loadMoreBtn.type = "button";
+  loadMoreBtn.className = "site-button load-more-btn";
+  loadMoreBtn.innerHTML = '<i class="bi bi-chevron-double-down" aria-hidden="true"></i>';
+  loadMoreBtn.addEventListener("click", function() {
+    // Call the exposed showMore function from our custom infiniteHits connector
+    if (window.__infiniteHitsShowMore) {
+      window.__infiniteHitsShowMore();
+    }
+  });
+
+  const label = document.createElement("span");
+  label.className = "load-more-label";
+  label.textContent = "MEHR LADEN";
+
+  loadMoreWrapper.appendChild(loadMoreBtn);
+  loadMoreWrapper.appendChild(label);
+  paginationEl.appendChild(loadMoreWrapper);
+
+  function updateButtonVisibility() {
+    // Count currently displayed hits
+    const displayedHits = document.querySelectorAll(".ais-InfiniteHits-item").length;
+    // Get total hits from the count element (decadeAgeCount shows total)
+    const countEl = document.getElementById("decadeAgeCount");
+    const totalHits = countEl ? parseInt(countEl.textContent, 10) : 0;
+    
+    const hasMore = displayedHits > 0 && displayedHits < totalHits;
+    loadMoreBtn.disabled = !hasMore;
+    loadMoreWrapper.style.display = hasMore ? "" : "none";
+  }
+
+  // Listen for render events from our custom infiniteHits connector
+  window.addEventListener('infiniteHitsRendered', updateButtonVisibility);
+
+  // Also observe DOM changes in hits container
+  const hitsEl = document.getElementById("hits");
+  if (hitsEl) {
+    const observer = new MutationObserver(updateButtonVisibility);
+    observer.observe(hitsEl, { childList: true, subtree: true });
+  }
+
+  // Also check periodically in case events are missed
+  setTimeout(updateButtonVisibility, 500);
+  setTimeout(updateButtonVisibility, 1000);
+  setTimeout(updateButtonVisibility, 2000);
+})();
+
+// Scroll to top button - appears when .site-top-inner is out of view
+(function initScrollToTop() {
+  const scrollBtn = document.getElementById("scrollToTopBtn");
+  const siteTopInner = document.querySelector(".site-top-inner");
+  const footer = document.querySelector("footer");
+  const main = document.querySelector("main");
+  if (!scrollBtn || !siteTopInner) return;
+
+  // Make main position relative so button can be absolute within it
+  if (main) {
+    main.style.position = "relative";
+  }
+
+  // Use IntersectionObserver to detect when site-top-inner is out of view
+  const topObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        // Show button when site-top-inner is NOT intersecting (scrolled out of view)
+        scrollBtn.classList.toggle("visible", !entry.isIntersecting);
+      });
+    },
+    { threshold: 0 }
+  );
+
+  topObserver.observe(siteTopInner);
+
+  // Observe footer to move button above it when footer is visible
+  if (footer && main) {
+    const footerObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Footer is visible - position button absolutely within main
+            scrollBtn.classList.add("above-footer");
+            // Calculate position: main's bottom minus footer overlap
+            const mainRect = main.getBoundingClientRect();
+            const footerRect = footer.getBoundingClientRect();
+            const overlap = mainRect.bottom - footerRect.top;
+            if (overlap > 0) {
+              scrollBtn.style.bottom = (overlap + 32) + "px"; // 32px = 2rem
+            }
+          } else {
+            // Footer not visible - use fixed positioning
+            scrollBtn.classList.remove("above-footer");
+            scrollBtn.style.bottom = "";
+          }
+        });
+      },
+      { threshold: 0 }
+    );
+
+    footerObserver.observe(footer);
+
+    // Also update on scroll for smoother tracking
+    window.addEventListener("scroll", () => {
+      if (scrollBtn.classList.contains("above-footer")) {
+        const mainRect = main.getBoundingClientRect();
+        const footerRect = footer.getBoundingClientRect();
+        const overlap = mainRect.bottom - footerRect.top;
+        if (overlap > 0) {
+          scrollBtn.style.bottom = (overlap + 32) + "px";
+        }
+      }
+    }, { passive: true });
+  }
+
+  // Scroll to top on click
+  scrollBtn.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+})();
 
 // View toggle
 // - "Steckbriefansicht" keeps the grid, but shows the overlay permanently.

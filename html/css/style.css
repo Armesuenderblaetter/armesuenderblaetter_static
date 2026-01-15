@@ -669,8 +669,92 @@ div#searchContainer>div {
     min-width: 0;
 }
 
+.search-col-right-strip {
+    background-image: url('../images/banner_bg1.png');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    height: 120px;
+    width: 100%;
+}
+
+/* Pagination / Load More section */
+body.page-person-search #pagination {
+    padding: 4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Load more button in #pagination */
+body.page-person-search #pagination .load-more-btn {
+    display: inline-flex;
+    margin-top: 0;
+    background-color: var(--asb-background-colour-2-button) !important;
+}
+
+body.page-person-search #pagination .load-more-btn:hover,
+body.page-person-search #pagination .load-more-btn:active,
+body.page-person-search #pagination .load-more-btn:focus {
+    background-color: var(--asb-background-colour-1-button) !important;
+}
+
+body.page-person-search #pagination .ais-InfiniteHits-loadMore {
+    display: inline-flex;
+    margin-top: 0;
+}
+
+/* Load more wrapper in #pagination */
+body.page-person-search #pagination .load-more-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+body.page-person-search #pagination .load-more-label {
+    font-family: var(--bs-font-sans-serif);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--asb-background-colour-1-button);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+body.page-person-search #pagination .load-more-btn .bi {
+    font-size: var(--asb-square-btn-icon-size);
+    line-height: 1;
+}
+
+/* Scroll to top button */
+.scroll-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease, bottom 0.3s ease;
+    background-color: var(--asb-background-colour-2-button) !important;
+}
+
+.scroll-to-top:hover,
+.scroll-to-top:active,
+.scroll-to-top:focus {
+    background-color: var(--asb-background-colour-1-button) !important;
+}
+
+.scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-to-top.above-footer {
+    position: absolute;
+    bottom: 2rem;
+}
+
 /* Add breathing room around InstantSearch hits */
-body.page-search .ais-Hits {
+body.page-search .ais-Hits,
+body.page-search .ais-InfiniteHits {
     padding: 4rem;
 }
 
@@ -694,7 +778,8 @@ body.page-person-search {
 }
 
 /* 4rem spacing between hit cards */
-body.page-search .ais-Hits-list {
+body.page-search .ais-Hits-list,
+body.page-search .ais-InfiniteHits-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -706,21 +791,24 @@ body.page-search .ais-Hits-list {
 
 /* Person search (grid view): use a real grid so multiple cards fit per row at large widths.
    Keep list view as flex (see `.person-view-list`). */
-body.page-person-search:not(.person-view-list) .ais-Hits-list {
+body.page-person-search:not(.person-view-list) .ais-Hits-list,
+body.page-person-search:not(.person-view-list) .ais-InfiniteHits-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, var(--person-hit-card-max-width));
     justify-content: center;
     gap: 4rem;
 }
 
-body.page-search .ais-Hits-item {
+body.page-search .ais-Hits-item,
+body.page-search .ais-InfiniteHits-item {
     margin: 0 !important;
     border: 0 !important;
     box-shadow: none !important;
 }
 
 /* Person search hit cards: image-only by default, details on hover */
-body.page-person-search:not(.person-view-list) .ais-Hits-item {
+body.page-person-search:not(.person-view-list) .ais-Hits-item,
+body.page-person-search:not(.person-view-list) .ais-InfiniteHits-item {
     padding: 0 !important;
     overflow: hidden;
     position: relative;
@@ -763,7 +851,8 @@ body.page-person-search .person-hit-overlay {
 }
 
 /* List view: show details as normal flow, hide image */
-body.page-person-search.person-view-list .ais-Hits-item {
+body.page-person-search.person-view-list .ais-Hits-item,
+body.page-person-search.person-view-list .ais-InfiniteHits-item {
     height: auto;
     max-width: none;
     flex-basis: 100%;
@@ -790,7 +879,9 @@ body.page-person-search.person-view-list .person-hit-overlay a:visited {
 }
 
 body.page-person-search .ais-Hits-item:hover .person-hit-overlay,
-body.page-person-search .ais-Hits-item:focus-within .person-hit-overlay {
+body.page-person-search .ais-Hits-item:focus-within .person-hit-overlay,
+body.page-person-search .ais-InfiniteHits-item:hover .person-hit-overlay,
+body.page-person-search .ais-InfiniteHits-item:focus-within .person-hit-overlay {
     display: flex;
 }
 
@@ -2628,7 +2719,8 @@ select.different {
 
 
 @media screen and (max-width: 991px) {
-    body:not(.page-person-search) .ais-Hits-item {
+    body:not(.page-person-search) .ais-Hits-item,
+    body:not(.page-person-search) .ais-InfiniteHits-item {
         width: 100% !important;
     }
 
@@ -2638,16 +2730,19 @@ select.different {
 }
 
 @media screen and (max-width: 991px) {
-    body.page-person-search:not(.person-view-list) .ais-Hits {
+    body.page-person-search:not(.person-view-list) .ais-Hits,
+    body.page-person-search:not(.person-view-list) .ais-InfiniteHits {
         padding: 1.5rem;
     }
 
-    body.page-person-search:not(.person-view-list) .ais-Hits-list {
+    body.page-person-search:not(.person-view-list) .ais-Hits-list,
+    body.page-person-search:not(.person-view-list) .ais-InfiniteHits-list {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 1.25rem;
     }
 
-    body.page-person-search:not(.person-view-list) .ais-Hits-item {
+    body.page-person-search:not(.person-view-list) .ais-Hits-item,
+    body.page-person-search:not(.person-view-list) .ais-InfiniteHits-item {
         width: 100% !important;
         max-width: none;
         min-width: 0;

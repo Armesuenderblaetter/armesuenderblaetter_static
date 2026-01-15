@@ -97,11 +97,16 @@
                             <div>
                                 <div class="d-flex flex-column align-items-center" id="current-refinements"></div>
                             </div>
-                            <div id="hits"></div>
-                            <div id="pagination"></div>
+                            <div id="hits" />
+                            <div id="pagination" />
+                            <div class="search-col-right-strip" />
                         </div>
                     </div>
                 </main>
+
+                <button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">
+                    <i class="bi bi-chevron-double-up" aria-hidden="true"></i>
+                </button>
 
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/algolia-min.css"></link>
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css"></link>
