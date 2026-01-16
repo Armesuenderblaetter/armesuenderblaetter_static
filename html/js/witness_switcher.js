@@ -988,8 +988,7 @@ class WitnessSwitcher {
                     return;
                 }
 
-                addControl('ais-Pagination-item--firstPage', currentIndex > 0 ? 0 : null, '«', 'First');
-                addControl('ais-Pagination-item--previousPage', currentIndex > 0 ? currentIndex - 1 : null, '‹', 'Previous');
+                // Only page number buttons - no first/prev/next/last controls
 
                 entries.forEach((entry, idx) => {
                     if (idx < 3) console.log(`🔧 UI: Building link ${idx + 1} for entry:`, { index: entry.index, source: entry.source });
@@ -1019,8 +1018,7 @@ class WitnessSwitcher {
                     ul.appendChild(li);
                 });
 
-                addControl('ais-Pagination-item--nextPage', currentIndex < total - 1 ? currentIndex + 1 : null, '›', 'Next');
-                addControl('ais-Pagination-item--lastPage', currentIndex < total - 1 ? total - 1 : null, '»', 'Last');
+                // No next/last controls
 
                 console.log(`✅ UI: Built ${entries.length} pagination links for current witness "${this.currentWitness}"`);
                 console.log(`🔍 UI: ul.children.length after build:`, ul.children.length);

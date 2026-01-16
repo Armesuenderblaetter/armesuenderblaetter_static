@@ -6,6 +6,7 @@
     <xsl:variable name="fraktur_title" select="'Armesünderblätter Online'"/>
     <xsl:template match="/" name="nav_bar">
         <xsl:param name="site_top_variant" as="xs:string" select="'button'"/>
+        <xsl:param name="show_site_top" as="xs:boolean" select="true()"/>
 
         <header class="site-header">
             <div class="container-fluid site-header-inner">
@@ -59,6 +60,7 @@
         </div>
         <!-- <script src="https://use.edgefonts.net/unifrakturmaguntia.js" /> -->
 
+        <xsl:if test="$show_site_top">
         <section class="site-top" aria-label="Start">
             <div class="container site-top-inner">
                 <div class="site-top-grid">
@@ -96,6 +98,7 @@
                 </xsl:choose>
             </div>
         </section>
+        </xsl:if>
         <!-- script removed: offcanvas toggle behavior reverted -->
     </xsl:template>
 </xsl:stylesheet>

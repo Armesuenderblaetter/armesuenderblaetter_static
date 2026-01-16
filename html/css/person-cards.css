@@ -1,0 +1,265 @@
+/* Person Cards Styles */
+
+.person-cards-container {
+    margin-bottom: 1.5rem;
+}
+
+.person-card {
+    background: #fff;
+    border: none;
+    margin-bottom: 1rem;
+}
+
+.person-card-header {
+    background: #fff;
+    color: #212529;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.person-card-header h5 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.person-card-header .person-number {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+.person-card-body {
+    padding: 0;
+}
+
+.person-info-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.person-info-table tr {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.person-info-table tr:last-child {
+    border-bottom: none;
+}
+
+.person-info-table th {
+    background: #fff;
+    color: #495057;
+    font-weight: 600;
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    width: 40%;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    vertical-align: top;
+}
+
+.person-info-table td {
+    padding: 0.5rem 0.75rem;
+    vertical-align: top;
+    color: #212529;
+}
+
+.person-info-table td.multi-value {
+    padding: 0.35rem 0.75rem;
+}
+
+.person-info-table td ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    list-style-type: disc;
+}
+
+.person-info-table td ul li {
+    margin-bottom: 0.2rem;
+}
+
+.person-info-table td ul li:last-child {
+    margin-bottom: 0;
+}
+
+/* Links row styling */
+.person-info-table td a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.person-info-table td a:hover {
+    text-decoration: underline;
+}
+
+.person-links {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.person-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: #e9ecef;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+}
+
+.person-links a:hover {
+    background: #dee2e6;
+    text-decoration: none;
+}
+
+/* Witness metadata section */
+.witness-metadata-section {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.witness-metadata-section h4 {
+    font-size: 1rem;
+    color: #495057;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* XML link section */
+.xml-link-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Edition header styling */
+.edition-header {
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+.edition-header .pagination-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Pagination header - top right of right column */
+.edition-pagination-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+    overflow: visible;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: transparent;
+    pointer-events: none;
+}
+
+.edition-pagination-header .witness-pagination-container {
+    pointer-events: auto;
+}
+
+.edition-pagination-header .witness-pagination-container {
+    display: flex;
+    justify-content: flex-end;
+    overflow: visible;
+}
+
+.edition-pagination-header .tab-content {
+    overflow: visible;
+}
+
+.edition-pagination-header .witness-pages {
+    width: auto;
+    margin: 0;
+    overflow: visible;
+}
+
+.edition-pagination-header .witness-pagination {
+    overflow: visible;
+}
+
+.edition-pagination-header .ais-Pagination-list {
+    overflow: visible;
+}
+
+.edition-title {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* Pagination buttons styled like burger button */
+.witness-pagination .ais-Pagination-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.witness-pagination .ais-Pagination-item {
+    margin: 0;
+    display: inline-block;
+}
+
+.witness-pagination .ais-Pagination-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--asb-square-btn-size, 4.5rem);
+    height: var(--asb-square-btn-size, 4.5rem);
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    background-image: none;
+    color: var(--bs-white, #fff) !important;
+    background-color: var(--asb-background-colour-1-button, #b19983) !important;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+}
+
+.witness-pagination .ais-Pagination-link:hover,
+.witness-pagination .ais-Pagination-link:focus {
+    background-color: var(--asb-background-colour-1-button-hover, #a98f76) !important;
+    color: var(--bs-white, #fff) !important;
+    text-decoration: none;
+}
+
+.witness-pagination .ais-Pagination-link.active,
+.witness-pagination .ais-Pagination-item--selected .ais-Pagination-link {
+    background-color: var(--asb-background-colour-2-button-hover, #a08066) !important;
+    color: var(--bs-white, #fff) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .person-info-table th {
+        width: 35%;
+        font-size: 0.75rem;
+    }
+    
+    .person-info-table td {
+        font-size: 0.85rem;
+    }
+    
+    .person-card-header h5 {
+        font-size: 1rem;
+    }
+}

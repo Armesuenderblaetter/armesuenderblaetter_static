@@ -2,6 +2,81 @@
 <xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:tei="http://www.tei-c.org/ns/1.0"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="#all" version="2.0">
+    
+    <!-- Template for witness pagination - used in right column header -->
+    <xsl:template name="witness_pagination">
+        <xsl:variable name="witness_count" select="count(//tei:witness)"/>
+        <div class="witness-pagination-container">
+            <xsl:if test="$witness_count &gt;= 2">
+                <ul class="nav nav-tabs nav-tabs-sm" id="witness_pagination_tabs" role="tablist">
+                    <xsl:call-template name="primary-wit-pagination"/>
+                    <xsl:call-template name="secondary-wit-pagination"/>
+                </ul>
+            </xsl:if>
+            <div class="tab-content">
+                <xsl:for-each select="//tei:witness">
+                    <xsl:variable name="wit_id" select="@xml:id"/>
+                    <div id="{$wit_id}-pagination" role="tabpanel" aria-labelledby="#{$wit_id}-pagination-tab">
+                        <xsl:choose>
+                            <xsl:when test="$witness_count &gt;= 2">
+                                <xsl:attribute name="class">
+                                    <xsl:value-of select="'tab-pane fade'"/>
+                                </xsl:attribute>
+                                <xsl:if test="@type = 'primary'">
+                                    <xsl:attribute name="class">
+                                        <xsl:value-of select="'tab-pane fade show active'"/>
+                                    </xsl:attribute>
+                                </xsl:if>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="class">
+                                    <xsl:value-of select="'show'"/>
+                                </xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        
+                        <div class="witness-pages">
+                            <nav class="witness-pagination ais-Pagination" aria-label="Seitennavigation">
+                                <ul class="page-links ais-Pagination-list">
+                                    <!-- Pagination items are injected dynamically by witness_switcher.js -->
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </xsl:for-each>
+            </div>
+        </div>
+    </xsl:template>
+    
+    <xsl:template name="primary-wit-pagination">
+        <xsl:for-each select="//tei:witness[@type = 'primary']">
+            <xsl:variable name="p_wit_id" select="@xml:id"/>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="{$p_wit_id}-pagination-tab" data-bs-toggle="tab"
+                    data-bs-target="#{$p_wit_id}-pagination" type="button" role="tab"
+                    aria-controls="{$p_wit_id}-pagination-aria" aria-selected="true">
+                    <xsl:value-of select="$p_wit_id"/>
+                </button>
+            </li>
+        </xsl:for-each>
+    </xsl:template>
+    
+    <xsl:template name="secondary-wit-pagination">
+        <xsl:for-each select="//tei:witness[@type = 'secondary']">
+            <xsl:variable name="s_wit_id" select="@xml:id"/>
+            <xsl:if test="$s_wit_id != ''">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="{$s_wit_id}-pagination-tab" data-bs-toggle="tab"
+                        data-bs-target="#{$s_wit_id}-pagination" type="button" role="tab"
+                        aria-controls="{$s_wit_id}-pagination-aria" aria-selected="false">
+                        <xsl:value-of select="$s_wit_id"/>
+                    </button>
+                </li>
+            </xsl:if>
+        </xsl:for-each>
+    </xsl:template>
+    
+    <!-- Original witness_tabs template - kept for backward compatibility -->
     <xsl:template name="primary-wit">
         <xsl:for-each select="//tei:witness[@type = 'primary']">
             <xsl:variable name="p_wit_id">
@@ -16,6 +91,7 @@
             </li>
         </xsl:for-each>
     </xsl:template>
+    
     <xsl:template name="secondary-wit">
         <xsl:for-each select="//tei:witness[@type = 'secondary']">
             <xsl:variable name="s_wit_id">
@@ -32,19 +108,13 @@
             </xsl:if>
         </xsl:for-each>
     </xsl:template>
+    
     <xsl:template match="tei:listWit" name="witness_tabs">
         <xsl:variable name="witness_count" select="count(//tei:witness)"/>
         <xsl:if test="$witness_count &gt;= 2">
             <ul class="nav nav-tabs" id="witness_overview" role="tablist">
                 <xsl:call-template name="primary-wit"/>
                 <xsl:call-template name="secondary-wit"/>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="person_overview-tab" data-bs-toggle="tab"
-                        data-bs-target="#person_overview-tab-meta-data" type="button" role="tab"
-                        aria-controls="person_overview-tab-aria" aria-selected="false">
-                        <xsl:text>Personen</xsl:text>
-                    </button>
-                </li>
             </ul>
         </xsl:if>
         <div class="tab-content">
@@ -66,113 +136,36 @@
                             </xsl:if>
                         </xsl:when>
                         <xsl:otherwise>
-                            <!-- When there are fewer than 2 witnesses, show content without tab classes -->
                             <xsl:attribute name="class">
                                 <xsl:value-of select="'show'"/>
                             </xsl:attribute>
                         </xsl:otherwise>
                     </xsl:choose>
-                    <table>
+                    <table class="witness-info-table">
                         <tbody>
                             <tr>
-                                <td>Publikationsort: </td>
-                                <td>
-                                    <xsl:value-of select=".//tei:pubPlace/text()"/>
-                                </td>
+                                <td class="witness-label">Publikationsort:</td>
+                                <td><xsl:value-of select=".//tei:pubPlace/text()"/></td>
                             </tr>
                             <tr>
-                                <td>Drucker: </td>
-                                <td>
-                                    <!-- Only the first publisher is displayed, even if multiple <tei:publisher> elements exist. -->
-                                    <xsl:value-of select="(.//tei:publisher/text())[1]"/>
-                                </td>
+                                <td class="witness-label">Drucker:</td>
+                                <td><xsl:value-of select="(.//tei:publisher/text())[1]"/></td>
                             </tr>
                             <tr>
-                                <td>Archiv: </td>
+                                <td class="witness-label">Archiv:</td>
                                 <td>
                                     <xsl:value-of select=".//tei:msDesc//tei:institution/text()"/>
-                                    <xsl:value-of
-                                        select="concat(' (', .//tei:msDesc//tei:idno/text(), ')')"/>
+                                    <xsl:value-of select="concat(' (', .//tei:msDesc//tei:idno/text(), ')')"/>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    
-                    <!-- Add empty container for witness pages, to be filled by witness_switcher.js -->
-                    <div class="witness-pages mt-3">
-                        <!-- <span class="pagination-label">Seiten:</span> -->
-                        <nav class="witness-pagination ais-Pagination" aria-label="Seitennavigation">
-                            <ul class="page-links ais-Pagination-list">
-                                <!-- Pagination items are injected dynamically -->
-                            </ul>
-                        </nav>
-                    </div>
-                    
-                    <!-- <xsl:if test="@type = 'secondary'">
-                        <xsl:for-each select="//tei:pb[@edRef = concat('#', $wit_id)]">
-                            <xsl:variable name="facs">
-                                <xsl:value-of select="@facs"/>
-                            </xsl:variable>
-                            <xsl:variable name="facs_id">
-                                <xsl:value-of select="substring-before(@facs, '.')"/>
-                            </xsl:variable>
-                            <span data-bs-toggle="modal" data-bs-target="#full_{$facs_id}"
-                                class="image_preview">
-                                <img
-                                    src="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$facs}/full/260,/0/default.jpg"
-                                    alt="Seite des Flugblatts"/>
-                            </span>
-                        </xsl:for-each>
-                    </xsl:if> -->
+                    <!-- Pagination removed - now in right column header via witness_pagination template -->
                 </div>
             </xsl:for-each>
-            <div id="person_overview-tab-meta-data" role="tabpanel" aria-labelledby="#person_overview-tab">
-                <xsl:choose>
-                    <xsl:when test="$witness_count &gt;= 2">
-                        <xsl:attribute name="class">
-                            <xsl:value-of select="'tab-pane fade'"/>
-                        </xsl:attribute>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <!-- When there are fewer than 2 witnesses, show content without tab classes -->
-                        <xsl:attribute name="class">
-                            <xsl:value-of select="'show'"/>
-                        </xsl:attribute>
-                    </xsl:otherwise>
-                </xsl:choose>
-               <xsl:call-template name="build_persons_overview"/>
-            </div>
         </div>
     </xsl:template>
-    <xsl:template name="build_persons_overview">
-        <div class="person_overview">
-            <ul class="person_overview">
-                <xsl:for-each select="//tei:back/tei:listPerson/tei:person">
-                    <li>
-                        <a class="personview">
-                            <xsl:attribute name="href">
-                                <xsl:value-of select="concat(@xml:id, '.html')"/>
-                            </xsl:attribute>
-                            <span>
-                                <xsl:choose>
-                                    <xsl:when test="@role = 'delinquent'">
-                                        <xsl:value-of
-                                            select="concat(.//tei:persName/tei:forename, ' ', .//tei:persName/tei:surname, ' (DelinquentIn)')"
-                                        />
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:value-of
-                                            select="concat(.//tei:persName/tei:forename, ' ', .//tei:persName/tei:surname)"
-                                        />
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                            </span>
-                        </a>
-                    </li>
-                </xsl:for-each>
-            </ul>
-        </div>
-    </xsl:template>
+    
     <xsl:template name="place_fullimages">
         <xsl:for-each select="//tei:pb[@type = 'secondary']">
             <xsl:variable name="facs_id">

@@ -11,7 +11,8 @@
     <xsl:import href="./partials/aot-options.xsl"/>
     <xsl:import href="./partials/osd-container.xsl"/>
     <xsl:import href="./partials/witness_tabs.xsl"/>
-    
+    <xsl:import href="./partials/person_cards.xsl"/>
+
     <xsl:variable name="full_path">
         <xsl:value-of select="document-uri(/)"/>
     </xsl:variable>
@@ -36,7 +37,7 @@
             <xsl:value-of select="./text()"/>
         </div>
     </xsl:template>
-    
+
     <xsl:template match="/">
         <html class="h-100" lang="de">
             <head>
@@ -47,183 +48,98 @@
                     .navBarNavDropdown ul li:nth-child(2) {
                         display: none !important;
                     }</style>
-                 <link rel="stylesheet" href="css/micro-editor.css" />
-                 <link rel="stylesheet" href="css/variant-switcher.css" />   
+                <link rel="stylesheet" href="css/micro-editor.css" />
+                <link rel="stylesheet" href="css/variant-switcher.css" />
+                <link rel="stylesheet" href="css/person-cards.css" />
             </head>
-            <body class="d-flex flex-column h-100 has-site-top">
-                <xsl:call-template name="nav_bar"/>
-                <main class="flex-shrink-0 container">
-                    <div class="row title">
-                        <div class="col-md-2 col-lg-2 col-sm-2">
-                            <xsl:if test="ends-with($prev, '.html')">
-                                <h1>
-                                    <a>
-                                        <xsl:attribute name="href">
-                                            <xsl:value-of select="$prev"/>
-                                        </xsl:attribute>
-                                        <i class="bi bi-chevron-left" title="zurück"/>
-                                    </a>
-                                </h1>
-                            </xsl:if>
-                        </div>
-                        <div class="col-8 col-lg-8 col-sm-8">
-                            <h1 align="center">
+             <body class="d-flex flex-column h-100 has-site-top page-search page-person-search">
+                <xsl:call-template name="nav_bar">
+                    <xsl:with-param name="show_site_top" select="false()"/>
+                </xsl:call-template>
+                <main id="searchPage">
+                    <div id="searchContainer" class="search-container">
+                        <!-- LEFT COLUMN: Person Information -->
+                        <div class="search-col-left">
+                            <h1 class="edition-title" align="center">
                                 <xsl:value-of select="$doc_title"/>
                             </h1>
-                            <xsl:call-template name="witness_tabs"/>
-                            <h3 align="center">
-                                <a href="{$teiSource}">
-                                    <i class="bi bi-filetype-xml" title="XML/TEI"/>
+                            
+                            <!-- Person Cards -->
+                            <xsl:call-template name="person_cards"/>
+                            
+                            <!-- Witness Metadata (Archive info) -->
+                            <div class="witness-metadata-section">
+                                <h4>Quellenangaben</h4>
+                                <xsl:call-template name="witness_tabs"/>
+                            </div>
+                            
+                            <!-- XML Link -->
+                            <div class="xml-link-section" align="center">
+                                <a href="{$teiSource}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-filetype-xml" title="XML/TEI"></i> XML/TEI
                                 </a>
-                            </h3>
+                            </div>
                         </div>
-                        <div class="col-md-2 col-lg-2 col-sm-2" style="text-align:right">
-                            <xsl:if test="ends-with($next, '.html')">
-                                <h1>
-                                    <a>
-                                        <xsl:attribute name="href">
-                                            <xsl:value-of select="$next"/>
-                                        </xsl:attribute>
-                                        <i class="bi bi-chevron-right" title="weiter"/>
-                                    </a>
-                                </h1>
+                        
+                        <!-- RIGHT COLUMN: Facsimile and Edition Text -->
+                        <div class="search-col-right">
+                            <!-- Pagination in top right -->
+                            <div class="edition-pagination-header">
+                                <xsl:call-template name="witness_pagination"/>
+                            </div>
+                           
+                            <!-- Facsimile and Edition Content -->
+                            <div class="edition-content row body">
+
+                                <div id="facsimiles" class="col-6">
+                                    <xsl:call-template name="osd-container"/>
+                                </div>
+                                <div id="edition-text" class="col-6">
+                                    <xsl:apply-templates select="//tei:text/tei:*[not(local-name() = 'fs' or local-name() = 'back')]" />
+                                    <xsl:for-each select="//tei:back">
+                                        <div class="tei-back">
+                                            <xsl:apply-templates/>
+                                        </div>
+                                    </xsl:for-each>
+                                </div>
+                            </div>
+                            <xsl:if test="count(//tei:body//tei:note[not(@anchored = 'true')]) != 0">
+                                <div class="footnotes">
+                                    <xsl:for-each select="//tei:body//tei:note[not(@anchored = 'true')]">
+                                        <div class="footnote" id="{local:makeId(.)}">
+                                            <xsl:element name="a">
+                                                <xsl:attribute name="name">
+                                                    <xsl:text>fn</xsl:text>
+                                                    <xsl:number level="any" format="1" count="tei:note[not(@anchored = 'true')]" />
+                                                </xsl:attribute>
+                                                <a>
+                                                    <xsl:attribute name="href">
+                                                        <xsl:text>#fna_</xsl:text>
+                                                        <xsl:number level="any" format="1" count="tei:note[not(@anchored = 'true')]"/>
+                                                    </xsl:attribute>
+                                                    <span style="font-size:7pt;vertical-align:super; margin-right: 0.4em">
+                                                        <xsl:number level="any" format="1" count="tei:note[not(@anchored = 'true')]"/>
+                                                    </span>
+                                                </a>
+                                            </xsl:element>
+                                            <!--<xsl:apply-templates select="./tei:rdg" mode="app"/>-->
+                                            <xsl:apply-templates/>
+                                        </div>
+                                    </xsl:for-each>
+                                </div>
                             </xsl:if>
-                        </div>
-                        <!-- <div id="editor-widget">
-                                <xsl:call-template name="annotation-options"/>
-                            </div> -->
-                    </div>
-                    <div class="edition-content row body">
-                        <div id="facsimiles" class="col-6">
-                            <xsl:call-template name="osd-container"/>
-                        </div>
-                        <div id="edition-text" class="col-6">
-                            <xsl:apply-templates select="//tei:text/tei:*[not(local-name() = 'fs' or local-name() = 'back')]" />
-                            <xsl:for-each select="//tei:back">
-                                <div class="tei-back">
-                                    <xsl:apply-templates/>
-                                </div>
-                            </xsl:for-each>
+                            <xsl:call-template name="place_fullimages"/>
+                            <div class="citation" />
                         </div>
                     </div>
-                    <xsl:if test="count(//tei:body//tei:note[not(@anchored = 'true')]) != 0">
-                        <div class="footnotes">
-                            <xsl:for-each select="//tei:body//tei:note[not(@anchored = 'true')]">
-                                <div class="footnote" id="{local:makeId(.)}">
-                                    <xsl:element name="a">
-                                        <xsl:attribute name="name">
-                                            <xsl:text>fn</xsl:text>
-                                            <xsl:number level="any" format="1" count="tei:note[not(@anchored = 'true')]" />
-                                        </xsl:attribute>
-                                        <a>
-                                            <xsl:attribute name="href">
-                                                <xsl:text>#fna_</xsl:text>
-                                                <xsl:number level="any" format="1" count="tei:note[not(@anchored = 'true')]"/>
-                                            </xsl:attribute>
-                                            <span style="font-size:7pt;vertical-align:super; margin-right: 0.4em">
-                                                <xsl:number level="any" format="1" count="tei:note[not(@anchored = 'true')]"/>
-                                            </span>
-                                        </a>
-                                    </xsl:element>
-                                    <!--<xsl:apply-templates select="./tei:rdg" mode="app"/>-->
-                                    <xsl:apply-templates/>
-                                </div>
-                            </xsl:for-each>
-                        </div>
-                    </xsl:if>
-                    <!-- <xsl:if test="count(//tei:app) != 0">
-                        <div class="variants">
-                            <xsl:for-each select="//tei:app | //tei:pb[@type = 'secondary' and not(preceding-sibling::*[1][self::tei:pb and @type = 'primary']) and not(following-sibling::*[1][self::tei:pb and @type = 'primary']) and not(ancestor::tei:app)]">
-                                <xsl:variable name="num">
-                                    <xsl:number level="any"/>
-                                </xsl:variable>
-                                <xsl:variable name="is_pb_var">
-                                    <xsl:value-of select="self::tei:pb"/>
-                                </xsl:variable>
-                                <xsl:if test="$is_pb_var or self::tei:app">
-                                    <xsl:variable name="app_id">
-                                        <xsl:choose>
-                                            <xsl:when test="self::tei:app">
-                                                <xsl:value-of select="concat('app_', $num)"/>
-                                            </xsl:when>
-                                            <xsl:when test="$is_pb_var">
-                                                <xsl:value-of select="concat('app_pb_', $num)"/>
-                                            </xsl:when>
-                                        </xsl:choose>
-                                    </xsl:variable>
-                                    <xsl:variable name="var_id">
-                                        <xsl:choose>
-                                            <xsl:when test="self::tei:app">
-                                                <xsl:value-of select="concat('var_', $num)"/>
-                                            </xsl:when>
-                                            <xsl:when test="$is_pb_var">
-                                                <xsl:value-of select="concat('var_pb_', $num)"/>
-                                            </xsl:when>
-                                        </xsl:choose>
-                                    </xsl:variable>
-                                    <p class="app" id="{$app_id}">
-                                        <a href="#{$var_id}">
-                                            <span class="lemma">
-                                                <xsl:choose>
-                                                    <xsl:when test="./tei:lem">
-                                                        <xsl:apply-templates select="./tei:lem" mode="app" />
-                                                    </xsl:when>
-                                                    <xsl:otherwise>
-                                                        <xsl:text> ] </xsl:text>
-                                                    </xsl:otherwise>
-                                                </xsl:choose>
-                                            </span>
-                                        </a>
-                                        <xsl:choose>
-                                            <xsl:when test="self::tei:pb">
-                                                <xsl:variable name="witname">
-                                                    <xsl:value-of select="substring-after(@edRef, '#')"/>
-                                                </xsl:variable>
-                                                <span class="editor_comment">
-                                                    <a href="#witness_overview">
-                                                        <xsl:value-of select="$witname"/>
-                                                        <xsl:text>: </xsl:text>
-                                                    </a>
-                                                    <xsl:variable name="image_name">
-                                                        <xsl:value-of select="@facs"/>
-                                                    </xsl:variable>
-                                                    <a href="https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/{$image_name}/full/max/0/default.jpg">
-                                                        <span class="editor_comment">
-                                                            <xsl:text>Seitenwechsel</xsl:text>
-                                                        </span>
-                                                    </a>
-                                                </span>
-                                            </xsl:when>
-                                            <xsl:when test="count(./tei:rdg) = 0">
-                                                <xsl:variable name="witname">
-                                                    <xsl:value-of select="substring-after(./tei:lem/@wit, '#')"/>
-                                                </xsl:variable>
-                                                <span class="editor_comment">
-                                                    <xsl:text>nur in </xsl:text>
-                                                    <a href="#witness_overview">
-                                                        <xsl:value-of select="$witname"/>
-                                                    </a>
-                                                </span>
-                                            </xsl:when>
-                                            <xsl:otherwise>
-                                                <xsl:apply-templates select="./tei:rdg" mode="app" />
-                                            </xsl:otherwise>
-                                        </xsl:choose>
-                                    </p>
-                                </xsl:if>
-                            </xsl:for-each>
-                        </div>
-                    </xsl:if> -->
-                <xsl:call-template name="place_fullimages"/>
-                <div class="citation" />
-            </main>
-            <xsl:call-template name="html_footer"/>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"/>
-            <script type="text/javascript" src="js/osd_scroll.js"/>
-            <script type="text/javascript" src="js/witness_switcher.js"/>
-            <script src="https://unpkg.com/de-micro-editor@0.3.4/dist/de-editor.min.js"/>
-            <script type="text/javascript" src="js/run.js"/>
-        </body>
-    </html>
-</xsl:template>
+                </main>
+                <xsl:call-template name="html_footer"/>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"/>
+                <script type="text/javascript" src="js/osd_scroll.js"/>
+                <script type="text/javascript" src="js/witness_switcher.js"/>
+                <script src="https://unpkg.com/de-micro-editor@0.3.4/dist/de-editor.min.js"/>
+                <script type="text/javascript" src="js/run.js"/>
+            </body>
+        </html>
+    </xsl:template>
 </xsl:stylesheet>
