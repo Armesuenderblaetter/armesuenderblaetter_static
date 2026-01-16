@@ -79,6 +79,7 @@
                                     <i class="bi bi-filetype-xml" title="XML/TEI"></i> XML/TEI
                                 </a>
                             </div>
+                            <div class="citation" />
                         </div>
                         
                         <!-- RIGHT COLUMN: Facsimile and Edition Text -->
@@ -128,8 +129,15 @@
                                     </xsl:for-each>
                                 </div>
                             </xsl:if>
-                            <xsl:call-template name="place_fullimages"/>
-                            <div class="citation" />
+                            <xsl:call-template name="place_fullimages"/>       
+                            
+                            <!-- Back to overview button - bottom right -->
+                            <div class="back-to-overview">
+                                <span class="back-to-overview-label">ZUR ÜBERSICHT</span>
+                                <a href="toc.html" class="site-button back-to-overview-btn" aria-label="Zur Übersicht">
+                                    <i class="bi bi-chevron-double-left" aria-hidden="true"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </main>

@@ -248,6 +248,31 @@
     color: var(--bs-white, #fff) !important;
 }
 
+/* Back to overview button - bottom right of search-col-right */
+.back-to-overview {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.back-to-overview-btn {
+    text-decoration: none;
+    order: 2;
+}
+
+.back-to-overview-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--asb-background-colour-1-button, #b19983);
+    text-transform: uppercase;
+    padding-right: 0.5rem;
+    order: 1;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .person-info-table th {
