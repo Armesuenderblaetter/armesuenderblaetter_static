@@ -521,14 +521,13 @@ search.start();
 (function initScrollToTop() {
   const scrollBtn = document.getElementById("scrollToTopBtn");
   const siteTopInner = document.querySelector(".site-top-inner");
-  const footer = document.querySelector("footer");
   const main = document.querySelector("main");
   if (!scrollBtn || !siteTopInner) return;
 
-  // Make main position relative so button can be absolute within it
-  if (main) {
-    main.style.position = "relative";
-  }
+  // Keep the button fixed, but dynamically align it to the visible `main`
+  // and lift it above the footer when the footer scrolls into view.
+  const baseBottom = 0;
+  const baseRight = 0;
 
   // Use IntersectionObserver to detect when site-top-inner is out of view
   const topObserver = new IntersectionObserver(
@@ -543,45 +542,30 @@ search.start();
 
   topObserver.observe(siteTopInner);
 
-  // Observe footer to move button above it when footer is visible
-  if (footer && main) {
-    const footerObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // Footer is visible - position button absolutely within main
-            scrollBtn.classList.add("above-footer");
-            // Calculate position: main's bottom minus footer overlap
-            const mainRect = main.getBoundingClientRect();
-            const footerRect = footer.getBoundingClientRect();
-            const overlap = mainRect.bottom - footerRect.top;
-            if (overlap > 0) {
-              scrollBtn.style.bottom = (overlap + 32) + "px"; // 32px = 2rem
-            }
-          } else {
-            // Footer not visible - use fixed positioning
-            scrollBtn.classList.remove("above-footer");
-            scrollBtn.style.bottom = "";
-          }
-        });
-      },
-      { threshold: 0 }
-    );
+  function updateScrollButtonPosition() {
+    // Align horizontally with the visible main column (bottom-right of main).
+    if (main) {
+      const mainRect = main.getBoundingClientRect();
+      const rightOffset = Math.max(baseRight, window.innerWidth - mainRect.right + baseRight);
+      scrollBtn.style.right = `${rightOffset}px`;
 
-    footerObserver.observe(footer);
+      // Keep vertically within the visible main frame: when `main` ends and the
+      // footer starts scrolling in, `mainRect.bottom` moves above the viewport
+      // bottom. We increase `bottom` by that gap so the button lifts up and
+      // stays inside `main` instead of overlapping the footer.
+      const gapBelowMain = Math.max(0, window.innerHeight - mainRect.bottom);
+      scrollBtn.style.bottom = `${baseBottom + gapBelowMain}px`;
+      return;
+    }
 
-    // Also update on scroll for smoother tracking
-    window.addEventListener("scroll", () => {
-      if (scrollBtn.classList.contains("above-footer")) {
-        const mainRect = main.getBoundingClientRect();
-        const footerRect = footer.getBoundingClientRect();
-        const overlap = mainRect.bottom - footerRect.top;
-        if (overlap > 0) {
-          scrollBtn.style.bottom = (overlap + 32) + "px";
-        }
-      }
-    }, { passive: true });
+    // Fallback if `main` isn't found
+    scrollBtn.style.right = `${baseRight}px`;
+    scrollBtn.style.bottom = `${baseBottom}px`;
   }
+
+  updateScrollButtonPosition();
+  window.addEventListener("scroll", updateScrollButtonPosition, { passive: true });
+  window.addEventListener("resize", updateScrollButtonPosition, { passive: true });
 
   // Scroll to top on click
   scrollBtn.addEventListener("click", () => {

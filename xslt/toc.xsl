@@ -100,13 +100,15 @@
                             <div id="hits" />
                             <div id="pagination" />
                             <div class="search-col-right-strip" />
-                        </div>
-                    </div>
-                </main>
-
-                <button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">
+                             <button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">
                     <i class="bi bi-chevron-double-up" aria-hidden="true"></i>
                 </button>
+                        </div>
+                    </div>
+                     
+                </main>
+
+               
 
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/algolia-min.css"></link>
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css"></link>

@@ -727,12 +727,12 @@ body.page-person-search #pagination .load-more-btn .bi {
 /* Scroll to top button */
 .scroll-to-top {
     position: fixed;
-    bottom: 2rem;
-    right: 2rem;
+    bottom: 0;
+    right: 0;
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease, bottom 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     background-color: var(--asb-background-colour-2-button) !important;
 }
 
