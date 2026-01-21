@@ -58,15 +58,18 @@
         <div class="person-card">
             <!-- Person Name Header -->
             <div class="person-card-header">
-                <h3 class="person-name">
-                    <xsl:value-of select="upper-case(concat($person/tei:persName/tei:forename, ' ', $person/tei:persName/tei:surname))"/>
-                </h3>
                 <span class="person-badge">PERSON <xsl:value-of select="$index"/></span>
             </div>
             
             <div class="person-card-body">
                 <table class="person-info-table">
                     <tbody>
+                        <tr>
+                         <td class="info-label">NAME:</td>
+                        <td class="info-value">
+                        <xsl:value-of select="concat($person/tei:persName/tei:forename, ' ', $person/tei:persName/tei:surname)"/>
+                        </td>
+                        </tr>
                         <!-- Age -->
                         <tr>
                             <td class="info-label">ALTER:</td>
