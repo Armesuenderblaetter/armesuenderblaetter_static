@@ -138,6 +138,30 @@
     border-top: 1px solid #dee2e6;
 }
 
+/* XML links as pill buttons (override any bootstrap-ish defaults) */
+.xml-link-section a.site-top-project-button,
+.person-links a.xml-link.site-top-project-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    border-radius: 9999px;
+    text-decoration: none;
+    border: 0 !important;
+}
+
+.xml-link-section a.site-top-project-button {
+    padding: 0.35rem 0.9rem;
+    font-size: 0.9rem;
+    line-height: 1.1;
+}
+
+.person-links a.xml-link.site-top-project-button {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.8rem;
+    line-height: 1.1;
+}
+
 /* Edition header styling */
 .edition-header {
     border-bottom: 1px solid #dee2e6;
@@ -173,6 +197,12 @@
     display: flex;
     justify-content: flex-end;
     overflow: visible;
+}
+
+/* Do not show witness selector tabs in the pagination header.
+   The witness is selected via the left-column witness metadata tabs. */
+.edition-pagination-header #witness_pagination_tabs {
+    display: none !important;
 }
 
 .edition-pagination-header .tab-content {

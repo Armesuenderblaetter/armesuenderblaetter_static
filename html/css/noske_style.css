@@ -1,27 +1,155 @@
-/* noske table */
+/* ===========================================
+   NOSKE SEARCH PAGE STYLES
+   Matches the visual language of toc.html and edition pages
+   =========================================== */
 
-h1 {
-    padding-bottom: 1rem;
+/* Left column styling for noske search */
+body.page-noske-search .search-col-left {
+    background-color: white;
+    padding: 1rem;
 }
 
+.noske-left-header {
+    min-height: var(--asb-square-btn-size);
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    position: relative;
+}
+
+.noske-left-header::after {
+    content: "";
+    position: absolute;
+    left: -1rem;
+    right: -1rem;
+    bottom: 0;
+    height: 1px;
+    background-color: var(--asb-background-colour-0);
+}
+
+.noske-title {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--asb-link-colour);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.noske-left-section {
+    padding: 1.5rem 1rem 1rem;
+    position: relative;
+}
+
+.noske-left-section::after {
+    content: "";
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0;
+    height: 1px;
+    background-color: var(--asb-background-colour-0);
+}
+
+.noske-left-section:last-of-type::after {
+    content: none;
+}
+
+.noske-left-heading {
+    margin: 0 0 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 1.1rem;
+    color: var(--asb-link-colour);
+}
+
+/* Search input styling */
+#noske-search {
+    margin-bottom: 1rem;
+}
+
+#custom-noske-input input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    font-size: 1rem;
+    background-color: var(--bs-white);
+}
+
+#custom-noske-input input:focus {
+    outline: none;
+    border-color: var(--asb-link-colour);
+}
+
+.noske-stats {
+    font-size: 0.9rem;
+    color: var(--asb-link-colour);
+    padding: 0.5rem 0;
+}
+
+/* Crystal link styling */
+.noske-crystal-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: var(--asb-background-colour-2-button);
+    color: var(--bs-white) !important;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.noske-crystal-link:hover {
+    background-color: var(--asb-background-colour-1-button-hover);
+}
+
+/* Info button styling */
+.noske-info-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--asb-background-colour-1-button);
+    color: var(--bs-white);
+    border: none;
+    border-radius: 9999px;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.noske-info-btn:hover {
+    background-color: var(--asb-background-colour-1-button-hover);
+}
+
+/* Results area */
+.noske-results-area {
+    padding: 2rem;
+    min-height: 400px;
+}
+
+/* noske table */
 .noske-hits-table {
-    background-color: aliceblue;
-    margin-top: 3rem;
+    background-color: var(--asb-background-colour-0);
+    margin-top: 1rem;
     margin-bottom: 1rem;
     width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
-.noske-hits-head th{
+.noske-hits-head th {
     text-align: center;
-    padding: .5rem;
-    background-color: darkgrey;
+    padding: 0.75rem;
+    background-color: var(--asb-background-colour-3);
     color: white;
-    /* border-bottom: solid black 2px;
-    border-right: solid black 2px; */
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 0.9rem;
 }
 
 .noske-hits-td {
-    padding-left: 1rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--asb-background-colour-1);
 }
 
 .noske-hits-td:first-child {
@@ -34,7 +162,7 @@ h1 {
     padding-right: 1rem;
 }
 
-.noske-search-div{
+.noske-search-div {
     padding-bottom: 0.5rem;
     padding-top: 0.5rem;
 }
@@ -52,18 +180,27 @@ h1 {
 }
 
 .noske-hits-table tr:last-child td {
-    padding-bottom: 2rem;   
+    padding-bottom: 1rem;
+}
+
+.noske-hits-table tr:hover td {
+    background-color: var(--asb-background-colour-1);
 }
 
 .noske-hits-kwic a {
     font-weight: bold;
-    text-shadow: 0px 0px 0.5rem  rgb(50, 159, 255);
-    color: black;
+    color: var(--asb-link-colour) !important;
     text-decoration: none;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    background-color: rgba(192, 172, 154, 0.3);
+}
+
+.noske-hits-kwic a:hover {
+    background-color: var(--asb-background-colour-2);
 }
 
 /* pagination */
-
 #noske-pagination {
     display: flex;
     align-items: end;
@@ -109,4 +246,68 @@ h1 {
 
 .tabulator-pages {
     margin: 0 0.2rem;
+}
+
+/* Modal styling to match site */
+.noske-modal {
+    z-index: 10000;
+}
+
+.noske-modal-content {
+    background-color: var(--asb-background-colour-0);
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    max-width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.noske-modal-content h2 {
+    color: var(--asb-link-colour);
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+}
+
+.noske-modal-content h3 {
+    color: var(--asb-background-colour-3);
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.noske-modal-content .section {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 6px;
+}
+
+.noske-modal-content code {
+    background-color: var(--asb-background-colour-1);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.noske-modal-content ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.noske-modal-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+.noske-modal-content .close {
+    color: var(--asb-link-colour);
+    font-size: 2rem;
+    font-weight: normal;
+}
+
+.noske-modal-content .close:hover {
+    color: var(--asb-background-colour-3);
 }

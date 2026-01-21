@@ -11,13 +11,14 @@
     <xsl:import href="./partials/html_navbar.xsl"/>
     <xsl:import href="./partials/html_head.xsl"/>
     <xsl:import href="partials/html_footer.xsl"/>
-
+     <xsl:import href="partials/shared.xsl"/>
 
     <xsl:template match="/">
         <xsl:variable name="doc_title" select="'Impressum'"/>
 
 
         <html class="h-100" lang="de">
+             <xsl:variable name="is_about" as="xs:boolean" select="ends-with(base-uri(/), '/imprint.xml')"/>
 
             <head>
                 <xsl:call-template name="html_head">
@@ -26,7 +27,9 @@
             </head>
 
             <body class="d-flex flex-column h-100 has-site-top">
-                <xsl:call-template name="nav_bar"/>
+                 <xsl:call-template name="nav_bar">
+                    <xsl:with-param name="site_top_variant" select="if ($is_about) then 'image' else 'button'"/>
+                </xsl:call-template>
                 <main class="flex-shrink-0">
                     <div class="container body">
                         <xsl:apply-templates select="/*/*"/>

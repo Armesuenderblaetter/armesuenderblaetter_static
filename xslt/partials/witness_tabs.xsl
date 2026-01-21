@@ -83,7 +83,7 @@
                 <xsl:value-of select="@xml:id"/>
             </xsl:variable>
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="{$p_wit_id}-tab" data-bs-toggle="tab"
+                <button class="nav-link active bgc site-top-project-button" id="{$p_wit_id}-tab" data-bs-toggle="tab"
                     data-bs-target="#{$p_wit_id}-meta-data" type="button" role="tab"
                     aria-controls="{$p_wit_id}-aria" aria-selected="true"> Textzeuge <xsl:value-of
                         select="$p_wit_id"/>
@@ -99,7 +99,7 @@
             </xsl:variable>
             <xsl:if test="$s_wit_id != ''">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="{$s_wit_id}-tab" data-bs-toggle="tab"
+                    <button class="nav-link bgc site-top-project-button" id="{$s_wit_id}-tab" data-bs-toggle="tab"
                         data-bs-target="#{$s_wit_id}-meta-data" type="button" role="tab"
                         aria-controls="{$s_wit_id}-aria" aria-selected="false"> Textzeuge
                             <xsl:value-of select="$s_wit_id"/>

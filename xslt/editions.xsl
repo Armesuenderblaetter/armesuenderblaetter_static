@@ -75,7 +75,7 @@
                             
                             <!-- XML Link -->
                             <div class="xml-link-section" align="center">
-                                <a href="{$teiSource}" class="btn btn-outline-secondary btn-sm">
+                                <a href="{$teiSource}" class="bgc site-top-project-button xml-tei-link" title="XML/TEI">
                                     <i class="bi bi-filetype-xml" title="XML/TEI"></i> XML/TEI
                                 </a>
                             </div>

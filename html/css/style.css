@@ -437,6 +437,20 @@ body.landing .landing-offcanvas .offcanvas-body::-webkit-scrollbar {
     text-decoration: none;
 }
 
+/* Allow .site-top-project-button to be used on <button> elements too (e.g. witness tabs)
+   without relying on .section-button for colors. */
+.site-top-project-button {
+    background-color: var(--button-bg, var(--asb-background-colour-1-button)) !important;
+    color: var(--bs-white) !important;
+    border: 0 !important;
+}
+
+.site-top-project-button:hover,
+.site-top-project-button:focus {
+    background-color: var(--button-bg-hover, var(--asb-background-colour-1-button-hover)) !important;
+    color: var(--bs-white) !important;
+}
+
 
 
 
@@ -2486,6 +2500,10 @@ dd {
     padding: .2rem 0rem 1rem 10rem;
 }
 
+.edition-title {
+    color: var(--asb-background-colour-2-button);
+text-transform: uppercase;
+}
 
 
 /* Override dropdown-item styles for disabled annotation-sliders */

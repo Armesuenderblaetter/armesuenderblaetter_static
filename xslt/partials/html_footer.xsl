@@ -8,8 +8,7 @@
                     <div class="row">
                         <div class="col-3 text-left">
                             <div class="footer-1">
-                                LTW – LITERATUR- UND TEXZTWISSENSCHAFT<br/>
-                                ÖSTERREICHISCHE AKADEMIE DER WISSENSCHAFTEN
+                                LP – LITERATURWISSENSCHAFT &amp; PRINTKULTURFORSCHUNG<br/>
                             </div>
                             <div class="footer-2">Bäckerstraße 13<br/>
                             1010 Wien
@@ -39,7 +38,7 @@
                     </div>
                 </div>
             </div>
-            <div class="footer-imprint-bar hide-reading" id="wrapper-footer-secondary" style="text-align:center; padding:0.4rem 0; font-size: x-small;"> © 2025 ÖAW | <a href="imprint.html">Impressum</a> |                <a href="{$github_url}">
+            <div class="footer-imprint-bar hide-reading" id="wrapper-footer-secondary" style="text-align:center; padding:0.4rem 0; font-size: x-small;"> © 2026 ÖAW | <a href="imprint.html">Impressum</a> |                <a href="{$github_url}">
                     <i class="bi bi-github" title="GitHub" alt="GitHub" aria-hidden="true" />
                     <span class="visually-hidden">GitHub</span>
                 </a>
