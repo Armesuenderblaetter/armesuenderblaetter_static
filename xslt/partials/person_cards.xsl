@@ -245,18 +245,7 @@
                     </tbody>
                 </table>
                 
-                <!-- Links -->
-                <div class="person-links">
-                    <span class="link-label">LINKS:</span>
-                    <a href="{replace($current_filename, '.xml', '.xml')}" class="xml-link" title="XML-Version">
-                        <i class="bi bi-filetype-xml"></i> XML-Version
-                    </a>
-                    <xsl:if test="$person/@xml:id">
-                        <a href="{concat($person/@xml:id, '.html')}" class="person-detail-link" title="Personendetails">
-                            <i class="bi bi-person"></i> Personendetails
-                        </a>
-                    </xsl:if>
-                </div>
+                <!-- Links removed (redundant in edition view) -->
             </div>
         </div>
         
@@ -284,11 +273,7 @@
             </div>
             
             <div class="person-card-body">
-                <div class="person-links">
-                    <a href="{concat($person/@xml:id, '.html')}" class="person-detail-link" title="Personendetails">
-                        <i class="bi bi-person"></i> Zur Personenseite
-                    </a>
-                </div>
+                <!-- Links removed (redundant in edition view) -->
             </div>
         </div>
         

@@ -748,22 +748,33 @@ class WitnessSwitcher {
         
         console.log(`🔄 UI: Rebuilding pagination links for current witness "${this.currentWitness}"`);
         
-        // Find the pagination container (witness-specific first, then global fallback)
+        // Find the pagination container (prefer right-column pagination panes if present)
         let witnessPages = null;
         
-        // Try witness-specific container first
-        const tabContent = document.getElementById(`${this.currentWitness}-meta-data`);
-        if (tabContent) {
-            witnessPages = tabContent.querySelector('.witness-pages');
-            console.log('🔍 UI: Found existing .witness-pages in tab:', witnessPages);
-            console.log('🔍 UI: Existing content:', witnessPages ? witnessPages.innerHTML : 'N/A');
-            // If the witness tab exists but has no pagination container, create it there
-            if (!witnessPages) {
-                try {
-                    witnessPages = document.createElement('div');
-                    witnessPages.className = 'witness-pages mt-3';
-                    tabContent.appendChild(witnessPages);
-                } catch(_) {}
+        // Try witness-specific PAGINATION container first (in right column)
+        const paginationContainer = document.getElementById(`${this.currentWitness}-pagination`);
+        const hasDedicatedPaginationArea = !!paginationContainer || !!document.querySelector('.edition-pagination-header');
+        if (paginationContainer) {
+            witnessPages = paginationContainer.querySelector('.witness-pages');
+            console.log('🔍 UI: Found existing .witness-pages in pagination container:', witnessPages);
+        }
+        
+        // Fallback to meta-data container ONLY when there is no dedicated pagination area.
+        // Otherwise we end up injecting page-links into the left column witness meta-data tabs.
+        if (!witnessPages && !hasDedicatedPaginationArea) {
+            const tabContent = document.getElementById(`${this.currentWitness}-meta-data`);
+            if (tabContent) {
+                witnessPages = tabContent.querySelector('.witness-pages');
+                console.log('🔍 UI: Found existing .witness-pages in meta-data tab:', witnessPages);
+                console.log('🔍 UI: Existing content:', witnessPages ? witnessPages.innerHTML : 'N/A');
+                // If the witness tab exists but has no pagination container, create it there
+                if (!witnessPages) {
+                    try {
+                        witnessPages = document.createElement('div');
+                        witnessPages.className = 'witness-pages mt-3';
+                        tabContent.appendChild(witnessPages);
+                    } catch(_) {}
+                }
             }
         }
         
@@ -1080,8 +1091,13 @@ class WitnessSwitcher {
 
     updatePaginationActiveState(witness, pageIndex) {
         try {
-            // Try witness-specific container first
-            let container = document.querySelector(`#${witness}-meta-data .witness-pages`);
+            // Try witness-specific PAGINATION container first (right column)
+            let container = document.querySelector(`#${witness}-pagination .witness-pages`);
+            
+            // Fallback to meta-data container
+            if (!container) {
+                container = document.querySelector(`#${witness}-meta-data .witness-pages`);
+            }
             
             // If not found, use global .witness-pages for single witness documents
             if (!container) {
@@ -1533,21 +1549,70 @@ class WitnessSwitcher {
      */
     updateTabStates(witness) {
         try {
-            // Remove active class from all tabs
-            document.querySelectorAll('.nav-link').forEach(tab => tab.classList.remove('active'));
-            // Hide all tab panes
-            document.querySelectorAll('.tab-pane').forEach(pane => {
-                pane.classList.remove('show', 'active');
-            });
-            // Add active class to the current witness tab
-            const activeTab = document.getElementById(`${witness}-tab`);
-            if (activeTab) {
-                activeTab.classList.add('active');
+            // IMPORTANT: Scope tab state updates. Do not touch unrelated tabs/panes.
+
+            // --- Left column: witness meta-data tabs ---
+            const metaTabs = document.getElementById('witness_overview');
+            if (metaTabs) {
+                metaTabs.querySelectorAll('.nav-link').forEach(tab => {
+                    tab.classList.remove('active');
+                    try {
+                        tab.setAttribute('aria-selected', 'false');
+                        tab.setAttribute('tabindex', '-1');
+                    } catch (_) {}
+                });
+
+                const metaSection = metaTabs.closest('.witness-metadata-section');
+                const metaContent = metaSection ? metaSection.querySelector('.tab-content') : null;
+                if (metaContent) {
+                    metaContent.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('show', 'active'));
+                }
+
+                const activeMetaTab = document.getElementById(`${witness}-tab`);
+                if (activeMetaTab) {
+                    activeMetaTab.classList.add('active');
+                    try {
+                        activeMetaTab.setAttribute('aria-selected', 'true');
+                        activeMetaTab.removeAttribute('tabindex');
+                    } catch (_) {}
+                }
+
+                const activeMetaPane = document.getElementById(`${witness}-meta-data`);
+                if (activeMetaPane) {
+                    activeMetaPane.classList.add('show', 'active');
+                }
             }
-            // Show the corresponding tab pane
-            const activePane = document.getElementById(`${witness}-meta-data`);
-            if (activePane) {
-                activePane.classList.add('show', 'active');
+
+            // --- Right column: witness pagination tabs (if present) ---
+            const paginationTabs = document.getElementById('witness_pagination_tabs');
+            if (paginationTabs) {
+                paginationTabs.querySelectorAll('.nav-link').forEach(tab => {
+                    tab.classList.remove('active');
+                    try {
+                        tab.setAttribute('aria-selected', 'false');
+                        tab.setAttribute('tabindex', '-1');
+                    } catch (_) {}
+                });
+
+                const paginationContainer = paginationTabs.closest('.witness-pagination-container');
+                const paginationContent = paginationContainer ? paginationContainer.querySelector('.tab-content') : null;
+                if (paginationContent) {
+                    paginationContent.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('show', 'active'));
+                }
+
+                const activePaginationTab = document.getElementById(`${witness}-pagination-tab`);
+                if (activePaginationTab) {
+                    activePaginationTab.classList.add('active');
+                    try {
+                        activePaginationTab.setAttribute('aria-selected', 'true');
+                        activePaginationTab.removeAttribute('tabindex');
+                    } catch (_) {}
+                }
+
+                const activePaginationPane = document.getElementById(`${witness}-pagination`);
+                if (activePaginationPane) {
+                    activePaginationPane.classList.add('show', 'active');
+                }
             }
         } catch (e) {
             console.error('❌ Error updating tab states:', e);
@@ -2042,8 +2107,12 @@ document.addEventListener('DOMContentLoaded', function() {
 //         console.error('❌ Error setting up witness available set:', e);
     }
     
-    // Find all witness tab buttons (excluding persons tab)
-    const witnessTabs = document.querySelectorAll('.nav-tabs button[data-bs-toggle="tab"][id$="-tab"]');
+    // Find witness *metadata* tab buttons (left column) only.
+    // IMPORTANT: do not match pagination tabs (right column) like "wmW-pagination-tab",
+    // otherwise we break Bootstrap's tab switching and pagination visibility.
+    const witnessTabs = document.querySelectorAll(
+        '#witness_overview button[data-bs-toggle="tab"][data-bs-target$="-meta-data"][id$="-tab"]'
+    );
     const validWitnessTabs = Array.from(witnessTabs).filter(tab => !tab.id.startsWith('persons-'));
 //     console.log(`Found ${validWitnessTabs.length} witness tabs`);
     
@@ -2136,7 +2205,9 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function refreshWitnessTabs() {
     // Re-initialize the click handlers after DOM changes
-    const witnessTabs = document.querySelectorAll('.nav-tabs button[data-bs-toggle="tab"][id$="-tab"]');
+    const witnessTabs = document.querySelectorAll(
+        '#witness_overview button[data-bs-toggle="tab"][data-bs-target$="-meta-data"][id$="-tab"]'
+    );
 //     console.log(`Refreshing handlers for ${witnessTabs.length} witness tabs`);
     
     // Remove any existing click listeners first
