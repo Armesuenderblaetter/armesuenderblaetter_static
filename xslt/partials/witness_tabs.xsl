@@ -118,6 +118,10 @@
             </ul>
         </xsl:if>
         <div class="tab-content">
+        
+            <div class="person-card-header">
+                <span class="person-badge">QUELLENANGABEN</span>
+            </div>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/algolia-min.css" />
             <xsl:for-each select="//tei:witness">
                 <xsl:variable name="wit_id">
@@ -141,19 +145,44 @@
                             </xsl:attribute>
                         </xsl:otherwise>
                     </xsl:choose>
-                    <table class="witness-info-table">
+                    <table class="person-info-table witness-info-table">
                         <tbody>
                             <tr>
-                                <td class="witness-label">Publikationsort:</td>
-                                <td><xsl:value-of select=".//tei:pubPlace/text()"/></td>
+                                <td class="info-label">Jahr:</td>
+                                <td class="info-value">
+                                    <xsl:variable name="date_when" select="string((.//tei:date[@when][1]/@when)[1])"/>
+                                    <xsl:variable name="date_text" select="normalize-space(string((.//tei:date[1])[1]))"/>
+                                    <xsl:variable name="doc_xml_id" select="string((root(.)/*[1]/@xml:id)[1])"/>
+                                    <xsl:variable name="presumed" select="if (matches($doc_xml_id, '^fb_\d{4}')) then replace($doc_xml_id, '^fb_(\d{4}).*$', '$1') else ''"/>
+                                    <xsl:choose>
+                                        <xsl:when test="$date_when != ''">
+                                            <xsl:value-of select="substring($date_when, 1, 4)"/>
+                                        </xsl:when>
+                                        <xsl:when test="$date_text != '' and not(matches(lower-case($date_text), '^k\.\s*a\.?$'))">
+                                            <xsl:value-of select="$date_text"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:choose>
+                                                <xsl:when test="$presumed != ''">
+                                                    <xsl:value-of select="concat('[', $presumed, ']')"/>
+                                                </xsl:when>
+                                                <xsl:otherwise>k. A.</xsl:otherwise>
+                                            </xsl:choose>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </td>
                             </tr>
                             <tr>
-                                <td class="witness-label">Drucker:</td>
-                                <td><xsl:value-of select="(.//tei:publisher/text())[1]"/></td>
+                                <td class="info-label">Ort:</td>
+                                <td class="info-value"><xsl:value-of select=".//tei:pubPlace/text()"/></td>
                             </tr>
                             <tr>
-                                <td class="witness-label">Archiv:</td>
-                                <td>
+                                <td class="info-label">Drucker:</td>
+                                <td class="info-value"><xsl:value-of select="(.//tei:publisher/text())[1]"/></td>
+                            </tr>
+                            <tr>
+                                <td class="info-label">Archiv:</td>
+                                <td class="info-value">
                                     <xsl:value-of select=".//tei:msDesc//tei:institution/text()"/>
                                     <xsl:value-of select="concat(' (', .//tei:msDesc//tei:idno/text(), ')')"/>
                                 </td>

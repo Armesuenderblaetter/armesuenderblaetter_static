@@ -68,6 +68,22 @@
     color: #212529;
 }
 
+/* The markup uses <td class="info-label"> / <td class="info-value"> (not <th>),
+   so apply the same visual treatment to label cells. */
+.person-info-table td.info-label {
+    background: #fff;
+    color: #495057;
+    font-weight: 600;
+    text-align: left;
+    width: 40%;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.person-info-table td.info-value {
+    width: 60%;
+}
+
 .person-info-table td.multi-value {
     padding: 0.35rem 0.75rem;
 }

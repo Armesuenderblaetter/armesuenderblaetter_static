@@ -64,14 +64,14 @@
                                 <xsl:value-of select="$doc_title"/>
                             </h1>
                             
-                            <!-- Person Cards -->
-                            <xsl:call-template name="person_cards"/>
-                            
                             <!-- Witness Metadata (Archive info) -->
                             <div class="witness-metadata-section">
-                                <h4>Quellenangaben</h4>
+                                <!-- <h4>Quellenangaben</h4> -->
                                 <xsl:call-template name="witness_tabs"/>
                             </div>
+
+                            <!-- Person Cards -->
+                            <xsl:call-template name="person_cards"/>
                             
                             <!-- XML Link -->
                             <div class="xml-link-section" align="center">
