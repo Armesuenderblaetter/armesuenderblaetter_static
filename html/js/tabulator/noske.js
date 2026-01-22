@@ -52,6 +52,7 @@ var config = {
     pagination: true,
     paginationSize: 50,
     paginationButtonCount: 5,
+    index: "id",
     langs:{
         "default":{
             "pagination":{
@@ -68,10 +69,11 @@ var config = {
     },
     autoColumns: false,
     columns:[
-        {title:"Datei", field:"datei", formatter:"html", download:"false", visible:"false"}, 
-        {title:"Titel", field:"titel", headerFilter:"input", formatter:"html", headerSort:"true", download:"false", headerSort:"true"},
-        {title:"Linker Kotext", field:"left", headerFilter:"input", formatter:leftContextFormatter, download:"false", headerSort:"true", hozAlign:"right"},
-        {title:"Stichwort", field:"kwic", headerFilter:"input", download:"false",  formatter:cellClassFormatter, headerSort:"true"},
-        {title:"Rechter Kotext", field:"right", headerFilter:"input", formatter:"html", download:"false", headerSort:"true"}, 
+        {title:"Titel", field:"titel", headerFilter:"input", formatter:"html", headerSort:true, download:false},
+        {title:"Jahr", field:"jahr", headerFilter:"input", formatter:"html", headerSort:true, download:false, width:80},
+        {title:"Seite", field:"seite", headerFilter:"input", formatter:"html", headerSort:true, download:false, width:80},
+        {title:"Linker Kotext", field:"left", headerFilter:"input", formatter:leftContextFormatter, download:false, headerSort:true, hozAlign:"right"},
+        {title:"Stichwort", field:"kwic", headerFilter:"input", download:false, formatter:cellClassFormatter, headerSort:true},
+        {title:"Rechter Kotext", field:"right", headerFilter:"input", formatter:"html", download:false, headerSort:true}, 
     ],
 };

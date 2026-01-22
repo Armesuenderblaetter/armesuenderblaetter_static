@@ -38,6 +38,12 @@ function waitForTable() {
     }
 
     table = new Tabulator("#myTable", config);
+    // Expose for other scripts (best-effort interop)
+    try {
+      window.__noskeTabulatorTable = table;
+    } catch (e) {
+      // ignore
+    }
 
     table.on("tableBuilt", function() {
       setupDownloadButtons();

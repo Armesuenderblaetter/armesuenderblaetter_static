@@ -1270,6 +1270,85 @@ function getDocTitleFromRefs(refs) {
   const entry = refs.find((ref) => ref.startsWith("doc.title="));
   return entry ? entry.slice("doc.title=".length) : "";
 }
+
+function extractYearFromDocId(docId) {
+  if (!docId || typeof docId !== "string") return "";
+  // Pattern: fb_yyyymmdd_name or yyyymmdd_name
+  const match = docId.match(/(?:fb_)?(\d{4})\d{4}_/);
+  return match ? match[1] : "";
+}
+
+// Fallback: derive page number from the static document HTML (page breaks are
+// rendered as <span class="pb primary"> ... </span> markers).
+const __noskeDocHtmlCache = new Map();
+async function getDocHtmlDocument(docId) {
+  if (!docId) return null;
+  if (__noskeDocHtmlCache.has(docId)) return __noskeDocHtmlCache.get(docId);
+  const promise = (async () => {
+    const url = `./${docId}.html`;
+    const res = await fetch(url, { credentials: "same-origin" });
+    if (!res.ok) return null;
+    const html = await res.text();
+    try {
+      return new DOMParser().parseFromString(html, "text/html");
+    } catch {
+      return null;
+    }
+  })();
+  __noskeDocHtmlCache.set(docId, promise);
+  return promise;
+}
+
+function countPbBeforeToken(doc, tokenId) {
+  if (!doc || !tokenId) return "";
+  const tokenEl = doc.getElementById(tokenId);
+  if (!tokenEl) return "";
+
+  // Prefer primary page breaks to avoid double-counting witnesses.
+  const pbsPrimary = Array.from(doc.querySelectorAll("span.pb.primary"));
+  const pbsFallback = pbsPrimary.length
+    ? pbsPrimary
+    : Array.from(doc.querySelectorAll("span.pb"));
+
+  let count = 0;
+  for (const pb of pbsFallback) {
+    // pb before token => pb is FOLLOWING tokenEl in document order?
+    // compareDocumentPosition returns a bitmask relative to *pb*.
+    const rel = pb.compareDocumentPosition(tokenEl);
+    if (rel & Node.DOCUMENT_POSITION_FOLLOWING) {
+      count += 1;
+    }
+  }
+  return String(Math.max(1, count));
+}
+
+function schedulePageFallbackResolution() {
+  // Only resolve a reasonable number of missing page cells to avoid huge batches.
+  const cells = Array.from(
+    document.querySelectorAll('td[data-noske-seite="1"]')
+  ).slice(0, 250);
+  if (!cells.length) return;
+
+  (async () => {
+    for (const cell of cells) {
+      if (cell.dataset.resolved === "1") continue;
+      const docId = cell.dataset.docid;
+      const tokenId = cell.dataset.tokenid;
+      if (!docId || !tokenId) {
+        cell.dataset.resolved = "1";
+        continue;
+      }
+
+      const doc = await getDocHtmlDocument(docId);
+      const page = countPbBeforeToken(doc, tokenId);
+      if (page) {
+        cell.textContent = page;
+      }
+      cell.dataset.resolved = "1";
+    }
+  })();
+}
+
 function B(r, e, t, s, o = !1, n = !1, i) {
   let a = document.querySelector(`#${t}`);
   a.innerHTML = `
@@ -1285,10 +1364,13 @@ function B(r, e, t, s, o = !1, n = !1, i) {
 		</div>
 		`;
   let u = document.querySelector("#hits-table-body");
-  var c = `<th class="${i.css?.th || h.th}">Linker Kotext</th>
+  // Fixed column headers: Titel, Jahr, Seite, Linker Kotext, Stichwort, Rechter Kotext
+  var c = `<th class="${i.css?.th || h.th}">Titel</th>
+							<th class="${i.css?.th || h.th}">Jahr</th>
+							<th class="${i.css?.th || h.th}">Seite</th>
+							<th class="${i.css?.th || h.th}">Linker Kotext</th>
 							<th class="${i.css?.th || h.th}">Stichwort</th>
-							<th class="${i.css?.th || h.th}">Rechter Kotext</th>`,
-    f = "";
+							<th class="${i.css?.th || h.th}">Rechter Kotext</th>`;
   let requiresDeferredThumbnails = !1;
   let x = r
       .map((m) => {
@@ -1300,73 +1382,36 @@ function B(r, e, t, s, o = !1, n = !1, i) {
           N = O(E, !0),
           J = O(E, !1),
           j = s.endsWith("/") ? s : s + "/";
-        const labels = i.labels || {};
-        f = E.filter((w) => w.length > 0 && !w.startsWith("doc.delinquent_sexes=")).map((w) => {
-          const key = w.split("=")[0];
-          return `<th class="${i.css?.th || h.th}">${labels[key] || key}</th>`;
-        }).join("");
-        const pidEntry = E.find((w) => w.startsWith("p.id="));
         const docidEntry = E.find((w) => w.startsWith("doc.id="));
+        const docYearEntry = E.find((w) => w.startsWith("doc.year="));
+        const pbEntry = E.find((w) => w.startsWith("pb.n="));
         const docTitleValue = getDocTitleFromRefs(E);
         const docAttrs = extractDocAttrs(E);
         const archiveCode = resolveArchiveCodeFromAttrs(docAttrs);
-        const thumbnailFilename = getThumbnailFilenameFromAttrs(docAttrs);
-        const ppid = pidEntry ? pidEntry.split("=")[1] : "";
         const docIdValue = docidEntry ? docidEntry.split("=")[1] : "";
-        const baseHref = docIdValue ? `${docIdValue}.html#${ppid}` : "";
-        let V = E.filter((w) => w.length > 0 && !w.startsWith("doc.delinquent_sexes="))
-          .map((w) => {
-            const [key, value] = w.split("=");
-            if (key === "p.id") {
-              const match = value.match(/_p_0*(\d+)$/);
-              const pageNum = match ? match[1] : value;
-              return `<td class="${i.css?.td || h.td}">${pageNum}</td>`;
-            }
-            if (key === "doc.id") {
-              const href = value ? `${value}.html#${ppid}` : baseHref || "#";
-              const hasThumbnailFilename = typeof thumbnailFilename === "string" && thumbnailFilename.trim().length > 0;
-              const thumbUrl = buildThumbnailUrlFromDocId(value, archiveCode, thumbnailFilename);
-              const needsDeferredResolution = !hasThumbnailFilename || !thumbUrl;
-              if (needsDeferredResolution) {
-                requiresDeferredThumbnails = !0;
-              }
-              const anchorLabelRaw = docTitleValue || value || href;
-              const safeLabelAttr = escapeHtmlAttr(anchorLabelRaw);
-              const altTextRaw = docTitleValue
-                ? `Deckblatt von ${docTitleValue}`
-                : "Deckblatt des Flugblattes";
-              const safeAltAttr = escapeHtmlAttr(altTextRaw);
-              const docIdDataAttr = value ? encodeURIComponent(value) : "";
-              const docTitleDataAttr = anchorLabelRaw ? encodeURIComponent(anchorLabelRaw) : "";
-              const tdClass = i.css?.td || h.td;
-              const tdAttributes = [
-                `class="${tdClass}"`,
-                'data-noske-thumbnail-wrapper="1"',
-                'data-noske-thumbnail-cell="1"',
-                `data-noske-doc-id="${docIdDataAttr}"`,
-                `data-noske-doc-title="${docTitleDataAttr}"`,
-                `data-noske-needs-resolution="${needsDeferredResolution ? "1" : "0"}"`,
-              ].join(" ");
-              const anchorAttributes = [
-                `href="${href}"`,
-                `aria-label="${safeLabelAttr}"`,
-                `title="${safeLabelAttr}"`,
-                'data-noske-thumbnail-cell="1"',
-                `data-noske-doc-id="${docIdDataAttr}"`,
-                `data-noske-doc-title="${docTitleDataAttr}"`,
-                `data-noske-needs-resolution="${needsDeferredResolution ? "1" : "0"}"`,
-              ].join(" ");
-              if (thumbUrl) {
-                return `<td ${tdAttributes}><a ${anchorAttributes}><img src="${thumbUrl}" alt="${safeAltAttr}" loading="lazy" style="max-width:6rem;height:auto;display:block;margin:0 auto;"></a></td>`;
-              }
-              const fallbackText = escapeHtmlAttr(anchorLabelRaw || value || href);
-              return `<td ${tdAttributes}><a ${anchorAttributes}>${fallbackText}</a></td>`;
-            }
-            const href = baseHref || "#";
-            if (href === "#") return `<td class="${i.css?.td || h.td}">${value}</td>`;
-            return `<td class="${i.css?.td || h.td}"><a href="${href}">${value}</a></td>`;
-          })
-          .join("");
+        const pageValue = pbEntry ? pbEntry.split("=")[1] : "";
+        const baseHref = docIdValue ? `${docIdValue}.html` : "";
+        
+        // Extract Jahr (year) from doc.id filename
+        const jahrValue = docYearEntry ? docYearEntry.split("=")[1] : extractYearFromDocId(docIdValue);
+        
+        // Build Titel cell with link
+        const titelHref = baseHref || "#";
+        const titelText = docTitleValue || docIdValue || "";
+        const titelCell = `<td class="${i.css?.td || h.td}"><a href="${titelHref}">${escapeHtmlAttr(titelText)}</a></td>`;
+        
+        // Build Jahr cell
+        const jahrCell = `<td class="${i.css?.td || h.td}">${jahrValue}</td>`;
+        
+        // Build Seite (page) cell from pb.n; fallback resolves from static HTML.
+        // Token id is the last segment of kwic_attr (e.g. tu_74_xTok_000016)
+        const tokenId = Array.isArray(Y) ? Y[Y.length - 1] : "";
+        const seiteCell = pageValue
+          ? `<td class="${i.css?.td || h.td}">${pageValue}</td>`
+          : `<td class="${i.css?.td || h.td}" data-noske-seite="1" data-docid="${escapeHtmlAttr(
+              docIdValue
+            )}" data-tokenid="${escapeHtmlAttr(tokenId)}"></td>`;
+        
         if (n) var v = n(m);
         else {
           let w = J.filter((_) => !_.startsWith("doc") && _.length > 0)
@@ -1393,7 +1438,9 @@ function B(r, e, t, s, o = !1, n = !1, i) {
         }
         return `
 			<tr class="${i.css?.trBody || h.trBody}">
-				${V}
+				${titelCell}
+				${jahrCell}
+				${seiteCell}
 				<td class="${i.css?.left || h.left}">${b}</td>
 				<td class="${i.css?.kwic || h.kwic}">
 					<a href="${v}">
@@ -1404,11 +1451,15 @@ function B(r, e, t, s, o = !1, n = !1, i) {
 			</tr>
 			`;
       })
-      .join(""),
-    l = f + c,
-    y = document.querySelector("#hits-header-row");
-  (y.innerHTML = l), (u.innerHTML = x);
-  requiresDeferredThumbnails && scheduleResolveThumbnails();
+      .join("");
+  let y = document.querySelector("#hits-header-row");
+  (y.innerHTML = c), (u.innerHTML = x);
+  // Kick off async resolution for missing page numbers.
+  try {
+    setTimeout(schedulePageFallbackResolution, 0);
+  } catch (e) {
+    // ignore
+  }
 }
 var W = class {
   constructor(e) {
