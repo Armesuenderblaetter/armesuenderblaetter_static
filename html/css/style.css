@@ -1576,8 +1576,16 @@ div ul.ais-RefinementList-list {
     max-width: 45%;
     max-height: 100%;
     overflow: hidden; /* Remove scrolling completely */
+    
+}
+
+
+.edition-text-inner {
     background-color: white ;
     color: black;
+    height: 100%;
+    max-width: 75%;
+    padding: 4rem;
 }
 
 

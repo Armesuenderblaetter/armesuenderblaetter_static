@@ -96,12 +96,15 @@
                                     <xsl:call-template name="osd-container"/>
                                 </div>
                                 <div id="edition-text" class="col-6">
+                                    <div class="edition-text-inner">
                                     <xsl:apply-templates select="//tei:text/tei:*[not(local-name() = 'fs' or local-name() = 'back')]" />
                                     <xsl:for-each select="//tei:back">
                                         <div class="tei-back">
                                             <xsl:apply-templates/>
                                         </div>
+                                       
                                     </xsl:for-each>
+                                    </div>
                                 </div>
                             </div>
                             <xsl:if test="count(//tei:body//tei:note[not(@anchored = 'true')]) != 0">
