@@ -423,28 +423,51 @@ function show_only_current_page(current_page_index) {
 
   const editionText = document.getElementById('edition-text');
   if (!editionText) return;
-  if (pb_elements_array.length === 0) return;
+
+  // Safety check: if no page breaks found, show everything to avoid blank screen
+  if (pb_elements_array.length === 0) {
+    console.warn('osd_scroll: No page breaks found in pb_elements_array. Showing all content as fallback.');
+    Array.from(editionText.querySelectorAll('*')).forEach(child => {
+      child.style.removeProperty('display');
+    });
+    return;
+  }
 
   // Ensure all bare text nodes are wrapped before proceeding
   wrap_all_text_nodes(editionText);
 
   const currentWitness = getCurrentWitness();
 
-  // Hide everything by default
-  Array.from(editionText.children).forEach(child => {
+  // Find the container that holds the page breaks (could be edition-text or edition-text-inner)
+  const currentPb = pb_elements_array[current_page_index];
+  if (!currentPb) {
+    console.warn('osd_scroll: currentPb not found at index', current_page_index);
+    return;
+  }
+  
+  // Get the actual parent container of the page breaks
+  const contentContainer = currentPb.parentElement;
+  if (!contentContainer) {
+    console.warn('osd_scroll: contentContainer not found');
+    return;
+  }
+
+  // Hide all children of the content container (not edition-text itself)
+  Array.from(contentContainer.children).forEach(child => {
     child.style.setProperty('display', 'none', 'important');
   });
 
   // Show the current pb (page break) and its content until the next pb
-  const currentPb = pb_elements_array[current_page_index];
   const nextPb = pb_elements_array[current_page_index + 1] || null;
 
   // Show the catchword row for this page (row.layer_counter.fw)
   // and the main content between currentPb and nextPb
   let node = currentPb;
   let show = false;
-    const nodesInRange = new Set();
+  const nodesInRange = new Set();
   while (node) {
+    // Check if we reached the next page break (moved check to start of loop)
+    if (nextPb && node === nextPb) break;
     // Show catchword row before pb (footer) only if the following pb is for current witness
     if (node.classList && ((node.classList.contains('row') && node.classList.contains('layer_counter')) || node.classList.contains('catch'))) {
       let next = node.nextSibling;

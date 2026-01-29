@@ -102,6 +102,15 @@ class WitnessSwitcher {
                 
                 console.log('🔄 INIT: Discovered witnesses:', Array.from(this.availableWitnesses));
                 
+                // Only proceed with multi-witness logic if there are actually multiple witnesses
+                const isMultiWitness = this.availableWitnesses.size > 1;
+                
+                if (!isMultiWitness) {
+                    console.log('🔄 INIT: Single witness document, skipping witness switcher setup');
+                    // For single witness, just let osd_scroll.js handle everything
+                    return;
+                }
+                
                 // FORCE IMMEDIATE PAGINATION BUILD FOR ALL WITNESSES
                 console.log('🔄 FORCE: Building paginations immediately for all witnesses');
                 console.log('🔍 FORCE: Current available witnesses:', Array.from(this.availableWitnesses));
@@ -112,7 +121,7 @@ class WitnessSwitcher {
                     console.log(`🔍 FORCE: Current this.currentWitness after build: "${this.currentWitness}"`);
                 });
                 
-                // Create necessary UI elements for witnesses
+                // Create necessary UI elements for witnesses - ONLY for multi-witness docs
                 this.availableWitnesses.forEach(witness => {
                     if (!document.getElementById(`${witness}-tab`)) {
                         console.log(`Creating tab for witness: ${witness}`);
