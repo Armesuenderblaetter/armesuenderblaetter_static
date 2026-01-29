@@ -25,7 +25,7 @@
                             </div>
                             
                             <div class="noske-left-section">
-                                <h3 class="noske-left-heading">Suche</h3>
+                                <!-- <h3 class="noske-left-heading">Suche</h3> -->
                                 <div id="noske-search">
                                     <div id="custom-noske-input"></div>
                                 </div>

@@ -1,5 +1,6 @@
 :root {
-    --editor-font-family: serif;
+    --editor-font-family: 'Cormorant', serif;
+    --bs-font-sans-serif: 'Barlow', sans-serif;
     --editor-font-color: grey;
     /*  --variant-marker-color: rgb(203, 231, 255); */
     --variant-marker-color: #868277 ;
@@ -82,6 +83,7 @@ body.page-search .site-header,
     --button-bg: var(--asb-background-colour-2-button);
     --button-bg-hover: var(--asb-background-colour-2-button-hover);
 }
+
 
 
 /* =========================================================
@@ -1044,6 +1046,13 @@ body.page-person-search .person-left-heading {
     letter-spacing: 0.02em;
 }
 
+/* Left column title styling for TOC */
+body.page-person-search .person-left-heading:first-of-type {
+    font-family: 'Cormorant', serif !important;
+    font-weight: 700 !important;
+    font-size: 30px !important;
+}
+
 body.page-person-search .person-name-search-inner {
     display: flex;
     align-items: stretch;
@@ -1478,7 +1487,7 @@ body.page-person-search .search-col-left .facet-list-scroll {
     border-radius: 0 !important;
 }
 
-body.page-person-search .person-left-tailpiece {
+body.page-search .person-left-tailpiece {
     display: block;
     width: 100%;
     height: 3rem;
@@ -1708,7 +1717,9 @@ body.landing .landing-top-title {
     letter-spacing: 0.03em;
     text-transform: uppercase;
     line-height: 0.95;
-    font-size: clamp(2.6rem, 5vw, 4rem);
+	font-family: 'Cormorant', serif;
+	font-weight: 500;
+	font-size: 70px;
 }
 
 body.landing .landing-top-title > span {
@@ -1794,10 +1805,23 @@ body.landing .landing-section-title {
     margin: 0 0 1rem;
     color: var(--bs-black);
     letter-spacing: 0.02em;
+    font-family: 'Cormorant', serif;
+    font-weight: 500;
+}
+
+body.landing h1.landing-section-title {
+    font-size: 70px;
+}
+
+body.landing h2.landing-section-title {
+    font-size: 55px;
 }
 
 body.landing .landing-section-text p {
     margin: 0;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
 }
 
 body.landing .landing-cta {
@@ -2566,12 +2590,12 @@ li.dropdown-item:has(annotation-slider[disabled="true"]):hover,
 }
 
 .noske-hits-table {
-    background-color: white!important ;
+	background-color: transparent !important;
 }
 
 .noske-hits-head th {
-    background-color: white!important ; 
-    color: black!important ;
+	background-color: transparent !important;
+	color: inherit !important;
 }
 
 /* .tabulator {
@@ -2609,7 +2633,7 @@ li.dropdown-item:has(annotation-slider[disabled="true"]):hover,
     min-height: 64px;
 }
 /* MEDIA SPECIFIC */
-.tabulator-header, .noske-hits-head {
+body:not(.page-noske-search) .tabulator-header {
   border: solid var(--asb-link-colour) 3px!important;
     border-radius: 15px!important;
     background-color: white!important;
@@ -2623,7 +2647,7 @@ li.dropdown-item:has(annotation-slider[disabled="true"]):hover,
 .tabulator-table {
     max-width: 100% ;
 }
-.tabulator-tableholder, .noske-hits-tbody {
+body:not(.page-noske-search) .tabulator-tableholder {
     margin-top: 1rem;
  border: solid var(--asb-link-colour) 3px!important;
     border-radius: 15px;
@@ -2880,4 +2904,158 @@ br.lb.current {
 	width: 100%;
 	display: flex;
 	flex-wrap: nowrap;
+}
+
+/* =========================================================
+    Noske (nosketch.html): results table styling
+    ========================================================= */
+
+/* Left column title: Cormorant Bold 30px */
+body.page-noske-search .noske-title {
+    font-family: 'Cormorant', serif !important;
+    font-weight: 700 !important;
+    font-size: 30px !important;
+}
+
+body.page-noske-search .search-col-right .noske-hits-table {
+    background: transparent !important;
+    border: none !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+}
+
+/* Noske results are rendered with Tabulator; remove Tabulator chrome on this page */
+body.page-noske-search .search-col-right .tabulator,
+body.page-noske-search .search-col-right .tabulator * {
+    box-shadow: none !important;
+}
+
+body.page-noske-search .search-col-right .tabulator {
+    background: transparent !important;
+    border: none !important;
+}
+
+body.page-noske-search .search-col-right .tabulator-header {
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+}
+
+/* Noske results are rendered with Tabulator */
+body.page-noske-search .search-col-right .tabulator,
+body.page-noske-search .search-col-right .tabulator * {
+	box-shadow: none !important;
+}
+
+/* Table background should look like its container */
+body.page-noske-search .search-col-right .tabulator,
+body.page-noske-search .search-col-right .tabulator-tableholder,
+body.page-noske-search .search-col-right .tabulator-table {
+	background: transparent !important;
+}
+
+/* Header row: background like container, text #886848 */
+body.page-noske-search .search-col-right .tabulator-header,
+body.page-noske-search .search-col-right .tabulator-header .tabulator-col {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+body.page-noske-search .search-col-right .tabulator-header,
+body.page-noske-search .search-col-right .tabulator-header * {
+    color: #886848 !important;
+    font-family: 'Barlow', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 20px !important;
+}
+
+/* Header filter inputs styled like toc.html search boxes */
+body.page-noske-search .search-col-right .tabulator-header .tabulator-header-filter {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+body.page-noske-search .search-col-right .tabulator-header .tabulator-header-filter input,
+body.page-noske-search .search-col-right .tabulator-header .tabulator-header-filter select {
+	flex: 1 1 auto;
+	min-width: 0;
+	background-color: var(--bs-white) !important;
+	color: #000 !important;
+	border: 2px solid var(--asb-background-colour-2-button) !important;
+	border-radius: 9999px !important;
+	padding: 0.35rem 0.75rem 0.35rem 2rem !important;
+	/*font-size: 0.9rem !important;
+	line-height: 1.2 !important; */
+	height: auto !important;
+	min-height: 2.3rem !important;
+	outline: none !important;
+	box-shadow: none !important;
+	/* Search icon via background */
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 40 40' fill='%23886848'%3E%3Cpath d='M26.804 29.01c-2.832 2.34-6.465 3.746-10.426 3.746C7.333 32.756 0 25.424 0 16.378 0 7.333 7.333 0 16.378 0c9.046 0 16.378 7.333 16.378 16.378 0 3.96-1.406 7.594-3.746 10.426l10.534 10.534c.607.607.61 1.59-.004 2.202-.61.61-1.597.61-2.202.004L26.804 29.01zm-10.426.627c7.323 0 13.26-5.936 13.26-13.26 0-7.32-5.937-13.257-13.26-13.257C9.056 3.12 3.12 9.056 3.12 16.378c0 7.323 5.936 13.26 13.258 13.26z'/%3E%3C/svg%3E") !important;
+	background-repeat: no-repeat !important;
+	background-position: 0.6rem center !important;
+	background-size: 14px 14px !important;
+}
+
+body.page-noske-search .search-col-right .tabulator-header .tabulator-header-filter input::placeholder {
+	color: rgba(0, 0, 0, 0.5) !important;
+}
+
+body.page-noske-search .search-col-right .tabulator-header .tabulator-header-filter input:focus {
+	border-color: #886848 !important;
+}
+
+/* Sorter arrow styling */
+body.page-noske-search .search-col-right .tabulator-col-sorter {
+	display: inline-flex !important;
+	align-items: center;
+	margin-left: 0.25rem;
+}
+
+body.page-noske-search .search-col-right .tabulator-arrow {
+	border-bottom-color: #886848 !important;
+}
+
+/* Body cells */
+body.page-noske-search .search-col-right .tabulator-cell {
+	background: transparent !important;
+	color: #000 !important;
+}
+
+/* Remove underlines from links in table body */
+body.page-noske-search .search-col-right .tabulator-cell a {
+	text-decoration: none !important;
+}
+
+/* First 3 columns (Titel, Jahr, Seite): Barlow SemiBold 20px */
+body.page-noske-search .search-col-right .tabulator-cell[tabulator-field="titel"],
+body.page-noske-search .search-col-right .tabulator-cell[tabulator-field="jahr"],
+body.page-noske-search .search-col-right .tabulator-cell[tabulator-field="seite"] {
+    font-family: 'Barlow', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 20px !important;
+}
+
+/* Kotext columns (left, right): Cormorant Bold 20px */
+body.page-noske-search .search-col-right .tabulator-cell[tabulator-field="left"],
+body.page-noske-search .search-col-right .tabulator-cell[tabulator-field="right"] {
+    font-family: 'Cormorant', serif !important;
+    font-weight: 700 !important;
+    font-size: 20px !important;
+}
+
+/* Separation lines between rows */
+body.page-noske-search .search-col-right .tabulator-row {
+	background: transparent !important;
+	border-bottom: 1px solid #886848 !important;
+}
+
+/* Suchbegriff / keyword column (Tabulator adds `kwic` class in js/tabulator/noske.js): Cormorant Bold 20px */
+body.page-noske-search .search-col-right .tabulator-cell.kwic {
+	color: #886848 !important;
+	font-family: 'Cormorant', serif !important;
+	font-weight: 700 !important;
+	font-size: 20px !important;
 }

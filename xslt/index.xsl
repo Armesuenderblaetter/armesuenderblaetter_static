@@ -115,6 +115,13 @@
         </div>
     </xsl:template>
 
+    <xsl:template match="tei:h1" mode="landing">
+        <h1>
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates mode="landing"/>
+        </h1>
+    </xsl:template>
+
     <xsl:template match="tei:h2" mode="landing">
         <h2>
             <xsl:copy-of select="@*"/>
