@@ -77,6 +77,22 @@ class WitnessSwitcher {
         // Add a slight delay to ensure DOM is fully loaded
         setTimeout(() => {
             try {
+                // Preselect witness from URL (tab param) as early as possible
+                try {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const tab = urlParams.get('tab');
+                    if (tab) {
+                        const m = tab.match(/^\d+(.*)$/);
+                        const preselected = (m && m[1]) ? m[1].trim() : null;
+                        if (preselected) {
+                            this.currentWitness = preselected;
+                            window.currentWitness = preselected;
+                            document.body.setAttribute('data-active-witness', preselected);
+                            document.body.classList.add('witness-active');
+                        }
+                    }
+                } catch (_) {}
+
                 // Debug: Check for filename-based witness IDs in page breaks before anything else
                 this.debugPageBreakSources();
                 
@@ -1130,8 +1146,9 @@ class WitnessSwitcher {
     switchToWitness(witness) {
         console.log(`🔄 SWITCH: Switching to witness: ${witness}`);
         
-        // UPDATE: Set the current witness variable FIRST
+        // UPDATE: Set the current witness variable FIRST (both local and global)
         this.currentWitness = witness;
+        window.currentWitness = witness;
         
         // Add witness-active class to body
         document.body.classList.add('witness-active');
@@ -1282,7 +1299,7 @@ class WitnessSwitcher {
     }
 
     /**
-     * Shows/hides variant readings based on the selected witness
+     * Shows/hides variant readings and line breaks based on the selected witness
      */
     applyWitnessVariants(witness) {
         // Hide all variant readings
@@ -1293,6 +1310,19 @@ class WitnessSwitcher {
         // Show only variants for the current witness
         document.querySelectorAll(`.variant-reading[data-witness="${witness}"]`)
             .forEach(variant => variant.classList.add('active-witness'));
+        
+        // Filter line breaks (lb) by witness
+        // Line breaks have wit="#oenb", wit="#wb", or wit="#primary"
+        document.querySelectorAll('br.lb[wit]').forEach(lb => {
+            const wit = lb.getAttribute('wit');
+            // Show if: no wit, wit matches current witness, or wit is #primary (shared)
+            const shouldShow = !wit || wit === `#${witness}` || wit === '#primary';
+            if (shouldShow) {
+                lb.classList.remove('lb-hidden');
+            } else {
+                lb.classList.add('lb-hidden');
+            }
+        });
     }
 
     /**
@@ -1301,8 +1331,13 @@ class WitnessSwitcher {
     syncTextWithPage(pageIndex) {
         try {
             const entries = this.witnessPagesMap.get(this.currentWitness) || [];
-            if (pageIndex >= entries.length) {
-                // console.warn(`⚠️ syncTextWithPage: pageIndex ${pageIndex} is out of bounds for witness ${this.currentWitness} (max: ${entries.length - 1})`);
+            if (entries.length === 0 || pageIndex >= entries.length) {
+                // Fallback to osd_scroll.js directly if entries are missing/out of bounds
+                if (typeof window.show_only_current_page === 'function') {
+                    window.show_only_current_page(pageIndex);
+                    this.updatePaginationActiveState(this.currentWitness, pageIndex);
+                }
+                this.applyWitnessVariants(this.currentWitness);
                 return;
             }
 

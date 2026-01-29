@@ -424,7 +424,10 @@ body.landing .landing-offcanvas .offcanvas-body::-webkit-scrollbar {
     padding: 0 1.50em;
     border: 0 !important;
     background-color: var(--button-bg) !important;
-    font-size: 1.25rem;
+    font-family: 'Cormorant', serif;
+    font-weight: 700;
+    font-size: 25px;
+    line-height: 1;
     color: var(--bs-white) !important;
     text-decoration: none;
     border-radius: 9999px;
@@ -445,6 +448,10 @@ body.landing .landing-offcanvas .offcanvas-body::-webkit-scrollbar {
     background-color: var(--button-bg, var(--asb-background-colour-1-button)) !important;
     color: var(--bs-white) !important;
     border: 0 !important;
+    font-family: 'Cormorant', serif;
+    font-weight: 700;
+    font-size: 25px;
+    line-height: 1;
 }
 
 .site-top-project-button:hover,
@@ -1249,7 +1256,9 @@ body.page-person-search .person-name-search-inner .ais-SearchBox-input {
     background: transparent;
     width: 100%;
     padding: 0.35rem 0.5rem;
-    font-size: 1rem;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
     line-height: 1.1;
     height: 100%;
 }
@@ -1262,9 +1271,11 @@ body.page-person-search .person-view-list-btn {
     align-items: center;
     justify-content: center;
     padding: 0 1rem !important;
-    font-variant: small-caps;
-    font-size: 0.85rem;
-    line-height: 1;
+	font-family: 'Cormorant', serif;
+	font-weight: 700;
+	font-size: 25px;
+	line-height: 1;
+	font-variant: normal;
     min-height: 0;
     align-self: stretch;
     height: auto;
@@ -1434,6 +1445,10 @@ body.page-person-search .search-col-left .ais-RangeInput-input {
     width: 5rem;
     text-align: center;
     background-color: var(--bs-white);
+	font-family: 'Barlow', sans-serif;
+	font-weight: 400;
+	font-size: 20px;
+	line-height: 1.1;
 }
 
 body.page-person-search .search-col-left .ais-RangeInput-separator {
@@ -1466,7 +1481,10 @@ body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-Se
     background: transparent;
     width: 100%;
     padding: 0.5rem 0.75rem;
-    font-size: 1rem;
+	font-family: 'Barlow', sans-serif;
+	font-weight: 400;
+	font-size: 20px;
+	line-height: 1.1;
 }
 
 body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox-submit,
@@ -1836,6 +1854,9 @@ body.landing .landing-button {
     color: var(--bs-white) !important;
     text-decoration: none;
     border-radius: 9999px;
+	font-family: 'Cormorant', serif;
+	font-weight: 700;
+	font-size: 25px;
     line-height: 1;
 }
 
@@ -2467,6 +2488,20 @@ span.sic:hover::before {
   line-height: 0;
 }
 
+/* Hide line breaks for inactive witnesses */
+br.lb.lb-hidden {
+  display: none !important;
+}
+
+/* Witness-specific line-break filtering (fallback to ensure correct display) */
+body[data-active-witness="wb"] br.lb[wit="#oenb"] {
+    display: none !important;
+}
+
+body[data-active-witness="oenb"] br.lb[wit="#wb"] {
+    display: none !important;
+}
+
 
 .split-word-part-1:has(+ br.lb.current:not([style*="display: none"]))::after,
 .split-word-part-1.current-page:has(+ br.lb.current)::after {
@@ -2954,6 +2989,48 @@ body.page-noske-search .search-col-right .tabulator-table {
 	background: transparent !important;
 }
 
+/* Hide Tabulator's default paginator (we use a TOC-like "Mehr laden" control instead) */
+body.page-noske-search .search-col-right .tabulator-footer {
+    display: none !important;
+}
+
+/* TOC-like load more control on Noske page */
+body.page-noske-search #pagination {
+    padding: 2rem 4rem;
+}
+
+body.page-noske-search #pagination .load-more-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+body.page-noske-search #pagination .load-more-btn {
+    display: inline-flex;
+    margin-top: 0;
+    background-color: var(--asb-background-colour-2-button) !important;
+}
+
+body.page-noske-search #pagination .load-more-btn:hover,
+body.page-noske-search #pagination .load-more-btn:active,
+body.page-noske-search #pagination .load-more-btn:focus {
+    background-color: var(--asb-background-colour-1-button) !important;
+}
+
+body.page-noske-search #pagination .load-more-label {
+    font-family: var(--bs-font-sans-serif);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--asb-background-colour-1-button);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+body.page-noske-search #pagination .load-more-btn .bi {
+    font-size: var(--asb-square-btn-icon-size);
+    line-height: 1;
+}
+
 /* Header row: background like container, text #886848 */
 body.page-noske-search .search-col-right .tabulator-header,
 body.page-noske-search .search-col-right .tabulator-header .tabulator-col {
@@ -2985,7 +3062,11 @@ body.page-noske-search .search-col-right .tabulator-header .tabulator-header-fil
 	color: #000 !important;
 	border: 2px solid var(--asb-background-colour-2-button) !important;
 	border-radius: 9999px !important;
-	padding: 0.35rem 0.75rem 0.35rem 2rem !important;
+    padding: 0.35rem 2.25rem 0.35rem 2rem !important;
+    font-family: 'Barlow', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 20px !important;
+    line-height: 1.1 !important;
 	/*font-size: 0.9rem !important;
 	line-height: 1.2 !important; */
 	height: auto !important;
@@ -3001,6 +3082,9 @@ body.page-noske-search .search-col-right .tabulator-header .tabulator-header-fil
 
 body.page-noske-search .search-col-right .tabulator-header .tabulator-header-filter input::placeholder {
 	color: rgba(0, 0, 0, 0.5) !important;
+    font-family: 'Barlow', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 20px !important;
 }
 
 body.page-noske-search .search-col-right .tabulator-header .tabulator-header-filter input:focus {
@@ -3008,10 +3092,31 @@ body.page-noske-search .search-col-right .tabulator-header .tabulator-header-fil
 }
 
 /* Sorter arrow styling */
+body.page-noske-search .search-col-right .tabulator-header .tabulator-col {
+    position: relative !important;
+}
+
+/* Tabulator positions the sorter inside `.tabulator-col-title-holder`.
+   Make that holder non-positioned so our absolute sorter can anchor to the full header cell. */
+body.page-noske-search .search-col-right .tabulator-col-title-holder {
+	position: static !important;
+}
+
+body.page-noske-search .search-col-right .tabulator-col-content {
+	position: relative !important;
+}
+
 body.page-noske-search .search-col-right .tabulator-col-sorter {
-	display: inline-flex !important;
-	align-items: center;
-	margin-left: 0.25rem;
+    position: absolute !important;
+    right: 0.6rem;
+    bottom: 0.2rem;
+    width: 2.1rem;
+    height: 2.3rem;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0 !important;
+    z-index: 5;
 }
 
 body.page-noske-search .search-col-right .tabulator-arrow {

@@ -74,7 +74,8 @@ function normalize_page_break_nesting(editionText) {
     const root = editionText || document.getElementById('edition-text');
     if (!root) return;
 
-    const pbs = Array.from(root.querySelectorAll('span.pb.primary'));
+    // Handle ALL pb elements (both primary and secondary) for multi-witness documents
+    const pbs = Array.from(root.querySelectorAll('span.pb'));
     if (pbs.length === 0) return;
 
     const liftPbToRoot = (pb) => {
@@ -559,6 +560,23 @@ function show_only_current_page(current_page_index) {
   // Update global current_page_index for tracking
   window.current_page_index = current_page_index;
   updateCitationSuggestion(current_page_index);
+  filterLineBreaksByWitness();
+}
+
+// Hide/show line breaks (lb) according to active witness
+function filterLineBreaksByWitness() {
+  const currentWitness = getCurrentWitness();
+  if (!currentWitness) return;
+
+  document.querySelectorAll('br.lb[wit]').forEach(lb => {
+    const wit = lb.getAttribute('wit');
+    const shouldShow = !wit || wit === `#${currentWitness}` || wit === '#primary';
+    if (shouldShow) {
+      lb.classList.remove('lb-hidden');
+    } else {
+      lb.classList.add('lb-hidden');
+    }
+  });
 }
 
 function load_new_image_with_check(new_image_url, old_image) {
@@ -653,7 +671,25 @@ function initializePageView() {
   if (editionText) {
     wrap_all_text_nodes(editionText);
   }
-  // Show only the first page initially
+  
+  // Check if there's a tab parameter in the URL - if so, let witness_switcher handle initialization
+  const urlParams = new URLSearchParams(window.location.search);
+  const tabParam = urlParams.get('tab');
+  
+  // Also check if this is a multi-witness document (has both primary and secondary pbs)
+  const hasPrimaryPbs = document.querySelectorAll('.pb.primary[source]').length > 0;
+  const hasSecondaryPbs = document.querySelectorAll('.pb.secondary[source]').length > 0;
+  const isMultiWitness = hasPrimaryPbs && hasSecondaryPbs;
+  
+  if (tabParam || isMultiWitness) {
+    // witness_switcher.js will handle the initial page display
+    console.log('osd_scroll: Multi-witness or tab parameter detected, deferring to witness_switcher for initialization');
+    // Still update page links but don't show initial page
+    updatePageLinks();
+    return;
+  }
+  
+  // Show only the first page initially (only for single-witness documents without tab param)
   if (pb_elements_array.length > 0) {
     // Set initial state
     current_page_index = 0;
