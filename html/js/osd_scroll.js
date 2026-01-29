@@ -74,7 +74,8 @@ function normalize_page_break_nesting(editionText) {
     const root = editionText || document.getElementById('edition-text');
     if (!root) return;
 
-    const pbs = Array.from(root.querySelectorAll('span.pb.primary'));
+    // Handle ALL pb elements (both primary and secondary) for multi-witness documents
+    const pbs = Array.from(root.querySelectorAll('span.pb'));
     if (pbs.length === 0) return;
 
     const liftPbToRoot = (pb) => {
@@ -422,28 +423,51 @@ function show_only_current_page(current_page_index) {
 
   const editionText = document.getElementById('edition-text');
   if (!editionText) return;
-  if (pb_elements_array.length === 0) return;
+
+  // Safety check: if no page breaks found, show everything to avoid blank screen
+  if (pb_elements_array.length === 0) {
+    console.warn('osd_scroll: No page breaks found in pb_elements_array. Showing all content as fallback.');
+    Array.from(editionText.querySelectorAll('*')).forEach(child => {
+      child.style.removeProperty('display');
+    });
+    return;
+  }
 
   // Ensure all bare text nodes are wrapped before proceeding
   wrap_all_text_nodes(editionText);
 
   const currentWitness = getCurrentWitness();
 
-  // Hide everything by default
-  Array.from(editionText.children).forEach(child => {
+  // Find the container that holds the page breaks (could be edition-text or edition-text-inner)
+  const currentPb = pb_elements_array[current_page_index];
+  if (!currentPb) {
+    console.warn('osd_scroll: currentPb not found at index', current_page_index);
+    return;
+  }
+  
+  // Get the actual parent container of the page breaks
+  const contentContainer = currentPb.parentElement;
+  if (!contentContainer) {
+    console.warn('osd_scroll: contentContainer not found');
+    return;
+  }
+
+  // Hide all children of the content container (not edition-text itself)
+  Array.from(contentContainer.children).forEach(child => {
     child.style.setProperty('display', 'none', 'important');
   });
 
   // Show the current pb (page break) and its content until the next pb
-  const currentPb = pb_elements_array[current_page_index];
   const nextPb = pb_elements_array[current_page_index + 1] || null;
 
   // Show the catchword row for this page (row.layer_counter.fw)
   // and the main content between currentPb and nextPb
   let node = currentPb;
   let show = false;
-    const nodesInRange = new Set();
+  const nodesInRange = new Set();
   while (node) {
+    // Check if we reached the next page break (moved check to start of loop)
+    if (nextPb && node === nextPb) break;
     // Show catchword row before pb (footer) only if the following pb is for current witness
     if (node.classList && ((node.classList.contains('row') && node.classList.contains('layer_counter')) || node.classList.contains('catch'))) {
       let next = node.nextSibling;
@@ -559,6 +583,23 @@ function show_only_current_page(current_page_index) {
   // Update global current_page_index for tracking
   window.current_page_index = current_page_index;
   updateCitationSuggestion(current_page_index);
+  filterLineBreaksByWitness();
+}
+
+// Hide/show line breaks (lb) according to active witness
+function filterLineBreaksByWitness() {
+  const currentWitness = getCurrentWitness();
+  if (!currentWitness) return;
+
+  document.querySelectorAll('br.lb[wit]').forEach(lb => {
+    const wit = lb.getAttribute('wit');
+    const shouldShow = !wit || wit === `#${currentWitness}` || wit === '#primary';
+    if (shouldShow) {
+      lb.classList.remove('lb-hidden');
+    } else {
+      lb.classList.add('lb-hidden');
+    }
+  });
 }
 
 function load_new_image_with_check(new_image_url, old_image) {
@@ -653,7 +694,25 @@ function initializePageView() {
   if (editionText) {
     wrap_all_text_nodes(editionText);
   }
-  // Show only the first page initially
+  
+  // Check if there's a tab parameter in the URL - if so, let witness_switcher handle initialization
+  const urlParams = new URLSearchParams(window.location.search);
+  const tabParam = urlParams.get('tab');
+  
+  // Also check if this is a multi-witness document (has both primary and secondary pbs)
+  const hasPrimaryPbs = document.querySelectorAll('.pb.primary[source]').length > 0;
+  const hasSecondaryPbs = document.querySelectorAll('.pb.secondary[source]').length > 0;
+  const isMultiWitness = hasPrimaryPbs && hasSecondaryPbs;
+  
+  if (tabParam || isMultiWitness) {
+    // witness_switcher.js will handle the initial page display
+    console.log('osd_scroll: Multi-witness or tab parameter detected, deferring to witness_switcher for initialization');
+    // Still update page links but don't show initial page
+    updatePageLinks();
+    return;
+  }
+  
+  // Show only the first page initially (only for single-witness documents without tab param)
   if (pb_elements_array.length > 0) {
     // Set initial state
     current_page_index = 0;

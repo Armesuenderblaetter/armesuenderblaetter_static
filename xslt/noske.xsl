@@ -25,7 +25,7 @@
                             </div>
                             
                             <div class="noske-left-section">
-                                <h3 class="noske-left-heading">Suche</h3>
+                                <!-- <h3 class="noske-left-heading">Suche</h3> -->
                                 <div id="noske-search">
                                     <div id="custom-noske-input"></div>
                                 </div>
@@ -52,8 +52,13 @@
                                 <div id="custom-noske-hits"/>
                                 <div id="custom-noske-pagination" style="display:none;" />
                             </div>
+
+						<div id="pagination" />
                             
                             <div class="search-col-right-strip"></div>
+						<button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">
+							<i class="bi bi-chevron-double-up" aria-hidden="true"></i>
+						</button>
                         </div>
                     </div>
                 </main>
@@ -141,6 +146,7 @@
                 
                 <script type="module" src="js/noske/noske_cfg.js"></script>
                 <script type="application/javascript" src="js/modalbox.js"></script>
+				<script type="application/javascript" src="js/noske_pagination.js"></script>
                 <xsl:call-template name="html_footer"/>
                 <xsl:call-template name="tabulator_js">
                     <xsl:with-param name="tableconf" select="'noske'"/>

@@ -57,6 +57,23 @@ function ensureRequiredNoskeUrlParams() {
     }
   }
 
+  // Ensure pagination params exist and are valid numbers.
+  // The NoskeSearch library reads these from the URL on load.
+  const defaultPageSize = 50;
+  const defaultFromp = 1;
+  const pageSizeRaw = url.searchParams.get("pagesize");
+  const frompRaw = url.searchParams.get("fromp");
+  const parsedPageSize = parseInt(pageSizeRaw || "", 10);
+  const parsedFromp = parseInt(frompRaw || "", 10);
+  if (!Number.isFinite(parsedPageSize) || parsedPageSize <= 0) {
+    url.searchParams.set("pagesize", String(defaultPageSize));
+    changed = true;
+  }
+  if (!Number.isFinite(parsedFromp) || parsedFromp <= 0) {
+    url.searchParams.set("fromp", String(defaultFromp));
+    changed = true;
+  }
+
   if (changed) {
     // Best-effort only: when opened via file:// some browsers have origin "null"
     // and will throw on history URL updates.
@@ -73,6 +90,13 @@ function ensureRequiredNoskeUrlParams() {
 
 ensureRequiredNoskeUrlParams();
 const search = new NoskeSearch({ container: "noske-search", autocomplete: false,  wordlistattr: ["word","lemma","pos","vocab","id"]});
+
+// Expose for non-module scripts (e.g. custom pagination UI).
+try {
+  window.__noskeSearchInstance = search;
+} catch (e) {
+  // ignore
+}
 
 const ARCHIVE_CODE_MAP = {
   "Wienbibliothek im Rathaus": "wb",
@@ -133,18 +157,32 @@ function return_url(line) {
   return `./${doc_id}.html?tab=${witness}#${token_id}`;
 }
 
+const urlForClient = new URL(window.location.href);
+const clientPageSize = parseInt(urlForClient.searchParams.get("pagesize") || "50", 10);
+const clientFromp = parseInt(urlForClient.searchParams.get("fromp") || "1", 10);
+
+const clientConfig = {
+  base: getNoskeBaseUrl(),
+  corpname: "flugblaetter",
+  attrs: "word,lemma,pos,vocab,id",
+  structs: "doc,head,p,lg,l,placeName,quote,bibl,persName,date,cit,g",
+  refs: "doc.id,doc.year,doc.title,pb.n,doc.attrs,persName.id,doc.archive",
+  kwicrightctx: "45#",
+  kwicleftctx: "45#",
+  // Fetch all results at once; client-side pagination handled in noske_pagination.js
+  pagesize: 100000000,
+  fromp: 1,
+};
+
+try {
+  window.__noskeClientConfig = clientConfig;
+} catch (e) {
+  // ignore
+}
+
 search.search({
   debug: true,
-  client: {
-    base: getNoskeBaseUrl(),
-    corpname: "flugblaetter",
-    attrs: "word,lemma,pos,vocab,id",
-    structs: "doc,head,p,lg,l,placeName,quote,bibl,persName,date,cit,g",
-    refs: "doc.id,doc.year,doc.title,pb.n,doc.attrs,persName.id,doc.archive",
-    kwicrightctx: "45#",
-    kwicleftctx: "45#",
-    pagesize: 100000000,
-  },
+  client: clientConfig,
   hits: {
     id: "custom-noske-hits",
     labels: {
