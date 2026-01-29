@@ -33,7 +33,7 @@
                         <span class="site-menu-bullet" aria-hidden="true">
                             <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
                         </span>
-                        <span class="site-menu-text">Armersünderblätter</span>
+                        <span class="site-menu-text">Armesünderblätter</span>
                     </a>
                     <a class="site-menu-link site-menu-link--leaf" href="about.html">
                         <span class="site-menu-bullet" aria-hidden="true">
