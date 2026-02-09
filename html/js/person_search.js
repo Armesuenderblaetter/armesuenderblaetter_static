@@ -7,16 +7,6 @@ function makeDocLink(hit) {
   return hit.git_file_path;
 }
 
-function getFirstWitness(hit) {
-  if (hit && typeof hit.thumbnail === "string") {
-    const match = hit.thumbnail.match(/_([^.\/]+)\.jp2$/);
-    if (match && match[1]) {
-      return match[1];
-    }
-  }
-  return null;
-}
-
 function getDocumentLink(hit) {
   const global_id = hit && hit.global_id;
   if (!global_id) {
@@ -24,9 +14,7 @@ function getDocumentLink(hit) {
   }
   const match = global_id.match(/^pers_(fb_\d{8}_[^_]+)/);
   if (match) {
-    const base = `${match[1]}.html`;
-    const witness = getFirstWitness(hit);
-    return witness ? `${base}?tab=1${witness}` : base;
+    return `${match[1]}.html`;
   }
   return '#';
 }

@@ -1886,13 +1886,88 @@ window.createPaginationIfMissing = function() {
     if (pageLinks.length === 0) {
         // Trigger pagination creation with a small delay
         setTimeout(() => {
-            if (window.witnessAvailableSet && window.witnessAvailableSet.size > 0) {
-                // Find any existing witness switcher instance and rebuild pagination
-                const witnessInstance = window.witnessSwitcherInstance;
-                if (witnessInstance && witnessInstance.rebuildPaginationLinksForCurrentWitness) {
-                    witnessInstance.rebuildPaginationLinksForCurrentWitness();
+            // Try witness switcher instance first (for multi-witness docs)
+            const witnessInstance = window.witnessSwitcherInstance;
+            if (witnessInstance && witnessInstance.rebuildPaginationLinksForCurrentWitness && witnessInstance.currentWitness) {
+                witnessInstance.rebuildPaginationLinksForCurrentWitness();
+                return;
+            }
+            
+            // For single-witness documents, create pagination directly
+            const pbElements = document.querySelectorAll('.pb.primary[source]');
+            if (pbElements.length === 0) {
+                console.log('createPaginationIfMissing: No page breaks found');
+                return;
+            }
+            
+            // Find the page-links container
+            let ul = document.querySelector('.page-links');
+            if (!ul) {
+                // Try to find or create the container
+                const witnessPages = document.querySelector('.witness-pages');
+                if (witnessPages) {
+                    let nav = witnessPages.querySelector('nav.witness-pagination');
+                    if (!nav) {
+                        nav = document.createElement('nav');
+                        nav.className = 'witness-pagination ais-Pagination';
+                        witnessPages.appendChild(nav);
+                    }
+                    ul = document.createElement('ul');
+                    ul.className = 'page-links ais-Pagination-list';
+                    nav.appendChild(ul);
                 }
             }
+            
+            if (!ul) {
+                console.log('createPaginationIfMissing: No .page-links container found');
+                return;
+            }
+            
+            // Clear existing content
+            ul.innerHTML = '';
+            
+            // Build pagination links for each page break
+            pbElements.forEach((pb, idx) => {
+                const li = document.createElement('li');
+                li.className = 'ais-Pagination-item ais-Pagination-item--page';
+                if (idx === 0) {
+                    li.classList.add('ais-Pagination-item--selected');
+                }
+                
+                const a = document.createElement('a');
+                const pageNumber = idx + 1;
+                a.href = '#';
+                a.className = 'ais-Pagination-link page-link';
+                a.textContent = pageNumber;
+                a.setAttribute('aria-label', String(pageNumber));
+                a.setAttribute('data-page-index', String(idx));
+                if (idx === 0) {
+                    a.classList.add('active');
+                    a.setAttribute('aria-current', 'page');
+                }
+                
+                // Add click handler for navigation
+                a.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (typeof window.show_only_current_page === 'function') {
+                        window.show_only_current_page(idx);
+                    }
+                    // Update active state
+                    ul.querySelectorAll('.page-link').forEach(link => {
+                        link.classList.remove('active');
+                        link.removeAttribute('aria-current');
+                        link.closest('li')?.classList.remove('ais-Pagination-item--selected');
+                    });
+                    a.classList.add('active');
+                    a.setAttribute('aria-current', 'page');
+                    li.classList.add('ais-Pagination-item--selected');
+                });
+                
+                li.appendChild(a);
+                ul.appendChild(li);
+            });
+            
+            console.log('createPaginationIfMissing: Created', pbElements.length, 'pagination links for single-witness document');
         }, 100);
         return true; // Indicate pagination creation was attempted
     }
