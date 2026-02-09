@@ -65,7 +65,7 @@
                         <span class="site-menu-bullet" aria-hidden="true">
                             <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
                         </span>
-                        <span class="site-menu-text">Volltextsuche/Linguistische Suche</span>
+                        <span class="site-menu-text">Textsuche</span>
                     </a>
                     <!--
                     <div class="site-menu-section">Info</div>
