@@ -47,23 +47,8 @@ function get_iif_link(filename) {
   return `${iiif_server_base_path}${filename}${iiif_attribs}`;
 }
 
-function getFirstWitness(hit) {
-  if (hit && typeof hit.thumbnail === "string") {
-    const match = hit.thumbnail.match(/_([^.\/]+)\.jp2$/);
-    if (match && match[1]) {
-      return match[1];
-    }
-  }
-  return null;
-}
-
 function buildDocumentUrl(hit) {
-  const base = `${hit.id}.html`;
-  const witness = getFirstWitness(hit);
-  if (!witness) {
-    return base;
-  }
-  return `${base}?tab=1${witness}`;
+  return `${hit.id}.html`;
 }
 
 search.addWidgets([
