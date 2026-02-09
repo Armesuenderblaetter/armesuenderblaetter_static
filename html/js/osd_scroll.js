@@ -711,9 +711,24 @@ function initializePageView() {
   const isMultiWitness = hasPrimaryPbs && hasSecondaryPbs;
   
   if (tabParam || isMultiWitness) {
-    // witness_switcher.js will handle the initial page display
-    console.log('osd_scroll: Multi-witness or tab parameter detected, deferring to witness_switcher for initialization');
-    // Still update page links but don't show initial page
+    if (isMultiWitness) {
+      // witness_switcher.js will handle the initial page display
+      console.log('osd_scroll: Multi-witness or tab parameter detected, deferring to witness_switcher for initialization');
+      // Still update page links but don't show initial page
+      updatePageLinks();
+      return;
+    }
+
+    // Single-witness doc with tab param: use the page number directly.
+    const m = tabParam ? tabParam.match(/^(\d+)/) : null;
+    const requestedIndex = m ? Math.max(0, parseInt(m[1], 10) - 1) : 0;
+    if (pb_elements_array.length > 0) {
+      current_page_index = Math.min(requestedIndex, pb_elements_array.length - 1);
+      handle_new_image(current_page_index);
+      handle_page_visibility(current_page_index);
+      updateCitationSuggestion(current_page_index);
+    }
+
     updatePageLinks();
     return;
   }
