@@ -2347,7 +2347,9 @@ span.lemma::before {
     display: inline-block;
     text-align: center !important;
     align-content: center !important;
+    width: 100%;
 }
+
 
 *.antiqua {
     font-style: italic !important;
@@ -2500,6 +2502,11 @@ body[data-active-witness="wb"] br.lb[wit="#oenb"] {
 
 body[data-active-witness="oenb"] br.lb[wit="#wb"] {
     display: none !important;
+}
+
+.token .wrapped-text:has(+ br + .wrapped-text)::after {
+    content: "⹀";
+    margin-left: 0;
 }
 
 
