@@ -99,6 +99,7 @@ class WitnessSwitcher {
                 // Discover witnesses and set up mapping
                 this.discoverWitnesses();
                 this.setupWitnessToSuffixMapping();
+                this.updateWitnessClassVisibilityStyles();
                 
                 console.log('🔄 INIT: Discovered witnesses:', Array.from(this.availableWitnesses));
                 
@@ -654,6 +655,7 @@ class WitnessSwitcher {
                         const target = Math.max(0, Math.min(this.pendingNavigation.index, Math.max(0, total - 1)));
                         if (typeof viewer.goToPage === 'function') {
                             viewer.goToPage(target);
+                            this.syncTextWithPage(target);
                             this.updatePaginationActiveState(this.currentWitness, target);
                             this.pendingNavigation = null;
                             return;
@@ -661,6 +663,7 @@ class WitnessSwitcher {
                     }
                     if (typeof viewer.goToPage === 'function') {
                         viewer.goToPage(0);
+                        this.syncTextWithPage(0);
                     }
                 } catch (e) {
                     // console.error('❌ Error applying pending navigation:', e);
@@ -1093,9 +1096,13 @@ class WitnessSwitcher {
             this.scheduleNavigation(witness, index);
             this.switchToWitness(witness);
         } else {
+            // Ensure OSD sources are aligned with the active witness.
+            this.scheduleNavigation(witness, index);
+            this.updateTextForWitness(witness);
+            this.updateTabStates(witness);
+            this.updateOSDImagesForWitness(witness);
             // If witness is already active, just navigate to the page.
             this.navigateViewerToIndex(index);
-            this.syncTextWithPage(index); // This will update the text display
         }
         window.current_page_index = index;
         this.updatePaginationActiveState(witness, index);
@@ -1173,6 +1180,9 @@ class WitnessSwitcher {
 
         // Update tab states
         this.updateTabStates(witness);
+
+        // Ensure witness-class visibility rules cover all known witnesses
+        this.updateWitnessClassVisibilityStyles();
 
 //         console.log(`✅ SWITCH: Finished switching to witness: ${witness}`);
     }
@@ -1292,6 +1302,11 @@ class WitnessSwitcher {
 
             // Show the determined page's text. This will mark the correct pb.
             this.syncTextWithPage(pageToShow);
+
+            // Keep the OSD image in sync with the selected witness/page.
+            if (typeof window.handle_new_image === 'function') {
+                window.handle_new_image(pageToShow);
+            }
             
             // If we handled a pending navigation from a URL, update the state
             if (this.pendingNavigation && this.pendingNavigation.witness === witness) {
@@ -1321,17 +1336,65 @@ class WitnessSwitcher {
             .forEach(variant => variant.classList.add('active-witness'));
         
         // Filter line breaks (lb) by witness
-        // Line breaks have wit="#oenb", wit="#wb", or wit="#primary"
-        document.querySelectorAll('br.lb[wit]').forEach(lb => {
-            const wit = lb.getAttribute('wit');
-            // Show if: no wit, wit matches current witness, or wit is #primary (shared)
-            const shouldShow = !wit || wit === `#${witness}` || wit === '#primary';
+        const normalizeWitness = (value) => value ? value.replace(/^#/, '') : value;
+        const normalizedWitness = normalizeWitness(witness);
+        document.querySelectorAll('br.lb').forEach(lb => {
+            const wit = normalizeWitness(lb.getAttribute('wit'));
+            const dataWitness = normalizeWitness(lb.getAttribute('data-witness'));
+            const ancestorWitness = normalizeWitness(lb.closest('[data-witness]')?.getAttribute('data-witness'));
+            let shouldShow = true;
+
+            if (wit) {
+                shouldShow = wit === 'primary' || wit === normalizedWitness;
+            } else if (dataWitness) {
+                shouldShow = dataWitness === normalizedWitness;
+            } else if (ancestorWitness) {
+                shouldShow = ancestorWitness === normalizedWitness;
+            }
+
             if (shouldShow) {
                 lb.classList.remove('lb-hidden');
             } else {
                 lb.classList.add('lb-hidden');
             }
         });
+    }
+
+    /**
+     * Build CSS rules to hide other-witness classes for any active witness.
+     */
+    updateWitnessClassVisibilityStyles() {
+        try {
+            const witnesses = Array.from(this.availableWitnesses).filter(w => w && w !== 'primary');
+            if (witnesses.length === 0) return;
+
+            const styleId = 'witness-class-visibility';
+            let styleEl = document.getElementById(styleId);
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = styleId;
+                document.head.appendChild(styleEl);
+            }
+
+            const escapeIdent = (value) => String(value).replace(/[^a-zA-Z0-9_-]/g, '\\$&');
+            const rules = [];
+
+            witnesses.forEach(active => {
+                const activeEsc = escapeIdent(active);
+                witnesses.forEach(other => {
+                    if (other === active) return;
+                    const otherEsc = escapeIdent(other);
+                    rules.push(
+                        `body[data-active-witness="${activeEsc}"] .${otherEsc}, ` +
+                        `body[data-active-witness="${activeEsc}"] [class~="${otherEsc}"] { display: none !important; }`
+                    );
+                });
+            });
+
+            styleEl.textContent = rules.join('\n');
+        } catch (e) {
+            // console.error('❌ updateWitnessClassVisibilityStyles error:', e);
+        }
     }
 
     /**
@@ -1882,6 +1945,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Expose a function for osd_scroll.js to call when no pagination exists
 window.createPaginationIfMissing = function() {
+    const getTabWitness = () => {
+        const params = new URLSearchParams(window.location.search);
+        const tab = params.get('tab');
+        if (!tab) {
+            return '';
+        }
+        return tab.replace(/^\d+/, '');
+    };
+
+    const extractWitnessFromSource = (source) => {
+        if (!source || typeof source !== 'string') {
+            return '';
+        }
+        const base = source.replace(/\.[^.]+$/, '');
+        const firstUnderscore = base.indexOf('_');
+        if (firstUnderscore === -1) {
+            return '';
+        }
+        return base.slice(firstUnderscore + 1);
+    };
+
     const pageLinks = document.querySelectorAll('.page-link');
     if (pageLinks.length === 0) {
         // Trigger pagination creation with a small delay
@@ -1936,7 +2020,14 @@ window.createPaginationIfMissing = function() {
                 
                 const a = document.createElement('a');
                 const pageNumber = idx + 1;
-                a.href = '#';
+                const witness = getTabWitness() || extractWitnessFromSource(pb.getAttribute('source'));
+                if (witness) {
+                    const linkUrl = new URL(window.location.href);
+                    linkUrl.searchParams.set('tab', `${pageNumber}${witness}`);
+                    a.href = linkUrl.toString();
+                } else {
+                    a.href = '#';
+                }
                 a.className = 'ais-Pagination-link page-link';
                 a.textContent = pageNumber;
                 a.setAttribute('aria-label', String(pageNumber));
@@ -1949,8 +2040,25 @@ window.createPaginationIfMissing = function() {
                 // Add click handler for navigation
                 a.addEventListener('click', function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
+
+                    const pageNumber = idx + 1;
+                    const witness = getTabWitness() || extractWitnessFromSource(pb.getAttribute('source'));
+                    if (witness) {
+                        const newUrl = new URL(window.location.href);
+                        newUrl.searchParams.set('tab', `${pageNumber}${witness}`);
+                        window.history.replaceState(null, '', newUrl.toString());
+                    }
+                    
                     if (typeof window.show_only_current_page === 'function') {
-                        window.show_only_current_page(idx);
+                        if (typeof window.handle_new_image === 'function') {
+                            window.handle_new_image(idx);
+                        }
+                        if (typeof window.handle_page_visibility === 'function') {
+                            window.handle_page_visibility(idx);
+                        } else {
+                            window.show_only_current_page(idx);
+                        }
                     }
                     // Update active state
                     ul.querySelectorAll('.page-link').forEach(link => {

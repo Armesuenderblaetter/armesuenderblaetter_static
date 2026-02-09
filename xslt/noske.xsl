@@ -8,7 +8,7 @@
     <xsl:import href="partials/html_footer.xsl"/>
     <xsl:import href="partials/tabulator_js.xsl"/>
     <xsl:template match="/">
-        <xsl:variable name="doc_title" select="'Linguistische Suche'"/>
+        <xsl:variable name="doc_title" select="'Textsuche'"/>
         <html class="h-100" lang="de">
             <head>
                 <xsl:call-template name="html_head">

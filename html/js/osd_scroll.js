@@ -71,8 +71,12 @@ function wrap_all_text_nodes(element) {
 // occurs inside inline structures like verse spans.
 function normalize_page_break_nesting(editionText) {
   try {
-    const root = editionText || document.getElementById('edition-text');
-    if (!root) return;
+    const container = editionText || document.getElementById('edition-text');
+    if (!container) return;
+
+    // Prefer the inner text wrapper so pb elements stay siblings of content.
+    const inner = container.querySelector('.edition-text-inner');
+    const root = inner || container;
 
     // Handle ALL pb elements (both primary and secondary) for multi-witness documents
     const pbs = Array.from(root.querySelectorAll('span.pb'));
@@ -195,6 +199,8 @@ var pb_elements_array = Array.from(pb_elements);
 
 // Expose functions for witness_switcher.js
 window.show_only_current_page = show_only_current_page;
+window.handle_new_image = handle_new_image;
+window.handle_page_visibility = handle_page_visibility;
 window.updateOsdScrollPageBreaks = (newPbElements) => {
 //   console.log('osd_scroll.js: Updating page breaks from witness switcher.', newPbElements);
   const editionText = document.getElementById('edition-text');
@@ -445,8 +451,9 @@ function show_only_current_page(current_page_index) {
     return;
   }
   
-  // Get the actual parent container of the page breaks
-  const contentContainer = currentPb.parentElement;
+  // Use the nearest root container that holds the full page stream.
+  // This guards against pb elements that are still nested inside paragraphs.
+  const contentContainer = currentPb.closest('.edition-text-inner') || editionText;
   if (!contentContainer) {
     console.warn('osd_scroll: contentContainer not found');
     return;
@@ -588,12 +595,25 @@ function show_only_current_page(current_page_index) {
 
 // Hide/show line breaks (lb) according to active witness
 function filterLineBreaksByWitness() {
-  const currentWitness = getCurrentWitness();
+  const normalizeWitness = (value) => value ? value.replace(/^#/, '') : value;
+  const bodyWitness = normalizeWitness(document.body.getAttribute('data-active-witness'));
+  const currentWitness = bodyWitness || normalizeWitness(getCurrentWitness());
   if (!currentWitness) return;
 
-  document.querySelectorAll('br.lb[wit]').forEach(lb => {
-    const wit = lb.getAttribute('wit');
-    const shouldShow = !wit || wit === `#${currentWitness}` || wit === '#primary';
+  document.querySelectorAll('br.lb').forEach(lb => {
+    const wit = normalizeWitness(lb.getAttribute('wit'));
+    const dataWitness = normalizeWitness(lb.getAttribute('data-witness'));
+    const ancestorWitness = normalizeWitness(lb.closest('[data-witness]')?.getAttribute('data-witness'));
+    let shouldShow = true;
+
+    if (wit) {
+      shouldShow = wit === 'primary' || wit === normalizedCurrent;
+    } else if (dataWitness) {
+      shouldShow = dataWitness === normalizedCurrent;
+    } else if (ancestorWitness) {
+      shouldShow = ancestorWitness === normalizedCurrent;
+    }
+
     if (shouldShow) {
       lb.classList.remove('lb-hidden');
     } else {
@@ -705,9 +725,24 @@ function initializePageView() {
   const isMultiWitness = hasPrimaryPbs && hasSecondaryPbs;
   
   if (tabParam || isMultiWitness) {
-    // witness_switcher.js will handle the initial page display
-    console.log('osd_scroll: Multi-witness or tab parameter detected, deferring to witness_switcher for initialization');
-    // Still update page links but don't show initial page
+    if (isMultiWitness) {
+      // witness_switcher.js will handle the initial page display
+      console.log('osd_scroll: Multi-witness or tab parameter detected, deferring to witness_switcher for initialization');
+      // Still update page links but don't show initial page
+      updatePageLinks();
+      return;
+    }
+
+    // Single-witness doc with tab param: use the page number directly.
+    const m = tabParam ? tabParam.match(/^(\d+)/) : null;
+    const requestedIndex = m ? Math.max(0, parseInt(m[1], 10) - 1) : 0;
+    if (pb_elements_array.length > 0) {
+      current_page_index = Math.min(requestedIndex, pb_elements_array.length - 1);
+      handle_new_image(current_page_index);
+      handle_page_visibility(current_page_index);
+      updateCitationSuggestion(current_page_index);
+    }
+
     updatePageLinks();
     return;
   }

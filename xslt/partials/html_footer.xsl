@@ -19,13 +19,13 @@
                         </div>
                           <div class="col-3 logo" style="padding-right: 0px">
                                 <!-- <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
-                                <img src="images/logo_oeaw.png" width="120" alt="Austrian Corpora and Editions" title="Austrian Corpora and Editions"/>
+                                <img src="images/logo_oeaw.svg" width="120" alt="Austrian Corpora and Editions" title="Austrian Corpora and Editions"/>
                             </a>
                             <div class="footer-2">Austrian Corpora and Editions</div> -->
                         </div>
                          <div class="col-3 logo" style="padding-right: 0px">
                                 <a href="https://www.oeaw.ac.at/acdh">
-                            <img src="images/logo_acdh.png" width="90" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
+                            <img src="images/logo_acdh.svg" width="90" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
                             </a>
                              <div class="footer-2">Austrian Centre for Digital Humanities</div>
                         </div>
