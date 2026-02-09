@@ -1292,6 +1292,11 @@ class WitnessSwitcher {
 
             // Show the determined page's text. This will mark the correct pb.
             this.syncTextWithPage(pageToShow);
+
+            // Keep the OSD image in sync with the selected witness/page.
+            if (typeof window.handle_new_image === 'function') {
+                window.handle_new_image(pageToShow);
+            }
             
             // If we handled a pending navigation from a URL, update the state
             if (this.pendingNavigation && this.pendingNavigation.witness === witness) {
@@ -1882,6 +1887,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Expose a function for osd_scroll.js to call when no pagination exists
 window.createPaginationIfMissing = function() {
+    const getTabWitness = () => {
+        const params = new URLSearchParams(window.location.search);
+        const tab = params.get('tab');
+        if (!tab) {
+            return '';
+        }
+        return tab.replace(/^\d+/, '');
+    };
+
+    const extractWitnessFromSource = (source) => {
+        if (!source || typeof source !== 'string') {
+            return '';
+        }
+        const base = source.replace(/\.[^.]+$/, '');
+        const firstUnderscore = base.indexOf('_');
+        if (firstUnderscore === -1) {
+            return '';
+        }
+        return base.slice(firstUnderscore + 1);
+    };
+
     const pageLinks = document.querySelectorAll('.page-link');
     if (pageLinks.length === 0) {
         // Trigger pagination creation with a small delay
@@ -1936,7 +1962,14 @@ window.createPaginationIfMissing = function() {
                 
                 const a = document.createElement('a');
                 const pageNumber = idx + 1;
-                a.href = '#';
+                const witness = getTabWitness() || extractWitnessFromSource(pb.getAttribute('source'));
+                if (witness) {
+                    const linkUrl = new URL(window.location.href);
+                    linkUrl.searchParams.set('tab', `${pageNumber}${witness}`);
+                    a.href = linkUrl.toString();
+                } else {
+                    a.href = '#';
+                }
                 a.className = 'ais-Pagination-link page-link';
                 a.textContent = pageNumber;
                 a.setAttribute('aria-label', String(pageNumber));
@@ -1949,8 +1982,25 @@ window.createPaginationIfMissing = function() {
                 // Add click handler for navigation
                 a.addEventListener('click', function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
+
+                    const pageNumber = idx + 1;
+                    const witness = getTabWitness() || extractWitnessFromSource(pb.getAttribute('source'));
+                    if (witness) {
+                        const newUrl = new URL(window.location.href);
+                        newUrl.searchParams.set('tab', `${pageNumber}${witness}`);
+                        window.history.replaceState(null, '', newUrl.toString());
+                    }
+                    
                     if (typeof window.show_only_current_page === 'function') {
-                        window.show_only_current_page(idx);
+                        if (typeof window.handle_new_image === 'function') {
+                            window.handle_new_image(idx);
+                        }
+                        if (typeof window.handle_page_visibility === 'function') {
+                            window.handle_page_visibility(idx);
+                        } else {
+                            window.show_only_current_page(idx);
+                        }
                     }
                     // Update active state
                     ul.querySelectorAll('.page-link').forEach(link => {

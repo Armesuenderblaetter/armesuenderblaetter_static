@@ -47,8 +47,23 @@ function get_iif_link(filename) {
   return `${iiif_server_base_path}${filename}${iiif_attribs}`;
 }
 
+function extractWitnessFromThumbnail(thumbnail) {
+  if (!thumbnail || typeof thumbnail !== 'string') {
+    return '';
+  }
+  const base = thumbnail.replace(/\.[^.]+$/, '');
+  const parts = base.split('_');
+  if (parts.length < 2) {
+    return '';
+  }
+  parts.shift();
+  return parts.join('_');
+}
+
 function buildDocumentUrl(hit) {
-  return `${hit.id}.html`;
+  const base = `${hit.id}.html`;
+  const witness = extractWitnessFromThumbnail(hit && hit.thumbnail);
+  return witness ? `${base}?tab=1${witness}` : base;
 }
 
 search.addWidgets([

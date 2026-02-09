@@ -71,8 +71,12 @@ function wrap_all_text_nodes(element) {
 // occurs inside inline structures like verse spans.
 function normalize_page_break_nesting(editionText) {
   try {
-    const root = editionText || document.getElementById('edition-text');
-    if (!root) return;
+    const container = editionText || document.getElementById('edition-text');
+    if (!container) return;
+
+    // Prefer the inner text wrapper so pb elements stay siblings of content.
+    const inner = container.querySelector('.edition-text-inner');
+    const root = inner || container;
 
     // Handle ALL pb elements (both primary and secondary) for multi-witness documents
     const pbs = Array.from(root.querySelectorAll('span.pb'));
@@ -195,6 +199,8 @@ var pb_elements_array = Array.from(pb_elements);
 
 // Expose functions for witness_switcher.js
 window.show_only_current_page = show_only_current_page;
+window.handle_new_image = handle_new_image;
+window.handle_page_visibility = handle_page_visibility;
 window.updateOsdScrollPageBreaks = (newPbElements) => {
 //   console.log('osd_scroll.js: Updating page breaks from witness switcher.', newPbElements);
   const editionText = document.getElementById('edition-text');

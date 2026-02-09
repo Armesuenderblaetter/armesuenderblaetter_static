@@ -7,6 +7,19 @@ function makeDocLink(hit) {
   return hit.git_file_path;
 }
 
+function extractWitnessFromThumbnail(thumbnail) {
+  if (!thumbnail || typeof thumbnail !== 'string') {
+    return '';
+  }
+  const base = thumbnail.replace(/\.[^.]+$/, '');
+  const parts = base.split('_');
+  if (parts.length < 2) {
+    return '';
+  }
+  parts.shift();
+  return parts.join('_');
+}
+
 function getDocumentLink(hit) {
   const global_id = hit && hit.global_id;
   if (!global_id) {
@@ -14,7 +27,9 @@ function getDocumentLink(hit) {
   }
   const match = global_id.match(/^pers_(fb_\d{8}_[^_]+)/);
   if (match) {
-    return `${match[1]}.html`;
+    const base = `${match[1]}.html`;
+    const witness = extractWitnessFromThumbnail(hit && hit.thumbnail);
+    return witness ? `${base}?tab=1${witness}` : base;
   }
   return '#';
 }
