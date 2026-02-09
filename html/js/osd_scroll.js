@@ -451,8 +451,9 @@ function show_only_current_page(current_page_index) {
     return;
   }
   
-  // Get the actual parent container of the page breaks
-  const contentContainer = currentPb.parentElement;
+  // Use the nearest root container that holds the full page stream.
+  // This guards against pb elements that are still nested inside paragraphs.
+  const contentContainer = currentPb.closest('.edition-text-inner') || editionText;
   if (!contentContainer) {
     console.warn('osd_scroll: contentContainer not found');
     return;
