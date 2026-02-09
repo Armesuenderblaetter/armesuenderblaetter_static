@@ -1093,6 +1093,8 @@ class WitnessSwitcher {
             this.scheduleNavigation(witness, index);
             this.switchToWitness(witness);
         } else {
+            // Ensure OSD sources are aligned with the active witness.
+            this.updateOSDImagesForWitness(witness);
             // If witness is already active, just navigate to the page.
             this.navigateViewerToIndex(index);
             this.syncTextWithPage(index); // This will update the text display
