@@ -2885,6 +2885,14 @@ body[data-active-witness="wmR"] [wit="#wmW"] {
     display: none !important;
 }
 
+/* Hide elements that carry a witness class when a different witness is active */
+body[data-active-witness="wmW"] .wmR,
+body[data-active-witness="wmW"] [class~="wmR"],
+body[data-active-witness="wmR"] .wmW,
+body[data-active-witness="wmR"] [class~="wmW"] {
+    display: none !important;
+}
+
 /* Hide main witness columns */
 body[data-active-witness="wmW"] .edition-witness-wmR,
 body[data-active-witness="wmR"] .edition-witness-wmW {

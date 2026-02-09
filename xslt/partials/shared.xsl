@@ -1020,5 +1020,22 @@
             <xsl:apply-templates mode="replace-equals"/>
         </xsl:copy>
     </xsl:template>
+
+    <xsl:template match="tei:app" mode="replace-equals">
+        <span class="app" id="{@xml:id}">
+            <xsl:for-each select="tei:lem">
+                <span class="rdg" wit="{@wit}">
+                    <xsl:apply-templates mode="replace-equals"/>
+                </span>
+                <xsl:text> </xsl:text>
+            </xsl:for-each>
+            <xsl:for-each select="tei:rdg">
+                <span class="rdg" wit="{@wit}">
+                    <xsl:apply-templates mode="replace-equals"/>
+                </span>
+                <xsl:text> </xsl:text>
+            </xsl:for-each>
+        </span>
+    </xsl:template>
     
 </xsl:stylesheet>

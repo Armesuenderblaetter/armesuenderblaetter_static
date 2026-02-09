@@ -99,6 +99,7 @@ class WitnessSwitcher {
                 // Discover witnesses and set up mapping
                 this.discoverWitnesses();
                 this.setupWitnessToSuffixMapping();
+                this.updateWitnessClassVisibilityStyles();
                 
                 console.log('🔄 INIT: Discovered witnesses:', Array.from(this.availableWitnesses));
                 
@@ -1180,6 +1181,9 @@ class WitnessSwitcher {
         // Update tab states
         this.updateTabStates(witness);
 
+        // Ensure witness-class visibility rules cover all known witnesses
+        this.updateWitnessClassVisibilityStyles();
+
 //         console.log(`✅ SWITCH: Finished switching to witness: ${witness}`);
     }
     
@@ -1354,6 +1358,43 @@ class WitnessSwitcher {
                 lb.classList.add('lb-hidden');
             }
         });
+    }
+
+    /**
+     * Build CSS rules to hide other-witness classes for any active witness.
+     */
+    updateWitnessClassVisibilityStyles() {
+        try {
+            const witnesses = Array.from(this.availableWitnesses).filter(w => w && w !== 'primary');
+            if (witnesses.length === 0) return;
+
+            const styleId = 'witness-class-visibility';
+            let styleEl = document.getElementById(styleId);
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = styleId;
+                document.head.appendChild(styleEl);
+            }
+
+            const escapeIdent = (value) => String(value).replace(/[^a-zA-Z0-9_-]/g, '\\$&');
+            const rules = [];
+
+            witnesses.forEach(active => {
+                const activeEsc = escapeIdent(active);
+                witnesses.forEach(other => {
+                    if (other === active) return;
+                    const otherEsc = escapeIdent(other);
+                    rules.push(
+                        `body[data-active-witness="${activeEsc}"] .${otherEsc}, ` +
+                        `body[data-active-witness="${activeEsc}"] [class~="${otherEsc}"] { display: none !important; }`
+                    );
+                });
+            });
+
+            styleEl.textContent = rules.join('\n');
+        } catch (e) {
+            // console.error('❌ updateWitnessClassVisibilityStyles error:', e);
+        }
     }
 
     /**
