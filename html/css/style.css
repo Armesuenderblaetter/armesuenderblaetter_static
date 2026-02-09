@@ -2504,7 +2504,7 @@ body[data-active-witness="oenb"] br.lb[wit="#wb"] {
     display: none !important;
 }
 
-.token .wrapped-text:has(+ br + .wrapped-text)::after {
+.token .wrapped-text:has(+ br.lb:not(.lb-hidden) + .wrapped-text)::after {
     content: "⹀";
     margin-left: 0;
 }

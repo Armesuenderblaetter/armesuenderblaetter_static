@@ -1332,11 +1332,22 @@ class WitnessSwitcher {
             .forEach(variant => variant.classList.add('active-witness'));
         
         // Filter line breaks (lb) by witness
-        // Line breaks have wit="#oenb", wit="#wb", or wit="#primary"
-        document.querySelectorAll('br.lb[wit]').forEach(lb => {
-            const wit = lb.getAttribute('wit');
-            // Show if: no wit, wit matches current witness, or wit is #primary (shared)
-            const shouldShow = !wit || wit === `#${witness}` || wit === '#primary';
+        const normalizeWitness = (value) => value ? value.replace(/^#/, '') : value;
+        const normalizedWitness = normalizeWitness(witness);
+        document.querySelectorAll('br.lb').forEach(lb => {
+            const wit = normalizeWitness(lb.getAttribute('wit'));
+            const dataWitness = normalizeWitness(lb.getAttribute('data-witness'));
+            const ancestorWitness = normalizeWitness(lb.closest('[data-witness]')?.getAttribute('data-witness'));
+            let shouldShow = true;
+
+            if (wit) {
+                shouldShow = wit === 'primary' || wit === normalizedWitness;
+            } else if (dataWitness) {
+                shouldShow = dataWitness === normalizedWitness;
+            } else if (ancestorWitness) {
+                shouldShow = ancestorWitness === normalizedWitness;
+            }
+
             if (shouldShow) {
                 lb.classList.remove('lb-hidden');
             } else {

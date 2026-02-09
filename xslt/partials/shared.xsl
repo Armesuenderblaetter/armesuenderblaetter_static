@@ -10,6 +10,14 @@
         </xsl:variable>
         <xsl:value-of select="concat(name($currentNode), '__', $nodeCurrNr)"/>
     </xsl:function>
+    <xsl:function name="local:resp-classes" as="xs:string">
+        <xsl:param name="node" as="node()?"/>
+        <xsl:sequence
+            select="if ($node and normalize-space($node/@resp) != '')
+                    then string-join(for $r in tokenize(normalize-space($node/@resp), '\s+')
+                                     return replace($r, '^#', ''), ' ')
+                    else ''"/>
+    </xsl:function>
     <!--<xsl:strip-space elements="fw"/>-->
     <xsl:strip-space elements="*"/>
     <xsl:template name="lstrip">
@@ -212,19 +220,25 @@
     </xsl:template>
     <xsl:template match="tei:lb" mode="#all">
         <xsl:variable name="witness_ref" select="if(@edRef) then (if(starts-with(@edRef, '#')) then @edRef else concat('#', @edRef)) else '#primary'"/>
-        <br class="lb" wit="{$witness_ref}"/>
+        <xsl:element name="br">
+            <xsl:attribute name="class" select="normalize-space(concat('lb ', local:resp-classes(.)))"/>
+            <xsl:attribute name="wit" select="$witness_ref"/>
+        </xsl:element>
     </xsl:template>
     <xsl:template match="tei:note">
         <xsl:choose>
             <xsl:when test="@anchored = 'true'">
                 <!-- Anchored notes are displayed as inline text with a special class -->
-                <span class="anchored-note">
+                <span class="{normalize-space(concat('anchored-note ', local:resp-classes(.)))}">
                     <xsl:apply-templates/>
                 </span>
             </xsl:when>
             <xsl:otherwise>
                 <!-- Regular notes are displayed as footnote links -->
                 <xsl:element name="a">
+                    <xsl:if test="normalize-space(@resp) != ''">
+                        <xsl:attribute name="class" select="local:resp-classes(.)"/>
+                    </xsl:if>
                     <xsl:attribute name="name">
                         <xsl:text>fna_</xsl:text>
                         <xsl:number level="any" format="1" count="tei:note[not(@anchored = 'true')]"/>
@@ -385,6 +399,11 @@
                     </xsl:when>
 
                 </xsl:choose>
+            </xsl:for-each>
+        </xsl:if>
+        <xsl:if test="normalize-space(@resp) != ''">
+            <xsl:for-each select="tokenize(normalize-space(@resp), '\s+')">
+                <xsl:value-of select="concat(replace(., '^#', ''), ' ')"/>
             </xsl:for-each>
         </xsl:if>
     </xsl:template>

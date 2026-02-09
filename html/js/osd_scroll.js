@@ -595,12 +595,25 @@ function show_only_current_page(current_page_index) {
 
 // Hide/show line breaks (lb) according to active witness
 function filterLineBreaksByWitness() {
-  const currentWitness = getCurrentWitness();
+  const normalizeWitness = (value) => value ? value.replace(/^#/, '') : value;
+  const bodyWitness = normalizeWitness(document.body.getAttribute('data-active-witness'));
+  const currentWitness = bodyWitness || normalizeWitness(getCurrentWitness());
   if (!currentWitness) return;
 
-  document.querySelectorAll('br.lb[wit]').forEach(lb => {
-    const wit = lb.getAttribute('wit');
-    const shouldShow = !wit || wit === `#${currentWitness}` || wit === '#primary';
+  document.querySelectorAll('br.lb').forEach(lb => {
+    const wit = normalizeWitness(lb.getAttribute('wit'));
+    const dataWitness = normalizeWitness(lb.getAttribute('data-witness'));
+    const ancestorWitness = normalizeWitness(lb.closest('[data-witness]')?.getAttribute('data-witness'));
+    let shouldShow = true;
+
+    if (wit) {
+      shouldShow = wit === 'primary' || wit === normalizedCurrent;
+    } else if (dataWitness) {
+      shouldShow = dataWitness === normalizedCurrent;
+    } else if (ancestorWitness) {
+      shouldShow = ancestorWitness === normalizedCurrent;
+    }
+
     if (shouldShow) {
       lb.classList.remove('lb-hidden');
     } else {
