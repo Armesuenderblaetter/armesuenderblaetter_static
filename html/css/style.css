@@ -2562,6 +2562,16 @@ ul#witness_overview.nav.nav-tabs li.nav-item button.nav-link {
     font-weight: bold;
 }
 
+ul#witness_pagination_tabs.nav.nav-tabs li.nav-item button.nav-link {
+    background-color: var(--asb-background-colour-button) !important;
+    color: var(--bs-white) !important;
+}
+
+ul#witness_pagination_tabs.nav.nav-tabs li.nav-item button.nav-link.active {
+    background-color: var(--asb-link-colour) !important;
+    color: var(--bs-white) !important;
+}
+
 *:target {
     background-color: aqua;
 }

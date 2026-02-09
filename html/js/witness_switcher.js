@@ -654,6 +654,7 @@ class WitnessSwitcher {
                         const target = Math.max(0, Math.min(this.pendingNavigation.index, Math.max(0, total - 1)));
                         if (typeof viewer.goToPage === 'function') {
                             viewer.goToPage(target);
+                            this.syncTextWithPage(target);
                             this.updatePaginationActiveState(this.currentWitness, target);
                             this.pendingNavigation = null;
                             return;
@@ -661,6 +662,7 @@ class WitnessSwitcher {
                     }
                     if (typeof viewer.goToPage === 'function') {
                         viewer.goToPage(0);
+                        this.syncTextWithPage(0);
                     }
                 } catch (e) {
                     // console.error('❌ Error applying pending navigation:', e);
@@ -1094,10 +1096,12 @@ class WitnessSwitcher {
             this.switchToWitness(witness);
         } else {
             // Ensure OSD sources are aligned with the active witness.
+            this.scheduleNavigation(witness, index);
+            this.updateTextForWitness(witness);
+            this.updateTabStates(witness);
             this.updateOSDImagesForWitness(witness);
             // If witness is already active, just navigate to the page.
             this.navigateViewerToIndex(index);
-            this.syncTextWithPage(index); // This will update the text display
         }
         window.current_page_index = index;
         this.updatePaginationActiveState(witness, index);
