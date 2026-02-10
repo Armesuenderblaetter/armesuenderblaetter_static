@@ -66,6 +66,11 @@ jobs:
         mkdir -p ./html/json
         cp json/punishments.json ./html/json/
         cp json/offences.json ./html/json/
+    - name: clean target html top-level files
+      run: |
+        if [ -d target/html ]; then
+          find target/html -maxdepth 1 -type f -delete
+        fi
     - name: sync html and edition xmls into target repo
       run: |
         mkdir -p target/html
