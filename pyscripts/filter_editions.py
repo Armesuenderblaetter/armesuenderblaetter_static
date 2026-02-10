@@ -82,19 +82,23 @@ def filter_editions(editions_dir: Path, events_file: Path) -> int:
 
         places = edition_places.get(edition_id, set())
 
+        # Known Vienna execution place is sufficient — keep regardless of pubPlace
+        if places and all(place in ALLOWED_PLACES for place in places):
+            continue
+
+        # Known execution place outside Vienna — remove
         if places:
-            valid_places = all(place in ALLOWED_PLACES for place in places)
-        else:
-            valid_places = True
-        printed_in_vienna = False
+            edition_path.unlink(missing_ok=True)
+            removed += 1
+            continue
 
-        if valid_places:
-            try:
-                printed_in_vienna = is_printed_in_vienna(edition_path)
-            except ET.ParseError as exc:  # pragma: no cover - safeguard for malformed XML
-                print(f"Failed to parse {edition_path}: {exc}", file=sys.stderr)
-
-        if not (valid_places and printed_in_vienna):
+        # No execution place info — fall back to pubPlace check
+        try:
+            if not is_printed_in_vienna(edition_path):
+                edition_path.unlink(missing_ok=True)
+                removed += 1
+        except ET.ParseError as exc:  # pragma: no cover - safeguard for malformed XML
+            print(f"Failed to parse {edition_path}: {exc}", file=sys.stderr)
             edition_path.unlink(missing_ok=True)
             removed += 1
 
