@@ -2482,13 +2482,13 @@ span.sic:hover::before {
     color: var(--editor-font-color) !important;
 }
 
-.lb {
+/*.lb {
   display: block;
   margin: 0;
   padding: 0;
   height: 0;
   line-height: 0;
-}
+} */
 
 /* Hide line breaks for inactive witnesses */
 br.lb.lb-hidden {
@@ -2525,10 +2525,10 @@ br.lb.current {
 }
 
 
-*.text_align_center span.lb::after,
+/* *.text_align_center span.lb::after,
 span.verse+span.lb::after {
      white-space: pre;
-}
+} */
 
 
 div.footnotes {
