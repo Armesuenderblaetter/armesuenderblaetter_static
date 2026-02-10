@@ -66,16 +66,20 @@ jobs:
         mkdir -p ./html/json
         cp json/punishments.json ./html/json/
         cp json/offences.json ./html/json/
-    - name: push html to target repo if necessary
+    - name: sync html and edition xmls into target repo
       run: |
-        status=`git status`
-        if [[ $status == *"git add"* ]]; then
+        mkdir -p target/html
+        cp -a html/. target/html/
+        mkdir -p target/data/editions
+        cp -a data/editions/. target/data/editions/
+    - name: push to target repo if necessary
+      run: |
+        cd target
+        if [[ -n "$(git status --porcelain)" ]]; then
           echo "changes detected"
-            cp -r html target/
-            cd target
-            git add html
-            git commit -m "$(date) new html data"
-            git push
+          git add html data/editions
+          git commit -m "$(date) new html and edition xml data"
+          git push
         else
           echo "nothing to push"
         fi
