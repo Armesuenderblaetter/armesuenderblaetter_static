@@ -10,6 +10,7 @@ const OSD_container_spawnpoint_id = "OSD-container-spawnpoint";
 const iiif_server_base_path =
   "https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/";
 const iiif_attribs = "/full/max/0/default.jpg";
+const iiif_info_suffix = "/info.json";
 const page_break_marker_classname = "pb primary";
 const page_break_marker_image_attribute = "source";
 // Removed automatic scrolling thresholds and intersection observer options
@@ -25,6 +26,10 @@ const height = screen.height;
 // iiif stuff
 function get_iif_link(filename) {
   return `${iiif_server_base_path}${filename}${iiif_attribs}`;
+}
+
+function get_iiif_info_url(filename) {
+  return `${iiif_server_base_path}${filename}${iiif_info_suffix}`;
 }
 
 function isVisible(el) {
@@ -330,15 +335,14 @@ function handle_new_image(page_index) {
   current_page_index = page_index;
   const current_pb_element = pb_elements_array[page_index];
   
-  new_image_url = get_iif_link(
-    current_pb_element.getAttribute(
-      page_break_marker_image_attribute
-    )
+  const facsId = current_pb_element.getAttribute(
+    page_break_marker_image_attribute
   );
+  new_image_url = get_iiif_info_url(facsId);
 //   console.log(`🔄 IMAGE: Loading image: ${new_image_url}`);
   
   old_image = viewer.world.getItemAt(0);
-  load_new_image_with_check(new_image_url, old_image);
+  load_new_image_with_check(new_image_url, old_image, facsId);
   
   // Update citation with correct page after image change
 //   console.log(`🔄 IMAGE: Updating citation for page ${page_index}`);
@@ -622,23 +626,37 @@ function filterLineBreaksByWitness() {
   });
 }
 
-function load_new_image_with_check(new_image_url, old_image) {
-  if (last_img_url != new_image_url){
+function load_new_image_with_check(new_image_url, old_image, facsId) {
+  if (last_img_url !== new_image_url) {
     last_img_url = new_image_url;
-    viewer.addSimpleImage({
-      url: new_image_url,
+    viewer.addTiledImage({
+      tileSource: new_image_url,
       success: function (event) {
-        function ready() {
-          if (viewer.world.getItemCount() > 1 && old_image) {
-            viewer.world.removeItem(old_image);
-          }
+        if (viewer.world.getItemCount() > 1 && old_image) {
+          viewer.world.removeItem(old_image);
         }
-        // test if item was loaded and trigger function to remove previous item
-        if (event.item) {
-          ready();
-        } else {
-          event.item.addOnceHandler("fully-loaded-change", ready());
+      },
+      error: function () {
+        const fallback_url = get_iif_link(facsId);
+        if (last_img_url === fallback_url) {
+          return;
         }
+        last_img_url = fallback_url;
+        viewer.addSimpleImage({
+          url: fallback_url,
+          success: function (event) {
+            function ready() {
+              if (viewer.world.getItemCount() > 1 && old_image) {
+                viewer.world.removeItem(old_image);
+              }
+            }
+            if (event.item) {
+              ready();
+            } else {
+              event.item.addOnceHandler("fully-loaded-change", ready());
+            }
+          },
+        });
       },
     });
   }
