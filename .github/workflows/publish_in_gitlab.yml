@@ -43,6 +43,9 @@ jobs:
     - name: Filter editions for Vienna executions
       run: |
         python pyscripts/filter_editions.py --editions-dir data/editions --events-file data/indices/events.xml
+    - name: Filter Typesense JSON to match surviving editions
+      run: |
+        python pyscripts/filter_typesense_json.py --editions-dir data/editions --typesense-json json/typesense_entries.json --persons-json json/persons.json
     - name: setup typesense
       run: |
         # ./pyscripts/reverse_name.py ./json/persons.json
