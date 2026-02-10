@@ -74,6 +74,14 @@ function ensureRequiredNoskeUrlParams() {
     changed = true;
   }
 
+  // Default to Textsuche unless the URL explicitly asks for CQL.
+  const selectModeRaw = url.searchParams.get("selectQueryValue");
+  const allowedSelectModes = new Set(["simple", "cql", "url"]);
+  if (!allowedSelectModes.has(selectModeRaw)) {
+    url.searchParams.set("selectQueryValue", "simple");
+    changed = true;
+  }
+
   if (changed) {
     // Best-effort only: when opened via file:// some browsers have origin "null"
     // and will throw on history URL updates.

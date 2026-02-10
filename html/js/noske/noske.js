@@ -726,8 +726,8 @@ async function I(r, e) {
     pagesize: e.pagesize,
     fromp: e.fromp,
   });
-  s === "url" && (t.value = "cql");
   let i = new URLSearchParams(window.location.search);
+  const modeForUrl = t?.value === "cql" ? "cql" : "simple";
   return (
     i.set("corpname", e.corpname),
     i.set("q", o),
@@ -740,7 +740,7 @@ async function I(r, e) {
     i.set("refs", e.refs),
     i.set("pagesize", e.pagesize.toString()),
     i.set("fromp", e.fromp.toString()),
-    i.set("selectQueryValue", "url"),
+    i.set("selectQueryValue", modeForUrl),
     window.history.pushState({}, "", `${window.location.pathname}?${i}`),
     n.Lines && n.Lines.length === 0
       ? "No results found"
@@ -1614,9 +1614,12 @@ var W = class {
         let l = new URL(window.location.href),
           y = l.searchParams.get("q");
         if (y) {
-          e ? (c.value = "simple") : (c.value = "cql");
+          let mode = l.searchParams.get("selectQueryValue");
+          const isUrlMode = mode === "url";
+          if (!isUrlMode && mode !== "cql" && mode !== "simple") mode = e ? "simple" : "cql";
+          c.value = isUrlMode ? "simple" : mode;
           let m = document.querySelector(`input#${n?.id}-input`);
-          m.value = y?.startsWith("q") ? y.slice(1) : y;
+          m.value = isUrlMode ? "" : y?.startsWith("q") ? y.slice(1) : y;
           let b = await I(y, {
             corpname: l.searchParams.get("corpname"),
             viewmode: l.searchParams.get("viewmode"),
