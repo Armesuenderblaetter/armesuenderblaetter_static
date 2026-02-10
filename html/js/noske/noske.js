@@ -1655,12 +1655,9 @@ var W = class {
       throw new Error("main search div container is not defined");
     if (!e) throw new Error("search input id is not defined");
     let n = document.querySelector(`#${this.container}`);
+    // render button first (left), then input, then select (right)
     n.innerHTML = `<div id="${e}" class="${o?.div || this.div1css}">
-        <select id="${`${e}-select`}"
-          class="${o?.select || this.selectQueryCss}">
-          <option value="simple">Einfache Suche</option>
-          <option value="cql">CQL</option>
-        </select>
+        <button id="noske-search-button" class="${o?.button || this.buttoncss}" aria-label="Suche">${s || this.button}</button>
         <input
           type="search"
           id="${`${e}-input`}"
@@ -1668,9 +1665,10 @@ var W = class {
           placeholder="${t || this.inputPlaceholder}"
           autocomplete="off"
         />
-        <button id="noske-search-button" class="${
-          o?.button || this.buttoncss
-        }">${s || this.button}</button>
+        <select id="${`${e}-select`}" class="${o?.select || this.selectQueryCss}">
+          <option value="simple">Textsuche</option>
+          <option value="cql">CQL</option>
+        </select>
       </div>
     `;
   }

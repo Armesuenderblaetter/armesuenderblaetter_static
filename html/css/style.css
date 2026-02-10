@@ -36,7 +36,100 @@
     --site-offcanvas-width: clamp(280px, 34vw, 400px);
     /* target height used for the action in the site-top (button or image) */
     --site-top-action-height: clamp(2.6rem, 4vw, 3.5rem);
+    --noske-search-btn-size: 2.6rem;
 }
+
+/* Noske search pill styling */
+.noske-search-div {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    /* outer visual pill covering button + input + select */
+    background: var(--bs-white);
+    /* match previous input border thickness and color */
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 999px;
+    /* padding: 0.125rem 0.25rem; */
+    max-width: 100%;
+    overflow: visible;
+}
+.noske-search-pill {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    gap: 0.25rem;
+    /* inner container: transparent so the outer pill provides the border */
+    background: transparent;
+    padding: 0 0.35rem 0 0.5rem;
+    border: none;
+}
+.noske-search-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--noske-search-btn-size) !important;
+    height: var(--noske-search-btn-size) !important;
+    border-radius: 999px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin: 0;
+    z-index: 2;
+    box-sizing: border-box;
+    aspect-ratio: 1 / 1;
+    margin-left: -1px;
+}
+.noske-search-button i { font-size: 1.1rem; }
+.noske-search-input {
+    border: none;
+    outline: none;
+    padding: 0.45rem 0.5rem;
+    min-width: 0;
+    flex: 1 1 auto;
+    background: transparent;
+}
+.noske-search-select {
+    border: none;
+    background: transparent;
+    padding: 0 0.6rem;
+    border-radius: 999px;
+    margin: 0;
+    z-index: 2;
+    flex: 0 0 auto;
+    max-width: 9rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    /* match the button height */
+    height: var(--noske-search-btn-size) !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-size: 0.9rem;
+    margin-right: -1px;
+}
+
+/* show focus state on the outer pill when input/select/button inside is focused */
+.noske-search-div:focus-within {
+    /* keep the same border color on focus as requested */
+    border-color: var(--asb-background-colour-2-button) !important;
+    box-shadow: none;
+}
+
+/* Ensure any other noske CSS cannot reintroduce vertical padding; force flush layout */
+body.page-noske-search .noske-search-div,
+.noske-search-div {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* higher specificity to override other stylesheet rules and ensure the exact color */
+body.page-noske-search .noske-search-div,
+.noske-search-div {
+    border: 2px solid var(--asb-background-colour-1-button) !important;
+}
+
 
 body {
     font-family: var(--bs-body-font-family);

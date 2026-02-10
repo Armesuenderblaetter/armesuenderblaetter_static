@@ -213,13 +213,17 @@ search.search({
   },
   searchInput: {
     id: "custom-noske-input",
-    placeholder: "suchen",
+    placeholder: "Stichwort",
     css: {
       div: "noske-search-div",
       select: "noske-search-select",
       input: "noske-search-input",
+      button: "noske-search-button p-2",
     },
+    // use search icon instead of text
+    button: '<i class="bi bi-search" aria-hidden="true"></i>',
   },
+
   stats: {
     id: "custom-noske-stats",
     css: {
@@ -239,6 +243,13 @@ function bindNoskeSearchSelectTrigger() {
   const searchSelect = document.getElementById("custom-noske-input-select");
   const searchButton = document.getElementById("noske-search-button");
   if (!searchSelect || !searchButton) return;
+
+  // Default to "Textsuche" (simple mode) unless the current URL explicitly
+  // carries a query (which may indicate a saved CQL search).
+  const { searchParams } = new URL(window.location.href);
+  if (!searchParams.has("q")) {
+    searchSelect.value = "simple";
+  }
 
   searchSelect.addEventListener("change", () => {
     searchButton.click();
