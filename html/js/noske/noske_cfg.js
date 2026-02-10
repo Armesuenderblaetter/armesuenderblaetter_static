@@ -234,3 +234,15 @@ search.search({
   },
 });
 search.minQueryLength=1;
+
+function bindNoskeSearchSelectTrigger() {
+  const searchSelect = document.getElementById("custom-noske-input-select");
+  const searchButton = document.getElementById("noske-search-button");
+  if (!searchSelect || !searchButton) return;
+
+  searchSelect.addEventListener("change", () => {
+    searchButton.click();
+  });
+}
+
+bindNoskeSearchSelectTrigger();
