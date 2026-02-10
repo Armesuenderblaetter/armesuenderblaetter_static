@@ -102,6 +102,37 @@ body.page-noske-search .search-col-left {
     background-color: var(--asb-background-colour-1-button-hover);
 }
 
+/* Match search select/button to crystal link style */
+body.page-noske-search .noske-search-select,
+body.page-noske-search #noske-search-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    background-color: var(--asb-background-colour-2-button);
+    color: var(--bs-white) !important;
+    border: 0 !important;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    line-height: 1.1;
+    cursor: pointer;
+}
+
+body.page-noske-search .noske-search-select:hover,
+body.page-noske-search .noske-search-select:focus,
+body.page-noske-search #noske-search-button:hover,
+body.page-noske-search #noske-search-button:focus {
+    background-color: var(--asb-background-colour-1-button-hover);
+    color: var(--bs-white) !important;
+}
+
+body.page-noske-search .noske-search-select:focus-visible,
+body.page-noske-search #noske-search-button:focus-visible {
+    outline: 2px solid var(--bs-white);
+    outline-offset: 2px;
+}
+
 /* Info button styling */
 .noske-info-btn {
     display: inline-flex;
@@ -145,6 +176,10 @@ body.page-noske-search .search-col-left {
     text-transform: uppercase;
     letter-spacing: 0.02em;
     font-size: 0.9rem;
+}
+
+body.page-noske-search .search-col-right .tabulator-header {
+     border-bottom: 1px solid #886848 !important;
 }
 
 .noske-hits-td {
@@ -198,6 +233,46 @@ body.page-noske-search .search-col-left {
 
 .noske-hits-kwic a:hover {
     background-color: var(--asb-background-colour-2);
+}
+
+/* Noske result value typography (Tabulator body cells only) */
+body.page-noske-search .tabulator .tabulator-cell[tabulator-field="titel"],
+body.page-noske-search .tabulator .tabulator-cell[tabulator-field="jahr"],
+body.page-noske-search .tabulator .tabulator-cell[tabulator-field="seite"] {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+body.page-noske-search .tabulator .tabulator-cell[tabulator-field="left"],
+body.page-noske-search .tabulator .tabulator-cell[tabulator-field="right"] {
+    font-family: 'Cormorant', serif;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+body.page-noske-search .tabulator .tabulator-cell[tabulator-field="kwic"],
+body.page-noske-search .tabulator .tabulator-cell.kwic {
+    font-family: 'Cormorant', serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: #886848;
+    text-align: center;
+}
+
+body.page-noske-search .tabulator .tabulator-cell[tabulator-field="kwic"] a,
+body.page-noske-search .tabulator .tabulator-cell.kwic a,
+body.page-noske-search .tabulator .tabulator-cell[tabulator-field="kwic"] a:visited,
+body.page-noske-search .tabulator .tabulator-cell.kwic a:visited {
+    color: #886848 !important;
+}
+
+body.page-noske-search .tabulator .tabulator-cell[tabulator-field="left"] {
+    text-align: right;
+}
+
+body.page-noske-search .tabulator .tabulator-cell[tabulator-field="left"] .kwic-left {
+    text-align: right !important;
 }
 
 /* pagination */

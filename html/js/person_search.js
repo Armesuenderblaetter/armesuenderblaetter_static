@@ -191,7 +191,7 @@ function createDecadeAgeSliderWidget({
 
 const iiif_server_base_path =
   "https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/";
-const iiif_attribs = "/full/260,/0/default.jpg";
+const iiif_attribs = "/full/360,/0/default.jpg";
 
 function get_iif_link(filename, place) {
   const placeMap = {

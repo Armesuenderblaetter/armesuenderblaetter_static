@@ -69,11 +69,11 @@ var config = {
     },
     autoColumns: false,
     columns:[
-        {title:"Titel", field:"titel", headerFilter:"input", formatter:"html", headerSort:true, download:false},
-        {title:"Jahr", field:"jahr", headerFilter:"input", formatter:"html", headerSort:true, download:false, width:80},
-        {title:"Seite", field:"seite", headerFilter:"input", formatter:"html", headerSort:true, download:false, width:80},
-        {title:"Linker Kotext", field:"left", headerFilter:"input", formatter:leftContextFormatter, download:false, headerSort:true, hozAlign:"right"},
-        {title:"Stichwort", field:"kwic", headerFilter:"input", download:false, formatter:cellClassFormatter, headerSort:true},
-        {title:"Rechter Kotext", field:"right", headerFilter:"input", formatter:"html", download:false, headerSort:true}, 
+      {title:"Titel", field:"titel", formatter:"html", headerSort:true, download:false},
+      {title:"Seite", field:"seite", formatter:"html", headerSort:true, download:false, width:110},
+      {title:"Jahr", field:"jahr", formatter:"html", headerSort:true, download:false, width:110},
+      {title:"Linker Kotext", field:"left", formatter:leftContextFormatter, download:false, headerSort:true, hozAlign:"right"},
+      {title:"Stichwort", field:"kwic", download:false, formatter:cellClassFormatter, headerSort:true},
+      {title:"Rechter Kotext", field:"right", formatter:"html", download:false, headerSort:true}, 
     ],
 };
