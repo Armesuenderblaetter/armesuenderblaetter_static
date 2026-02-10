@@ -134,6 +134,7 @@ body.page-noske-search .noske-search-div,
 body {
     font-family: var(--bs-body-font-family);
     background-color: var(--asb-background-colour-0);
+    font-size: 14px;
 }
 
 .site-header {
@@ -1920,20 +1921,36 @@ body.landing .landing-section-title {
     font-weight: 500;
 }
 
-body.landing h1.landing-section-title {
+body.landing h1.landing-section-title, h1 {
     font-size: 70px;
+    letter-spacing: 20px;
+    line-height: 80px;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #000000;
 }
 
 body.landing h2.landing-section-title {
-    font-size: 55px;
+    font-size: 3rem;
 }
 
-body.landing .landing-section-text p {
+h2 {
+    font-size: 3rem;    
+}
+
+.landing-section :where(p, ul, ol, li) {
     margin: 0;
     font-family: 'Barlow', sans-serif;
     font-weight: 400;
-    font-size: 20px;
+    font-size: 1.4rem;
 }
+
+/* Keep edition content at the tighter historic scale */
+#edition-text :where(p, ul, ol, li),
+.edition-text-inner :where(p, ul, ol, li) {
+    font-size: 1rem;
+}
+
 
 body.landing .landing-cta {
     margin-top: 1.25rem;
@@ -2466,8 +2483,8 @@ span.lemma::before {
 }
 
 *.hanging_indent {
-    text-indent: -1rem !important;
-    padding-left: 1rem !important;
+    text-indent: -4rem !important;
+    padding-left: 4rem !important;
 }
 
 *.superscript {

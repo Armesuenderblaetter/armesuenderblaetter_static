@@ -29,12 +29,12 @@
             <div class="offcanvas-body">
                 <nav class="site-menu" aria-label="Hauptmenü">
                     <div class="site-menu-section">Das Projekt</div>
-                    <a class="site-menu-link site-menu-link--leaf" href="toc.html">
+                    <!-- <a class="site-menu-link site-menu-link- -leaf" href="toc.html">
                         <span class="site-menu-bullet" aria-hidden="true">
                             <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
                         </span>
                         <span class="site-menu-text">Armesünderblätter</span>
-                    </a>
+                    </a> -->
                     <a class="site-menu-link site-menu-link--leaf" href="about.html">
                         <span class="site-menu-bullet" aria-hidden="true">
                             <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
