@@ -21,15 +21,25 @@ function extractWitnessFromThumbnail(thumbnail) {
 }
 
 function getDocumentLink(hit) {
+  const fileIdentifier = hit && (hit.file_identifier || hit.fileIdentifier);
+  const buildUrl = (identifier) => {
+    const base = `${identifier}.html`;
+    const witness = extractWitnessFromThumbnail(hit && hit.thumbnail);
+    return witness ? `${base}?tab=1${witness}` : base;
+  };
+
+  if (fileIdentifier) {
+    return buildUrl(fileIdentifier);
+  }
+
   const global_id = hit && hit.global_id;
   if (!global_id) {
     return '#';
   }
-  const match = global_id.match(/^pers_(fb_\d{8}_[^_]+)/);
+
+  const match = global_id.match(/^pers_(fb_\d{8}_.+?)_/);
   if (match) {
-    const base = `${match[1]}.html`;
-    const witness = extractWitnessFromThumbnail(hit && hit.thumbnail);
-    return witness ? `${base}?tab=1${witness}` : base;
+    return buildUrl(match[1]);
   }
   return '#';
 }
