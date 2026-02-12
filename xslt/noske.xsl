@@ -27,28 +27,18 @@
                             <div class="noske-left-section">
                                 <!-- <h3 class="noske-left-heading">Suche</h3> -->
                                 <div id="noske-search">
-                                    <div id="custom-noske-input" class="noske-search-div">
-                                        <button id="noske-search-button" class="noske-search-button p-2" aria-label="Suche">
-                                            <i class="bi bi-search" aria-hidden="true"></i>
-                                        </button>
-                                        <div class="noske-search-pill">
-                                            <input type="search" id="custom-noske-input-input" class="noske-search-input" placeholder="suchen" autocomplete="off" />
-                                        </div>
-                                        <select id="custom-noske-input-select" class="noske-search-select">
-                                            <option value="simple">Textsuche</option>
-                                            <option value="cql">CQL</option>
-                                        </select>
-                                    </div>
+                                    <div id="custom-noske-input"></div>
                                 </div>
                                 <div id="custom-noske-stats" class="noske-stats"/>
                             </div>
-
-                            <div class="noske-left-section noske-left-section-inline">
-                                <a href="https://flugblaetter-noske.acdh-dev.oeaw.ac.at/crystal/#open" class="noske-crystal-link">Erweiterte Suche (Extern)</a>
-                                <span class="noske-left-spacer"></span>
-                                <button id="infoBoxBtn" class="noske-info-btn">ⓘ</button>
+                            
+                            <div class="noske-left-section">
+                                <a href="https://flugblaetter-noske.acdh-dev.oeaw.ac.at/crystal/#open" class="noske-crystal-link">Erweiterte Suche in Crystal</a>
                             </div>
                             
+                            <div class="noske-left-section noske-help-section">
+                                <button id="infoBoxBtn" class="noske-info-btn">ⓘ Hilfe zur Suche</button>
+                            </div>
                             
                             <div class="person-left-tailpiece" aria-hidden="true"></div>
                         </div>
@@ -78,7 +68,7 @@
                     <div class="modal-content noske-modal-content">
                         <span class="close">×</span>
                         <div>
-                            <h2>Textsuche</h2>
+                            <h2>Einfache Suche</h2>
                             <div class="section">
                                 <h3>🔹 Wildcard (Platzhalterzeichen)</h3>
                                 <ul>

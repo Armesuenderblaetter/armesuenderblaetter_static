@@ -55,12 +55,6 @@
         <xsl:apply-templates/>
     </xsl:template>
 
-    <xsl:template match="tei:h1" mode="#all">
-        <h1>
-            <xsl:apply-templates/>
-        </h1>
-    </xsl:template>
-
     <xsl:template match="tei:head" mode="#all">
         <h2>
             <xsl:apply-templates/>

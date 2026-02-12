@@ -641,6 +641,74 @@ main {
     padding: 0;
 }
 
+.tei-front,
+.tei-body,
+.title-page {
+    display: block;
+    width: 100%;
+}
+
+.tei-front {
+    margin-bottom: 1rem;
+}
+
+.title-page {
+    margin: 0 auto 1rem;
+}
+
+.tei-body p {
+    display: block;
+    width: 100%;
+    max-width: 40rem;
+    margin: 0.5rem auto;
+    text-align: left;
+    padding: 0 1rem;
+}
+
+.tei-figure {
+    display: block;
+    margin: 1.5rem auto;
+    text-align: center;
+    width: min(100%, 640px);
+}
+
+.tei-figure .figure-icon {
+    display: inline-flex;
+    width: clamp(7.5rem, 50vw, 26rem);
+    min-height: clamp(3rem, 18vw, 12rem);
+    border-top: 2px solid var(--asb-border-color);
+    border-bottom: 2px solid var(--asb-border-color);
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    position: relative;
+}
+
+.tei-figure.has-iconclass .figure-icon {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.tei-figure.figure-type-ornament .figure-icon {
+    min-height: clamp(2.5rem, 12vw, 8rem);
+}
+
+.tei-figure.figure-type-vignette .figure-icon {
+    min-height: clamp(4rem, 24vw, 15rem);
+}
+
+.tei-figure .figure-caption {
+    display: block;
+    margin-top: 0.75rem;
+    font-family: var(--bs-font-sans-serif);
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: var(--asb-link-colour);
+    text-align: center;
+}
+
 .title_part {display: block !important; margin: 5px !important; }
 
 .catch {
@@ -1707,6 +1775,7 @@ div ul.ais-RefinementList-list {
     height: 100%;
     max-width: 75%;
     padding: 4rem;
+    font-size: 1.2rem!important;
 }
 
 
@@ -1948,7 +2017,7 @@ h2 {
 /* Keep edition content at the tighter historic scale */
 #edition-text :where(p, ul, ol, li),
 .edition-text-inner :where(p, ul, ol, li) {
-    font-size: 1rem;
+    font-size: 1.2rem;
 }
 
 
@@ -2221,13 +2290,15 @@ span.pb.nearly_no_content {
     height: 16rem;
 }
 
-span.pb.primary {
-    display: block;
-    width: 100%;
+span.pb.primary,
+span.pb.secondary {
+    display: inline;
+    width: auto;
     margin: 0;
+    padding: 0;
     color: inherit;
     border: 0;
-    opacity: .25;
+    opacity: 0;
 }
 
 .modal-body img {
@@ -2454,32 +2525,37 @@ span.lemma::before {
 }
 
 *.text_align_center {
-    display: inline-block;
+    display: block;
     text-align: center !important;
-    align-content: center !important;
     width: 100%;
 }
 
 
 *.antiqua {
-    font-style: italic !important;
+    font-family: var(--bs-font-sans-serif, sans-serif) !important;
 }
 
 *.majuscule {
     font-size: 150% !important;
 }
 
+*.bold {
+    font-weight: bold !important;
+}
+
 *.italic {
-    font-style: bold !important;
+    font-style: italic !important;
 }
 
 *.spaced {
-    letter-spacing: 5px;
+    letter-spacing: 0.125em;
     /*text-decoration: underline !important;     ABSTAND */
 }
 
 *.indent {
-    text-indent: 1rem !important;
+    display: block;
+    margin-left: 2em !important;
+    text-indent: 0 !important;
 }
 
 *.hanging_indent {
@@ -2488,12 +2564,20 @@ span.lemma::before {
 }
 
 *.superscript {
-    vertical-align: top !important;
+    vertical-align: super !important;
     font-size: 70%;
 }
 
 *.display_inline {
-    display: inline !important;
+    display: inline-block !important;
+}
+
+*.star {
+    display: block !important;
+}
+
+*.star::before {
+    content: "*";
 }
 
 *.editor_comment {
@@ -2981,9 +3065,9 @@ select.different {
     overflow: hidden;
 }
 
-/* Ensure page break markers are visible for navigation */
+/* Ensure page break markers remain inline so they do not split paragraphs */
 span.pb.primary {
-    display: block !important;
+    display: inline !important;
 }
 
 /* --- Witness Display Logic --- */
