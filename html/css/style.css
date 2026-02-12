@@ -1773,8 +1773,12 @@ div ul.ais-RefinementList-list {
     background-color: white ;
     color: black;
     height: 100%;
+    width: 100%;
     max-width: 75%;
-    padding: 4rem;
+    padding: 4rem 0;
+    display: grid;
+    grid-template-columns: minmax(auto, max-content);
+    justify-content: center;
     font-size: 1.2rem!important;
 }
 
