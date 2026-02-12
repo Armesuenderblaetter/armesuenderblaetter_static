@@ -1053,7 +1053,7 @@ function setupWitnessChangeListeners() {
       
   // Build URL and force reload - using current page number
   const newUrlObj = new URL(window.location.href);
-  newUrlObj.searchParams.set('tab', `${pageNumber}wm${witnessId}`);
+  newUrlObj.searchParams.set('tab', `${pageNumber}${witnessId}`);
   const newUrl = newUrlObj.toString();
       
 //       console.log(`RELOADING TO: ${newUrl}`);
@@ -1092,9 +1092,7 @@ function setupWitnessChangeListeners() {
         
   // Construct URL with current page number
   const newUrlObj = new URL(window.location.href);
-  newUrlObj.searchParams.set('tab', (witness === 'primary')
-        ? `${pageNumber}primary`
-        : `${pageNumber}wm${witness}`);
+  newUrlObj.searchParams.set('tab', `${pageNumber}${witness}`);
   const newUrl = newUrlObj.toString();
         
         // Prevent default and force reload
@@ -1118,7 +1116,7 @@ function setupWitnessChangeListeners() {
       // Get page number and construct URL - FIXED to use current_page_index
   const pageNumber = current_page_index + 1;
   const newUrlObj = new URL(window.location.href);
-  newUrlObj.searchParams.set('tab', `${pageNumber}wm${witness}`);
+  newUrlObj.searchParams.set('tab', `${pageNumber}${witness}`);
   const newUrl = newUrlObj.toString();
       
 //       console.log(`RELOADING TO: ${newUrl}`);

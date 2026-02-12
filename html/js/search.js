@@ -51,13 +51,22 @@ function extractWitnessFromThumbnail(thumbnail) {
   if (!thumbnail || typeof thumbnail !== 'string') {
     return '';
   }
-  const base = thumbnail.replace(/\.[^.]+$/, '');
-  const parts = base.split('_');
-  if (parts.length < 2) {
+  const filenameMatch = thumbnail.match(/\/([^\/]+)\.jp2/i);
+  const filename = filenameMatch ? filenameMatch[1] : (thumbnail.split('/').pop() || '');
+  const base = filename.replace(/\.jp2$/i, '').split('?')[0];
+  if (!base) {
     return '';
   }
-  parts.shift();
-  return parts.join('_');
+  const parts = base.split('_').filter(Boolean);
+  if (!parts.length) {
+    return '';
+  }
+  const witnessCandidate = parts[parts.length - 1];
+  if (witnessCandidate.length <= 8) {
+    return witnessCandidate;
+  }
+  const shortHyphenChunk = witnessCandidate.split('-').pop() || '';
+  return shortHyphenChunk.length <= 8 ? shortHyphenChunk : '';
 }
 
 function buildDocumentUrl(hit) {

@@ -1958,12 +1958,21 @@ window.createPaginationIfMissing = function() {
         if (!source || typeof source !== 'string') {
             return '';
         }
-        const base = source.replace(/\.[^.]+$/, '');
-        const firstUnderscore = base.indexOf('_');
-        if (firstUnderscore === -1) {
+        const filename = source.split('/').pop() || '';
+        const base = filename.replace(/\.[^.]+$/, '');
+        if (!base) {
             return '';
         }
-        return base.slice(firstUnderscore + 1);
+        const parts = base.split('_').filter(Boolean);
+        if (!parts.length) {
+            return '';
+        }
+        const candidate = parts[parts.length - 1];
+        if (candidate.length <= 8) {
+            return candidate;
+        }
+        const hyphenChunk = candidate.split('-').pop() || '';
+        return hyphenChunk.length <= 8 ? hyphenChunk : '';
     };
 
     const pageLinks = document.querySelectorAll('.page-link');
