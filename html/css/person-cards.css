@@ -207,9 +207,6 @@
 
 .edition-pagination-header .witness-pagination-container {
     pointer-events: auto;
-}
-
-.edition-pagination-header .witness-pagination-container {
     display: flex;
     justify-content: flex-end;
     overflow: visible;

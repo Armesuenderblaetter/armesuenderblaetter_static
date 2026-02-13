@@ -71,8 +71,7 @@ function extractWitnessFromThumbnail(thumbnail) {
 
 function buildDocumentUrl(hit) {
   const base = `${hit.id}.html`;
-  const witness = extractWitnessFromThumbnail(hit && hit.thumbnail);
-  return witness ? `${base}?tab=1${witness}` : base;
+  return base;
 }
 
 search.addWidgets([

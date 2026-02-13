@@ -133,36 +133,7 @@ function return_url(line) {
   }
   let doc_id = doc_id_entry.split("=")[1];
 
-  // Extract witness/archive
-  let witness = "oenb"; // Default
-  let doc_archive_entry = line.refs.find((ref) => ref.startsWith("doc.archive"));
-  if (doc_archive_entry) {
-    let archive_name = doc_archive_entry.split("=")[1];
-    if (ARCHIVE_CODE_MAP[archive_name]) {
-        witness = ARCHIVE_CODE_MAP[archive_name];
-    } else {
-        for (const [name, code] of Object.entries(ARCHIVE_CODE_MAP)) {
-            if (archive_name.includes(name)) {
-                witness = code;
-                break;
-            }
-        }
-    }
-  } else {
-      // Fallback: check doc.attrs for archive name
-      let doc_attrs_entry = line.refs.find((ref) => ref.startsWith("doc.attrs"));
-      if (doc_attrs_entry) {
-          let attrs = doc_attrs_entry.split("=")[1];
-          for (const [name, code] of Object.entries(ARCHIVE_CODE_MAP)) {
-              if (attrs.includes(name)) {
-                  witness = code;
-                  break;
-              }
-          }
-      }
-  }
-
-  return `./${doc_id}.html?tab=${witness}#${token_id}`;
+  return `./${doc_id}.html#${token_id}`;
 }
 
 const urlForClient = new URL(window.location.href);

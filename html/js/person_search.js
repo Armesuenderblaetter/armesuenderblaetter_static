@@ -33,8 +33,7 @@ function getDocumentLink(hit) {
   const fileIdentifier = hit && (hit.file_identifier || hit.fileIdentifier);
   const buildUrl = (identifier) => {
     const base = `${identifier}.html`;
-    const witness = extractWitnessFromThumbnail(hit && hit.thumbnail);
-    return witness ? `${base}?tab=1${witness}` : base;
+    return base;
   };
 
   if (fileIdentifier) {

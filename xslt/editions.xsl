@@ -49,7 +49,9 @@
                         display: none !important;
                     }</style>
                 <link rel="stylesheet" href="css/micro-editor.css" />
-                <link rel="stylesheet" href="css/variant-switcher.css" />
+                <xsl:if test="count(//tei:witness) &gt; 1">
+                    <link rel="stylesheet" href="css/variant-switcher.css" />
+                </xsl:if>
                 <link rel="stylesheet" href="css/person-cards.css" />
             </head>
              <body class="d-flex flex-column h-100 has-site-top page-search page-person-search">
@@ -147,7 +149,9 @@
                 <xsl:call-template name="html_footer"/>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"/>
                 <script type="text/javascript" src="js/osd_scroll.js"/>
-                <script type="text/javascript" src="js/witness_switcher.js"/>
+                <xsl:if test="count(//tei:witness) &gt; 1">
+                    <script type="text/javascript" src="js/witness_switcher.js"/>
+                </xsl:if>
                 <script src="https://unpkg.com/de-micro-editor@0.3.4/dist/de-editor.min.js"/>
                 <script type="text/javascript" src="js/run.js"/>
             </body>

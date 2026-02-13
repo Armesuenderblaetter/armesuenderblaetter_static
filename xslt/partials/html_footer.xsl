@@ -31,9 +31,8 @@
                         </div>
                         <div class="col-3 logo">
                          <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
-                                <img src="images/logo_oeaw.svg" width="120" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
+                                <img src="images/logo_oeaw.svg" height="80%" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
                             </a>
-                            <div class="footer-2">Österreichische Akademie der Wissenschaften</div>
                         </div>
                     </div>
                 </div>
