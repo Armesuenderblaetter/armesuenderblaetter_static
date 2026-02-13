@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Filter Typesense JSON files to keep only entries whose editions survived filtering.
 
-Run this AFTER filter_editions.py and BEFORE setup_typesense.py /
-setup_person_typesense.py so that only the editions still present in
+Run this AFTER filter_editions.py and BEFORE ts_index.py so that only
+the editions still present in
 data/editions are indexed.
 """
 

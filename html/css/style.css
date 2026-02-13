@@ -1359,15 +1359,24 @@ body.page-person-search .person-age-pill-slider .noUi-tooltip {
 
 /* Birth place + execution place lists: hidden by default; shown via their buttons */
 body.page-person-search #birth_place,
-body.page-person-search #execution_places {
+body.page-person-search #execution_places,
+body.page-person-search #person_names,
+body.page-person-search #person_birth_place,
+body.page-person-search #person_execution_places {
     display: none;
 }
 
-body.page-person-search.birth-place-list-visible #birth_place {
+body.page-person-search.birth-place-list-visible #birth_place,
+body.page-person-search.birth-place-list-visible #person_birth_place {
     display: block;
 }
 
-body.page-person-search.execution-place-list-visible #execution_places {
+body.page-person-search.execution-place-list-visible #execution_places,
+body.page-person-search.execution-place-list-visible #person_execution_places {
+    display: block;
+}
+
+body.page-person-search.person-name-list-visible #person_names {
     display: block;
 }
 

@@ -22,39 +22,63 @@
                             <div class="person-left-togglebar">
                                 <label class="person-view-toggle" for="personViewToggle">
                                     <input type="checkbox" id="personViewToggle" />
-                                    <span class="person-view-toggle-text">Steckbriefansicht</span>
+                                    <span class="person-view-toggle-text">Detailansicht</span>
                                 </label>
                             </div>
 
-                            <div class="person-left-section">
-                                <h3 class="person-left-heading">Name</h3>
+                            <!-- Document-level facets -->
+                            <div class="person-left-section person-left-section--name">
+                                <h3 class="person-left-heading">TITEL</h3>
                                 <div class="person-name-search">
                                     <div class="person-name-search-inner">
                                         <div id="searchbox"></div>
-                                        <button type="button" class="person-view-list-btn" id="personViewListBtn">Als Liste zeigen</button>
                                     </div>
                                 </div>
-                                <div id="name_list"></div>
                             </div>
-                            <div class="person-left-section">
+
+                            <div class="person-left-facet">
+                                <h3 class="person-left-heading">Publikationsdatum</h3>
+                                <div id="label_date"></div>
+                            </div>
+                            <div class="person-left-facet">
+                                <h3 class="person-left-heading">Archiv</h3>
+                                <div id="archives"></div>
+                            </div>
+
+                            <!-- Person-level facets -->
+                            <div class="person-left-section person-left-section--birth-place">
+                                <h3 class="person-left-heading">Personen</h3>
+                                <div class="person-name-search">
+                                    <div class="person-name-search-inner">
+                                        <div class="ais-SearchBox" aria-label="Name filtern">
+                                            <form class="ais-SearchBox-form" role="search" onsubmit="return false;">
+                                                <input class="ais-SearchBox-input person-facet-filter" id="personNameFilter" type="search" placeholder="Suchen" autocomplete="off" />
+                                            </form>
+                                        </div>
+                                        <button type="button" class="person-view-list-btn" id="personNameListBtn">Als Liste zeigen</button>
+                                    </div>
+                                </div>
+                                <div id="person_names"></div>
+                            </div>
+                            <div class="person-left-facet">
                                 <h3 class="person-left-heading">Geschlecht</h3>
-                                <div id="sex"></div>
+                                <div id="person_sex"></div>
                             </div>
-                            <div class="person-left-section">
+                            <div class="person-left-facet">
                                 <h3 class="person-left-heading">Alter</h3>
-                                <div class="person-age-pill" aria-label="Alter filtern">
-                                    <div class="person-age-pill-slider">
-                                        <div id="decadeAgeSlider"></div>
+                                    <div class="person-age-pill" aria-label="Alter filtern">
+                                        <div class="person-age-pill-slider">
+                                            <div id="decadeAgeSlider"></div>
+                                        </div>
+                                        <div class="person-age-pill-count" aria-label="Anzahl Treffer">
+                                            <span id="decadeAgeCount"></span>
+                                        </div>
                                     </div>
-                                    <div class="person-age-pill-count" aria-label="Anzahl Treffer">
-                                        <span id="decadeAgeCount"></span>
-                                    </div>
-                                </div>
-                                <div id="decade_age" class="person-age-hidden"></div>
+                                    <div id="person_decade_age" class="person-age-hidden"></div>
                             </div>
-                            <div class="person-left-section">
+                            <div class="person-left-facet">
                                 <h3 class="person-left-heading">Familienstand</h3>
-                                <div id="marriage_status"></div>
+                                <div id="person_marriage_status"></div>
                             </div>
                             <div class="person-left-section person-left-section--birth-place">
                                 <h3 class="person-left-heading">Geburtsort</h3>
@@ -68,11 +92,15 @@
                                         <button type="button" class="person-view-list-btn" id="birthPlaceListBtn">Als Liste zeigen</button>
                                     </div>
                                 </div>
-                                <div id="birth_place"></div>
+                                <div id="person_birth_place"></div>
                             </div>
-                            <div class="person-left-section">
+                            <div class="person-left-facet">
                                 <h3 class="person-left-heading">Konfession</h3>
-                                <div id="faith"></div>
+                                <div id="person_faith"></div>
+                            </div>
+                            <div class="person-left-facet">
+                                <h3 class="person-left-heading">Verbrechen</h3>
+                                <div id="person_offences"></div>
                             </div>
                             <div class="person-left-section person-left-section--execution-place">
                                 <h3 class="person-left-heading">Hinrichtungsort</h3>
@@ -86,7 +114,11 @@
                                         <button type="button" class="person-view-list-btn" id="executionPlaceListBtn">Als Liste zeigen</button>
                                     </div>
                                 </div>
-                                <div id="execution_places"></div>
+                                <div id="person_execution_places"></div>
+                            </div>
+                            <div class="person-left-facet">
+                                <h3 class="person-left-heading">Hinrichtungsart</h3>
+                                <div id="person_execution"></div>
                             </div>
                             <div id="sort-by"></div>
                             <div id="clear-refinements"></div>
@@ -115,7 +147,7 @@
                 <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4.46.0"></script>
                 <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
                 <script src="https://cdn.jsdelivr.net/npm/typesense-instantsearch-adapter@2/dist/typesense-instantsearch-adapter.min.js"></script>
-                <script src="js/person_search.js"></script>
+                <script src="js/document_search.js"></script>
                 <xsl:call-template name="html_footer"/>
             </body>
 

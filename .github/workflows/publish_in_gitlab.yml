@@ -49,8 +49,7 @@ jobs:
     - name: setup typesense
       run: |
         # ./pyscripts/reverse_name.py ./json/persons.json
-        ./pyscripts/setup_typesense.py
-        ./pyscripts/setup_person_typesense.py
+        ./pyscripts/ts_index.py
     - name: denormalize
       run: |
         ./shellscripts/denormalize_indices.sh
