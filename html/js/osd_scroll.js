@@ -11,7 +11,9 @@ const iiif_server_base_path =
   "https://iiif.acdh.oeaw.ac.at/iiif/images/todesurteile/";
 const iiif_attribs = "/full/max/0/default.jpg";
 const iiif_info_suffix = "/info.json";
-const page_break_marker_classname = "pb primary";
+// IMPORTANT: page breaks must be witness-aware. We collect all `span.pb` markers
+// and then filter to the active witness (or shared pbs without data-witness).
+const page_break_marker_classname = "pb";
 const page_break_marker_image_attribute = "source";
 // Removed automatic scrolling thresholds and intersection observer options
 
@@ -202,6 +204,30 @@ creates an array for osd viewer with static images
 var pb_elements = document.getElementsByClassName(page_break_marker_classname);
 var pb_elements_array = Array.from(pb_elements);
 
+function getPbElementsForWitness(witness) {
+  const editionText = document.getElementById('edition-text');
+  const root = editionText?.querySelector('.edition-text-inner') || editionText || document;
+  const allPbs = Array.from(root.querySelectorAll('span.pb'));
+  if (allPbs.length === 0) return [];
+
+  const normalizedWitness = normalizeWitness(witness);
+  const hasWitnessMarkers = allPbs.some(pb => pb.hasAttribute('data-witness'));
+  if (!hasWitnessMarkers) {
+    return allPbs;
+  }
+
+  return allPbs.filter(pb => {
+    const pbWit = normalizeWitness(pb.getAttribute('data-witness'));
+    return !pbWit || pbWit === normalizedWitness;
+  });
+}
+
+function syncPbElementsArrayToCurrentWitness() {
+  const witness = getCurrentWitness();
+  pb_elements_array = getPbElementsForWitness(witness);
+  max_index = pb_elements_array.length - 1;
+}
+
 // Expose functions for witness_switcher.js
 window.show_only_current_page = show_only_current_page;
 window.handle_new_image = handle_new_image;
@@ -273,6 +299,17 @@ if (editionText) {
     subtree: true
   });
 //   console.log('Mutation observer set up to watch for _d_ elements');
+}
+
+// Ensure pb_elements_array matches the requested witness (e.g., wit=secondary)
+// even before witness_switcher.js runs.
+try {
+  if (editionText) {
+    normalize_page_break_nesting(editionText);
+  }
+  syncPbElementsArrayToCurrentWitness();
+} catch (e) {
+  console.warn('osd_scroll: failed to sync page breaks to witness', e);
 }
 
 /*
@@ -490,8 +527,8 @@ function show_only_current_page(current_page_index) {
       let next = node.nextSibling;
       while (next && next.nodeType !== Node.ELEMENT_NODE) next = next.nextSibling;
       if (next && next.classList.contains('pb')) {
-        const wit = next.getAttribute('wit');
-        if (!wit || wit === currentWitness || wit === 'primary') {
+        const wit = next.getAttribute('data-witness');
+        if (!wit || wit === currentWitness) {
           node.style.setProperty('display', '');
         }
       }
@@ -513,25 +550,24 @@ function show_only_current_page(current_page_index) {
         let nextEl = node.nextSibling;
         while (nextEl && nextEl.nodeType !== Node.ELEMENT_NODE) nextEl = nextEl.nextSibling;
 
-        // Find next primary pb in the following siblings
+        // Find the next page break that belongs to the active witness (or is shared).
         let ownerPb = null;
         let scan = nextEl;
         while (scan) {
           if (scan.nodeType === Node.ELEMENT_NODE && scan.classList && scan.classList.contains('pb')) {
-            if (scan.classList.contains('primary')) {
+            const wit = normalizeWitness(scan.getAttribute('data-witness'));
+            if (!wit || wit === normalizeWitness(currentWitness)) {
               ownerPb = scan;
               break;
             }
-            // Keep first pb as a fallback if no primary pb exists later
             if (!ownerPb) ownerPb = scan;
           }
           scan = scan.nextSibling;
         }
 
         if (ownerPb) {
-          const wit = ownerPb.getAttribute('wit');
-          // Treat primary as shared; otherwise only show for current witness
-          shouldShow = !wit || wit === currentWitness || wit === 'primary';
+          const wit = ownerPb.getAttribute('data-witness');
+          shouldShow = !wit || wit === currentWitness;
         } else {
           // No following pb -> safest is to hide
           shouldShow = false;
@@ -543,9 +579,9 @@ function show_only_current_page(current_page_index) {
       } else {
         // No data-witness: default to shared (show for all witnesses)
         if (node.classList.contains('pb')) {
-          // For pb elements, check wit attribute to decide; treat primary as shared
-          const wit = node.getAttribute('wit');
-          shouldShow = !wit || wit === currentWitness || wit === 'primary';
+          // For pb elements, check data-witness attribute to decide; treat primary as shared
+          const wit = node.getAttribute('data-witness');
+          shouldShow = !wit || wit === currentWitness;
         } else {
           // Keep whatever decision was computed above (e.g., layer_counter logic).
           // Default remains "shared" because shouldShow starts as true.
@@ -565,9 +601,9 @@ function show_only_current_page(current_page_index) {
 
     // Ensure pb elements with mismatching witness are hidden
     Array.from(editionText.querySelectorAll('span.pb')).forEach(pb => {
-      const wit = pb.getAttribute('wit');
-      // Treat primary as shared; hide only pbs that are explicitly for another witness
-      if (wit && wit !== currentWitness && wit !== 'primary') {
+      const wit = pb.getAttribute('data-witness');
+      // Hide only pbs that are explicitly for another witness
+      if (wit && wit !== currentWitness) {
         pb.style.setProperty('display', 'none', 'important');
       } else {
         pb.style.removeProperty('display');
@@ -581,17 +617,18 @@ function show_only_current_page(current_page_index) {
     // in the DOM (e.g., wmW before wmR). Using the first following pb would incorrectly
     // hide shared catchwords for the active witness.
     Array.from(editionText.querySelectorAll('.col.catch.fw')).forEach(catchEl => {
-      const witnessPbs = Array.from(
-        editionText.querySelectorAll(`span.pb[wit="${currentWitness}"], span.pb[wit="primary"]`)
-      );
+      const witnessPbs = Array.from(editionText.querySelectorAll('span.pb')).filter(pb => {
+        const wit = normalizeWitness(pb.getAttribute('data-witness'));
+        return !wit || wit === normalizeWitness(currentWitness);
+      });
 
       const nextWitnessPb = witnessPbs.find(pb =>
         (catchEl.compareDocumentPosition(pb) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0
       );
 
       if (nextWitnessPb) {
-        const wit = nextWitnessPb.getAttribute('wit');
-        if (wit && wit !== currentWitness && wit !== 'primary') {
+        const wit = nextWitnessPb.getAttribute('data-witness');
+        if (wit && wit !== currentWitness) {
           catchEl.style.setProperty('display', 'none', 'important');
         }
       }
@@ -611,17 +648,14 @@ function filterLineBreaksByWitness() {
   if (!currentWitness) return;
 
   document.querySelectorAll('br.lb').forEach(lb => {
-    const wit = normalizeWitness(lb.getAttribute('wit'));
     const dataWitness = normalizeWitness(lb.getAttribute('data-witness'));
     const ancestorWitness = normalizeWitness(lb.closest('[data-witness]')?.getAttribute('data-witness'));
     let shouldShow = true;
 
-    if (wit) {
-      shouldShow = wit === 'primary' || wit === normalizedCurrent;
-    } else if (dataWitness) {
-      shouldShow = dataWitness === normalizedCurrent;
+    if (dataWitness) {
+      shouldShow = dataWitness === currentWitness;
     } else if (ancestorWitness) {
-      shouldShow = ancestorWitness === normalizedCurrent;
+      shouldShow = ancestorWitness === currentWitness;
     }
 
     if (shouldShow) {
@@ -918,7 +952,7 @@ function buildSingleWitnessPagination() {
 // Actual page link updating logic (extracted)
 function updatePageLinksActual(page_links) {
   console.log('OSD: Updating', page_links.length, 'existing page links');
-  const hasWitnessMarkers = document.querySelectorAll('[data-witness], .pb[wit], .rdg[wit]').length > 0;
+  const hasWitnessMarkers = document.querySelectorAll('[data-witness]').length > 0;
   
   // Normalize witness IDs (strip leading "wit-" if present)
   const cleanWitnessId = function(witness) {
@@ -1050,15 +1084,15 @@ function getCurrentWitness() {
     }
     
     // If there are no witness markers, treat as single-witness and return null
-    const hasWitnessMarkers = document.querySelectorAll('[data-witness], .pb[wit], .rdg[wit]').length > 0;
+    const hasWitnessMarkers = document.querySelectorAll('[data-witness]').length > 0;
     if (!hasWitnessMarkers) {
       return null;
     }
 
     // FOURTH PRIORITY: Try to detect witness from the currently visible page breaks
-    const visiblePbs = document.querySelectorAll('.pb.active-witness-pb[wit], .pb.active-witness-pb[data-witness]');
+    const visiblePbs = document.querySelectorAll('.pb.active-witness-pb[data-witness]');
     if (visiblePbs && visiblePbs.length > 0) {
-      const wit = visiblePbs[0].getAttribute('wit') || visiblePbs[0].getAttribute('data-witness');
+      const wit = visiblePbs[0].getAttribute('data-witness');
       if (wit) {
         return String(wit).trim().toLowerCase();
       }

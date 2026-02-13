@@ -157,13 +157,12 @@
 
     <xsl:template match="tei:pb" mode="#all">
         <xsl:variable name="witness_id" select="if (@edRef) then replace(@edRef, '^#', '') else ''"/>
-        <xsl:variable name="witness_label" select="if (local:has-multiple-witnesses(.))
-            then (if ($witness_id != '') then local:witness-label(., $witness_id) else 'primary')
-            else ''"/>
+        <xsl:variable name="witness_label" select="if ($witness_id != '' and local:has-multiple-witnesses(.))
+            then local:witness-label(., $witness_id)
+            else ''" />
         <xsl:variable name="pb_type" select="if(@type) then @type else 'primary'"/>
         <span class="pb {$pb_type}" source="{@facs}" data-pb-type="{$pb_type}">
             <xsl:if test="$witness_label != ''">
-                <xsl:attribute name="wit" select="$witness_label"/>
                 <xsl:attribute name="data-witness" select="$witness_label"/>
             </xsl:if>
         </span>
@@ -221,7 +220,7 @@
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
-        <span class="{$rendering} quote">
+        <span class="{normalize-space(concat($rendering, 'quote'))}">
             <xsl:apply-templates/>
         </span>
     </xsl:template>
@@ -229,7 +228,7 @@
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
-        <span class="{$rendering} imprimatur">
+        <span class="{normalize-space(concat($rendering, 'imprimatur'))}">
             <xsl:apply-templates/>
         </span>
     </xsl:template>
@@ -237,7 +236,7 @@
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
-        <span class="{$rendering} imprint">
+        <span class="{normalize-space(concat($rendering, 'imprint'))}">
             <xsl:apply-templates/>
         </span>
     </xsl:template>
@@ -245,7 +244,7 @@
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
-        <div class="{$rendering} closer">
+        <div class="{normalize-space(concat($rendering, 'closer'))}">
             <xsl:apply-templates/>
         </div>
     </xsl:template>
@@ -256,13 +255,12 @@
     </xsl:template>
     <xsl:template match="tei:lb" mode="#all">
         <xsl:variable name="witness_id" select="if (@edRef) then replace(@edRef, '^#', '') else ''"/>
-        <xsl:variable name="witness_label" select="if (local:has-multiple-witnesses(.))
-            then (if ($witness_id != '') then local:witness-label(., $witness_id) else 'primary')
+        <xsl:variable name="witness_label" select="if ($witness_id != '' and local:has-multiple-witnesses(.))
+            then local:witness-label(., $witness_id)
             else ''"/>
         <xsl:element name="br">
             <xsl:attribute name="class" select="normalize-space(concat('lb ', local:resp-classes(.)))"/>
             <xsl:if test="$witness_label != ''">
-                <xsl:attribute name="wit" select="$witness_label"/>
                 <xsl:attribute name="data-witness" select="$witness_label"/>
             </xsl:if>
         </xsl:element>
@@ -314,7 +312,10 @@
                 <xsl:variable name="rendering">
                     <xsl:call-template name="rendition_2_class"/>
                 </xsl:variable>
-                <li class="{$rendering}">
+                <li>
+                    <xsl:if test="normalize-space($rendering) != ''">
+                        <xsl:attribute name="class" select="normalize-space($rendering)"/>
+                    </xsl:if>
                     <xsl:apply-templates/>
                 </li>
             </xsl:when>
@@ -334,23 +335,23 @@
                 </xsl:element>
             </xsl:when>
             <xsl:when test="@type = 'footer'">
-                <div class="row layer_counter {$rendering} fw">
+                <div class="{normalize-space(concat('row layer_counter ', $rendering, 'fw'))}">
                     <div class="col fw" />
                     <xsl:apply-templates/>
                 </div>
             </xsl:when>
             <xsl:when test="@type = 'pageNum'">
-                <div class="col page_number {$rendering} fw">
+                <div class="{normalize-space(concat('col page_number ', $rendering, 'fw'))}">
                     <xsl:apply-templates/>
                 </div>
             </xsl:when>
             <xsl:when test="@type = 'sig'">
-                <div class="col sig {$rendering} fw">
+                <div class="{normalize-space(concat('col sig ', $rendering, 'fw'))}">
                     <xsl:apply-templates/>
                 </div>
             </xsl:when>
             <xsl:when test="@type = 'footnote'">
-                <span class="footnote {$rendering} fw">
+                <span class="{normalize-space(concat('footnote ', $rendering, 'fw'))}">
                     <xsl:apply-templates/>
                 </span>
             </xsl:when>
@@ -379,7 +380,10 @@
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
-        <span class="{$rendering}">
+        <span>
+            <xsl:if test="normalize-space($rendering) != ''">
+                <xsl:attribute name="class" select="normalize-space($rendering)"/>
+            </xsl:if>
             <xsl:apply-templates/>
         </span>
     </xsl:template>
@@ -387,9 +391,30 @@
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
-        <h4 class="{$rendering}">
+        <h4>
+            <xsl:if test="normalize-space($rendering) != ''">
+                <xsl:attribute name="class" select="normalize-space($rendering)"/>
+            </xsl:if>
             <xsl:apply-templates/>
         </h4>
+    </xsl:template>
+    <xsl:template match="tei:h1" mode="#all">
+        <h1>
+            <xsl:copy-of select="@*[not(namespace-uri())]"/>
+            <xsl:apply-templates/>
+        </h1>
+    </xsl:template>
+    <xsl:template match="tei:h2" mode="#all">
+        <h2>
+            <xsl:copy-of select="@*[not(namespace-uri())]"/>
+            <xsl:apply-templates/>
+        </h2>
+    </xsl:template>
+    <xsl:template match="tei:h3" mode="#all">
+        <h3>
+            <xsl:copy-of select="@*[not(namespace-uri())]"/>
+            <xsl:apply-templates/>
+        </h3>
     </xsl:template>
     <xsl:template name="rendition_2_class">
         <xsl:if test="@rendition">
@@ -437,7 +462,14 @@
                     </xsl:when>
                     <xsl:when test=". = 'sc'">
                         <xsl:text>smallcaps </xsl:text>
-                        <!--Horizontale Linie-->
+                    </xsl:when>
+                    <xsl:when test=". = 'b'">
+                        <!--Fettdruck-->
+                        <xsl:text>bold </xsl:text>
+                    </xsl:when>
+                    <xsl:when test=". = 'star'">
+                        <!--Stern-->
+                        <xsl:text>star </xsl:text>
                     </xsl:when>
 
                 </xsl:choose>
@@ -464,7 +496,7 @@
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
-        <p class="{$rendering} versegroup">
+        <p class="{normalize-space(concat($rendering, 'versegroup'))}">
             <xsl:apply-templates/>
         </p>
     </xsl:template>
@@ -472,7 +504,7 @@
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
-        <span class="{$rendering} verse">
+        <span class="{normalize-space(concat($rendering, 'verse'))}">
             <xsl:attribute name="id">
                 <xsl:value-of select="@xml:id"/>
             </xsl:attribute>
@@ -483,7 +515,10 @@
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
-        <p class="{$rendering}">
+        <p>
+            <xsl:if test="normalize-space($rendering) != ''">
+                <xsl:attribute name="class" select="normalize-space($rendering)"/>
+            </xsl:if>
             <xsl:attribute name="id">
                 <xsl:value-of select="@xml:id"/>
             </xsl:attribute>
@@ -497,7 +532,7 @@
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
-        <span class="{$rendering} title_part">
+        <span class="{normalize-space(concat($rendering, 'title_part'))}">
             <xsl:apply-templates/>
         </span>
     </xsl:template>
@@ -505,7 +540,10 @@
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
-        <span class="{$rendering}">
+        <span>
+            <xsl:if test="normalize-space($rendering) != ''">
+                <xsl:attribute name="class" select="normalize-space($rendering)"/>
+            </xsl:if>
             <xsl:apply-templates/>
         </span>
     </xsl:template>
@@ -925,7 +963,7 @@
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
-        <div class="{$rendering} modal fade" id="{@xml:id}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="{./tei:title[@type='main']}" aria-hidden="true">
+        <div class="{normalize-space(concat($rendering, 'modal fade'))}" id="{@xml:id}" data-bs-keyboard="false" tabindex="-1" aria-labelledby="{./tei:title[@type='main']}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -1021,14 +1059,14 @@
             </div>
         </div>
     </xsl:template>
-    <!-- Improved tei:app template: wrap both lem and rdg in spans with wit, and add a space after each -->
+    <!-- Improved tei:app template: wrap both lem and rdg in spans with data-witness, and add a space after each -->
     <xsl:template match="tei:app" mode="#all">
         <span class="app" id="{@xml:id}">
             <xsl:for-each select="tei:lem">
                 <xsl:variable name="witness_label" select="local:witness-label(., substring-after(@wit, '#'))"/>
                 <span class="rdg">
                     <xsl:if test="$witness_label != ''">
-                        <xsl:attribute name="wit" select="$witness_label"/>
+                        <xsl:attribute name="data-witness" select="$witness_label"/>
                     </xsl:if>
                     <xsl:apply-templates select="." mode="#current"/>
                 </span>
@@ -1038,7 +1076,7 @@
                 <xsl:variable name="witness_label" select="local:witness-label(., substring-after(@wit, '#'))"/>
                 <span class="rdg">
                     <xsl:if test="$witness_label != ''">
-                        <xsl:attribute name="wit" select="$witness_label"/>
+                        <xsl:attribute name="data-witness" select="$witness_label"/>
                     </xsl:if>
                     <xsl:apply-templates select="." mode="#current"/>
                 </span>
@@ -1076,7 +1114,7 @@
                 <xsl:variable name="witness_label" select="local:witness-label(., substring-after(@wit, '#'))"/>
                 <span class="rdg">
                     <xsl:if test="$witness_label != ''">
-                        <xsl:attribute name="wit" select="$witness_label"/>
+                        <xsl:attribute name="data-witness" select="$witness_label"/>
                     </xsl:if>
                     <xsl:apply-templates mode="replace-equals"/>
                 </span>
@@ -1086,7 +1124,7 @@
                 <xsl:variable name="witness_label" select="local:witness-label(., substring-after(@wit, '#'))"/>
                 <span class="rdg">
                     <xsl:if test="$witness_label != ''">
-                        <xsl:attribute name="wit" select="$witness_label"/>
+                        <xsl:attribute name="data-witness" select="$witness_label"/>
                     </xsl:if>
                     <xsl:apply-templates mode="replace-equals"/>
                 </span>

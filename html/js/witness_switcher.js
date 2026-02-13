@@ -269,14 +269,14 @@ class WitnessSwitcher {
                 addWitness(el.getAttribute('data-witness'));
             });
             
-            const pbWit = safeQuerySelectorAll('.pb[wit]');
+            const pbWit = safeQuerySelectorAll('.pb[data-witness]');
             pbWit.forEach(el => { 
-                addWitness(el.getAttribute('wit'));
+                addWitness(el.getAttribute('data-witness'));
             });
 
-            const rdgWit = safeQuerySelectorAll('span.rdg[wit], .variant-reading[data-witness], br.lb[wit]');
+            const rdgWit = safeQuerySelectorAll('span.rdg[data-witness], .variant-reading[data-witness], br.lb[data-witness]');
             rdgWit.forEach(el => {
-                addWitness(el.getAttribute('wit') || el.getAttribute('data-witness'));
+                addWitness(el.getAttribute('data-witness'));
             });
             
             // Remove empty strings
@@ -403,17 +403,9 @@ class WitnessSwitcher {
 //                 console.log(`  ${idx}: "${source}" -> witness ID: "${lastPart}"`);
             });
             
-            // 1. Most specific first: wit attribute matching exactly
-            witnessPbs = Array.from(document.querySelectorAll(`.pb[wit="${witness}"][source]`) || []);
-            if (witnessPbs.length > 0) {
-                return witnessPbs;
-            }
-
-            // 2. Try data-witness attribute
+            // Find page breaks by data-witness attribute
             witnessPbs = Array.from(document.querySelectorAll(`.pb[data-witness="${witness}"][source]`) || []);
             if (witnessPbs.length > 0) {
-//                 console.log(`🔍 GET_PBS: Found ${witnessPbs.length} page breaks with data-witness="${witness}"`);
-//                 console.log(`🔍 GET_PBS: Using data-witness="${witness}" page breaks for "${witness}"`);
                 return witnessPbs;
             }
 
@@ -1247,15 +1239,12 @@ class WitnessSwitcher {
         // Fallback for legacy markup: show only rdg elements matching the witness
         const normalizeWitness = (value) => value ? value.replace(/^#/, '').trim().toLowerCase() : value;
         const normalizedWitness = normalizeWitness(witness);
-        document.querySelectorAll('span.rdg[wit], span.rdg[data-witness]').forEach(rdg => {
-            const wit = normalizeWitness(rdg.getAttribute('wit'));
+        document.querySelectorAll('span.rdg[data-witness]').forEach(rdg => {
             const dataWitness = normalizeWitness(rdg.getAttribute('data-witness'));
             let shouldShow = true;
 
-            if (wit) {
-                shouldShow = wit === 'primary' || wit === normalizedWitness;
-            } else if (dataWitness) {
-                shouldShow = dataWitness === normalizedWitness;
+            if (dataWitness) {
+                shouldShow = dataWitness === 'primary' || dataWitness === normalizedWitness;
             }
 
             rdg.style.display = shouldShow ? '' : 'none';
@@ -1263,15 +1252,12 @@ class WitnessSwitcher {
         
         // Filter line breaks (lb) by witness
         document.querySelectorAll('br.lb').forEach(lb => {
-            const wit = normalizeWitness(lb.getAttribute('wit'));
             const dataWitness = normalizeWitness(lb.getAttribute('data-witness'));
             const ancestorWitness = normalizeWitness(lb.closest('[data-witness]')?.getAttribute('data-witness'));
             let shouldShow = true;
 
-            if (wit) {
-                shouldShow = wit === 'primary' || wit === normalizedWitness;
-            } else if (dataWitness) {
-                shouldShow = dataWitness === normalizedWitness;
+            if (dataWitness) {
+                shouldShow = dataWitness === 'primary' || dataWitness === normalizedWitness;
             } else if (ancestorWitness) {
                 shouldShow = ancestorWitness === normalizedWitness;
             }
@@ -1309,8 +1295,7 @@ class WitnessSwitcher {
                     if (other === active) return;
                     const otherEsc = escapeIdent(other);
                     rules.push(
-                        `body[data-active-witness="${activeEsc}"] [data-witness="${otherEsc}"], ` +
-                        `body[data-active-witness="${activeEsc}"] [wit="${otherEsc}"] { display: none !important; }`
+                        `body[data-active-witness="${activeEsc}"] [data-witness="${otherEsc}"] { display: none !important; }`
                     );
                 });
             });

@@ -6,6 +6,12 @@
     <!-- Template for witness pagination - used in right column header -->
     <xsl:template name="witness_pagination">
         <xsl:variable name="witness_count" select="count(//tei:witness)"/>
+        <xsl:variable name="ordered_witnesses" as="element(tei:witness)*"
+            select="(
+                //tei:witness[lower-case(normalize-space(@type)) = 'primary'],
+                //tei:witness[lower-case(normalize-space(@type)) = 'secondary'],
+                //tei:witness[not(lower-case(normalize-space(@type)) = ('primary','secondary'))]
+            )"/>
         <xsl:choose>
             <xsl:when test="$witness_count &gt;= 2">
                 <div class="witness-pagination-container">
@@ -14,7 +20,7 @@
                         <xsl:call-template name="secondary-wit-pagination"/>
                     </ul>
                     <div class="tab-content">
-                        <xsl:for-each select="//tei:witness">
+                        <xsl:for-each select="$ordered_witnesses">
                             <xsl:variable name="wit_label">
                                 <xsl:choose>
                                     <xsl:when test="normalize-space(@type) != ''">
@@ -145,15 +151,10 @@
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:variable>
-            <xsl:variable name="wit_display">
-                <xsl:value-of select="count(preceding-sibling::tei:witness) + 1"/>
-            </xsl:variable>
             <li class="nav-item" role="presentation">
                 <button class="nav-link active bgc site-top-project-button" id="wit-{$wit_label}-tab" data-bs-toggle="tab"
                     data-bs-target="#wit-{$wit_label}-meta-data" type="button" role="tab"
-                    aria-controls="wit-{$wit_label}-aria" aria-selected="true"> Textzeuge <xsl:value-of
-                        select="$wit_display"/>
-                </button>
+                    aria-controls="wit-{$wit_label}-aria" aria-selected="true"> Textzeuge 1</button>
             </li>
         </xsl:for-each>
     </xsl:template>
@@ -173,14 +174,11 @@
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:variable>
-            <xsl:variable name="wit_display">
-                <xsl:value-of select="count(preceding-sibling::tei:witness) + 1"/>
-            </xsl:variable>
             <xsl:if test="$wit_label != ''">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link bgc site-top-project-button" id="wit-{$wit_label}-tab" data-bs-toggle="tab"
                         data-bs-target="#wit-{$wit_label}-meta-data" type="button" role="tab"
-                        aria-controls="wit-{$wit_label}-aria" aria-selected="false"> Textzeuge <xsl:value-of select="$wit_display"/></button>
+                        aria-controls="wit-{$wit_label}-aria" aria-selected="false"> Textzeuge 2</button>
                 </li>
             </xsl:if>
         </xsl:for-each>
@@ -188,6 +186,17 @@
     
     <xsl:template match="tei:listWit" name="witness_tabs">
         <xsl:variable name="witness_count" select="count(//tei:witness)"/>
+        <!--
+            UX rule:
+            - Button order in left column is fixed: Textzeuge 1 (primary) left of Textzeuge 2 (secondary)
+            - This must hold regardless of the order of <witness> elements in TEI
+        -->
+        <xsl:variable name="ordered_witnesses" as="element(tei:witness)*"
+            select="(
+                //tei:witness[lower-case(normalize-space(@type)) = 'primary'],
+                //tei:witness[lower-case(normalize-space(@type)) = 'secondary'],
+                //tei:witness[not(lower-case(normalize-space(@type)) = ('primary','secondary'))]
+            )"/>
         <xsl:choose>
             <xsl:when test="$witness_count &gt;= 2">
                 <ul class="nav nav-tabs" id="witness_overview" role="tablist">
@@ -199,7 +208,7 @@
                         <span class="person-badge">QUELLENANGABEN</span>
                     </div>
                     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/algolia-min.css" />
-                    <xsl:for-each select="//tei:witness">
+                    <xsl:for-each select="$ordered_witnesses">
                         <xsl:variable name="wit_label">
                             <xsl:choose>
                                 <xsl:when test="normalize-space(@type) != ''">
