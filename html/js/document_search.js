@@ -364,25 +364,35 @@ search.addWidgets([
     searchable: false,
   }),
 
-  instantsearch.widgets.toggleRefinement({
+  instantsearch.widgets.refinementList({
     container: "#has_vignette",
     attribute: "has_vignette",
-    templates: {
-      labelText: "Vignetten",
-    },
-    cssClasses: {
-      root: "person-left-toggle",
+    sortBy: ["name:desc"],
+    transformItems: function (items) {
+      return items
+        .filter(function (item) { return item.label === "true"; })
+        .map(function (item) {
+          return Object.assign({}, item, {
+            label: "Vignetten",
+            highlighted: "Vignetten",
+          });
+        });
     },
   }),
 
-  instantsearch.widgets.toggleRefinement({
+  instantsearch.widgets.refinementList({
     container: "#has_verse",
     attribute: "has_verse",
-    templates: {
-      labelText: "Verse",
-    },
-    cssClasses: {
-      root: "person-left-toggle",
+    sortBy: ["name:desc"],
+    transformItems: function (items) {
+      return items
+        .filter(function (item) { return item.label === "true"; })
+        .map(function (item) {
+          return Object.assign({}, item, {
+            label: "Verse",
+            highlighted: "Verse",
+          });
+        });
     },
   }),
 

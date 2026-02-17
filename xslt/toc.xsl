@@ -54,8 +54,10 @@
                             </div>
                             <div class="person-left-facet">
                                 <h3 class="person-left-heading">Enthält</h3>
-                                <div id="has_vignette"></div>
-                                <div id="has_verse"></div>
+                                <div class="contains-facet-row">
+                                    <div id="has_vignette"></div>
+                                    <div id="has_verse"></div>
+                                </div>
                             </div>
 
                             <!-- Person-level facets -->

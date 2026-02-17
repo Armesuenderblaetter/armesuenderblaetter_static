@@ -14,6 +14,11 @@ const iiif_info_suffix = "/info.json";
 // IMPORTANT: page breaks must be witness-aware. We collect all `span.pb` markers
 // and then filter to the active witness (or shared pbs without data-witness).
 const page_break_marker_classname = "pb";
+
+// Normalize witness identifiers by stripping leading '#' if present.
+function normalizeWitness(value) {
+  return value ? value.replace(/^#/, '') : value;
+}
 const page_break_marker_image_attribute = "source";
 // Removed automatic scrolling thresholds and intersection observer options
 
@@ -642,7 +647,6 @@ function show_only_current_page(current_page_index) {
 
 // Hide/show line breaks (lb) according to active witness
 function filterLineBreaksByWitness() {
-  const normalizeWitness = (value) => value ? value.replace(/^#/, '') : value;
   const bodyWitness = normalizeWitness(document.body.getAttribute('data-active-witness'));
   const currentWitness = bodyWitness || normalizeWitness(getCurrentWitness());
   if (!currentWitness) return;

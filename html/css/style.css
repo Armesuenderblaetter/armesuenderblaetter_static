@@ -1457,6 +1457,41 @@ body.page-person-search .person-view-list-btn br {
     display: none;
 }
 
+/* "Enthält" row: Vignetten / Verse side by side */
+body.page-person-search .contains-facet-row {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+body.page-person-search .contains-facet-row > div {
+    flex: 0 0 auto;
+}
+
+body.page-person-search .contains-facet-row .ais-RefinementList-list {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    margin: 0;
+    padding: 0;
+}
+
+body.page-person-search .contains-facet-row::after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0.75rem;
+    right: 0.75rem;
+    height: 1px;
+    background-color: var(--asb-background-colour-0);
+}
+
+body.page-person-search .contains-facet-row {
+    position: relative;
+    padding-bottom: 1.5rem;
+}
+
 /* Person search left column: facet sections with separators */
 body.page-person-search .search-col-left .person-left-facet > h3 {
     text-transform: uppercase;
