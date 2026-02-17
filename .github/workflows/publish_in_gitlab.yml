@@ -56,6 +56,10 @@ jobs:
     - name: Build
       run: |
         ant
+    - name: Verify required static assets
+      run: |
+        test -f html/js/document_search.js
+        test -f html/js/noske_pagination.js
     - name: clone target repo
       run: |
         mkdir target

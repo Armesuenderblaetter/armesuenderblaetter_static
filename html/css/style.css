@@ -143,6 +143,11 @@ body {
     margin: 0;
 }
 
+
+.landing-section p {
+    padding-bottom: 1rem ;
+}
+
 /* Search only: place burger in column 2 (right of the left filter column) */
 body.page-search .site-header,
 #searchPage #searchContainer .site-header {

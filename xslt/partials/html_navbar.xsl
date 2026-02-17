@@ -29,23 +29,17 @@
             <div class="offcanvas-body">
                 <nav class="site-menu" aria-label="Hauptmenü">
                     <div class="site-menu-section">Das Projekt</div>
-                    <a class="site-menu-link site-menu-link--leaf" href="toc.html">
+                    <a class="site-menu-link site-menu-link--leaf" href="about.html">
                         <span class="site-menu-bullet" aria-hidden="true">
                             <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
                         </span>
                         <span class="site-menu-text">Armesünderblätter</span>
                     </a>
-                    <a class="site-menu-link site-menu-link--leaf" href="about.html">
+                    <a class="site-menu-link site-menu-link--leaf" href="edition.html">
                         <span class="site-menu-bullet" aria-hidden="true">
                             <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
                         </span>
-                        <span class="site-menu-text">Über das Projekt</span>
-                    </a>
-                    <a class="site-menu-link site-menu-link--leaf" href="publications.html">
-                        <span class="site-menu-bullet" aria-hidden="true">
-                            <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
-                        </span>
-                        <span class="site-menu-text">Publikationen</span>
+                        <span class="site-menu-text">Edition und Korpus</span>
                     </a>
                     <a class="site-menu-link site-menu-link--leaf" href="team.html">
                         <span class="site-menu-bullet" aria-hidden="true">
@@ -53,19 +47,25 @@
                         </span>
                         <span class="site-menu-text">Team</span>
                     </a>
+                    <a class="site-menu-link site-menu-link--leaf" href="publications.html">
+                        <span class="site-menu-bullet" aria-hidden="true">
+                            <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
+                        </span>
+                        <span class="site-menu-text">Publikationen</span>
+                    </a>
 
-                    <div class="site-menu-section">Editionen</div>
+                    <div class="site-menu-section">Edition</div>
                     <a class="site-menu-link site-menu-link--leaf" href="toc.html">
                         <span class="site-menu-bullet" aria-hidden="true">
                             <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
                         </span>
                         <span class="site-menu-text">Übersicht</span>
                     </a>
-                    <a class="site-menu-link site-menu-link--leaf" href="./nosketch.html?corpname=flugblaetter&amp;q=q%3Cdoc%3E%22.*%22+&amp;viewmode=kwic&amp;attrs=word%2Clemma%2Cpos%2Cvocab%2Cid&amp;format=json&amp;structs=doc%2Chead%2Cp%2Clg%2Cl%2CplaceName%2Cquote%2Cbibl%2CpersName%2Cdate%2Ccit%2Cg%2Cpb&amp;kwicrightctx=45%23&amp;kwicleftctx=45%23&amp;refs=doc.id%2Cdoc.year%2Cpb.n%2Cdoc.archive%2Cl.id%2Cp.id%2CplaceName.id%2CpersName.id%2Cdate.id%2Cdoc.title%2Cdoc.delinquent_sexes%2Cdoc.attrs%2Clg.type&amp;pagesize=10&amp;fromp=1&amp;selectQueryValue=url">
+                    <a class="site-menu-link site-menu-link--leaf" href="./nosketch.html">
                         <span class="site-menu-bullet" aria-hidden="true">
                             <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
                         </span>
-                        <span class="site-menu-text">Textsuche</span>
+                        <span class="site-menu-text">Suche</span>
                     </a>
                     <!--
                     <div class="site-menu-section">Info</div>
