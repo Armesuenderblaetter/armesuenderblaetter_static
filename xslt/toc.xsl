@@ -52,6 +52,11 @@
                                 <h3 class="person-left-heading">Archiv</h3>
                                 <div id="archives"></div>
                             </div>
+                            <div class="person-left-facet">
+                                <h3 class="person-left-heading">Enthält</h3>
+                                <div id="has_vignette"></div>
+                                <div id="has_verse"></div>
+                            </div>
 
                             <!-- Person-level facets -->
                             <div class="person-left-section person-left-section--birth-place">

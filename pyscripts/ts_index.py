@@ -10,6 +10,8 @@ Replaces both setup_typesense.py and setup_person_typesense.py.
 """
 import json
 import re
+import glob
+from lxml import etree
 from typesense.api_call import ObjectNotFound
 from acdh_cfts_pyutils import TYPESENSE_CLIENT as client
 
@@ -17,6 +19,7 @@ from acdh_cfts_pyutils import TYPESENSE_CLIENT as client
 typesense_collection_name = "flugblaetter_todesurteile"
 json_ts_index_path = "./json/typesense_entries.json"
 json_persons_path = "./json/persons.json"
+editions_dir = "./data/editions"
 
 
 current_typesense_schema = {
@@ -46,6 +49,9 @@ current_typesense_schema = {
         {"name": "person_execution", "type": "string[]", "facet": True},
         {"name": "person_execution_places", "type": "string[]", "facet": True},
         {"name": "person_punishments", "type": "string[]", "facet": True},
+        # Boolean feature facets
+        {"name": "has_vignette", "type": "bool", "facet": True},
+        {"name": "has_verse", "type": "bool", "facet": True},
     ],
 }
 
@@ -78,6 +84,39 @@ def aggregate_person_field(persons, field):
     return unique_list(values)
 
 
+def scan_edition_features(editions_dir):
+    """Scan edition XML files for vignette figures and verse (lg) elements.
+
+    Returns a dict mapping filename (e.g. 'fb_17400127_PhilippK.xml') to
+    {'has_vignette': bool, 'has_verse': bool}.
+    """
+    TEI_NS = "http://www.tei-c.org/ns/1.0"
+    features = {}
+    for xml_path in sorted(glob.glob(f"{editions_dir}/fb_*.xml")):
+        try:
+            tree = etree.parse(xml_path)
+        except Exception:
+            continue
+        has_vignette = bool(
+            tree.xpath(
+                '//tei:figure[@type="vignette"]',
+                namespaces={"tei": TEI_NS},
+            )
+        )
+        has_verse = bool(
+            tree.xpath(
+                "//tei:lg",
+                namespaces={"tei": TEI_NS},
+            )
+        )
+        fname = xml_path.rsplit("/", 1)[-1]
+        features[fname] = {
+            "has_vignette": has_vignette,
+            "has_verse": has_verse,
+        }
+    return features
+
+
 def create_records():
     print(f"Loading documents from {json_ts_index_path}")
     doc_data = load_json(json_ts_index_path)
@@ -92,9 +131,15 @@ def create_records():
         if file_id:
             persons_by_doc.setdefault(file_id, []).append(person)
 
+    # Scan edition XMLs for vignette / verse features
+    print(f"Scanning edition XMLs in {editions_dir}")
+    edition_features = scan_edition_features(editions_dir)
+
     records = []
     for doc_id, doc in doc_data.items():
         persons = persons_by_doc.get(doc.get("id", doc_id), [])
+        filename = doc.get("filename", "")
+        feats = edition_features.get(filename, {})
 
         record = {
             # Document fields
@@ -123,6 +168,9 @@ def create_records():
                 persons, "execution_places"
             ),
             "person_punishments": aggregate_person_field(persons, "punishments"),
+            # Boolean feature facets
+            "has_vignette": feats.get("has_vignette", False),
+            "has_verse": feats.get("has_verse", False),
         }
         records.append(record)
 

@@ -43,7 +43,9 @@ current_typesense_schema = {
         {"name": "print_date", "type": "string"},
         {"name": "printer", "type": "string",  "facet": True, "sort": True},
         {"name": "printing_location", "type": "string", "facet": True, "sort": True},
-        {"name": "archives", "type": "string[]", "facet": True}
+        {"name": "archives", "type": "string[]", "facet": True},
+        {"name": "has_vignette", "type": "bool", "facet": True},
+        {"name": "has_verse", "type": "bool", "facet": True},
     ],
 }
 

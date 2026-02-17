@@ -364,6 +364,28 @@ search.addWidgets([
     searchable: false,
   }),
 
+  instantsearch.widgets.toggleRefinement({
+    container: "#has_vignette",
+    attribute: "has_vignette",
+    templates: {
+      labelText: "Vignetten",
+    },
+    cssClasses: {
+      root: "person-left-toggle",
+    },
+  }),
+
+  instantsearch.widgets.toggleRefinement({
+    container: "#has_verse",
+    attribute: "has_verse",
+    templates: {
+      labelText: "Verse",
+    },
+    cssClasses: {
+      root: "person-left-toggle",
+    },
+  }),
+
   // Person-level facets
   instantsearch.widgets.refinementList({
     container: "#person_names",
