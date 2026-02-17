@@ -26,6 +26,7 @@ const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   },
   additionalSearchParameters: {
     query_by: "title,fulltext,person_names",
+    sort_by: "sorting_date:asc",
     per_page: 20,
   },
 });

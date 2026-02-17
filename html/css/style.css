@@ -1249,7 +1249,7 @@ body.page-person-search .person-age-hidden {
 body.page-person-search .person-age-pill {
     display: flex;
     align-items: stretch;
-    border: 2px solid var(--asb-background-colour-2-button);
+    border: 1px solid var(--asb-background-colour-2-button);
     border-radius: 9999px;
     overflow: visible;
     background-color: var(--asb-background-colour-2-button);
