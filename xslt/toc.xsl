@@ -38,7 +38,15 @@
 
                             <div class="person-left-facet">
                                 <h3 class="person-left-heading">Publikationsdatum</h3>
-                                <div id="label_date"></div>
+                                    <div class="person-age-pill" aria-label="Publikationsdatum filtern">
+                                        <div class="person-age-pill-slider">
+                                            <div id="labelDateSlider"></div>
+                                        </div>
+                                        <div class="person-age-pill-count" aria-label="Anzahl Treffer">
+                                            <span id="labelDateCount"></span>
+                                        </div>
+                                    </div>
+                                    <div id="label_date" class="person-age-hidden"></div>
                             </div>
                             <div class="person-left-facet">
                                 <h3 class="person-left-heading">Archiv</h3>
