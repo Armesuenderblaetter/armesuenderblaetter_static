@@ -250,10 +250,11 @@ search.addWidgets([
     valueFilter: (name) => /^\d+–\d+$/.test(name),
   }),
 
-  createRangeSliderWidget({
+  createFacetSliderWidget({
     sliderContainer: "#labelDateSlider",
     countContainer: "#labelDateCount",
     attribute: "label_date",
+    valueFilter: (name) => /^\d+$/.test(name),
   }),
 
   // Infinite hits – document-based display
@@ -347,6 +348,14 @@ search.addWidgets([
   }),
 
   // Document-level facets
+
+  instantsearch.widgets.refinementList({
+    container: "#label_date",
+    attribute: "label_date",
+    sortBy: ["name:asc"],
+    limit: 1000,
+    searchable: false,
+  }),
 
   instantsearch.widgets.refinementList({
     container: "#archives",
