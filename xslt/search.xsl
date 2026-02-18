@@ -39,9 +39,9 @@
                         </div>
                         <div class="search-col-right">
                             <xsl:call-template name="nav_bar"/>
-                            <div>
+                            <<!-- div>
                                 <div class="d-flex flex-column align-items-center" id="current-refinements"></div>
-                            </div>
+                            </div> -->
                             <div id="hits"></div>
                             <div id="pagination"></div>
                         </div>
