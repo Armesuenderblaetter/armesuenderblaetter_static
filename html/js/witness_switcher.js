@@ -1289,13 +1289,16 @@ class WitnessSwitcher {
             const escapeIdent = (value) => String(value).replace(/[^a-zA-Z0-9_-]/g, '\\$&');
             const rules = [];
 
+            // Only hide text-level elements (variant readings, line breaks, etc.)
+            // inside #edition-text. Do NOT hide tab panels or pagination containers
+            // which also carry data-witness attributes for structural purposes.
             witnesses.forEach(active => {
                 const activeEsc = escapeIdent(active);
                 witnesses.forEach(other => {
                     if (other === active) return;
                     const otherEsc = escapeIdent(other);
                     rules.push(
-                        `body[data-active-witness="${activeEsc}"] [data-witness="${otherEsc}"] { display: none !important; }`
+                        `body[data-active-witness="${activeEsc}"] #edition-text [data-witness="${otherEsc}"] { display: none !important; }`
                     );
                 });
             });
@@ -1993,16 +1996,25 @@ window.createPaginationIfMissing = function() {
 };
 
 /**
- * Simple Witness Switcher - Immediately reloads page when witness tabs are clicked
+ * Simple Witness Switcher - Sets up global witness availability set.
+ * Witness tab click handling is done by the last DOMContentLoaded handler below
+ * and by WitnessSwitcher.setupTabEventListeners() for in-page switching.
  */
 document.addEventListener('DOMContentLoaded', function() {
-//     console.log('🔍 Simple Witness Switcher initializing...');
-    
     // Create a helper to get available witnesses
     const getAvailableWitnesses = () => {
         const availableWitnesses = new Set();
         
-        // Find witnesses from page break sources
+        // Check [data-witness] attributes (primary source of truth)
+        const witnessElements = document.querySelectorAll('#edition-text [data-witness]');
+        witnessElements.forEach(el => {
+            const witness = el.getAttribute('data-witness');
+            if (witness) {
+                availableWitnesses.add(witness);
+            }
+        });
+        
+        // Also add from page break sources (raw IDs like wb1, oenb)
         const pbElements = document.querySelectorAll('.pb[source]');
         pbElements.forEach(pb => {
             const source = pb.getAttribute('source');
@@ -2012,57 +2024,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     const lastPart = parts[parts.length - 1].split('.')[0];
                     if (lastPart) {
                         availableWitnesses.add(lastPart);
-//                         console.log(`📋 Identified witness ID from source: "${lastPart}"`);
                     }
                 }
             }
         });
         
-        // Also check [data-witness] attributes
-        const witnessElements = document.querySelectorAll('[data-witness]');
-        witnessElements.forEach(el => {
-            const witness = el.getAttribute('data-witness');
-            if (witness) {
-                availableWitnesses.add(witness);
-//                 console.log(`📋 Identified witness ID from data-witness: "${witness}"`);
-            }
-        });
-        
-        // If no witnesses found, use ID from existing tabs
+        // If no witnesses found, add a default
         if (availableWitnesses.size === 0) {
-            const tabs = document.querySelectorAll('button[data-bs-toggle="tab"][id$="-tab"]');
-            tabs.forEach(tab => {
-                const witnessId = tab.id.replace('-tab', '');
-                if (witnessId && witnessId !== 'persons') {
-                    availableWitnesses.add(witnessId);
-//                     console.log(`📋 Identified witness ID from tab ID: "${witnessId}"`);
-                }
-            });
-        }
-        
-        // If still no witnesses found, add a default
-        if (availableWitnesses.size === 0) {
-            // Look for actual witness ID in file names
-            const imgElements = document.querySelectorAll('img[src*="_"]');
-            imgElements.forEach(img => {
-                const src = img.getAttribute('src');
-                if (src) {
-                    const parts = src.split('_');
-                    if (parts.length >= 4) {
-                        const lastPart = parts[parts.length - 1].split('.')[0];
-                        if (lastPart) {
-                            availableWitnesses.add(lastPart);
-//                             console.log(`📋 Identified witness ID from image src: "${lastPart}"`);
-                        }
-                    }
-                }
-            });
-            
-            // If still nothing, use a generic default
-            if (availableWitnesses.size === 0) {
-//                 console.log(`📋 No witnesses found, using default "doc" witness ID`);
-                availableWitnesses.add('doc');
-            }
+            availableWitnesses.add('doc');
         }
         
         return availableWitnesses;
@@ -2070,31 +2039,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Store available witnesses for global access
     window.witnessAvailableSet = getAvailableWitnesses();
-//     console.log('📋 Available witnesses:', Array.from(window.witnessAvailableSet));
-    
-    // Generic handler for all witness tabs using event delegation
-    document.addEventListener('click', function(e) {
-        // Find closest tab button - handle both direct clicks and bubbled events
-        const tabButton = e.target.closest('button[data-bs-toggle="tab"]');
-        
-        if (!tabButton) return;
-        
-        // Check if it's a witness tab (not persons tab)
-        if (tabButton.id && tabButton.id.endsWith('-tab')) {
-            const witnessId = tabButton.id.replace('-tab', '');
-            if (witnessId === 'persons') return; // Skip persons tab
-            
-//             console.log('🎯 Witness tab clicked:', tabButton.id);
-            
-            // Prevent default and reload
-            e.preventDefault();
-            e.stopPropagation();
-            reloadPageWithWitness(witnessId);
-            return false;
-        }
-    }, true); // Use capturing to get event before Bootstrap
-    
-//     console.log('✅ Simple Witness Switcher initialized');
 });
 
 /**
@@ -2142,26 +2086,13 @@ function reloadPageWithWitness(witness) {
         currentPage = 1;
     }
     
-    // Get the FULL witness ID from the available witnesses set
-    let fullWitnessId = witness;
-    if (window.witnessAvailableSet && window.witnessAvailableSet.size > 0) {
-        // Look for a witness ID that ends with our short witnessId or exact match
-        for (const availableWitness of window.witnessAvailableSet) {
-            if (availableWitness === witness) {
-                fullWitnessId = witness;
-                break;
-            }
-            if (availableWitness.endsWith(witness) && availableWitness.length > witness.length) {
-                fullWitnessId = availableWitness;
-                break;
-            }
-        }
-    }
+    // Normalize the witness ID directly (strip wit- prefix, lowercase, trim)
+    const normalizedWit = normalizeWitnessId(witness);
     
-    // Build the new URL with the FULL witness ID
+    // Build the new URL
     const url = new URL(window.location.href);
     url.searchParams.set('pag', String(currentPage));
-    url.searchParams.set('wit', normalizeWitnessId(fullWitnessId));
+    url.searchParams.set('wit', normalizedWit);
     url.searchParams.delete('tab');
     const newUrl = url.toString();
     
@@ -2172,7 +2103,7 @@ function reloadPageWithWitness(witness) {
         const citationPageIndex = currentPage - 1; // Convert back to 0-based for citation
         
         // Force current witness to be updated to ensure citation has correct witness
-        window.currentWitness = normalizeWitnessId(fullWitnessId);
+        window.currentWitness = normalizedWit;
         
         try {
             window.updateCitationSuggestion(citationPageIndex);
@@ -2187,7 +2118,7 @@ function reloadPageWithWitness(witness) {
     try {
         const state = {
             pageIndex: currentPage - 1, // Store as 0-based index
-            witness: fullWitnessId
+            witness: normalizedWit
         };
         localStorage.setItem('lastWitnessState', JSON.stringify(state));
     } catch (e) {

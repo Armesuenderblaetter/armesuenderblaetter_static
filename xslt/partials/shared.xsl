@@ -27,14 +27,24 @@
         <xsl:param name="witId" as="xs:string?"/>
         <xsl:variable name="clean" select="replace(normalize-space(string($witId)), '^#', '')"/>
         <xsl:variable name="target" select="(root($context)//tei:witness[@xml:id = $clean])[1]"/>
-        <xsl:variable name="pos" select="if ($target) then count($target/preceding-sibling::tei:witness) + 1 else 0"/>
+        <!-- Build an ordered list: primary-typed first, then the rest in document order -->
+        <xsl:variable name="ordered" as="element(tei:witness)*"
+            select="(
+                root($context)//tei:witness[lower-case(normalize-space(@type)) = 'primary'],
+                root($context)//tei:witness[not(lower-case(normalize-space(@type)) = 'primary')]
+            )"/>
+        <!-- Position within the ordered list (1-based) -->
+        <xsl:variable name="pos" as="xs:integer"
+            select="if ($target) then
+                        (for $i in 1 to count($ordered)
+                         return if ($ordered[$i] is $target) then $i else ())[1]
+                    else 0"/>
         <xsl:variable name="label_raw" select="if (local:has-multiple-witnesses($context) and $target)
-            then (if (normalize-space($target/@type) != '')
-                then lower-case($target/@type)
-                else (if ($pos = 1) then 'primary'
-                      else if ($pos = 2) then 'secondary'
-                      else if ($pos = 3) then 'tertiary'
-                      else concat('witness-', $pos)))
+            then (if ($pos = 1) then 'primary'
+                  else if ($pos = 2) then 'secondary'
+                  else if ($pos = 3) then 'tertiary'
+                  else if ($pos = 4) then 'quaternary'
+                  else concat('witness-', $pos))
             else ''"/>
         <xsl:sequence select="replace($label_raw, '^wit-', '')"/>
     </xsl:function>
@@ -160,7 +170,9 @@
         <xsl:variable name="witness_label" select="if ($witness_id != '' and local:has-multiple-witnesses(.))
             then local:witness-label(., $witness_id)
             else ''" />
-        <xsl:variable name="pb_type" select="if(@type) then @type else 'primary'"/>
+        <!-- Use witness_label for the CSS class when available, fall back to @type or 'primary' -->
+        <xsl:variable name="pb_type" select="if ($witness_label != '') then $witness_label
+            else if(@type) then @type else 'primary'"/>
         <span class="pb {$pb_type}" source="{@facs}" data-pb-type="{$pb_type}">
             <xsl:if test="$witness_label != ''">
                 <xsl:attribute name="data-witness" select="$witness_label"/>

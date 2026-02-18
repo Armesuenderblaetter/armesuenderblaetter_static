@@ -2328,7 +2328,9 @@ span.pb.nearly_no_content {
 }
 
 span.pb.primary,
-span.pb.secondary {
+span.pb.secondary,
+span.pb.tertiary,
+span.pb.quaternary {
     display: inline;
     width: auto;
     margin: 0;
@@ -3086,7 +3088,9 @@ select.different {
 }
 
 /* Ensure page break markers remain inline so they do not split paragraphs */
-span.pb.primary {
+span.pb.primary,
+span.pb.tertiary,
+span.pb.quaternary {
     display: inline !important;
 }
 
