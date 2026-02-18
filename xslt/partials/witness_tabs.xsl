@@ -6,52 +6,69 @@
     <!-- Template for witness pagination - used in right column header -->
     <xsl:template name="witness_pagination">
         <xsl:variable name="witness_count" select="count(//tei:witness)"/>
+        <!-- Ordered witnesses: primary-typed first, then the rest in document order -->
         <xsl:variable name="ordered_witnesses" as="element(tei:witness)*"
             select="(
                 //tei:witness[lower-case(normalize-space(@type)) = 'primary'],
-                //tei:witness[lower-case(normalize-space(@type)) = 'secondary'],
-                //tei:witness[not(lower-case(normalize-space(@type)) = ('primary','secondary'))]
+                //tei:witness[not(lower-case(normalize-space(@type)) = 'primary')]
             )"/>
         <xsl:choose>
             <xsl:when test="$witness_count &gt;= 2">
                 <div class="witness-pagination-container">
                     <ul class="nav nav-tabs nav-tabs-sm" id="witness_pagination_tabs" role="tablist">
-                        <xsl:call-template name="primary-wit-pagination"/>
-                        <xsl:call-template name="secondary-wit-pagination"/>
+                        <xsl:for-each select="$ordered_witnesses">
+                            <xsl:variable name="wit_pos" select="position()"/>
+                            <xsl:variable name="wit_label">
+                                <xsl:choose>
+                                    <xsl:when test="$wit_pos = 1">primary</xsl:when>
+                                    <xsl:when test="$wit_pos = 2">secondary</xsl:when>
+                                    <xsl:when test="$wit_pos = 3">tertiary</xsl:when>
+                                    <xsl:when test="$wit_pos = 4">quaternary</xsl:when>
+                                    <xsl:otherwise><xsl:value-of select="concat('witness-', $wit_pos)"/></xsl:otherwise>
+                                </xsl:choose>
+                            </xsl:variable>
+                            <li class="nav-item" role="presentation">
+                                <button type="button" role="tab"
+                                    id="wit-{$wit_label}-pagination-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#wit-{$wit_label}-pagination"
+                                    aria-controls="wit-{$wit_label}-pagination-aria">
+                                    <xsl:attribute name="class">
+                                        <xsl:choose>
+                                            <xsl:when test="$wit_pos = 1">nav-link active</xsl:when>
+                                            <xsl:otherwise>nav-link</xsl:otherwise>
+                                        </xsl:choose>
+                                    </xsl:attribute>
+                                    <xsl:attribute name="aria-selected">
+                                        <xsl:choose>
+                                            <xsl:when test="$wit_pos = 1">true</xsl:when>
+                                            <xsl:otherwise>false</xsl:otherwise>
+                                        </xsl:choose>
+                                    </xsl:attribute>
+                                    <xsl:text>Textzeuge </xsl:text><xsl:value-of select="$wit_pos"/>
+                                </button>
+                            </li>
+                        </xsl:for-each>
                     </ul>
                     <div class="tab-content">
                         <xsl:for-each select="$ordered_witnesses">
+                            <xsl:variable name="wit_pos" select="position()"/>
                             <xsl:variable name="wit_label">
                                 <xsl:choose>
-                                    <xsl:when test="normalize-space(@type) != ''">
-                                        <xsl:value-of select="lower-case(@type)"/>
-                                    </xsl:when>
-                                    <xsl:when test="count(preceding-sibling::tei:witness) = 0">primary</xsl:when>
-                                    <xsl:when test="count(preceding-sibling::tei:witness) = 1">secondary</xsl:when>
-                                    <xsl:when test="count(preceding-sibling::tei:witness) = 2">tertiary</xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:value-of select="concat('witness-', count(preceding-sibling::tei:witness) + 1)"/>
-                                    </xsl:otherwise>
+                                    <xsl:when test="$wit_pos = 1">primary</xsl:when>
+                                    <xsl:when test="$wit_pos = 2">secondary</xsl:when>
+                                    <xsl:when test="$wit_pos = 3">tertiary</xsl:when>
+                                    <xsl:when test="$wit_pos = 4">quaternary</xsl:when>
+                                    <xsl:otherwise><xsl:value-of select="concat('witness-', $wit_pos)"/></xsl:otherwise>
                                 </xsl:choose>
                             </xsl:variable>
                             <div id="wit-{$wit_label}-pagination" role="tabpanel" aria-labelledby="#wit-{$wit_label}-pagination-tab" data-witness="{$wit_label}">
-                                <xsl:choose>
-                                    <xsl:when test="$witness_count &gt;= 2">
-                                        <xsl:attribute name="class">
-                                            <xsl:value-of select="'tab-pane fade'"/>
-                                        </xsl:attribute>
-                                        <xsl:if test="@type = 'primary'">
-                                            <xsl:attribute name="class">
-                                                <xsl:value-of select="'tab-pane fade show active'"/>
-                                            </xsl:attribute>
-                                        </xsl:if>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:attribute name="class">
-                                            <xsl:value-of select="'show'"/>
-                                        </xsl:attribute>
-                                    </xsl:otherwise>
-                                </xsl:choose>
+                                <xsl:attribute name="class">
+                                    <xsl:choose>
+                                        <xsl:when test="$wit_pos = 1">tab-pane fade show active</xsl:when>
+                                        <xsl:otherwise>tab-pane fade</xsl:otherwise>
+                                    </xsl:choose>
+                                </xsl:attribute>
                                 
                                 <div class="witness-pages">
                                     <nav class="witness-pagination ais-Pagination" aria-label="Seitennavigation">
@@ -83,125 +100,50 @@
         </xsl:choose>
     </xsl:template>
     
-    <xsl:template name="primary-wit-pagination">
-        <xsl:for-each select="//tei:witness[@type = 'primary']">
-            <xsl:variable name="wit_label">
-                <xsl:choose>
-                    <xsl:when test="normalize-space(@type) != ''">
-                        <xsl:value-of select="lower-case(@type)"/>
-                    </xsl:when>
-                    <xsl:when test="count(preceding-sibling::tei:witness) = 0">primary</xsl:when>
-                    <xsl:when test="count(preceding-sibling::tei:witness) = 1">secondary</xsl:when>
-                    <xsl:when test="count(preceding-sibling::tei:witness) = 2">tertiary</xsl:when>
-                    <xsl:otherwise>
-                        <xsl:value-of select="concat('witness-', count(preceding-sibling::tei:witness) + 1)"/>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:variable>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="wit-{$wit_label}-pagination-tab" data-bs-toggle="tab"
-                    data-bs-target="#wit-{$wit_label}-pagination" type="button" role="tab"
-                    aria-controls="wit-{$wit_label}-pagination-aria" aria-selected="true">
-                    <xsl:value-of select="$wit_label"/>
-                </button>
-            </li>
-        </xsl:for-each>
-    </xsl:template>
-    
-    <xsl:template name="secondary-wit-pagination">
-        <xsl:for-each select="//tei:witness[@type = 'secondary']">
-            <xsl:variable name="wit_label">
-                <xsl:choose>
-                    <xsl:when test="normalize-space(@type) != ''">
-                        <xsl:value-of select="lower-case(@type)"/>
-                    </xsl:when>
-                    <xsl:when test="count(preceding-sibling::tei:witness) = 0">primary</xsl:when>
-                    <xsl:when test="count(preceding-sibling::tei:witness) = 1">secondary</xsl:when>
-                    <xsl:when test="count(preceding-sibling::tei:witness) = 2">tertiary</xsl:when>
-                    <xsl:otherwise>
-                        <xsl:value-of select="concat('witness-', count(preceding-sibling::tei:witness) + 1)"/>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:variable>
-            <xsl:if test="$wit_label != ''">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="wit-{$wit_label}-pagination-tab" data-bs-toggle="tab"
-                        data-bs-target="#wit-{$wit_label}-pagination" type="button" role="tab"
-                        aria-controls="wit-{$wit_label}-pagination-aria" aria-selected="false">
-                        <xsl:value-of select="$wit_label"/>
-                    </button>
-                </li>
-            </xsl:if>
-        </xsl:for-each>
-    </xsl:template>
-    
-    <!-- Original witness_tabs template - kept for backward compatibility -->
-    <xsl:template name="primary-wit">
-        <xsl:for-each select="//tei:witness[@type = 'primary']">
-            <xsl:variable name="wit_label">
-                <xsl:choose>
-                    <xsl:when test="normalize-space(@type) != ''">
-                        <xsl:value-of select="lower-case(@type)"/>
-                    </xsl:when>
-                    <xsl:when test="count(preceding-sibling::tei:witness) = 0">primary</xsl:when>
-                    <xsl:when test="count(preceding-sibling::tei:witness) = 1">secondary</xsl:when>
-                    <xsl:when test="count(preceding-sibling::tei:witness) = 2">tertiary</xsl:when>
-                    <xsl:otherwise>
-                        <xsl:value-of select="concat('witness-', count(preceding-sibling::tei:witness) + 1)"/>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:variable>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active bgc site-top-project-button" id="wit-{$wit_label}-tab" data-bs-toggle="tab"
-                    data-bs-target="#wit-{$wit_label}-meta-data" type="button" role="tab"
-                    aria-controls="wit-{$wit_label}-aria" aria-selected="true"> Textzeuge 1</button>
-            </li>
-        </xsl:for-each>
-    </xsl:template>
-    
-    <xsl:template name="secondary-wit">
-        <xsl:for-each select="//tei:witness[@type = 'secondary']">
-            <xsl:variable name="wit_label">
-                <xsl:choose>
-                    <xsl:when test="normalize-space(@type) != ''">
-                        <xsl:value-of select="lower-case(@type)"/>
-                    </xsl:when>
-                    <xsl:when test="count(preceding-sibling::tei:witness) = 0">primary</xsl:when>
-                    <xsl:when test="count(preceding-sibling::tei:witness) = 1">secondary</xsl:when>
-                    <xsl:when test="count(preceding-sibling::tei:witness) = 2">tertiary</xsl:when>
-                    <xsl:otherwise>
-                        <xsl:value-of select="concat('witness-', count(preceding-sibling::tei:witness) + 1)"/>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:variable>
-            <xsl:if test="$wit_label != ''">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link bgc site-top-project-button" id="wit-{$wit_label}-tab" data-bs-toggle="tab"
-                        data-bs-target="#wit-{$wit_label}-meta-data" type="button" role="tab"
-                        aria-controls="wit-{$wit_label}-aria" aria-selected="false"> Textzeuge 2</button>
-                </li>
-            </xsl:if>
-        </xsl:for-each>
-    </xsl:template>
-    
     <xsl:template match="tei:listWit" name="witness_tabs">
         <xsl:variable name="witness_count" select="count(//tei:witness)"/>
-        <!--
-            UX rule:
-            - Button order in left column is fixed: Textzeuge 1 (primary) left of Textzeuge 2 (secondary)
-            - This must hold regardless of the order of <witness> elements in TEI
-        -->
+        <!-- Ordered witnesses: primary-typed first, then the rest in document order -->
         <xsl:variable name="ordered_witnesses" as="element(tei:witness)*"
             select="(
                 //tei:witness[lower-case(normalize-space(@type)) = 'primary'],
-                //tei:witness[lower-case(normalize-space(@type)) = 'secondary'],
-                //tei:witness[not(lower-case(normalize-space(@type)) = ('primary','secondary'))]
+                //tei:witness[not(lower-case(normalize-space(@type)) = 'primary')]
             )"/>
         <xsl:choose>
             <xsl:when test="$witness_count &gt;= 2">
                 <ul class="nav nav-tabs" id="witness_overview" role="tablist">
-                    <xsl:call-template name="primary-wit"/>
-                    <xsl:call-template name="secondary-wit"/>
+                    <xsl:for-each select="$ordered_witnesses">
+                        <xsl:variable name="wit_pos" select="position()"/>
+                        <xsl:variable name="wit_label">
+                            <xsl:choose>
+                                <xsl:when test="$wit_pos = 1">primary</xsl:when>
+                                <xsl:when test="$wit_pos = 2">secondary</xsl:when>
+                                <xsl:when test="$wit_pos = 3">tertiary</xsl:when>
+                                <xsl:when test="$wit_pos = 4">quaternary</xsl:when>
+                                <xsl:otherwise><xsl:value-of select="concat('witness-', $wit_pos)"/></xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:variable>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" role="tab"
+                                id="wit-{$wit_label}-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#wit-{$wit_label}-meta-data"
+                                aria-controls="wit-{$wit_label}-aria">
+                                <xsl:attribute name="class">
+                                    <xsl:choose>
+                                        <xsl:when test="$wit_pos = 1">nav-link active bgc site-top-project-button</xsl:when>
+                                        <xsl:otherwise>nav-link bgc site-top-project-button</xsl:otherwise>
+                                    </xsl:choose>
+                                </xsl:attribute>
+                                <xsl:attribute name="aria-selected">
+                                    <xsl:choose>
+                                        <xsl:when test="$wit_pos = 1">true</xsl:when>
+                                        <xsl:otherwise>false</xsl:otherwise>
+                                    </xsl:choose>
+                                </xsl:attribute>
+                                <xsl:text> Textzeuge </xsl:text><xsl:value-of select="$wit_pos"/>
+                            </button>
+                        </li>
+                    </xsl:for-each>
                 </ul>
                 <div class="tab-content">
                     <div class="person-card-header">
@@ -209,37 +151,23 @@
                     </div>
                     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/algolia-min.css" />
                     <xsl:for-each select="$ordered_witnesses">
+                        <xsl:variable name="wit_pos" select="position()"/>
                         <xsl:variable name="wit_label">
                             <xsl:choose>
-                                <xsl:when test="normalize-space(@type) != ''">
-                                    <xsl:value-of select="lower-case(@type)"/>
-                                </xsl:when>
-                                <xsl:when test="count(preceding-sibling::tei:witness) = 0">primary</xsl:when>
-                                <xsl:when test="count(preceding-sibling::tei:witness) = 1">secondary</xsl:when>
-                                <xsl:when test="count(preceding-sibling::tei:witness) = 2">tertiary</xsl:when>
-                                <xsl:otherwise>
-                                    <xsl:value-of select="concat('witness-', count(preceding-sibling::tei:witness) + 1)"/>
-                                </xsl:otherwise>
+                                <xsl:when test="$wit_pos = 1">primary</xsl:when>
+                                <xsl:when test="$wit_pos = 2">secondary</xsl:when>
+                                <xsl:when test="$wit_pos = 3">tertiary</xsl:when>
+                                <xsl:when test="$wit_pos = 4">quaternary</xsl:when>
+                                <xsl:otherwise><xsl:value-of select="concat('witness-', $wit_pos)"/></xsl:otherwise>
                             </xsl:choose>
                         </xsl:variable>
                         <div id="wit-{$wit_label}-meta-data" role="tabpanel" aria-labelledby="#wit-{$wit_label}-tab" data-witness="{$wit_label}">
-                            <xsl:choose>
-                                <xsl:when test="$witness_count &gt;= 2">
-                                    <xsl:attribute name="class">
-                                        <xsl:value-of select="'tab-pane fade'"/>
-                                    </xsl:attribute>
-                                    <xsl:if test="@type = 'primary'">
-                                        <xsl:attribute name="class">
-                                            <xsl:value-of select="'tab-pane fade show active'"/>
-                                        </xsl:attribute>
-                                    </xsl:if>
-                                </xsl:when>
-                                <xsl:otherwise>
-                                    <xsl:attribute name="class">
-                                        <xsl:value-of select="'show'"/>
-                                    </xsl:attribute>
-                                </xsl:otherwise>
-                            </xsl:choose>
+                            <xsl:attribute name="class">
+                                <xsl:choose>
+                                    <xsl:when test="$wit_pos = 1">tab-pane fade show active</xsl:when>
+                                    <xsl:otherwise>tab-pane fade</xsl:otherwise>
+                                </xsl:choose>
+                            </xsl:attribute>
                             <table class="person-info-table witness-info-table">
                                 <tbody>
                                     <tr>

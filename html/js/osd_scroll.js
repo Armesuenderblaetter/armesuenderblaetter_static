@@ -782,10 +782,10 @@ function initializePageView() {
   const pagParam = urlParams.get('pag');
   const witParam = urlParams.get('wit');
   
-  // Also check if this is a multi-witness document (has both primary and secondary pbs)
+  // Also check if this is a multi-witness document (has pbs with different data-witness values)
   const hasPrimaryPbs = document.querySelectorAll('.pb.primary[source]').length > 0;
-  const hasSecondaryPbs = document.querySelectorAll('.pb.secondary[source]').length > 0;
-  const isMultiWitness = hasPrimaryPbs && hasSecondaryPbs;
+  const hasOtherWitnessPbs = document.querySelectorAll('.pb.secondary[source], .pb.tertiary[source], .pb.quaternary[source]').length > 0;
+  const isMultiWitness = hasPrimaryPbs && hasOtherWitnessPbs;
   
   if (isMultiWitness) {
     // witness_switcher.js will handle the initial page display
