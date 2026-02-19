@@ -55,13 +55,15 @@
                             </div>
                         </section>
 
-                        <xsl:if test="position() lt last()">
+                        <xsl:if test="position() eq last()">
                             <xsl:call-template name="landing_carousel"/>
                         </xsl:if>
                     </xsl:for-each>
                 </main>
 
-                <xsl:call-template name="html_footer"/>
+                <xsl:call-template name="html_footer">
+                    <xsl:with-param name="showLogos" select="'true'"/>
+                </xsl:call-template>
             </body>
         </html>
     </xsl:template>

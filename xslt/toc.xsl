@@ -141,15 +141,16 @@
                         </div>
                         <div class="search-col-right">
                             <xsl:call-template name="nav_bar"/>
-                            <div>
-                                <div class="d-flex flex-column align-items-center" id="current-refinements"/> 
+                            <div class="contents-frame">
+                                <div class="scroller">
+                                    <div id="hits"/>
+                                    <div id="pagination" />
+                                                                     <button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">
+                                    <i class="bi bi-chevron-double-up" aria-hidden="true"></i>
+                                </button>
+                                </div>
+                                <div class="site-bottom-strip" />
                             </div>
-                            <div id="hits" />
-                            <div id="pagination" />
-                            <div class="search-col-right-strip" />
-                            <button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">
-                                <i class="bi bi-chevron-double-up" aria-hidden="true"></i>
-                            </button>
                         </div>
                     </div>
 

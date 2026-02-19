@@ -339,9 +339,6 @@ search.addWidgets([
     },
   }),
 
-  instantsearch.widgets.currentRefinements({
-    container: "#current-refinements",
-  }),
 
   instantsearch.widgets.configure({
     hitsPerPage: 20,

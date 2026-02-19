@@ -31,10 +31,15 @@
                     <xsl:with-param name="site_top_variant" select="if ($is_about) then 'image' else 'button'"/>
                 </xsl:call-template>
 
-                <main class="flex-shrink-0">
+                <main class="contents-frame">
                     <div class="container body">
                         <xsl:apply-templates select=".//tei:body"/>
                     </div>
+                    <div class="site-bottom-strip">
+                               <!-- <a class="site-button site-bottom-button semitrans" href="toc.html" role="button" aria-label="Schnellvorlauf">
+                                    <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
+                                </a> -->
+                            </div>
                 </main>
 
                 <xsl:call-template name="html_footer"/>

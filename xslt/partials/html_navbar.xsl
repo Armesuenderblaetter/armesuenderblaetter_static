@@ -100,17 +100,20 @@
                             </a>
                         </div>
                         <div class="site-top-right">
-                            <xsl:choose>
+                            <!-- <xsl:choose>
                                 <xsl:when test="$site_top_variant = 'image'">
                                     <img class="site-top-image" src="images/vienna.png" alt="Titelbild"/>
                                 </xsl:when>
                                 <xsl:otherwise>
                                     <a class="section-button bgc site-top-project-button" href="about.html">Mehr über das Projekt</a>
                                 </xsl:otherwise>
-                            </xsl:choose>
+                            </xsl:choose> -->
+                            <img class="site-top-image" src="images/vienna.png" alt="Titelbild"/>
                         </div>
                     </div>
-                    <xsl:choose>
+                    
+                </div>
+                <xsl:choose>
                         <xsl:when test="$site_top_variant = 'image'">
                             <div class="site-top-strip bild" aria-hidden="true">
                                 <a class="site-button site-bottom-button semitrans" href="toc.html" role="button" aria-label="Schnellvorlauf">
@@ -119,10 +122,9 @@
                             </div>
                         </xsl:when>
                         <xsl:otherwise>
-                            <div class="site-top-strip" aria-hidden="true" />
+                            <div class="site-top-strip hidden" aria-hidden="true" />
                         </xsl:otherwise>
                     </xsl:choose>
-                </div>
             </section>
         </xsl:if>
         <!-- script removed: offcanvas toggle behavior reverted -->

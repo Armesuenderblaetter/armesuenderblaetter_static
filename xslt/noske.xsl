@@ -54,19 +54,21 @@
                         <!-- RIGHT COLUMN: Results -->
                         <div class="search-col-right">
                             <xsl:call-template name="nav_bar"/>
+                            <div class="contents-frame">
+                                <!-- Results Area -->
+                                <div class="noske-results-area scroller">
+                                    <div id="custom-noske-hits"/>
+                                    <div id="custom-noske-pagination" style="display:none;" />
+                                </div>
 
-                            <!-- Results Area -->
-                            <div class="noske-results-area">
-                                <div id="custom-noske-hits"/>
-                                <div id="custom-noske-pagination" style="display:none;" />
+                                <!-- <div id="pagination" /> 
+
+                                <button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">
+                                    <i class="bi bi-chevron-double-up" aria-hidden="true"></i>
+                                </button> -->
+                                 <div class="site-bottom-strip" />
                             </div>
 
-                            <div id="pagination" />
-
-                            <div class="search-col-right-strip"></div>
-                            <button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">
-                                <i class="bi bi-chevron-double-up" aria-hidden="true"></i>
-                            </button>
                         </div>
                     </div>
                 </main>

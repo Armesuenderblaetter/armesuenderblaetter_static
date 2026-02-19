@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" exclude-result-prefixes="#all" version="2.0">
-    <xsl:param name="showBanner" select="''"/>
     <xsl:template match="/" name="html_footer">
+        <xsl:param name="showLogos" select="''"/>
         <footer class="footer mt-auto py-3 bg-body-tertiary">
+            <xsl:if test="$showLogos != ''">
             <div class="wrapper" id="wrapper-footer-full">
                 <div class="container" id="footer-full-content" tabindex="-1">
                     <div class="row">
@@ -37,7 +38,8 @@
                     </div>
                 </div>
             </div>
-            <div class="footer-imprint-bar hide-reading" id="wrapper-footer-secondary" style="text-align:center; padding:0.4rem 0; font-size: x-small;"> © 2026 ÖAW | <a href="imprint.html">Impressum</a> |                <a href="{$github_url}">
+            </xsl:if>
+            <div class="footer-imprint-bar hide-reading" id="wrapper-footer-secondary" > © 2026 ÖAW | <a href="imprint.html">Impressum</a> |                <a href="{$github_url}">
                     <i class="bi bi-github" title="GitHub" alt="GitHub" aria-hidden="true" />
                     <span class="visually-hidden">GitHub</span>
                 </a>
