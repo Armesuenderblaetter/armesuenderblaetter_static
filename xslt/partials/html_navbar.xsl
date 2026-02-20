@@ -7,6 +7,10 @@
     <xsl:template match="/" name="nav_bar">
         <xsl:param name="site_top_variant" as="xs:string" select="'button'"/>
         <xsl:param name="show_site_top" as="xs:boolean" select="true()"/>
+        <xsl:param name="show_site_top_fastforward" as="xs:boolean" select="false()"/>
+        <xsl:param name="site_top_corner_href" as="xs:string" select="'toc.html'"/>
+        <xsl:param name="site_top_corner_icon_class" as="xs:string" select="'bi bi-chevron-double-right'"/>
+        <xsl:param name="site_top_corner_aria_label" as="xs:string" select="'Schnellvorlauf'"/>
 
         <header class="site-header">
             <div class="container-fluid site-header-inner">
@@ -116,13 +120,24 @@
                 <xsl:choose>
                         <xsl:when test="$site_top_variant = 'image'">
                             <div class="site-top-strip bild" aria-hidden="true">
-                                <a class="site-button site-bottom-button semitrans" href="toc.html" role="button" aria-label="Schnellvorlauf">
-                                    <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
+                                <a class="site-button site-bottom-button semitrans" href="{$site_top_corner_href}" role="button" aria-label="{$site_top_corner_aria_label}">
+                                    <i class="{$site_top_corner_icon_class}" aria-hidden="true"></i>
                                 </a>
                             </div>
                         </xsl:when>
                         <xsl:otherwise>
-                            <div class="site-top-strip hidden" aria-hidden="true" />
+                            <xsl:choose>
+                                <xsl:when test="$show_site_top_fastforward">
+                                    <div class="site-top-strip meta">
+                                        <a class="site-button site-bottom-button semitrans" href="{$site_top_corner_href}" role="button" aria-label="{$site_top_corner_aria_label}">
+                                            <i class="{$site_top_corner_icon_class}" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <div class="site-top-strip hidden" aria-hidden="true" />
+                                </xsl:otherwise>
+                            </xsl:choose>
                         </xsl:otherwise>
                     </xsl:choose>
             </section>

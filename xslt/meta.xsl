@@ -16,7 +16,7 @@
             <xsl:value-of select=".//tei:title[@type='main'][1]/text()"/>
         </xsl:variable>
 
-        <xsl:variable name="is_about" as="xs:boolean" select="ends-with(base-uri(/), '/about.xml')"/>
+        <!-- Keep the site-top header consistent across meta pages (no image strip) -->
 
         <html class="h-100" lang="de">
 
@@ -28,10 +28,16 @@
 
             <body class="d-flex flex-column h-100 has-site-top">
                 <xsl:call-template name="nav_bar">
-                    <xsl:with-param name="site_top_variant" select="if ($is_about) then 'image' else 'button'"/>
+                    <xsl:with-param name="site_top_variant" select="'button'"/>
+                    <xsl:with-param name="show_site_top_fastforward" select="true()"/>
                 </xsl:call-template>
 
                 <main class="contents-frame">
+                                <xsl:if test="position() = 1">
+                                    <a class="sitebutton site-button-bis" href="toc.html" role="button" aria-label="Zum Inhaltsverzeichnis">
+                                        ZUR EDITION
+                                    </a>
+                                </xsl:if>
                     <div class="container body">
                         <xsl:apply-templates select=".//tei:body"/>
                     </div>

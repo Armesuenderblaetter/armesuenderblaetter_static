@@ -544,6 +544,7 @@ body.landing .landing-offcanvas .offcanvas-body::-webkit-scrollbar {
     font-weight: 700;
     font-size: 25px;
     line-height: 1;
+    padding: 1rem;
 }
 
 .site-top-project-button:hover,
@@ -614,6 +615,16 @@ body.landing .landing-offcanvas .offcanvas-body::-webkit-scrollbar {
 .site-top-strip.hidden {
     display: none;
 }
+
+/* Compact strip for meta pages: no extra spacing, just a positioning context */
+.site-top-strip.meta {
+    margin: 0;
+    height: 0;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    background-image: none;
+}
 /* Reuse landing section spacing on non-landing pages too */
 .landing-section {
     padding: 2.25rem 0;
@@ -643,6 +654,18 @@ main {
     width: 100%;
     margin: 0;
     padding: 0;
+}
+
+/* Meta pages: pin the "ZUR EDITION" vertical button to the right */
+body:not(.landing) main.contents-frame {
+    position: relative;
+}
+
+body:not(.landing) main.contents-frame > a.site-button-bis {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
 }
 
 .tei-front,
@@ -889,8 +912,20 @@ div#searchContainer>div {
     height: calc(100vh - 25rem);
 }
 
+/* TOC/search pages: pin the vertical CTA to the right, below the site-top */
+body.page-search .contents-frame {
+    position: relative;
+}
+
+body.page-search .contents-frame > a.site-button-bis {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+}
+
 .scroller {
-height: calc(100% - 6rem);
+height: calc(100% - 6rem );
 overflow: scroll ;
 }
 
@@ -1802,7 +1837,7 @@ div#current-refinements {
 
 .container.body {
 	overflow-y: scroll;
-	height: calc(100% - 6rem);
+	height: calc(100% - 6rem );
 }
 
 

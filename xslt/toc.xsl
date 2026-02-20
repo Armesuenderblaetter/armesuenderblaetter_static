@@ -140,8 +140,16 @@
                             <div class="person-left-tailpiece" aria-hidden="true"></div>
                         </div>
                         <div class="search-col-right">
-                            <xsl:call-template name="nav_bar"/>
+                            <xsl:call-template name="nav_bar">
+                                <xsl:with-param name="show_site_top_fastforward" select="true()"/>
+                                <xsl:with-param name="site_top_corner_href" select="'index.html'"/>
+                                <xsl:with-param name="site_top_corner_icon_class" select="'bi bi-house'"/>
+                                <xsl:with-param name="site_top_corner_aria_label" select="'Zur Startseite'"/>
+                            </xsl:call-template>
                             <div class="contents-frame">
+                                <a class="sitebutton site-button-bis" href="index.html" role="button" aria-label="Zur Startseite">
+                                    ZUR STARTSEITE
+                                </a>
                                 <div class="scroller">
                                     <div id="hits"/>
                                     <div id="pagination" />

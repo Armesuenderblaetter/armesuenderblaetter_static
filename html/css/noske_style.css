@@ -179,7 +179,7 @@ body.page-noske-search #noske-search-button:focus-visible {
 /* Results area */
 .noske-results-area {
     padding: 2rem;
-    min-height: 400px;
+    /* min-height: 400px; */
 }
 
 /* noske table */

@@ -18,7 +18,6 @@
 
 
         <html class="h-100" lang="de">
-             <xsl:variable name="is_about" as="xs:boolean" select="ends-with(base-uri(/), '/imprint.xml')"/>
 
             <head>
                 <xsl:call-template name="html_head">
@@ -28,7 +27,8 @@
 
             <body class="d-flex flex-column h-100 has-site-top">
                  <xsl:call-template name="nav_bar">
-                    <xsl:with-param name="site_top_variant" select="if ($is_about) then 'image' else 'button'"/>
+                    <xsl:with-param name="site_top_variant" select="'button'"/>
+                    <xsl:with-param name="show_site_top_fastforward" select="true()"/>
                 </xsl:call-template>
                 <main class="flex-shrink-0">
                     <div class="container body">
