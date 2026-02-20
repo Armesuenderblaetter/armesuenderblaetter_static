@@ -1252,14 +1252,18 @@ body.page-person-search .person-left-section {
     position: relative;
 }
 
+/* Ensure only the heading draws the separator (avoid stacking borders/lines) */
+body.page-person-search .search-col-left .person-left-section,
+body.page-person-search .search-col-left .person-left-facet {
+    border: 0;
+    box-shadow: none;
+    background-image: none;
+}
+
 body.page-person-search .person-left-section::after {
-    content: "";
-    position: absolute;
-    left: 0.75rem;
-    right: 0.75rem;
-    bottom: 0;
-    height: 1px;
-    background-color: var(--asb-background-colour-0);
+    /* Separators are drawn via heading ::before to avoid double-thick lines */
+    content: none;
+    display: none;
 }
 
 body.page-person-search .person-left-section.person-left-section--name::after {
@@ -1280,6 +1284,33 @@ body.page-person-search .person-left-heading {
     margin: 0 0 1rem;
     text-transform: uppercase;
     letter-spacing: 0.02em;
+}
+
+/* TOC left column: single 1px separator line before every section heading */
+body.page-person-search .search-col-left h3.person-left-heading {
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.02em;
+    margin: 2rem 0 1rem;
+    padding-top: 1.5rem;
+    position: relative;
+    border-top: 0;
+    box-shadow: inset 0 1px 0 0 var(--asb-background-colour-0);
+}
+
+body.page-person-search .search-col-left h3.person-left-heading::before {
+    content: none !important;
+}
+
+/* First block (TITEL) should not have a separator line above it */
+body.page-person-search .search-col-left .person-left-section--name h3.person-left-heading {
+    margin-top: 0;
+    padding-top: 0;
+    box-shadow: none;
+}
+
+body.page-person-search .search-col-left .person-left-section--name h3.person-left-heading::before {
+    content: none;
 }
 
 /* Left column title styling for TOC */
@@ -1555,39 +1586,14 @@ body.page-person-search .contains-facet-row .ais-RefinementList-list {
 }
 
 body.page-person-search .contains-facet-row::after {
-    content: "";
-    display: block;
-    position: absolute;
-    bottom: 0;
-    left: 0.75rem;
-    right: 0.75rem;
-    height: 1px;
-    background-color: var(--asb-background-colour-0);
+    /* Use the next heading separator instead (avoid double lines) */
+    content: none;
+    display: none;
 }
 
 body.page-person-search .contains-facet-row {
     position: relative;
-    padding-bottom: 1.5rem;
-}
-
-/* Person search left column: facet sections with separators */
-body.page-person-search .search-col-left .person-left-facet > h3 {
-    text-transform: uppercase;
-    font-weight: bold;
-    letter-spacing: 0.02em;
-    margin: 2rem 0 1rem;
-    padding-top: 1.5rem;
-    position: relative;
-}
-
-body.page-person-search .search-col-left .person-left-facet > h3::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0.75rem;
-    right: 0.75rem;
-    height: 1px;
-    background-color: var(--asb-background-colour-0);
+    padding-bottom: 0;
 }
 
 /* Person search: pill-shaped refinement list items */
