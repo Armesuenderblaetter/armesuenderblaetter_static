@@ -8,7 +8,7 @@
     <xsl:import href="partials/html_footer.xsl"/>
     <xsl:import href="partials/tabulator_js.xsl"/>
     <xsl:template match="/">
-        <xsl:variable name="doc_title" select="'Textsuche'"/>
+        <xsl:variable name="doc_title" select="'Suche'"/>
         <html class="h-100" lang="de">
             <head>
                 <xsl:call-template name="html_head">
@@ -29,22 +29,24 @@
                                 <!-- <h3 class="noske-left-heading">Suche</h3> -->
                                 <div id="noske-search">
                                     <div id="custom-noske-input" class="noske-search-div">
-                                        <button id="noske-search-button" class="noske-search-button p-2" aria-label="Suche">
-                                            <i class="bi bi-search" aria-hidden="true"></i>
-                                        </button>
                                         <div class="noske-search-pill">
-                                            <input type="search" id="custom-noske-input-input" class="noske-search-input" placeholder="suchen" autocomplete="off" />
+                                            <input type="search" id="custom-noske-input-input" class="noske-search-input" placeholder="Stichwort" autocomplete="off" />
                                         </div>
-                                        <select id="custom-noske-input-select" class="noske-search-select">
-                                            <option value="simple">Textsuche</option>
-                                            <option value="cql">CQL</option>
-                                        </select>
+                                        <div class="noske-search-actions" aria-label="Suchmodus">
+                                            <button id="noske-search-button" class="noske-search-button p-2" aria-label="Suche">
+                                                <i class="bi bi-search" aria-hidden="true"></i>
+                                            </button>
+                                            <select id="custom-noske-input-select" class="noske-search-select" aria-label="Suchmodus">
+                                                <option value="simple">Einfach</option>
+                                                <option value="cql">Erweitert</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 <div id="custom-noske-stats" class="noske-stats"/>
                             </div>
                             <div class="noske-left-section noske-left-section-inline">
-                                <a href="https://flugblaetter-noske.acdh-dev.oeaw.ac.at/crystal/#open" class="noske-crystal-link">Erweiterte Suche (Extern)</a>
+                                <a href="https://flugblaetter-noske.acdh-dev.oeaw.ac.at/crystal/#open" class="noske-crystal-link">Sketch Engine (Extern)</a>
                                 <span class="noske-left-spacer"></span>
                                 <button id="infoBoxBtn" class="noske-info-btn">ⓘ</button>
                             </div>
@@ -100,7 +102,7 @@
                             </div>
                         </div>
                         <div>
-                            <h2>CQL Suche (Corpus Query Language)</h2>
+                            <h2>Erweiterte Suche (Corpus Query Language)</h2>
                             <div class="section">
                                 <h3>🔹 Grundlegende Syntax</h3>
                                 <ul>

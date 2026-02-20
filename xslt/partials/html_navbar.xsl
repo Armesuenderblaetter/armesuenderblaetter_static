@@ -65,7 +65,7 @@
                         </span>
                         <span class="site-menu-text">Übersicht</span>
                     </a>
-                    <a class="site-menu-link site-menu-link--leaf" href="./nosketch.html">
+                    <a class="site-menu-link site-menu-link--leaf" href="./search.html">
                         <span class="site-menu-bullet" aria-hidden="true">
                             <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
                         </span>

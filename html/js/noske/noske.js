@@ -1658,20 +1658,24 @@ var W = class {
       throw new Error("main search div container is not defined");
     if (!e) throw new Error("search input id is not defined");
     let n = document.querySelector(`#${this.container}`);
-    // render button first (left), then input, then select (right)
+    // desired layout: input (white) on the left, then a shared action segment (lens + selector)
     n.innerHTML = `<div id="${e}" class="${o?.div || this.div1css}">
-        <button id="noske-search-button" class="${o?.button || this.buttoncss}" aria-label="Suche">${s || this.button}</button>
-        <input
-          type="search"
-          id="${`${e}-input`}"
-          class="${o?.input || this.inputcss}"
-          placeholder="${t || this.inputPlaceholder}"
-          autocomplete="off"
-        />
-        <select id="${`${e}-select`}" class="${o?.select || this.selectQueryCss}">
-          <option value="simple">Textsuche</option>
-          <option value="cql">CQL</option>
-        </select>
+        <div class="noske-search-pill">
+          <input
+            type="search"
+            id="${`${e}-input`}" 
+            class="${o?.input || this.inputcss}"
+            placeholder="${t || this.inputPlaceholder}"
+            autocomplete="off"
+          />
+        </div>
+        <div class="noske-search-actions" aria-label="Suchmodus">
+          <button id="noske-search-button" class="${o?.button || this.buttoncss}" aria-label="Suche">${s || this.button}</button>
+          <select id="${`${e}-select`}" class="${o?.select || this.selectQueryCss}" aria-label="Suchmodus">
+            <option value="simple">Einfach</option>
+            <option value="cql">Erweitert</option>
+          </select>
+        </div>
       </div>
     `;
   }
