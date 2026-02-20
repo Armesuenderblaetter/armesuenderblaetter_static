@@ -1012,11 +1012,11 @@ body.page-search .ais-InfiniteHits {
 
 /* Person search: let the results overlap into the site-top area
    up to the top edge of `.site-top-strip` (strip height 168px + its 2rem top gap). */
-body.page-person-search #hits {
+/* body.page-person-search #hits {
     margin-top: calc(-1 * (168px + 2rem));
     position: relative;
     z-index: 1;
-}
+} */
 
 /* Person search hit card sizing */
 body.page-person-search {
@@ -1592,23 +1592,30 @@ body.page-person-search .search-col-left .person-left-facet > h3::before {
 
 /* Person search: pill-shaped refinement list items */
 body.page-person-search .search-col-left .ais-RefinementList-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    display: grid;
+    /* Keep 2 columns when there is enough width (as before), but ensure
+       every column starts at a consistent x position. */
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    column-gap: 1rem;
+    row-gap: 0.5rem;
     list-style: none;
-    padding: 0;
-    margin: 0;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 body.page-person-search .search-col-left .ais-RefinementList-item {
     margin: 0;
+    display: block;
+    width: 100%;
 }
 
 body.page-person-search .search-col-left .ais-RefinementList-label {
     position: relative;
-    display: inline-flex;
+    display: grid;
+    grid-template-columns: 1.35rem 1fr auto;
+    column-gap: 0.5rem;
     align-items: center;
-    gap: 0.5rem;
+    width: 100%;
     padding: 0;
     cursor: pointer;
     font-size: 0.95rem;
@@ -1655,7 +1662,7 @@ body.page-person-search .search-col-left .ais-RefinementList-count {
     padding: 0.35rem 0.85rem;
     border-radius: 9999px;
     margin-left: 0;
-    order: 0;
+    justify-self: end;
 }
 
 body.page-person-search .search-col-left .ais-RefinementList-count::before,
@@ -1664,7 +1671,7 @@ body.page-person-search .search-col-left .ais-RefinementList-count::after {
 }
 
 body.page-person-search .search-col-left .ais-RefinementList-labelText {
-    order: 1;
+    min-width: 0;
 }
 
 /* Person search: range slider for ALTER */
@@ -1776,9 +1783,10 @@ body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-Se
 
 /* Scrollable facet lists keep their border but adjust for pill layout */
 body.page-person-search .search-col-left .facet-list-scroll {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    column-gap: 1rem;
+    row-gap: 0.5rem;
     padding: 0;
     max-height: 14rem;
     border: 0 !important;
