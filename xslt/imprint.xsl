@@ -25,12 +25,18 @@
                 </xsl:call-template>
             </head>
 
-            <body class="d-flex flex-column h-100 has-site-top">
+            <body class="d-flex flex-column h-100 has-site-top page-meta">
                  <xsl:call-template name="nav_bar">
                     <xsl:with-param name="site_top_variant" select="'button'"/>
                     <xsl:with-param name="show_site_top_fastforward" select="true()"/>
+                    <xsl:with-param name="site_top_corner_href" select="'index.html'"/>
+                    <xsl:with-param name="site_top_corner_icon_class" select="'bi bi-house'"/>
+                    <xsl:with-param name="site_top_corner_aria_label" select="'Zur Startseite'"/>
                 </xsl:call-template>
-                <main class="flex-shrink-0">
+                <main class="contents-frame">
+                    <a class="sitebutton site-button-bis" href="index.html" role="button" aria-label="Zur Startseite">
+                        ZUR STARTSEITE
+                    </a>
                     <div class="container body">
                         <xsl:apply-templates select="/*/*"/>
                     </div>

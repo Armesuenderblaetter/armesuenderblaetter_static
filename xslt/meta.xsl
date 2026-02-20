@@ -26,7 +26,7 @@
                 </xsl:call-template>
             </head>
 
-            <body class="d-flex flex-column h-100 has-site-top">
+            <body class="d-flex flex-column h-100 has-site-top page-meta">
                 <xsl:call-template name="nav_bar">
                     <xsl:with-param name="site_top_variant" select="'button'"/>
                     <xsl:with-param name="show_site_top_fastforward" select="true()"/>
@@ -41,11 +41,7 @@
                     <div class="container body">
                         <xsl:apply-templates select=".//tei:body"/>
                     </div>
-                    <div class="site-bottom-strip">
-                               <!-- <a class="site-button site-bottom-button semitrans" href="toc.html" role="button" aria-label="Schnellvorlauf">
-                                    <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
-                                </a> -->
-                            </div>
+
                 </main>
 
                 <xsl:call-template name="html_footer"/>
