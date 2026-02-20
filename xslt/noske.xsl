@@ -46,7 +46,7 @@
                                 <div id="custom-noske-stats" class="noske-stats"/>
                             </div>
                             <div class="noske-left-section noske-left-section-inline">
-                                <a href="https://flugblaetter-noske.acdh-dev.oeaw.ac.at/crystal/#open" class="noske-crystal-link">Sketch Engine (Extern)</a>
+                                <a href="https://flugblaetter-noske.acdh-dev.oeaw.ac.at/crystal/#open" class="noske-crystal-link">Sketch Engine (extern)</a>
                                 <span class="noske-left-spacer"></span>
                                 <button id="infoBoxBtn" class="noske-info-btn">ⓘ</button>
                             </div>

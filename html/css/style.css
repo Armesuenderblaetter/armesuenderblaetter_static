@@ -123,8 +123,6 @@ body.page-noske-search .noske-search-div,
 .noske-search-div {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
-    /* Border is controlled by the page-specific Noske stylesheet */
-    border: 0 !important;
 }
 
 

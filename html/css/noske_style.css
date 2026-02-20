@@ -136,8 +136,9 @@ body.page-noske-search #noske-search-button {
 
 /* Noske search bar: input (white) + actions (bg1) without overlap */
 body.page-noske-search .noske-search-div {
-    background-color: transparent;
-    border: 0 !important;
+    background-color: var(--bs-white);
+    border: 2px solid var(--asb-background-colour-2-button) !important;
+    border-radius: 999px;
     gap: 0.35rem;
     overflow: visible;
 }
@@ -326,11 +327,18 @@ body.page-noske-search .search-col-right .tabulator-header {
     background-color: var(--asb-background-colour-2);
 }
 
-/* Noske result value typography (Tabulator body cells only) */
+/* Tabulator column alignment (header + body) */
 
 body.page-noske-search .tabulator .tabulator-cell[tabulator-field="kwic"],
-body.page-noske-search .tabulator .tabulator-cell.kwic {
+body.page-noske-search .tabulator .tabulator-cell.kwic,
+body.page-noske-search .tabulator .tabulator-header .tabulator-col[tabulator-field="kwic"] .tabulator-col-title {
     text-align: center;
+}
+
+body.page-noske-search .tabulator .tabulator-header .tabulator-col[tabulator-field="kwic"] .tabulator-col-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 body.page-noske-search .tabulator .tabulator-cell[tabulator-field="kwic"] a,
@@ -340,8 +348,15 @@ body.page-noske-search .tabulator .tabulator-cell.kwic a:visited {
     color: #886848 !important;
 }
 
-body.page-noske-search .tabulator .tabulator-cell[tabulator-field="left"] {
+body.page-noske-search .tabulator .tabulator-cell[tabulator-field="left"],
+body.page-noske-search .tabulator .tabulator-header .tabulator-col[tabulator-field="left"] .tabulator-col-title {
     text-align: right;
+}
+
+body.page-noske-search .tabulator .tabulator-header .tabulator-col[tabulator-field="left"] .tabulator-col-content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 body.page-noske-search .tabulator .tabulator-cell[tabulator-field="left"] .kwic-left {
