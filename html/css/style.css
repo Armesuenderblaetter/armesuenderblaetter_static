@@ -1494,6 +1494,10 @@ body.page-person-search .person-name-search-inner .ais-SearchBox-input {
     background: transparent;
     width: 100%;
     padding: 0.35rem 0.5rem;
+    /* InstantSearch theme places the submit/reset icons on top of the input;
+       reserve horizontal space so the caret/text doesn't start under the icon. */
+    padding-left: 2.4rem !important;
+    padding-right: 2.4rem !important;
     font-family: 'Barlow', sans-serif;
     font-weight: 400;
     font-size: 20px;
@@ -1754,6 +1758,9 @@ body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-Se
     background: transparent;
     width: 100%;
     padding: 0.5rem 0.75rem;
+    /* Same icon overlap fix for searchable facet boxes */
+    padding-left: 2.4rem !important;
+    padding-right: 2.4rem !important;
 	font-family: 'Barlow', sans-serif;
 	font-weight: 400;
 	font-size: 20px;
