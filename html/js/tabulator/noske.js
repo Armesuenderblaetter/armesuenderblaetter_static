@@ -73,5 +73,7 @@ var config = {
       {title:"Linker Kotext", field:"left", formatter:leftContextFormatter, download:false, headerSort:true, hozAlign:"right"},
       {title:"Stichwort", field:"kwic", download:false, formatter:cellClassFormatter, headerSort:true},
       {title:"Rechter Kotext", field:"right", formatter:"html", download:false, headerSort:true}, 
+      {title:"DocId", field:"docid", visible:false, download:false},
+      {title:"TokenId", field:"tokenid", visible:false, download:false},
     ],
 };

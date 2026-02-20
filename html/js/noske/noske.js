@@ -1364,13 +1364,15 @@ function B(r, e, t, s, o = !1, n = !1, i) {
 		</div>
 		`;
   let u = document.querySelector("#hits-table-body");
-  // Fixed column headers: Titel, Jahr, Seite, Linker Kotext, Stichwort, Rechter Kotext
+  // Fixed column headers: Titel, Seite, Jahr, Linker Kotext, Stichwort, Rechter Kotext, DocId, TokenId
   var c = `<th class="${i.css?.th || h.th}">Titel</th>
-							<th class="${i.css?.th || h.th}">Jahr</th>
 							<th class="${i.css?.th || h.th}">Seite</th>
+							<th class="${i.css?.th || h.th}">Jahr</th>
 							<th class="${i.css?.th || h.th}">Linker Kotext</th>
 							<th class="${i.css?.th || h.th}">Stichwort</th>
-							<th class="${i.css?.th || h.th}">Rechter Kotext</th>`;
+							<th class="${i.css?.th || h.th}">Rechter Kotext</th>
+							<th style="display:none">DocId</th>
+							<th style="display:none">TokenId</th>`;
   let requiresDeferredThumbnails = !1;
   let x = r
       .map((m) => {
@@ -1439,8 +1441,8 @@ function B(r, e, t, s, o = !1, n = !1, i) {
         return `
 			<tr class="${i.css?.trBody || h.trBody}">
 				${titelCell}
-				${jahrCell}
 				${seiteCell}
+				${jahrCell}
 				<td class="${i.css?.left || h.left}">${b}</td>
 				<td class="${i.css?.kwic || h.kwic}">
 					<a href="${v}">
@@ -1448,6 +1450,8 @@ function B(r, e, t, s, o = !1, n = !1, i) {
 					</a>
 				</td>
 				<td class="${i.css?.right || h.right}">${P}</td>
+				<td style="display:none">${escapeHtmlAttr(docIdValue)}</td>
+				<td style="display:none">${escapeHtmlAttr(tokenId)}</td>
 			</tr>
 			`;
       })
