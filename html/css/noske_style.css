@@ -248,7 +248,10 @@ body.page-noske-search #noske-search-button:focus-visible {
 
 /* Results area */
 .noske-results-area {
-	padding: var(--asb-square-btn-size);
+	padding: 1rem ;
+	padding-left: var(--asb-square-btn-size);
+	padding-right: var(--asb-square-btn-size);
+
     min-height: 0;
     overflow: hidden;
     display: flex;

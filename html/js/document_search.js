@@ -27,7 +27,7 @@ const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   additionalSearchParameters: {
     query_by: "title,fulltext,person_names",
     sort_by: "sorting_date:asc",
-    per_page: 20,
+    per_page: 250,
   },
 });
 
@@ -341,7 +341,7 @@ search.addWidgets([
 
 
   instantsearch.widgets.configure({
-    hitsPerPage: 20,
+    hitsPerPage: 250,
     attributesToSnippet: ["title"],
   }),
 

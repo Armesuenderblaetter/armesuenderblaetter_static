@@ -133,7 +133,48 @@ function return_url(line) {
   }
   let doc_id = doc_id_entry.split("=")[1];
 
-  return `./${doc_id}.html#${token_id}`;
+  // Extract witness/archive
+  let witness = "";
+  let doc_archive_entry = line.refs.find((ref) => ref.startsWith("doc.archive"));
+  if (doc_archive_entry) {
+    let archive_name = doc_archive_entry.split("=")[1];
+    if (ARCHIVE_CODE_MAP[archive_name]) {
+        witness = ARCHIVE_CODE_MAP[archive_name];
+    } else {
+        for (const [name, code] of Object.entries(ARCHIVE_CODE_MAP)) {
+            if (archive_name.includes(name)) {
+                witness = code;
+                break;
+            }
+        }
+    }
+  } else {
+      // Fallback: check doc.attrs for archive name
+      let doc_attrs_entry = line.refs.find((ref) => ref.startsWith("doc.attrs"));
+      if (doc_attrs_entry) {
+          let attrs = doc_attrs_entry.split("=")[1];
+          for (const [name, code] of Object.entries(ARCHIVE_CODE_MAP)) {
+              if (attrs.includes(name)) {
+                  witness = code;
+                  break;
+              }
+          }
+      }
+  }
+
+  // Build query parameters
+  let params = [];
+  let pb_entry = line.refs.find((ref) => ref.startsWith("pb.n="));
+  let page = pb_entry ? pb_entry.split("=")[1] : "";
+  if (page) {
+    params.push("pag=" + page);
+  }
+  if (witness) {
+    params.push("wit=" + witness);
+  }
+  let query = params.length > 0 ? "?" + params.join("&") : "";
+
+  return `./${doc_id}.html${query}#${token_id}`;
 }
 
 const urlForClient = new URL(window.location.href);

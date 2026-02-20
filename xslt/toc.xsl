@@ -152,12 +152,11 @@
                                 </a>
                                 <div class="scroller">
                                     <div id="hits"/>
-                                    <div id="pagination" />
-                                                                     <button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">
-                                    <i class="bi bi-chevron-double-up" aria-hidden="true"></i>
-                                </button>
-                                </div>
-                                <div class="site-bottom-strip" />
+                                    <!-- <div id="pagination" />
+                                        <button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">
+                                            <i class="bi bi-chevron-double-up" aria-hidden="true"></i>
+                                        </button> -->
+                                    </div>
                             </div>
                         </div>
                     </div>
