@@ -66,7 +66,7 @@
                                     ZUR STARTSEITE
                                 </a>
                                 <!-- Results Area -->
-                                <div class="noske-results-area scroller">
+                                <div class="noske-results-area">
                                     <div id="custom-noske-hits"/>
                                     <div id="custom-noske-pagination" style="display:none;" />
                                 </div>

@@ -249,7 +249,62 @@ body.page-noske-search #noske-search-button:focus-visible {
 /* Results area */
 .noske-results-area {
 	padding: var(--asb-square-btn-size);
-    /* min-height: 400px; */
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Freeze Tabulator header: scroll only the table body.
+   Propagate height through the entire wrapper chain so the tableholder
+   fills "100% minus the header" and scrolls internally. */
+
+/* contents-frame already has height from style.css; make it a flex column
+   so the results area fills it and the bottom strip keeps 6rem */
+body.page-noske-search .contents-frame {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+body.page-noske-search .contents-frame > .site-bottom-strip {
+    flex: 0 0 6rem;
+}
+
+body.page-noske-search .contents-frame > .noske-results-area {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Propagate height through JS-injected intermediate wrappers */
+body.page-noske-search #custom-noske-hits,
+body.page-noske-search #custom-noske-hits > .noske-hits-div,
+body.page-noske-search #custom-noske-hits .noske-hits-div {
+    height: 100%;
+}
+
+/* Tabulator: flex column — header stays put, body scrolls */
+body.page-noske-search .tabulator {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+body.page-noske-search .tabulator > .tabulator-header {
+    flex: 0 0 auto;
+}
+
+body.page-noske-search .tabulator > .tabulator-tableholder {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+}
+
+/* Hide Tabulator's own footer (pagination is custom) */
+body.page-noske-search .tabulator > .tabulator-footer {
+    flex: 0 0 auto;
 }
 
 /* noske table */
