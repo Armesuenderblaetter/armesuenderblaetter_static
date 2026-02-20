@@ -49,9 +49,7 @@ var config = {
     layout: "fitColumns",
     tooltips: true,
     dataLoader: true,
-    pagination: true,
-    paginationSize: 50,
-    paginationButtonCount: 5,
+    pagination: false,
     index: "id",
     langs:{
         "default":{
