@@ -137,7 +137,7 @@
                             </div>
                             <div id="sort-by"></div>
                             <div id="clear-refinements"></div>
-                            <div class="person-left-tailpiece" aria-hidden="true"></div>
+                            <div class="person-left-tailpiece" aria-hidden="true" />
                         </div>
                         <div class="search-col-right">
                             <xsl:call-template name="nav_bar">

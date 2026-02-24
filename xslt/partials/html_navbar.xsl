@@ -13,7 +13,7 @@
         <xsl:param name="site_top_corner_aria_label" as="xs:string" select="'Schnellvorlauf'"/>
 
         <header class="site-header">
-            <div class="container-fluid site-header-inner">
+            <div class="site-header-inner">
                 <button class="site-button site-burger" type="button" data-bs-toggle="offcanvas" data-bs-target="#siteMenu" aria-controls="siteMenu" aria-label="Menü öffnen">
                     <i class="bi bi-list" aria-hidden="true"></i>
                 </button>
