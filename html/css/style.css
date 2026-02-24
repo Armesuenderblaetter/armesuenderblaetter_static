@@ -153,6 +153,12 @@ body.page-search .site-header,
     left: var(--site-offcanvas-width);
 }
 
+#searchPage {
+height: calc(100vh - 2rem);
+}
+
+-8px --btn
+
 .site-header-inner {
     display: flex;
     align-items: center;
@@ -810,7 +816,7 @@ height: 2rem!important;
 font-size: 0.8rem;
 text-align:center;
 padding:0.4rem;
-font-size: small;"
+font-size: small;
 }
 
 
@@ -858,6 +864,7 @@ font-size: small;"
 
 div#searchPage {
     padding: 2rem;
+
 }
 
 /* Search only: remove outer padding so the left column aligns with the offcanvas */
@@ -889,6 +896,7 @@ div#searchContainer>div {
 }
 
 #searchContainer.search-container .search-col-right {
+    height: calc(100% - var(--asb-square-btn-icon-size)) ;
     flex: 1 1 auto;
     min-width: 0;
 }
