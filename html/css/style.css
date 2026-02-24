@@ -1876,10 +1876,10 @@ body.page-meta .contents-frame {
 }
 
 body.page-meta .container.body {
-	height: 100%;
+	max-height: 100%;
 }
 
-body.page-meta .contents-frame::before,
+body.page-meta .contents-frame::after,
 body.page-search .scroller::after {
 	content: '';
 	position: sticky;
