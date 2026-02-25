@@ -325,8 +325,13 @@ initialize osd
 
 let initial_osd_visible = isVisible(OSD_container_spawnpoint);
 if (initial_osd_visible) {
-  OSD_container_spawnpoint.style.height = `${String(height / 1.5)}px`;
-  OSD_container_spawnpoint.style.width = "auto";
+  // Use the parent wrapper's actual height instead of screen.height
+  // so OSD stays within the CSS-defined flex layout.
+  var wrapperRect = OSD_container_spawnpoint.parentElement.getBoundingClientRect();
+  OSD_container_spawnpoint.style.height = wrapperRect.height > 0
+    ? `${wrapperRect.height}px`
+    : "100%";
+  OSD_container_spawnpoint.style.width = "100%";
 }
 var viewer = OpenSeadragon({
   id: OSD_container_spawnpoint_id,
