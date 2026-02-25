@@ -1,0 +1,226 @@
+main.index .landing-section--banner {
+    position: relative;
+    isolation: isolate;
+    --landing-carousel-tile-width: calc(360px * 1.2);
+    --landing-carousel-banner-height: 15rem;
+    --landing-carousel-banner-overlap: calc(var(--landing-carousel-tile-width) * 0.3);
+    padding-top: 2.25rem;
+        background-color: var(--asb-background-colour-1)!important;
+
+    padding-bottom: calc(var(--landing-carousel-banner-height) - var(--landing-carousel-banner-overlap));
+}
+
+
+main.index .landing-section--banner::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--landing-carousel-banner-height);
+    background-image: url('../images/banner_bg1.png');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.landing-section--banner .landing-section-inner {
+    /* margin-left: 2rem!important;
+    margin-right: 2rem!important; */
+    max-width: 100vw!important  ;
+}
+
+main.index .landing-cta {
+    margin-top: 1.25rem;
+}
+
+main.index .landing-button {
+    display: inline-block;
+    padding: 1em 1.25em;
+    border: 0 !important;
+    background-color: var(--asb-background-colour-button);
+    color: var(--bs-white) !important;
+    text-decoration: none;
+    border-radius: 9999px;
+	font-family: 'Cormorant', serif;
+	font-weight: 700;
+	font-size: 25px;
+    line-height: 1;
+}
+
+main.index .lnding-button:visited {
+    color: var(--bs-white) !important;
+}
+
+main.index .landing-section--mid .landing-button {
+    background-color: var(--asb-background-colour-button-fronted);
+}
+
+main.index .landing-top .landing-button {
+    background-color: var(--asb-background-colour-button-banner);
+}
+
+main.index .landing-button:hover,
+main.index .landing-button:focus {
+    text-decoration: underline;
+}
+
+main.index .landing-thumbs {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 1rem 0.25rem 0;
+}
+
+main.index .landing-thumbs.landing-thumbs--carousel {
+    --duration: 4.5s;
+    --landing-carousel-gap: 0.75rem;
+    /* Elastic overshoot applied at both ends */
+    --landing-carousel-elastic: 0.75rem;
+    display: block;
+    /* The scroll container is the viewport element, not this wrapper. */
+    overflow-x: visible;
+}
+
+main.index .landing-thumbs.landing-thumbs--carousel .landing-thumbs-viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    /* Always show 6 picture tiles; CTA is the 7th tile to the right */
+    width: 100%;
+    --landing-carousel-tile-width: calc((100% - (5 * var(--landing-carousel-gap))) / 6);
+    --landing-carousel-step: calc(var(--landing-carousel-tile-width) + var(--landing-carousel-gap));
+}
+
+main.index .landing-thumbs.landing-thumbs--carousel .landing-thumbs-strip {
+    display: flex;
+    gap: var(--landing-carousel-gap);
+    width: max-content;
+    /* Provide real left/right elastic padding so overshoot is visible */
+    padding-left: var(--landing-carousel-elastic);
+    padding-right: var(--landing-carousel-elastic);
+    box-sizing: content-box;
+    animation: landingThumbScroll var(--duration) cubic-bezier(.22,1,.36,1) infinite;
+    animation-direction: alternate;
+    animation-play-state: paused;
+    /* JS overwrites this with an exact pixel value so the animation reaches the real end */
+    --landing-carousel-max-translate: calc(-1 * (var(--landing-carousel-step) + (23 * var(--landing-carousel-elastic))));
+}
+
+main.index .landing-thumbs.landing-thumbs--carousel:hover .landing-thumbs-strip,
+main.index .landing-thumbs.landing-thumbs--carousel:focus-within .landing-thumbs-strip {
+    animation-play-state: running;
+}
+
+main.index .landing-thumbs.landing-thumbs--carousel .landing-thumb--cta {
+     /* Use the carousel tile flex-basis (no !important). Keep width:auto so
+         the flex layout determines the final size and other tiles aren't
+         affected by overrides. */
+    flex: 0 0 auto;
+    width: auto;
+     box-sizing: border-box;
+     background-color: var(--asb-background-colour-2-button);
+     color: var(--bs-white);
+     display: flex;
+     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0.75rem;
+}
+
+/* CTA tile is a link; keep it from inheriting global link styles */
+main.index .landing-thumbs.landing-thumbs--carousel a.landing-thumb--cta,
+main.index .landing-thumbs.landing-thumbs--carousel a.landing-thumb--cta:visited {
+    color: var(--bs-white) !important;
+    text-decoration: none;
+}
+
+/* Button-looking element inside the CTA tile */
+main.index .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button {
+    display: inline-block;
+    padding: 0.65em 1.1em;
+    border: 2px solid var(--bs-white);
+    background-color: var(--asb-background-colour-button-banner);
+    color: var(--bs-white) !important;
+    text-decoration: none;
+    border-radius: 9999px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+
+main.index .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-title {
+    line-height: 1.05;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+}
+
+main.index .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-title > span {
+    display: block;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 0.65em 1.1em;
+    border: 2px solid var(--bs-white);
+    background-color: var(--asb-background-colour-button-banner);
+    color: var(--bs-white) !important;
+    text-decoration: none;
+    border-radius: 9999px;
+    line-height: 1;
+}
+
+/* Landing carousel CTA uses `.cta-button` (not `.landing-thumbs-cta-button`).
+   Keep it looking like a button even for visited/hover states. */
+.cta-button:visited {
+    color: var(--bs-white) !important;
+    text-decoration: none;
+}
+
+.cta-button:hover,
+.cta-button:focus {
+    background-color: var(--asb-background-color-4-button-hover);
+    text-decoration: none;
+}
+
+main.index .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button:hover,
+main.index .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button:focus {
+    background-color: var(--asb-background-color-4-button-hover);
+    text-decoration: none;
+}
+
+
+
+main.index .landing-thumb {
+    flex: 0 0 auto;
+    display: block;
+    border: 0;
+    background-color: var(--asb-banner-colour);
+}
+
+main.index .landing-thumb img {
+    display: block;
+    width: 100% ;
+    height: auto !important;
+}
+
+@keyframes landingThumbScroll {
+    from {
+        /* start with the left padding in place */
+        transform: translateX(0);
+    }
+    to {
+        /* JS sets `--landing-carousel-max-translate` to the exact pixel distance needed
+           (strip.scrollWidth - viewport.clientWidth). Fallback is defined on the strip. */
+        transform: translateX(var(--landing-carousel-max-translate));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-strip {
+        animation: none;
+    }
+}

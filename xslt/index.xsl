@@ -31,34 +31,26 @@
         </xsl:variable>
         <html class="h-100" lang="de">
             <head>
+                    <link rel="stylesheet" href="css/carrousel.css" /> 
                 <xsl:call-template name="html_head">
                     <xsl:with-param name="html_title" select="$doc_title"/>
-                </xsl:call-template>
+                </xsl:call-template>      
             </head>
-            <body class="d-flex flex-column h-100 landing has-site-top">
+            <body class="page-meta">
                 <xsl:call-template name="nav_bar">
                     <xsl:with-param name="site_top_variant" select="'image'"/>
                 </xsl:call-template>
 
-                <main class="flex-shrink-0 landing-main">
-                    <xsl:for-each select="$landing_divs">
-                        <section class="landing-section landing-section--light">
-                            <div class="container landing-section-inner">
-                                <xsl:if test="position() = 1">
-                                    <a class="sitebutton site-button-bis" href="toc.html" role="button" aria-label="Zum Inhaltsverzeichnis">
-                                        ZUR EDITION
-                                    </a>
-                                </xsl:if>
-                                <div class="landing-section-text">
-                                    <xsl:apply-templates select="." mode="landing"/>
-                                </div>
-                            </div>
-                        </section>
-
-                        <xsl:if test="position() eq last()">
-                            <xsl:call-template name="landing_carousel"/>
-                        </xsl:if>
-                    </xsl:for-each>
+                <main class="index">
+                    <div class="contents">
+                        <a class="square-button-nebentext" href="toc.html" role="button" aria-label="Zum Inhaltsverzeichnis">
+                                ZUR EDITION
+                        </a>
+                        <div class="container-inner">
+                            <xsl:apply-templates select="$landing_divs" mode="landing"/>
+                        </div>
+                    </div>
+                    <xsl:call-template name="landing_carousel"/>
                 </main>
 
                 <xsl:call-template name="html_footer">
@@ -111,7 +103,7 @@
             <xsl:apply-templates select="node()" mode="landing"/>
             <xsl:if test="@type = 'contents' and not(preceding-sibling::tei:div[@type = 'contents'])">
                 <div class="landing-cta">
-                    <a class="section-button bga site-top-project-button" href="about.html">Mehr über das Projekt</a>
+                    <a class="pill-button pill-button-1" href="about.html">Mehr über das Projekt</a>
                 </div>
             </xsl:if>
         </div>

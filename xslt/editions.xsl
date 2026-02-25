@@ -13,6 +13,14 @@
     <xsl:import href="./partials/witness_tabs.xsl"/>
     <xsl:import href="./partials/person_cards.xsl"/>
 
+    <xsl:param name="site_bottom_corner_toc_href" as="xs:string" select="'toc.html'"/>
+    <xsl:param name="site_bottom_corner_toc_icon_class" as="xs:string" select="'bi bi-chevron-double-right'"/>
+    <xsl:param name="site_bottom_corner_toc_aria_label" as="xs:string" select="'Zur Edition'"/>
+     <xsl:param name="site_bottom_corner_home_href" as="xs:string" select="'index.html'"/>
+    <xsl:param name="site_bottom_corner_home_icon_class" as="xs:string" select="'bi bi-house'"/>
+    <xsl:param name="site_bottom_corner_home_aria_label" as="xs:string" select="'Zur Startseite'"/>
+
+
     <xsl:variable name="full_path">
         <xsl:value-of select="document-uri(/)"/>
     </xsl:variable>
@@ -52,7 +60,9 @@
                 <xsl:if test="count(//tei:witness) &gt; 1">
                     <link rel="stylesheet" href="css/variant-switcher.css" />
                 </xsl:if>
+                 <link rel="stylesheet" href="css/toc.css" />
                 <link rel="stylesheet" href="css/person-cards.css" />
+                <link rel="stylesheet" href="css/edition.css" />
             </head>
              <body class="d-flex flex-column h-100 has-site-top page-search page-person-search">
                 <xsl:call-template name="nav_bar">
@@ -137,12 +147,14 @@
                             <xsl:call-template name="place_fullimages"/>       
                             
                             <!-- Back to overview button - bottom right -->
-                            <div class="back-to-overview">
-                                <span class="back-to-overview-label">ZUR ÜBERSICHT</span>
-                                <a href="toc.html" class="site-button back-to-overview-btn" aria-label="Zur Übersicht">
-                                    <i class="bi bi-chevron-double-left" aria-hidden="true"></i>
-                                </a>
-                            </div>
+                            
+                             <div class="nav-buttons">
+                                        <a class="square-button bottom-button  ais-Pagination-item" href="{$site_bottom_corner_toc_href}" role="button" aria-label="{$site_bottom_corner_toc_aria_label}">
+                                            <i class="{$site_bottom_corner_toc_icon_class}" aria-hidden="true"></i>
+                                        </a>  <a class="square-button bottom-button  ais-Pagination-item" href="{$site_bottom_corner_home_href}" role="button" aria-label="{$site_bottom_corner_home_aria_label}">
+                                            <i class="{$site_bottom_corner_home_icon_class}" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
                         </div>
                     </div>
                 </main>

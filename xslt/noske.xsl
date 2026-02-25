@@ -14,6 +14,8 @@
                 <xsl:call-template name="html_head">
                     <xsl:with-param name="html_title" select="$doc_title"/>
                 </xsl:call-template>
+                <link rel="stylesheet" href="css/toc.css" type="text/css"/>
+                <link rel="stylesheet" href="css/noske_style.css" type="text/css"/>
             </head>
             <body class="d-flex flex-column h-100 has-site-top page-search page-noske-search">
                 <main id="searchPage">
@@ -52,7 +54,6 @@
                             </div>
                             <div class="person-left-tailpiece" aria-hidden="true"></div>
                         </div>
-
                         <!-- RIGHT COLUMN: Results -->
                         <div class="search-col-right">
                             <xsl:call-template name="nav_bar">
@@ -62,7 +63,7 @@
                                 <xsl:with-param name="site_top_corner_aria_label" select="'Zur Startseite'"/>
                             </xsl:call-template>
                             <div class="contents-frame">
-                                <a class="sitebutton site-button-bis" href="index.html" role="button" aria-label="Zur Startseite">
+                                <a class="square-button-nebentext" href="index.html" role="button" aria-label="Zur Startseite">
                                     ZUR STARTSEITE
                                 </a>
                                 <!-- Results Area -->
@@ -76,7 +77,7 @@
                                 <button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">
                                     <i class="bi bi-chevron-double-up" aria-hidden="true"></i>
                                 </button> -->
-                                 <div class="site-bottom-strip" />
+                                <!-- <div class="site-bottom-strip" /> -->
                             </div>
 
                         </div>

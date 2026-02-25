@@ -10,6 +10,7 @@
         <xsl:variable name="doc_title" select="'Übersicht'"/>
         <html class="h-100" lang="de">
             <head>
+             <link rel="stylesheet" href="css/toc.css" type="text/css"/>      
                 <xsl:call-template name="html_head">
                     <xsl:with-param name="html_title" select="$doc_title"></xsl:with-param>
                 </xsl:call-template>
@@ -146,11 +147,11 @@
                                 <xsl:with-param name="site_top_corner_icon_class" select="'bi bi-house'"/>
                                 <xsl:with-param name="site_top_corner_aria_label" select="'Zur Startseite'"/>
                             </xsl:call-template>
-                            <div class="contents-frame">
-                                <a class="sitebutton site-button-bis" href="index.html" role="button" aria-label="Zur Startseite">
+                            <div class="contents-frame">  
+                                <div class="scroller">
+                                <a class="square-button-nebentext" href="index.html" role="button" aria-label="Zur Startseite">
                                     ZUR STARTSEITE
                                 </a>
-                                <div class="scroller">
                                     <div id="hits"/>
                                     <!-- <div id="pagination" />
                                         <button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">

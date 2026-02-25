@@ -10,11 +10,11 @@
         <xsl:param name="show_site_top_fastforward" as="xs:boolean" select="false()"/>
         <xsl:param name="site_top_corner_href" as="xs:string" select="'toc.html'"/>
         <xsl:param name="site_top_corner_icon_class" as="xs:string" select="'bi bi-chevron-double-right'"/>
-        <xsl:param name="site_top_corner_aria_label" as="xs:string" select="'Schnellvorlauf'"/>
+        <xsl:param name="site_top_corner_aria_label" as="xs:string" select="'Zur Edition'"/>
 
         <header class="site-header">
             <div class="site-header-inner">
-                <button class="site-button site-burger" type="button" data-bs-toggle="offcanvas" data-bs-target="#siteMenu" aria-controls="siteMenu" aria-label="Menü öffnen">
+                <button class="site-button-1 square-button burger-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#siteMenu" aria-controls="siteMenu" aria-label="Menü öffnen">
                     <i class="bi bi-list" aria-hidden="true"></i>
                 </button>
             </div>
@@ -26,7 +26,7 @@
                     <xsl:value-of select="$fraktur_title"/>
                 </h2> -->
                 <!-- make the offcanvas close visually match the site burger -->
-                <button type="button" class="site-button site-close" data-bs-dismiss="offcanvas" aria-label="Schließen">
+                <button type="button" class="site-button-1 square-button close-button" data-bs-dismiss="offcanvas" aria-label="Schließen">
                     <i class="bi bi-x" aria-hidden="true"></i>
                 </button>
             </div>
@@ -119,8 +119,8 @@
                 </div>
                 <xsl:choose>
                         <xsl:when test="$site_top_variant = 'image'">
-                            <div class="site-top-strip bild" aria-hidden="true">
-                                <a class="site-button site-bottom-button semitrans" href="{$site_top_corner_href}" role="button" aria-label="{$site_top_corner_aria_label}">
+                            <div class="h-strip bild" aria-hidden="true">
+                                <a class="square-button bottom-button semitrans" href="{$site_top_corner_href}" role="button" aria-label="{$site_top_corner_aria_label}">
                                     <i class="{$site_top_corner_icon_class}" aria-hidden="true"></i>
                                 </a>
                             </div>
@@ -128,14 +128,14 @@
                         <xsl:otherwise>
                             <xsl:choose>
                                 <xsl:when test="$show_site_top_fastforward">
-                                    <div class="site-top-strip meta">
-                                        <a class="site-button site-bottom-button semitrans" href="{$site_top_corner_href}" role="button" aria-label="{$site_top_corner_aria_label}">
+                                    <div class="h-strip meta">
+                                        <a class="square-button bottom-button semitrans" href="{$site_top_corner_href}" role="button" aria-label="{$site_top_corner_aria_label}">
                                             <i class="{$site_top_corner_icon_class}" aria-hidden="true"></i>
                                         </a>
                                     </div>
                                 </xsl:when>
                                 <xsl:otherwise>
-                                    <div class="site-top-strip hidden" aria-hidden="true" />
+                                    <div class="h-strip hidden" aria-hidden="true" />
                                 </xsl:otherwise>
                             </xsl:choose>
                         </xsl:otherwise>

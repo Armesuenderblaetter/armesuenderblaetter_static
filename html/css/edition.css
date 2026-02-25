@@ -1,0 +1,703 @@
+/* ── Fix left column shrinking: lock it to offcanvas width ── */
+#searchContainer.search-container .search-col-left {
+    flex: 0 0 var(--site-offcanvas-width) !important;
+    min-width: var(--site-offcanvas-width) !important;
+}
+
+/* ── Edition two-column layout ── */
+.edition-content.row.body {
+    width: 100%;
+    --bs-gutter-x: 0;
+    --max-height-contents: calc(100vh - 0.5rem - var(--asb-footer-secondary-height) - var(--asb-square-btn-size) - var(--asb-square-btn-size));
+    height: var(--max-height-contents);
+    --edition-margins: 4rem 2rem 4rem 2rem;
+    overflow: hidden;
+    flex-wrap: nowrap !important;
+    margin-left: 0 !important;
+}
+
+/* ── Facsimile column: contained, no overflow ── */
+#facsimiles {
+    padding: var(--edition-margins);
+    padding-left: 4rem;
+    padding-bottom: 2rem;
+    width: 50% !important;
+    max-width: 50% !important;
+    flex: 0 0 50% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+    margin-bottom: 0 !important;
+    box-sizing: border-box !important;
+}
+
+#sticky-OSD-wrapper {
+    background-color: white;
+    height: 100% !important;
+    overflow: hidden;
+}
+
+#OSD-container-spawnpoint {
+    overflow: hidden;
+    height: 100%;
+}
+
+/* ── Edition-text column: scrollable text ── */
+#edition-text {
+    padding: var(--edition-margins);
+    padding-right: 4rem;
+     padding-bottom: 2rem;
+    width: 50% !important;
+    max-width: 50% !important;
+    flex: 0 0 50% !important;
+    margin-left: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+.edition-text-inner {
+    background-color: white;
+    height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    padding: 4rem;
+}
+
+/* ── Nav buttons: match pagination header style ── */
+.nav-buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+}
+
+.nav-buttons .square-button.bottom-button {
+    position: static !important;
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--asb-square-btn-size, 4.5rem);
+    height: var(--asb-square-btn-size, 4.5rem);
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none;
+    background-image: none !important;
+    color: var(--bs-white, #fff) !important;
+    background-color: var(--asb-background-colour-1-button, #b19983) !important;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+}
+
+.nav-buttons .square-button.bottom-button:hover,
+.nav-buttons .square-button.bottom-button:focus {
+    background-color: var(--asb-background-colour-1-button-hover, #a98f76) !important;
+    color: var(--bs-white, #fff) !important;
+    text-decoration: none;
+}
+
+
+*.display_inline {
+    display: inline-block !important;
+}
+
+*.star {
+    display: block !important;
+}
+
+*.star::before {
+    content: "*";
+}
+
+*.editor_comment {
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
+}
+
+*.app-section_divider::before {
+    content: " (Spiegelstrich) ";
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
+}
+
+*.app-page_number::before {
+    content: " (Seitenzählung:) ";
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
+}
+
+*.app-layer_counter::before {
+    content: " (Lagenzählung:) ";
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
+}
+
+*.app-catch::before {
+    content: " (Kustode:) ";
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
+}
+
+div.variants {
+    width: 100%;
+    column-count: 3;
+    background-color: aliceblue;
+    padding: 1rem;
+    border-top: 0.3rem solid black;
+    border-radius: 0.1rem;
+}
+
+div.variants p.app {
+    text-indent: -1.2rem;
+    display: block;
+    break-inside: avoid-column;
+    width: 100%;
+    padding: 0.2rem 1rem 0.2rem 1rem;
+    margin: auto;
+}
+
+p.app:target {
+    background-color: var(--variant-marker-color) !important;
+    border-radius: 5px;
+}
+
+p.app a {
+    text-decoration: inherit;
+    color: inherit;
+    border-radius: 0;
+}
+span.corr {
+    border-bottom: 0.2rem dotted red;
+    border-radius: 0px;
+    padding: 0.15rem;
+    padding-bottom: 0.05rem;
+    z-index: 200;
+    position: relative;
+}
+
+span.sic {
+    display: none;
+}
+
+span.corr:hover + span.sic,
+span.corr + span.sic:hover {
+    border: 0.1rem solid black;
+    border-radius: 5px;
+    display: block;
+    position: absolute;
+    background-color: aliceblue!important;
+    z-index: 10000;
+    padding: 0.3rem;
+    font-style: normal;
+    text-indent: 0;
+    text-align: left;
+    font-size: 1rem!important;
+}
+
+span.corr:hover + span.sic::before,
+span.sic:hover::before {
+    content: "Korrigiert aus: ";
+    font-style: normal;
+    text-indent: 0;
+    text-align: left;
+    font-size: 1rem!important;
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
+}
+
+/*.lb {
+  display: block;
+  margin: 0;
+  padding: 0;
+  height: 0;
+  line-height: 0;
+} */
+
+/* Hide line breaks for inactive witnesses */
+br.lb.lb-hidden {
+  display: none !important;
+}
+
+.token .wrapped-text:has(+ br.lb:not(.lb-hidden) + .wrapped-text)::after {
+    content: "⹀";
+    margin-left: 0;
+}
+
+
+.split-word-part-1:has(+ br.lb.current:not([style*="display: none"]))::after,
+.split-word-part-1.current-page:has(+ br.lb.current)::after {
+    content: "⹀";
+    margin-left: 0px;
+}
+
+
+/* *.text_align_center span.lb::after,
+span.verse+span.lb::after {
+     white-space: pre;
+} */
+
+
+div.footnotes {
+    width: 100%;
+    column-count: 3;
+    background-color: aliceblue;
+    padding: 1rem;
+    border-top: 0.3rem solid black;
+    border-radius: 0.1rem;
+}
+
+div.tab-content > div {
+    padding-top: 0;
+}
+
+a.personview {
+    text-decoration: none;
+    padding-bottom: .2rem;
+    font-weight: bold;
+    color: inherit;
+}
+
+a.personview::before {
+    content: "↗ ";
+}
+
+ul {
+    border-bottom: unset!important;
+}
+ul#witness_overview.nav.nav-tabs li.nav-item button.nav-link {
+    font-weight: bold;
+}
+
+ul#witness_pagination_tabs.nav.nav-tabs li.nav-item button.nav-link {
+    background-color: var(--asb-background-colour-button) !important;
+    color: var(--bs-white) !important;
+}
+
+ul#witness_pagination_tabs.nav.nav-tabs li.nav-item button.nav-link.active {
+    background-color: var(--asb-link-colour) !important;
+    color: var(--bs-white) !important;
+}
+
+*:target {
+    background-color: aqua;
+}
+
+dl {
+    padding-left: 1rem;
+}
+
+dd {
+    padding: .2rem 0rem 1rem 10rem;
+}
+
+.edition-title {
+    color: var(--asb-background-colour-2-button);
+text-transform: uppercase;
+}
+
+/* Ensure page break markers remain inline so they do not split paragraphs */
+span.pb.primary,
+span.pb.secondary,
+span.pb.tertiary,
+span.pb.quaternary {
+    display: inline !important;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    color: inherit;
+    border: 0;
+    opacity: 0;
+}
+
+span.pb.nearly_no_content {
+    display: block;
+    height: 16rem;
+}
+
+/* --- Anchored Notes Styling --- */
+.anchored-note {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #868277;
+    font-style: italic;
+     margin: .5rem 0 .5rem .5rem;
+    min-height: 40px;
+    height: 100% ;
+    font-size: small;
+}
+
+.anchored-note::before, div.icon_desc .current-page::before {
+    content: "[";
+}
+
+.anchored-note::after, div.icon_desc .current-page::after {
+    content: "]";
+}
+
+/* Ensure line breaks don't affect container height when visible */
+br.lb.current {
+    display: inline;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    font-size: inherit;
+    line-height: inherit;
+    height: auto;
+}
+
+
+.mark-highlight {
+	background-color: #fff6a0;
+	color: inherit;
+	transition: background-color 0.6s ease;
+}
+
+.witness-pages {
+	/* Occupy the right half of the available space */
+	width: 50%;
+	margin-left: auto;
+	margin-right: 0;
+}
+
+.witness-pages .witness-pagination {
+	/* Align pagination controls to the left within the right-side container */
+	display: flex;
+	justify-content: flex-start;
+}
+
+.witness-pages .page-links {
+	/* Make pagination list expand to full width */
+	width: 100%;
+	display: flex;
+	flex-wrap: nowrap;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Text-display rules carried over from a.css
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Edition text inner layout ── */
+.edition-text-inner > * {
+    justify-self: center;
+}
+
+.edition-text-inner :where(p, .versegroup, .title_part, .closer, .imprint) {
+    inline-size: fit-content;
+    max-inline-size: 100%;
+    box-sizing: border-box;
+    padding-inline: 2.5rem;
+    text-align: left;
+}
+
+/* ── Block-level structural elements ── */
+.title_part {
+    display: block !important;
+    margin: 5px !important;
+    text-align: center;
+}
+
+.catch {
+    display: inline-block;
+    color: grey;
+    text-align: right;
+    width: 100%;
+    position: relative;
+}
+
+.row.fw {
+    width: 100%;
+    color: grey;
+    flex: 1;
+}
+
+.row.fw:has(.col:nth-child(3)) .col {
+    width: 33.3333%;
+}
+
+.row.fw:not(:has(.col:nth-child(3))) .col {
+    width: 50%;
+}
+
+/* ── Iconographic description ── */
+div.icon_desc {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    color: #868277;
+    font-style: italic;
+    font-size: small;
+    margin: .5rem 0 .5rem .5rem;
+}
+
+/* ── Variant anchors ── */
+a.variant_anchor_link {
+    background-color: var(--variant-marker-color);
+    border-radius: 6px;
+    padding: 0.1rem 0.1rem;
+    color: inherit;
+    text-decoration: inherit;
+}
+
+a.variant_anchor_link:target {
+    background-color: grey !important;
+}
+
+a.variant_anchor_link:target > * {
+    background-color: grey !important;
+    color: black !important;
+}
+
+a.variant_anchor_link.block_lemma {
+    display: block;
+    width: fit-content;
+}
+
+a.variant_anchor_link.block_lemma.catch {
+    position: relative;
+    right: var(--catch-offset-right);
+}
+
+/* ── Token interaction ── */
+span.token {
+    position: relative;
+}
+
+span.sic span.token+span.token::before {
+    content: "\a";
+    white-space: pre;
+    background-color: red;
+}
+
+span.token:hover {
+    background-color: aliceblue !important;
+}
+
+span.sic span.token::after,
+span.token:hover::before {
+    font-family: var(--editor-font-family) !important;
+    font-style: normal;
+    text-indent: 0;
+    text-align: left;
+    color: var(--editor-font-color) !important;
+    font-size: 1rem !important;
+    content: 'Lemma: 'attr(lemma)'\A'"POS: "attr(pos)"\Avocabulary: "attr(vocab);
+    white-space: pre;
+    border: 0.1rem dotted black;
+    border-radius: 5px;
+    display: inline;
+    position: absolute;
+    background-color: aliceblue !important;
+    z-index: 10000;
+    padding: 0.3rem;
+    margin: .2rem;
+    left: 100%;
+    top: 50%;
+}
+
+/* ── Empty lemma ── */
+span.empty_lemma a.variant_anchor_link::after {
+    content: "" !important;
+}
+
+span.empty_lemma {
+    display: none !important;
+}
+
+span.empty_lemma::after {
+    content: "" !important;
+}
+
+/* ── Image preview ── */
+span.image_preview img {
+    height: 7rem;
+    width: auto;
+}
+
+/* ── Structural labels ── */
+span.sig {
+    width: fit-content;
+    display: inline-block;
+    color: grey;
+    text-align: center;
+    position: relative;
+}
+
+a.variant_anchor_link.block_lemma.catch > span.catch {
+    width: fit-content;
+    display: block;
+    color: grey;
+    text-align: right;
+    position: relative;
+    right: 0;
+    text-indent: 0;
+}
+
+span.layer_counter {
+    width: 100%;
+    display: block;
+    color: grey;
+    text-align: center;
+}
+
+span.page_number {
+    width: fit-content;
+    display: block;
+    position: relative;
+    color: darkgrey;
+    text-align: left;
+    margin-left: 1rem;
+}
+
+/* ── Section dividers ── */
+*+hr.section_divider {
+    padding-bottom: 1.5rem;
+}
+
+hr.section_divider {
+    width: 10rem;
+    margin: auto !important;
+    padding-bottom: 1.5rem;
+    border-top: solid .3rem;
+}
+
+hr.section_divider+hr.section_divider {
+    width: 10rem;
+    margin: auto;
+    border-top: solid .3rem;
+}
+
+span.lemma::before {
+    content: "↑ ";
+}
+
+/* ── Text formatting classes ── */
+*.text_align_center {
+    display: block;
+    text-align: center !important;
+    width: 100%;
+}
+
+*.antiqua {
+    font-family: var(--bs-font-sans-serif, sans-serif) !important;
+}
+
+*.majuscule {
+    font-size: 150% !important;
+}
+
+*.bold {
+    font-weight: bold !important;
+}
+
+*.italic {
+    font-style: italic !important;
+}
+
+*.spaced {
+    letter-spacing: 0.125em;
+}
+
+*.indent {
+    display: block;
+    margin-left: 2em !important;
+    text-indent: 0 !important;
+}
+
+*.hanging_indent {
+    text-indent: -4rem !important;
+    padding-left: 4rem !important;
+}
+
+*.superscript {
+    vertical-align: super !important;
+    font-size: 70%;
+}
+
+
+.tei-front,
+.tei-body,
+.title-page {
+    display: block;
+    width: 100%;
+}
+
+.tei-front {
+    margin-bottom: 1rem;
+}
+
+.title-page {
+    margin: 0 auto 1rem;
+}
+
+.tei-body p {
+    display: block;
+    width: 100%;
+    max-width: 40rem;
+    margin: 0.5rem auto;
+    text-align: left;
+    padding: 0 1rem;
+}
+
+.tei-figure {
+    display: block;
+    margin: 1.5rem auto;
+    text-align: center;
+    width: min(100%, 640px);
+}
+
+.tei-figure .figure-icon {
+    display: inline-flex;
+    width: clamp(7.5rem, 50vw, 26rem);
+    min-height: clamp(3rem, 18vw, 12rem);
+    border-top: 2px solid var(--asb-border-color);
+    border-bottom: 2px solid var(--asb-border-color);
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    position: relative;
+}
+
+.tei-figure.has-iconclass .figure-icon {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.tei-figure.figure-type-ornament .figure-icon {
+    min-height: clamp(2.5rem, 12vw, 8rem);
+}
+
+.tei-figure.figure-type-vignette .figure-icon {
+    min-height: clamp(4rem, 24vw, 15rem);
+}
+
+.tei-figure .figure-caption {
+    display: block;
+    margin-top: 0.75rem;
+    font-family: var(--bs-font-sans-serif);
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: var(--asb-link-colour);
+    text-align: center;
+}
+
+
+
+.align-right{
+    text-align:right;
+}
+.edition-text-inner > * {
+    width: 100%
+}

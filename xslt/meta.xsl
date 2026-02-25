@@ -26,22 +26,21 @@
                 </xsl:call-template>
             </head>
 
-            <body class="d-flex flex-column h-100 has-site-top page-meta">
+            <body class="page-meta">
                 <xsl:call-template name="nav_bar">
                     <xsl:with-param name="site_top_variant" select="'button'"/>
                     <xsl:with-param name="show_site_top_fastforward" select="true()"/>
                 </xsl:call-template>
 
-                <main class="contents-frame">
-                                <xsl:if test="position() = 1">
-                                    <a class="sitebutton site-button-bis" href="toc.html" role="button" aria-label="Zum Inhaltsverzeichnis">
-                                        ZUR EDITION
-                                    </a>
-                                </xsl:if>
-                    <div class="container body">
-                        <xsl:apply-templates select=".//tei:body"/>
+                <main class="meta">
+                    <div class="contents">
+                        <a class="sitebutton square-button-nebentext" href="toc.html" role="button" aria-label="Zum Inhaltsverzeichnis">
+                            ZUR EDITION
+                        </a>
+                        <div class="container-inner">
+                            <xsl:apply-templates select=".//tei:body"/>
+                        </div>
                     </div>
-
                 </main>
 
                 <xsl:call-template name="html_footer"/>
@@ -52,14 +51,12 @@
     <!-- <xsl:template match="tei:p">
         <p id="{generate-id()}"><xsl:apply-templates/></p>
     </xsl:template> -->
-    <xsl:template match="tei:div[@type = 'contents' or starts-with(@type, 'content') or ends-with(@type, 'contact')]">
-        <section class="landing-section landing-section--light">
-            <xsl:apply-templates/>
-        </section>
-    </xsl:template>
+  
 
-    <xsl:template match="tei:div">
+    <xsl:template match="tei:section">
+        <div class="section">
         <xsl:apply-templates/>
+        </div>
     </xsl:template>
 
     <xsl:template match="tei:head" mode="#all">
