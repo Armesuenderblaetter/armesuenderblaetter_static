@@ -79,7 +79,33 @@ body {
     min-height: 100%
 }
 
+/* ── Thin, auto-hiding scrollbars (match Firefox behaviour in Chrome/Edge) ── */
 
+/* Standard property (Firefox 64+, Chrome 121+) */
+* {
+    scrollbar-width: thin ;
+    scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+}
+
+/* WebKit / older Blink (Chrome < 121, Safari, Edge) */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
 
 
 /* SITE TOP */

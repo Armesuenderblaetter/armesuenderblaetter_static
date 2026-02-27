@@ -2,6 +2,24 @@
 #searchContainer.search-container .search-col-left {
     flex: 0 0 var(--site-offcanvas-width) !important;
     min-width: var(--site-offcanvas-width) !important;
+    max-width: var(--site-offcanvas-width) !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+}
+
+/* Force all direct children of the left column to respect its width */
+#searchContainer.search-container .search-col-left > * {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Citation block in left column */
+.search-col-left .citation {
+    font-size: 0.8rem;
+    padding: 0.5rem 0;
+    overflow-wrap: break-word;
+    word-break: break-all;
 }
 
 /* ── Edition two-column layout ── */

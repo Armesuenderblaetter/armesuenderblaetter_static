@@ -33,12 +33,14 @@
 
 .person-card-body {
     padding: 0;
+    overflow: hidden;
 }
 
 .person-info-table {
     width: 100%;
     margin: 0;
     border-collapse: collapse;
+    table-layout: fixed;
     font-size: 0.9rem;
 }
 
@@ -74,13 +76,15 @@
     background: #fff;
     color: #495057;
     text-align: left;
-    width: 15%;
+    width: 35%;
     font-size: x-small;
     text-transform: uppercase;
 }
 
 .person-info-table td.info-value {
-    width: 85%;
+    width: 65%;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .person-info-table td.multi-value {
