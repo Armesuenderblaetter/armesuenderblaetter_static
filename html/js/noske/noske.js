@@ -1343,6 +1343,41 @@ function schedulePageFallbackResolution() {
       const page = countPbBeforeToken(doc, tokenId);
       if (page) {
         cell.textContent = page;
+
+        // Also update links in the same table row so they include the
+        // correct page parameter.  Without this the kwic link opens the
+        // target document on page 1 instead of the resolved page.
+        const row = cell.closest("tr");
+        if (row) {
+          row.querySelectorAll("a[href]").forEach((link) => {
+            const href = link.getAttribute("href");
+            if (!href || href === "#") return;
+            try {
+              // Resolve relative URL against current page so URL() works.
+              const resolved = new URL(href, window.location.href);
+              resolved.searchParams.set("pag", page);
+              // Keep attribute as relative when the original href was relative.
+              if (href.startsWith("./") || href.startsWith("../") || !href.startsWith("http")) {
+                const rel = resolved.pathname.split("/").pop()
+                  + "?" + resolved.searchParams.toString()
+                  + (resolved.hash || "");
+                link.setAttribute("href", "./" + rel);
+              } else {
+                link.href = resolved.toString();
+              }
+            } catch (_) {
+              // Best-effort: append pag param manually.
+              const hashIdx = href.indexOf("#");
+              const sep = href.includes("?") ? "&" : "?";
+              if (hashIdx >= 0) {
+                link.setAttribute("href",
+                  href.substring(0, hashIdx) + sep + "pag=" + page + href.substring(hashIdx));
+              } else {
+                link.setAttribute("href", href + sep + "pag=" + page);
+              }
+            }
+          });
+        }
       }
       cell.dataset.resolved = "1";
     }
@@ -1397,8 +1432,9 @@ function B(r, e, t, s, o = !1, n = !1, i) {
         // Extract Jahr (year) from doc.id filename
         const jahrValue = docYearEntry ? docYearEntry.split("=")[1] : extractYearFromDocId(docIdValue);
         
-        // Build Titel cell with link
-        const titelHref = baseHref || "#";
+        // Build Titel cell with link (include page param when known)
+        const titelParams = pageValue ? `?pag=${pageValue}` : "";
+        const titelHref = baseHref ? (baseHref + titelParams) : "#";
         const titelText = docTitleValue || docIdValue || "";
         const titelCell = `<td class="${i.css?.td || h.td}"><a href="${titelHref}">${escapeHtmlAttr(titelText)}</a></td>`;
         
