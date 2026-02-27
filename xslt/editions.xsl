@@ -16,7 +16,7 @@
     <xsl:param name="site_bottom_corner_toc_href" as="xs:string" select="'toc.html'"/>
     <xsl:param name="site_bottom_corner_toc_icon_class" as="xs:string" select="'bi bi-chevron-double-right'"/>
     <xsl:param name="site_bottom_corner_toc_aria_label" as="xs:string" select="'Zur Edition'"/>
-     <xsl:param name="site_bottom_corner_home_href" as="xs:string" select="'index.html'"/>
+    <xsl:param name="site_bottom_corner_home_href" as="xs:string" select="'index.html'"/>
     <xsl:param name="site_bottom_corner_home_icon_class" as="xs:string" select="'bi bi-house'"/>
     <xsl:param name="site_bottom_corner_home_aria_label" as="xs:string" select="'Zur Startseite'"/>
 
@@ -60,11 +60,11 @@
                 <xsl:if test="count(//tei:witness) &gt; 1">
                     <link rel="stylesheet" href="css/variant-switcher.css" />
                 </xsl:if>
-                 <link rel="stylesheet" href="css/toc.css" />
+                <link rel="stylesheet" href="css/toc.css" />
                 <link rel="stylesheet" href="css/person-cards.css" />
                 <link rel="stylesheet" href="css/edition.css" />
             </head>
-             <body class="d-flex flex-column h-100 has-site-top page-search page-person-search">
+            <body class="d-flex flex-column h-100 has-site-top page-search page-person-search">
                 <xsl:call-template name="nav_bar">
                     <xsl:with-param name="show_site_top" select="false()"/>
                 </xsl:call-template>
@@ -75,7 +75,7 @@
                             <h1 class="edition-title" align="center">
                                 <xsl:value-of select="$doc_title"/>
                             </h1>
-                            
+
                             <!-- Witness Metadata (Archive info) -->
                             <div class="witness-metadata-section">
                                 <!-- <h4>Quellenangaben</h4> -->
@@ -84,7 +84,7 @@
 
                             <!-- Person Cards -->
                             <xsl:call-template name="person_cards"/>
-                            
+
                             <!-- XML Link -->
                             <div class="xml-link-section" align="center">
                                 <a href="{$teiSource}" class="bgc site-top-project-button xml-tei-link" title="XML/TEI">
@@ -93,14 +93,14 @@
                             </div>
                             <div class="citation" />
                         </div>
-                        
+
                         <!-- RIGHT COLUMN: Facsimile and Edition Text -->
                         <div class="search-col-right">
                             <!-- Pagination in top right -->
                             <div class="edition-pagination-header">
                                 <xsl:call-template name="witness_pagination"/>
                             </div>
-                           
+
                             <!-- Facsimile and Edition Content -->
                             <div class="edition-content row body">
 
@@ -109,13 +109,13 @@
                                 </div>
                                 <div id="edition-text" class="col-6">
                                     <div class="edition-text-inner">
-                                    <xsl:apply-templates select="//tei:text/tei:*[not(local-name() = 'fs' or local-name() = 'back')]" />
-                                    <xsl:for-each select="//tei:back">
-                                        <div class="tei-back">
-                                            <xsl:apply-templates/>
-                                        </div>
-                                       
-                                    </xsl:for-each>
+                                        <xsl:apply-templates select="//tei:text/tei:*[not(local-name() = 'fs' or local-name() = 'back')]" />
+                                        <xsl:for-each select="//tei:back">
+                                            <div class="tei-back">
+                                                <xsl:apply-templates/>
+                                            </div>
+
+                                        </xsl:for-each>
                                     </div>
                                 </div>
                             </div>
@@ -144,17 +144,18 @@
                                     </xsl:for-each>
                                 </div>
                             </xsl:if>
-                            <xsl:call-template name="place_fullimages"/>       
-                            
+                            <xsl:call-template name="place_fullimages"/>
+
                             <!-- Back to overview button - bottom right -->
-                            
-                             <div class="nav-buttons">
-                                        <a class="square-button bottom-button  ais-Pagination-item" href="{$site_bottom_corner_toc_href}" role="button" aria-label="{$site_bottom_corner_toc_aria_label}">
-                                            <i class="{$site_bottom_corner_toc_icon_class}" aria-hidden="true"></i>
-                                        </a>  <a class="square-button bottom-button  ais-Pagination-item" href="{$site_bottom_corner_home_href}" role="button" aria-label="{$site_bottom_corner_home_aria_label}">
-                                            <i class="{$site_bottom_corner_home_icon_class}" aria-hidden="true"></i>
-                                        </a>
-                                    </div>
+
+                            <div class="nav-buttons">
+                                <a class="square-button bottom-button  ais-Pagination-item" href="{$site_bottom_corner_toc_href}" role="button" aria-label="{$site_bottom_corner_toc_aria_label}" alt="{$site_bottom_corner_home_aria_label}">
+                                    <i class="{$site_bottom_corner_toc_icon_class}" aria-hidden="true"></i>
+                                </a>
+                                <a class="square-button bottom-button  ais-Pagination-item" href="{$site_bottom_corner_home_href}" role="button" aria-label="{$site_bottom_corner_home_aria_label}" alt="{$site_bottom_corner_home_aria_label}">
+                                    <i class="{$site_bottom_corner_home_icon_class}" aria-hidden="true"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </main>

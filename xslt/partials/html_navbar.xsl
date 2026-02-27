@@ -76,7 +76,7 @@
                 <div class="container site-top-inner">
                     <div class="site-top-grid">
                         <div class="site-top-left">
-                            <a class="site-top-title-link" href="index.html" aria-label="Zur Startseite">
+                            <a class="site-top-title-link" href="index.html" aria-label="Zur Startseite" alt="Zur Startseite">
                                 <div class="site-top-title">
                                     <span>ARME</span>
                                     <span>SÜNDER</span>
@@ -93,7 +93,7 @@
                 <xsl:choose>
                         <xsl:when test="$site_top_variant = 'image'">
                             <div class="h-strip bild" aria-hidden="true">
-                                <a class="square-button bottom-button semitrans" href="{$site_top_corner_href}" role="button" aria-label="{$site_top_corner_aria_label}">
+                                <a class="square-button bottom-button semitrans" href="{$site_top_corner_href}" role="button" aria-label="{$site_top_corner_aria_label}" alt="{$site_top_corner_aria_label}">
                                     <i class="{$site_top_corner_icon_class}" aria-hidden="true"></i>
                                 </a>
                             </div>
@@ -102,7 +102,7 @@
                             <xsl:choose>
                                 <xsl:when test="$show_site_top_fastforward">
                                     <div class="h-strip meta">
-                                        <a class="square-button bottom-button semitrans" href="{$site_top_corner_href}" role="button" aria-label="{$site_top_corner_aria_label}">
+                                        <a class="square-button bottom-button semitrans" href="{$site_top_corner_href}" role="button" aria-label="{$site_top_corner_aria_label}" alt="{$site_top_corner_aria_label}">
                                             <i class="{$site_top_corner_icon_class}" aria-hidden="true"></i>
                                         </a>
                                     </div>

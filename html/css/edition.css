@@ -393,10 +393,10 @@ br.lb.current {
 }
 
 .edition-text-inner :where(p, .versegroup, .title_part, .closer, .imprint) {
-    inline-size: fit-content;
+    /* inline-size: fit-content;
     max-inline-size: 100%;
     box-sizing: border-box;
-    padding-inline: 2.5rem;
+    padding-inline: 2.5rem; */
     text-align: left;
 }
 
@@ -700,4 +700,19 @@ span.lemma::before {
 }
 .edition-text-inner > * {
     width: 100%
+}
+
+@media screen and (max-width: 1920px) {
+   #facsimiles, #edition-text {
+        padding: 2rem 1rem 2rem 1rem ;
+    }
+    #facsimiles {
+        padding-right: 0.5rem ;
+    }
+    #edition-text {
+        padding-left: 0.5rem ;
+    }
+    .edition-text-inner {
+        padding: 1.5rem
+    }
 }
