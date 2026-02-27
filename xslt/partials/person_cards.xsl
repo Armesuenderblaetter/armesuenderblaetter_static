@@ -233,18 +233,6 @@
                             </td>
                         </tr>
                         
-                        <!-- Mentioned in -->
-                        <tr>
-                            <td class="info-label">ERWÄHNT IN:</td>
-                            <td class="info-value">
-                                <xsl:choose>
-                                    <xsl:when test="$person/tei:noteGrp/tei:note[@type='mentions']">
-                                        <xsl:value-of select="$person/tei:noteGrp/tei:note[@type='mentions']"/>
-                                    </xsl:when>
-                                    <xsl:otherwise>k.A.</xsl:otherwise>
-                                </xsl:choose>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
                 

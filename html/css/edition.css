@@ -390,6 +390,7 @@ br.lb.current {
 /* ── Edition text inner layout ── */
 .edition-text-inner > * {
     justify-self: center;
+    font-family: var(--editor-font-family);
 }
 
 .edition-text-inner :where(p, .versegroup, .title_part, .closer, .imprint) {
@@ -590,6 +591,7 @@ span.lemma::before {
 
 *.antiqua {
     font-family: var(--bs-font-sans-serif, sans-serif) !important;
+    font-size: 0.8em;
 }
 
 *.majuscule {

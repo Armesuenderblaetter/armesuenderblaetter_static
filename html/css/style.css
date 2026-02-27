@@ -1,5 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+/* Cormorant lacks combining diacriticals (e.g. overline U+0305 in "Dan̅").
+   Register Noto Serif under the 'Cormorant' family name for just that range
+   so the browser composites the mark with the surrounding Cormorant glyphs.  */
+@font-face {
+    font-family: 'Cormorant';
+    font-style: normal;
+    font-weight: 100 900;
+    src: url(https://fonts.gstatic.com/s/notoserif/v33/ga6daw1J5X9T9RW6j9bNVls-hfgvz8JcMofYTYeGD33Esw.woff2) format('woff2');
+    unicode-range: U+0302-0303, U+0305, U+0307-0308, U+0310, U+0312, U+0315, U+031A, U+0326-0327, U+032C, U+032F-0330, U+0332-0333, U+0338, U+033A, U+0346, U+034D;
+}
+@font-face {
+    font-family: 'Cormorant';
+    font-style: italic;
+    font-weight: 100 900;
+    src: url(https://fonts.gstatic.com/s/notoserif/v33/ga6faw1J5X9T9RW6j9bNfFIMZhhWnFTyNZIQD1-_PwPct-FG.woff2) format('woff2');
+    unicode-range: U+0302-0303, U+0305, U+0307-0308, U+0310, U+0312, U+0315, U+031A, U+0326-0327, U+032C, U+032F-0330, U+0332-0333, U+0338, U+033A, U+0346, U+034D;
+}
+
 :root {
-    --editor-font-family: 'Cormorant', serif;
+    --editor-font-family: 'Cormorant', 'Noto Serif', serif;
     --bs-font-sans-serif: 'Barlow', sans-serif;
     --editor-font-color: grey;
     /*  --variant-marker-color: rgb(203, 231, 255); */
