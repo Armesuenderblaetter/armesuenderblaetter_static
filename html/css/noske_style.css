@@ -148,6 +148,7 @@ body.page-noske-search .noske-search-pill {
     border-radius: 9999px 0 0 9999px;
     align-self: stretch;
     display: flex;
+    height: var(--noske-search-btn-size);
 }
 
 body.page-noske-search .noske-search-actions {
@@ -161,17 +162,14 @@ body.page-noske-search .noske-search-actions {
 
 /* Remove negative margins from base stylesheet so segments don't visually shift */
 body.page-noske-search .noske-search-button {
-    margin-left: 0;
+    margin: 0;
 }
 
 body.page-noske-search .noske-search-select {
-    margin-right: 0;
-}
-
-body.page-noske-search .noske-search-select {
-    border-radius: 0;
+    border-radius: 9999px;
     margin: 0;
     padding: 0 0.9rem;
+    background-color: transparent;
 }
 
 body.page-noske-search #noske-search-button {
@@ -185,12 +183,12 @@ body.page-noske-search #noske-search-button {
     background-color: transparent;
 }
 
-body.page-noske-search .noske-search-select {
-    border-radius: 9999px;
-    margin-left: 0;
-    padding-left: 0.9rem;
-    background-color: transparent;
+@media screen and (max-width: 1920px) {
+    body.page-noske-search .noske-search-select {
+        padding: 0rem;
+    }
 }
+
 
 /* No border/outline highlight on hover; keep simple */
 body.page-noske-search .noske-search-select:hover,

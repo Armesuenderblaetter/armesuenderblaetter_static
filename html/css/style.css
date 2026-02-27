@@ -28,17 +28,28 @@
 
     
     /* Shared sizes for square/icon buttons (burger/close/action) */
-    --asb-square-btn-size: 4.5rem;
-    --asb-square-btn-icon-size: 2.625rem;
+    --asb-square-btn-size: 3.428rem;
+    --asb-square-btn-icon-size: 2rem;
 
     /* Ensure the whole site uses a serif font (also picked up by Bootstrap) */
     --bs-body-font-family: var(--editor-font-family);
-    --site-offcanvas-width: clamp(280px, 34vw, 400px);
+    --site-offcanvas-width: clamp(224px, 27.2vw, 320px);
     /* target height used for the action in the site-top (button or image) */
     /* --site-top-action-height: clamp(2.6rem, 4vw, 3.5rem); */
-    --noske-search-btn-size: 2.6rem;
+    --noske-search-btn-size: 2rem;
     --asb-footer-secondary-height: 2rem ;
-    --asb-footer-primary-height: 9rem ;
+    --asb-footer-primary-height: 7rem ;
+}
+
+/* On screens wider than 1920px, restore the original (wider) offcanvas width */
+@media (min-width: 1921px) {
+    :root {
+        --site-offcanvas-width: clamp(280px, 34vw, 400px);
+        --asb-footer-primary-height: 9rem ;
+        --asb-footer-secondary-height: 3rem ;
+        --asb-square-btn-size: 4.5rem;
+        --asb-square-btn-icon-size: 2.625rem;
+    }
 }
 
 body {
@@ -47,6 +58,7 @@ body {
     font-size: 14px;
     min-height: 100%
 }
+
 
 
 
@@ -64,6 +76,9 @@ body {
 
 .site-top-inner{
     height: 15rem ;
+    width: 100%;
+    max-width: 100%!important;
+    padding: 0;
 }
 
 .site-top {
@@ -76,13 +91,10 @@ body {
     grid-template-columns: 1.15fr 0.85fr;
     gap: 2rem;
     align-items: center;
-    padding-left: calc(2rem);
-    padding-right: calc(2rem);
     /* Match Bootstrap .container max-widths */
     width: 100%;
     max-width: 100%;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0;
 }
 
 .site-top-title-link {
@@ -98,6 +110,7 @@ body {
     text-transform: uppercase;
     line-height: 1.2;
     font-size: clamp(2.6rem, 5vw, 4rem);
+    padding-left: calc(var(--site-offcanvas-width) + 2rem);
 }
 
 .site-top-image{
@@ -223,10 +236,7 @@ body:not(.landing) main.contents-frame {
     box-shadow: none !important;
 }
 
-.site-button-1 {
-    border: 3px solid var(--asb-background-colour-button-banner) !important;
-    background-color: var(--asb-background-colour-1-button) !important;
-}
+
 
 
 .bottom-button {
@@ -238,15 +248,15 @@ body:not(.landing) main.contents-frame {
     z-index: 2000;   
 }
 
-.close-button {
-    filter: none;
-}
-
 /* Offcanvas close button: hidden by default; shown/positioned when menu opens */
 .close-button {
+    filter: none;
     /* by default keep the element present in the DOM but hidden at its original location
        — we'll show and position it outside the offcanvas when the menu opens */
     display: none !important;
+}
+.site-button-1 {
+     background-color: var(--asb-background-colour-1-button) !important;
 }
 
 /* When the offcanvas is showing, place the close button outside it so
@@ -361,6 +371,7 @@ body:has(.offcanvas.show:not(.hiding), .offcanvas.showing) .site-header .site-bu
 }
 
 .site-offcanvas {
+    --bs-offcanvas-width: var(--site-offcanvas-width);
     width: var(--site-offcanvas-width);
     /* restore menu background and foreground to the original colourway */
     background-color: var(--asb-background-colour-4) !important;
@@ -555,9 +566,9 @@ main.meta, .contents-frame{
 /* TEXT STYLES */
 
 .contents h1 {
-    font-size: 70px;
-    letter-spacing: 20px;
-    line-height: 80px;
+    font-size: 3.2rem;
+    letter-spacing: 0.9rem;
+    line-height: 3.5rem;
     text-transform: uppercase;
     font-weight: 500;
     color: #000000;
@@ -680,16 +691,33 @@ font-size: small;
     font-weight: bold;
     font-size: large;
     color: black;
-
 }
 .footer-2 {
     padding: 0.5rem 0;
     color: black;
-}   
+}
+
+@media screen and (max-width: 1920px) {
+   .footer-1{
+        font-size: small;
+    }
+    .footer-2 {
+        padding: 0.3rem 0;
+        font-size: small;
+    }
+
+    .logo a img {
+        height: 4rem ;
+    }
+}
 
 .footer-3 {
    color: white;
 }
 .footer-separator {
     padding-top: 1rem;
+}
+
+.text-right {
+    text-align: right
 }

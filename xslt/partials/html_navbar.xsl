@@ -14,7 +14,7 @@
 
         <header class="site-header">
             <div class="site-header-inner">
-                <button class="site-button-1 square-button burger-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#siteMenu" aria-controls="siteMenu" aria-label="Menü öffnen">
+                <button class="site-button-1 square-button burger-button semitrans" type="button" data-bs-toggle="offcanvas" data-bs-target="#siteMenu" aria-controls="siteMenu" aria-label="Menü öffnen">
                     <i class="bi bi-list" aria-hidden="true"></i>
                 </button>
             </div>
@@ -22,11 +22,7 @@
 
         <div class="offcanvas offcanvas-start site-offcanvas" tabindex="-1" id="siteMenu" aria-labelledby="siteMenuLabel" data-bs-scroll="true">
             <div class="offcanvas-header">
-                <!-- <h2 class="offcanvas-title h5" id="siteMenuLabel">
-                    <xsl:value-of select="$fraktur_title"/>
-                </h2> -->
-                <!-- make the offcanvas close visually match the site burger -->
-                <button type="button" class="site-button-1 square-button close-button" data-bs-dismiss="offcanvas" aria-label="Schließen">
+                <button type="button" class="site-button-1 square-button close-button semitrans" data-bs-dismiss="offcanvas" aria-label="Schließen">
                     <i class="bi bi-x" aria-hidden="true"></i>
                 </button>
             </div>
@@ -71,24 +67,9 @@
                         </span>
                         <span class="site-menu-text">Suche</span>
                     </a>
-                    <!--
-                    <div class="site-menu-section">Info</div>
-                    <a class="site-menu-link site-menu-link- -leaf" href="imprint.html">
-                        <span class="site-menu-bullet" aria-hidden="true">
-                            <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
-                        </span>
-                        <span class="site-menu-text">Impressum</span>
-                    </a>
-                    <a class="site-menu-link site-menu-link- -leaf" href="imprint.html">
-                        <span class="site-menu-bullet" aria-hidden="true">
-                            <i class="bi bi-chevron-double-right" aria-hidden="true"></i>
-                        </span>
-                        <span class="site-menu-text">Datenschutzt</span>
-                    </a> -->
                 </nav>
             </div>
         </div>
-        <!-- <script src="https://use.edgefonts.net/unifrakturmaguntia.js" /> -->
 
         <xsl:if test="$show_site_top">
             <section class="site-top" aria-label="Start">
@@ -104,14 +85,6 @@
                             </a>
                         </div>
                         <div class="site-top-right">
-                            <!-- <xsl:choose>
-                                <xsl:when test="$site_top_variant = 'image'">
-                                    <img class="site-top-image" src="images/vienna.png" alt="Titelbild"/>
-                                </xsl:when>
-                                <xsl:otherwise>
-                                    <a class="section-button bgc site-top-project-button" href="about.html">Mehr über das Projekt</a>
-                                </xsl:otherwise>
-                            </xsl:choose> -->
                             <img class="site-top-image" src="images/vienna.png" alt="Titelbild"/>
                         </div>
                     </div>
@@ -142,6 +115,5 @@
                     </xsl:choose>
             </section>
         </xsl:if>
-        <!-- script removed: offcanvas toggle behavior reverted -->
     </xsl:template>
 </xsl:stylesheet>

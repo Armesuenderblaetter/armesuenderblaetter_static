@@ -78,11 +78,6 @@ body.page-person-search {
     --person-hit-card-max-width: 22rem;
 }
 
-@media screen and (max-width: 1920px) {
-    body.page-person-search {
-        --person-hit-card-max-width: 20rem;
-    }
-}
 
 /* 4rem spacing between hit cards */
 body.page-search .ais-Hits-list,
@@ -216,6 +211,38 @@ body.page-person-search .person-hit-list li {
     column-gap: 0.75rem;
     align-items: baseline;
 }
+
+
+@media screen and (max-width: 1920px) {
+    body.page-person-search {
+        --person-hit-card-max-width: 16rem;
+    }
+
+body.page-person-search .person-hit-title {
+    margin: 0 0 0.55rem;
+    font-size: 1rem;
+}
+    
+body.page-person-search .person-hit-list li {
+    margin: 0.15rem 0;
+    display: grid;
+    grid-template-columns: 10.5rem 1fr;
+    column-gap: 0.25rem;
+    align-items: baseline;
+}
+
+ body.page-person-search .person-hit-label {
+    font-size: 0.6rem;
+    }
+
+body.page-person-search .person-hit-list li {
+    margin: 0.15rem 0;
+    grid-template-columns: 6rem 2fr;
+    column-gap: 0.25rem;
+}
+
+}
+
 
 body.page-person-search .person-hit-label {
     font-variant: small-caps;
@@ -897,3 +924,6 @@ body.page-person-search .person-hit-overlay .cta-button:focus {
     text-decoration: none;
 }
 
+.site-top-title {
+    padding-left: 2rem!important;
+}
