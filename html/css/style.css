@@ -156,7 +156,7 @@ body {
     text-transform: uppercase;
     line-height: 1.2;
     font-size: clamp(2.6rem, 5vw, 4rem);
-    padding-left: calc(var(--site-offcanvas-width) + 2rem);
+	    padding-left: calc(var(--site-offcanvas-width) + 16rem);
 }
 
 .site-top-image{
@@ -210,13 +210,13 @@ body {
     object-fit: contain;
     display: inline-block;
     vertical-align: middle;
-    padding-right: 8rem ;
+    /* padding-right: 8rem ; */
 
     /* remove the image from normal flow so it doesn't affect parent layout */
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    right: 25rem ;
+    /*right: 25rem ;*/
     pointer-events: none; /* avoid accidental interactions when it overlaps */
 }
 
@@ -666,8 +666,8 @@ main.meta, .contents-frame{
 *.indent {
     display: block;
     margin-left: 2em !important;
-    text-indent: 0 !important;
 }
+
 
 *.hanging_indent {
     text-indent: -4rem !important;

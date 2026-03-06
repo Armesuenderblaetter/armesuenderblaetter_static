@@ -80,7 +80,7 @@
     height: 100% !important;
     overflow-y: auto !important;
     overflow-x: hidden;
-    padding: 4rem;
+    padding: 15%;
 }
 
 /* ── Nav buttons: match pagination header style ── */
@@ -409,6 +409,7 @@ br.lb.current {
 .edition-text-inner > * {
     justify-self: center;
     font-family: var(--editor-font-family);
+    font-size: 1.4em ;
 }
 
 .edition-text-inner :where(p, .versegroup, .title_part, .closer, .imprint) {
@@ -628,11 +629,17 @@ span.lemma::before {
     letter-spacing: 0.125em;
 }
 
+
 *.indent {
     display: block;
-    margin-left: 2em !important;
+    margin-left: 0 !important;
     text-indent: 0 !important;
 }
+
+*.indent > :first-child {
+    margin-left: 2em !important;
+}
+
 
 *.hanging_indent {
     text-indent: -4rem !important;
@@ -733,6 +740,23 @@ span.lemma::before {
         padding-left: 0.5rem ;
     }
     .edition-text-inner {
-        padding: 1.5rem
+        padding: padding: 10% ;
     }
 }
+
+
+@media screen and (max-width: 1024px) {
+   #facsimiles, #edition-text {
+        padding: 2rem 1rem 2rem 1rem ;
+    }
+    #facsimiles {
+        padding-right: 0.5rem ;
+    }
+    #edition-text {
+        padding-left: 0.5rem ;
+    }
+    .edition-text-inner {
+        padding: padding: 5% ;
+    }
+}
+
