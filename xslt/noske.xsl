@@ -8,12 +8,14 @@
     <xsl:import href="partials/html_footer.xsl"/>
     <xsl:import href="partials/tabulator_js.xsl"/>
     <xsl:template match="/">
-        <xsl:variable name="doc_title" select="'Textsuche'"/>
+        <xsl:variable name="doc_title" select="'Suche'"/>
         <html class="h-100" lang="de">
             <head>
                 <xsl:call-template name="html_head">
                     <xsl:with-param name="html_title" select="$doc_title"/>
                 </xsl:call-template>
+                <link rel="stylesheet" href="css/toc.css" type="text/css"/>
+                <link rel="stylesheet" href="css/noske_style.css" type="text/css"/>
             </head>
             <body class="d-flex flex-column h-100 has-site-top page-search page-noske-search">
                 <main id="searchPage">
@@ -29,44 +31,55 @@
                                 <!-- <h3 class="noske-left-heading">Suche</h3> -->
                                 <div id="noske-search">
                                     <div id="custom-noske-input" class="noske-search-div">
-                                        <button id="noske-search-button" class="noske-search-button p-2" aria-label="Suche">
-                                            <i class="bi bi-search" aria-hidden="true"></i>
-                                        </button>
                                         <div class="noske-search-pill">
-                                            <input type="search" id="custom-noske-input-input" class="noske-search-input" placeholder="suchen" autocomplete="off" />
+                                            <input type="search" id="custom-noske-input-input" class="noske-search-input" placeholder="Stichwort" autocomplete="off" />
                                         </div>
-                                        <select id="custom-noske-input-select" class="noske-search-select">
-                                            <option value="simple">Textsuche</option>
-                                            <option value="cql">CQL</option>
-                                        </select>
+                                        <div class="noske-search-actions" aria-label="Suchmodus">
+                                            <button id="noske-search-button" class="noske-search-button p-2" aria-label="Suche">
+                                                <i class="bi bi-search" aria-hidden="true"></i>
+                                            </button>
+                                            <select id="custom-noske-input-select" class="noske-search-select" aria-label="Suchmodus">
+                                                <option value="simple">Einfach</option>
+                                                <option value="cql">Erweitert</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 <div id="custom-noske-stats" class="noske-stats"/>
                             </div>
                             <div class="noske-left-section noske-left-section-inline">
-                                <a href="https://flugblaetter-noske.acdh-dev.oeaw.ac.at/crystal/#open" class="noske-crystal-link">Erweiterte Suche (Extern)</a>
+                                <a href="https://flugblaetter-noske.acdh-dev.oeaw.ac.at/crystal/#open" class="noske-crystal-link">Sketch Engine (extern)</a>
                                 <span class="noske-left-spacer"></span>
                                 <button id="infoBoxBtn" class="noske-info-btn">ⓘ</button>
                             </div>
                             <div class="person-left-tailpiece" aria-hidden="true"></div>
                         </div>
-
                         <!-- RIGHT COLUMN: Results -->
                         <div class="search-col-right">
-                            <xsl:call-template name="nav_bar"/>
+                            <xsl:call-template name="nav_bar">
+                                <xsl:with-param name="show_site_top_fastforward" select="true()"/>
+                                <xsl:with-param name="site_top_corner_href" select="'index.html'"/>
+                                <xsl:with-param name="site_top_corner_icon_class" select="'bi bi-house'"/>
+                                <xsl:with-param name="site_top_corner_aria_label" select="'Zur Startseite'"/>
+                            </xsl:call-template>
+                            <div class="contents-frame">
+                                <a class="square-button-nebentext" href="index.html" role="button" aria-label="Zur Startseite">
+                                    ZUR STARTSEITE
+                                </a>
+                                <!-- Results Area -->
+                                <div class="noske-results-area">
+                                    <div id="custom-noske-hits"/>
+                                    <div id="custom-noske-pagination" style="display:none;" />
+                                </div>
 
-                            <!-- Results Area -->
-                            <div class="noske-results-area">
-                                <div id="custom-noske-hits"/>
-                                <div id="custom-noske-pagination" style="display:none;" />
+                                <!-- <div id="pagination" /> 
+
+                                <button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">
+                                    <i class="bi bi-chevron-double-up" aria-hidden="true"></i>
+                                </button> -->
+                                <!-- <div class="site-bottom-strip" /> -->
                             </div>
 
-                            <div id="pagination" />
-
-                            <div class="search-col-right-strip"></div>
-                            <button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">
-                                <i class="bi bi-chevron-double-up" aria-hidden="true"></i>
-                            </button>
                         </div>
                     </div>
                 </main>
@@ -90,7 +103,7 @@
                             </div>
                         </div>
                         <div>
-                            <h2>CQL Suche (Corpus Query Language)</h2>
+                            <h2>Erweiterte Suche (Corpus Query Language)</h2>
                             <div class="section">
                                 <h3>🔹 Grundlegende Syntax</h3>
                                 <ul>

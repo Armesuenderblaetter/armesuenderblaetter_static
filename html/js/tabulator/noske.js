@@ -49,9 +49,7 @@ var config = {
     layout: "fitColumns",
     tooltips: true,
     dataLoader: true,
-    pagination: true,
-    paginationSize: 50,
-    paginationButtonCount: 5,
+    pagination: false,
     index: "id",
     langs:{
         "default":{
@@ -75,5 +73,7 @@ var config = {
       {title:"Linker Kotext", field:"left", formatter:leftContextFormatter, download:false, headerSort:true, hozAlign:"right"},
       {title:"Stichwort", field:"kwic", download:false, formatter:cellClassFormatter, headerSort:true},
       {title:"Rechter Kotext", field:"right", formatter:"html", download:false, headerSort:true}, 
+      {title:"DocId", field:"docid", visible:false, download:false},
+      {title:"TokenId", field:"tokenid", visible:false, download:false},
     ],
 };

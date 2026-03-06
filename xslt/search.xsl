@@ -18,6 +18,7 @@
             <body class="d-flex flex-column h-100 has-site-top page-search">
                 <main id="searchPage">
                     <div id="searchContainer" class="search-container">
+                        <!-- LEFT COLUMN: Search Controls and Help -->
                         <div class="search-col-left">
                             <div id="searchview">  Steckbriefansicht</div>
                             <div id="searchbox"></div>in 
@@ -37,9 +38,10 @@
                             <div id="sort-by"></div>
                             <div id="clear-refinements"></div>
                         </div>
+                        <!-- RIGHT COLUMN: Results -->
                         <div class="search-col-right">
                             <xsl:call-template name="nav_bar"/>
-                            <<!-- div>
+                            <!-- div>
                                 <div class="d-flex flex-column align-items-center" id="current-refinements"></div>
                             </div> -->
                             <div id="hits"></div>

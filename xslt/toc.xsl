@@ -10,6 +10,7 @@
         <xsl:variable name="doc_title" select="'Übersicht'"/>
         <html class="h-100" lang="de">
             <head>
+             <link rel="stylesheet" href="css/toc.css" type="text/css"/>      
                 <xsl:call-template name="html_head">
                     <xsl:with-param name="html_title" select="$doc_title"></xsl:with-param>
                 </xsl:call-template>
@@ -137,19 +138,27 @@
                             </div>
                             <div id="sort-by"></div>
                             <div id="clear-refinements"></div>
-                            <div class="person-left-tailpiece" aria-hidden="true"></div>
+                            <div class="person-left-tailpiece" aria-hidden="true" />
                         </div>
                         <div class="search-col-right">
-                            <xsl:call-template name="nav_bar"/>
-                            <div>
-                                <div class="d-flex flex-column align-items-center" id="current-refinements"/> 
+                            <xsl:call-template name="nav_bar">
+                                <xsl:with-param name="show_site_top_fastforward" select="true()"/>
+                                <xsl:with-param name="site_top_corner_href" select="'index.html'"/>
+                                <xsl:with-param name="site_top_corner_icon_class" select="'bi bi-house'"/>
+                                <xsl:with-param name="site_top_corner_aria_label" select="'Zur Startseite'"/>
+                            </xsl:call-template>
+                            <div class="contents-frame">  
+                                <div class="scroller">
+                                <a class="square-button-nebentext" href="index.html" role="button" aria-label="Zur Startseite">
+                                    ZUR STARTSEITE
+                                </a>
+                                    <div id="hits"/>
+                                    <!-- <div id="pagination" />
+                                        <button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">
+                                            <i class="bi bi-chevron-double-up" aria-hidden="true"></i>
+                                        </button> -->
+                                    </div>
                             </div>
-                            <div id="hits" />
-                            <div id="pagination" />
-                            <div class="search-col-right-strip" />
-                            <button type="button" class="site-button scroll-to-top" id="scrollToTopBtn" aria-label="Nach oben scrollen">
-                                <i class="bi bi-chevron-double-up" aria-hidden="true"></i>
-                            </button>
                         </div>
                     </div>
 

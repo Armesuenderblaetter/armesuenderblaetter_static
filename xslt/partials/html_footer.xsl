@@ -1,43 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" exclude-result-prefixes="#all" version="2.0">
-    <xsl:param name="showBanner" select="''"/>
     <xsl:template match="/" name="html_footer">
+        <xsl:param name="showLogos" select="''"/>
         <footer class="footer mt-auto py-3 bg-body-tertiary">
-            <div class="wrapper" id="wrapper-footer-full">
-                <div class="container" id="footer-full-content" tabindex="-1">
-                    <div class="row">
-                        <div class="col-3 text-left">
-                            <div class="footer-1">
+            <xsl:if test="$showLogos != ''">
+                <div class="wrapper" id="wrapper-footer-full">
+                    <div class="container" id="footer-full-content" tabindex="-1">
+                        <div class="row">
+                            <div class="col-4 text-left">
+                                <div class="footer-1">
                                 LP – LITERATURWISSENSCHAFT &amp; PRINTKULTURFORSCHUNG<br/>
-                            </div>
-                            <div class="footer-2">Bäckerstraße 13<br/>
+                                </div>
+                                <div class="footer-2">Bäckerstraße 13<br/>
                             1010 Wien
-                            </div>
-                            <!-- <div class="footer-3"><div>T: +43 1 51581-2223</div><div>
+                                </div>
+                                <!-- <div class="footer-3"><div>T: +43 1 51581-2223</div><div>
                                 E: <a href="mailto:ace@oeaw.ac.at">ace@oeaw.ac.at</a></div>
                             </div> -->
-                        </div>
-                          <div class="col-3 logo" style="padding-right: 0px">
-                                <!-- <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
-                                <img src="images/logo_oeaw.svg" width="120" alt="Austrian Corpora and Editions" title="Austrian Corpora and Editions"/>
-                            </a>
-                            <div class="footer-2">Austrian Corpora and Editions</div> -->
-                        </div>
-                         <div class="col-3 logo" style="padding-right: 0px">
-                                <a href="https://www.oeaw.ac.at/acdh">
-                            <img src="images/logo_acdh.svg" width="90" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
-                            </a>
-                             <div class="footer-2">Austrian Centre for Digital Humanities</div>
-                        </div>
-                        <div class="col-3 logo">
-                         <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
-                                <img src="images/logo_oeaw.svg" height="80%" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
-                            </a>
+                            </div>
+                            <div class="col-4 logo row" style="padding-right: 0px">
+                                <div class="col-6 text-right" style="padding-right: 0px">
+                                    <a href="https://www.oeaw.ac.at/acdh">
+                                        <img src="images/logo_acdh.svg" width="90" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
+                                    </a>
+                                </div>
+                                <div class="col-6" style="padding-left: 0px">
+                                    <div class="footer-2">Austrian Centre <br/>
+                                    for Digital Humanities</div>
+                                </div>
+                            </div>
+                            <div class="col-4 logo">
+                                <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
+                                    <img src="images/logo_oeaw.svg" height="80%" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="footer-imprint-bar hide-reading" id="wrapper-footer-secondary" style="text-align:center; padding:0.4rem 0; font-size: x-small;"> © 2026 ÖAW | <a href="imprint.html">Impressum</a> |                <a href="{$github_url}">
+            </xsl:if>
+            <div class="footer-imprint-bar hide-reading" id="wrapper-footer-secondary"> © 2026 ÖAW | <a href="imprint.html">Impressum</a> |                <a href="{$github_url}">
                     <i class="bi bi-github" title="GitHub" alt="GitHub" aria-hidden="true" />
                     <span class="visually-hidden">GitHub</span>
                 </a>
@@ -94,6 +95,6 @@
                     }
                 }, true);
             })();
-        ]]></script>
+        ]]>        </script>
     </xsl:template>
 </xsl:stylesheet>

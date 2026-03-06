@@ -1,0 +1,3354 @@
+
+
+.landing-section p {
+    padding-bottom: 1rem ;
+}
+
+/* Search only: place burger in column 2 (right of the left filter column) */
+body.page-search .site-header,
+#searchPage #searchContainer .site-header {
+    left: var(--site-offcanvas-width);
+}
+
+#searchPage {
+height: calc(100vh - 2rem);
+}
+
+
+
+.site-header-inner {
+    display: flex;
+    align-items: center;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+
+.bga{
+    --button-bg: var(--asb-background-colour-0-button);
+    --button-bg-hover: var(--asb-background-colour-0-button-hover);
+}
+
+
+.bgb{
+    --button-bg: var(--asb-background-colour-1-button);
+    --button-bg-hover: var(--asb-background-colour-1-button-hover);
+}
+
+
+.bgc{
+    --button-bg: var(--asb-background-colour-2-button);
+    --button-bg-hover: var(--asb-background-colour-2-button-hover);
+}
+
+
+
+/* =========================================================
+    Square / icon buttons
+    All square button visuals live on `.site-button`.
+    Variants:
+    - `.semitrans`: translucent by default, solid on hover
+    ========================================================= */
+
+.site-button {
+ display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--asb-square-btn-size);
+    height: var(--asb-square-btn-size);
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none;
+    background-image: none !important;
+    color: var(--bs-white) !important;
+    background-color: var(--asb-background-colour-1-button) !important;
+     font-size: var(--asb-square-btn-icon-size);
+    line-height: 1;
+}
+
+
+.site-button-bis {
+ display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--asb-square-btn-size);
+    height: calc(var(--asb-square-btn-size) * 2);
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none;
+    font-family: var(--bs-font-sans-serif) !important;
+    background-image: none !important;
+    color: var(--asb-background-colour-1-button-hover) !important;
+    background-color: var(--asb-background-colour-0)!important;
+    font-size: small;
+    text-decoration: none!important ;
+    line-height: 1;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    white-space: nowrap;
+}
+
+.site-button:focus-visible {
+    outline: 2px solid var(--bs-white);
+    outline-offset: 2px;
+}
+
+.site-button:hover,
+.site-button:active,
+.site-button:focus {
+    background-color: var(--asb-background-colour-1-button-hover) !important;
+    color: var(--bs-white) !important;
+    box-shadow: none !important;
+}
+
+
+
+
+
+/* Generic semitrans utility (in case used outside `.site-button`) */
+
+
+
+/* Offcanvas close button: hidden by default; shown/positioned when menu opens */
+.site-close,
+button.btn-close.site-close {
+    /* by default keep the element present in the DOM but hidden at its original location
+       — we'll show and position it outside the offcanvas when the menu opens */
+    display: none !important;
+}
+
+/* Bottom-right action button placed inside `.site-top-strip` */
+.site-bottom-button {
+    font-size: 1.8rem;
+    line-height: 1;
+    position: absolute;
+    right: 0rem;
+    bottom: 0rem;
+    z-index: 2000;
+    
+}
+
+/* When the offcanvas is showing, place the close button outside it so
+   its left margin sits at the offcanvas right edge and its top at the page top. */
+/* Show and position the close button as soon as the offcanvas has the `show` class.
+   Using `.site-offcanvas.show` avoids relying on `:has()` and triggers immediately. */
+.site-offcanvas.show [data-bs-dismiss="offcanvas"],
+.offcanvas.show [data-bs-dismiss="offcanvas"] {
+    display: inline-flex !important;
+    /* position it exactly at the offcanvas' right edge regardless of viewport */
+    position: absolute !important;
+    top: 0 !important;
+    left: 100% !important; /* sits immediately to the right of the offcanvas */
+    margin: 0 !important;
+    z-index: 20001 !important;
+    /* animate the close button when it moves in/out so it feels less abrupt */
+    transition: left 480ms cubic-bezier(.22,1,.36,1), opacity 220ms ease-in-out;
+}
+
+/* When closing starts Bootstrap may keep `.show` while adding `.hiding`.
+   In that phase we want the burger back and the X gone. */
+.site-offcanvas.show.hiding [data-bs-dismiss="offcanvas"],
+.offcanvas.show.hiding [data-bs-dismiss="offcanvas"] {
+    display: none !important;
+}
+
+/* Also show during the opening transition (Bootstrap uses `.showing`) */
+.site-offcanvas.showing [data-bs-dismiss="offcanvas"],
+.offcanvas.showing [data-bs-dismiss="offcanvas"] {
+    display: inline-flex !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 100% !important;
+    margin: 0 !important;
+    z-index: 20001 !important;
+    transition: left 480ms cubic-bezier(.22,1,.36,1), opacity 220ms ease-in-out;
+}
+
+/* Default: keep hidden while closing (Bootstrap uses `.hiding`) */
+.site-offcanvas.hiding [data-bs-dismiss="offcanvas"],
+.offcanvas.hiding [data-bs-dismiss="offcanvas"] {
+    display: none !important;
+}
+
+/* Also support legacy `.site-close` toggling 
+.site-offcanvas.show .site-close,
+.offcanvas.show .site-close {
+    display: inline-flex !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 100% !important;
+    margin: 0 !important;
+    z-index: 20001 !important;
+    transition: left 480ms cubic-bezier(.22,1,.36,1), opacity 220ms ease-in-out;
+}*/
+
+/* Ensure the icon inside remains white against the (dark) menu background */
+.site-offcanvas.show [data-bs-dismiss="offcanvas"] .bi,
+.offcanvas.show [data-bs-dismiss="offcanvas"] .bi {
+    color: var(--bs-white) !important;
+}
+
+
+
+/* Hide burger immediately when the trigger is expanded (no JS needed) */
+.site-burger[aria-expanded="true"],
+body:has(.offcanvas.show:not(.hiding), .offcanvas.showing) .site-burger,
+.site-header .site-button[aria-expanded="true"],
+body:has(.offcanvas.show:not(.hiding), .offcanvas.showing) .site-header .site-button[data-bs-toggle="offcanvas"] {
+    display: none !important;
+}
+
+.site-offcanvas {
+    width: var(--site-offcanvas-width);
+    /* restore menu background and foreground to the original colourway */
+    background-color: var(--asb-background-colour-4) !important;
+    color: var(--bs-white) !important;
+    /* keep the offcanvas positioned by Bootstrap (don't force `position: relative`) so
+       it does not occupy document flow when hidden; allow the close button to sit
+       outside by permitting overflow to be visible. */
+    overflow: visible !important; /* let the close button sit outside the offcanvas bounds */
+    /* smooth the elastic resizing when the viewport changes; use a custom
+       cubic-bezier for a slightly slower easing near the ends */
+    transition: width 480ms cubic-bezier(.22,1,.36,1);
+}
+
+/* Hide the (thin) scrollbar inside the menu while keeping scroll usable */
+.site-offcanvas .offcanvas-body,
+body.landing .landing-offcanvas .offcanvas-body {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge legacy */
+}
+.site-offcanvas .offcanvas-body::-webkit-scrollbar,
+body.landing .landing-offcanvas .offcanvas-body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+.site-menu {
+    padding-left: 4rem;
+}
+.site-menu-section {
+    font-variant: small-caps;
+    font-size: 2rem;
+    letter-spacing: 0.02em;
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+    /* Align with bullet points (which sit 2rem left of link text) */
+    margin-left: -2rem;
+}
+
+/* Close-X button shown inside the offcanvas at the upper-left corner */
+.site-menu-link,
+.site-menu-link:hover,
+.site-menu-link:focus,
+.site-menu-link:visited{
+    display: block;
+    padding: 0.25rem 0;
+    text-decoration: none;
+    color: white!important;
+    background-color: transparent;
+    font-size: 1.5rem;
+}
+
+/* Leaf entries: chevron bullet that animates without shifting text */
+.site-menu .site-menu-link--leaf {
+    position: relative;
+}
+
+.site-menu .site-menu-link--leaf .site-menu-bullet {
+    position: absolute;
+    left: -2rem;
+    top: 50%;
+    transform: translate3d(0, -50%, 0);
+    transition: transform 320ms ease;
+    pointer-events: none;
+    display: inline-flex;
+    width: 1.5rem;
+    justify-content: center;
+}
+
+.site-menu .site-menu-link--leaf:hover .site-menu-bullet,
+.site-menu .site-menu-link--leaf:focus .site-menu-bullet {
+    transform: translate3d(.5rem, -50%, 0);
+}
+
+.site-top {
+    background-color: var(--asb-background-colour-2);
+    padding: 5rem 0 0;
+}
+
+.site-top-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 2rem;
+    align-items: center;
+    padding-left: calc(2rem);
+    padding-right: calc(2rem);
+    /* Match Bootstrap .container max-widths */
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (min-width: 576px) {
+    .site-top-grid {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .site-top-grid {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .site-top-grid {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .site-top-grid {
+        max-width: 1140px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .site-top-grid {
+        max-width: 1320px;
+    }
+}
+
+.site-top-title-link {
+    display: inline-block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.site-top-title {
+    margin: 0;
+    color: var(--bs-white);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    font-size: clamp(2.6rem, 5vw, 4rem);
+}
+
+.site-top-title > span {
+    display: block;
+}
+
+.site-top-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    /* create a positioning context so the image can be absolutely positioned
+       and overflow visually without changing document flow */
+    position: relative;
+}
+
+.section-button, .section.button:visited{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--site-top-action-height);
+    padding: 0 1.50em;
+    border: 0 !important;
+    background-color: var(--button-bg) !important;
+    font-family: 'Cormorant', serif;
+    font-weight: 700;
+    font-size: 25px;
+    line-height: 1;
+    color: var(--bs-white) !important;
+    text-decoration: none;
+    border-radius: 9999px;
+}
+
+.section-button:hover{
+    background-color: var(--button-bg-hover)!important;
+}
+
+/* Allow .site-top-project-button to be used on <button> elements too (e.g. witness tabs)
+   without relying on .section-button for colors. */
+.site-top-project-button {
+    background-color: var(--button-bg, var(--asb-background-colour-1-button)) !important;
+    color: var(--bs-white) !important;
+    border: 0 !important;
+    font-family: 'Cormorant', serif;
+    font-weight: 700;
+    font-size: 25px;
+    line-height: 1;
+    padding: 1rem;
+}
+
+.site-top-project-button:hover,
+.site-top-project-button:focus {
+    background-color: var(--button-bg-hover, var(--asb-background-colour-1-button-hover)) !important;
+    color: var(--bs-white) !important;
+    text-decoration: none;
+}
+
+
+
+
+.site-top-image {
+    /* keep the image at its natural size and allow it to overflow the
+       `site-top-right` container (which is constrained to the action height) */
+    width: auto;
+    height: auto;
+    max-width: min(840px, 100%);
+    border: 0;
+    background-color: transparent;
+    object-fit: contain;
+    display: inline-block;
+    vertical-align: middle;
+
+    /* remove the image from normal flow so it doesn't affect parent layout */
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* avoid accidental interactions when it overlaps */
+}
+
+@media (max-width: 768px) {
+    /* on small screens keep normal flow so layout stacks nicely */
+    .site-top-right {
+        position: static;
+    }
+    .site-top-image {
+        position: static;
+        transform: none;
+        pointer-events: auto;
+        max-width: 100%;
+        height: auto;
+        display: inline-block;
+    }
+}
+
+.site-top-strip {
+    margin: 2rem 0 0;
+    height: 168px;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    background-color: var(--asb-background-colour-2);
+    position: relative;
+}
+
+
+
+
+.site-top-strip.bild{
+    background-image: url('../images/banner.png');
+      background-repeat: repeat-x;
+       background-size: auto 100%;
+}
+
+
+.site-top-strip.hidden {
+    display: none;
+}
+
+/* Compact strip for meta pages: no extra spacing, just a positioning context */
+.site-top-strip.meta {
+    margin: 0;
+    height: 0;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    background-image: none;
+}
+/* Reuse landing section spacing on non-landing pages too */
+.landing-section {
+    padding: 2.25rem 0;
+}
+
+
+
+.landing-section--banner .landing-section-inner {
+    /* margin-left: 2rem!important;
+    margin-right: 2rem!important; */
+    max-width: 100vw!important  ;
+}
+
+@media (max-width: 768px) {
+    .site-top {
+        padding-top: 4.5rem;
+    }
+
+    .site-top-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+}
+
+main {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Meta pages: pin the "ZUR EDITION" vertical button to the right */
+body:not(.landing) main.contents-frame {
+    position: relative;
+}
+
+body:not(.landing) main.contents-frame > a.site-button-bis {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+}
+
+.tei-front,
+.tei-body,
+.title-page {
+    display: block;
+    width: 100%;
+}
+
+.tei-front {
+    margin-bottom: 1rem;
+}
+
+.title-page {
+    margin: 0 auto 1rem;
+}
+
+.tei-body p {
+    display: block;
+    width: 100%;
+    max-width: 40rem;
+    margin: 0.5rem auto;
+    text-align: left;
+    padding: 0 1rem;
+}
+
+.tei-figure {
+    display: block;
+    margin: 1.5rem auto;
+    text-align: center;
+    width: min(100%, 640px);
+}
+
+.tei-figure .figure-icon {
+    display: inline-flex;
+    width: clamp(7.5rem, 50vw, 26rem);
+    min-height: clamp(3rem, 18vw, 12rem);
+    border-top: 2px solid var(--asb-border-color);
+    border-bottom: 2px solid var(--asb-border-color);
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    position: relative;
+}
+
+.tei-figure.has-iconclass .figure-icon {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.tei-figure.figure-type-ornament .figure-icon {
+    min-height: clamp(2.5rem, 12vw, 8rem);
+}
+
+.tei-figure.figure-type-vignette .figure-icon {
+    min-height: clamp(4rem, 24vw, 15rem);
+}
+
+.tei-figure .figure-caption {
+    display: block;
+    margin-top: 0.75rem;
+    font-family: var(--bs-font-sans-serif);
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: var(--asb-link-colour);
+    text-align: center;
+}
+
+.title_part {display: block !important; margin: 5px !important; }
+
+.catch {
+    display: inline-block;
+   color: grey;
+    text-align: right;
+    width: 100%;
+    position: relative;
+}
+
+
+.row.fw {
+    width: 100%;
+    color: grey;
+    flex: 1;
+}
+
+.row.fw:has(.col:nth-child(3)) .col {
+  width: 33.3333%;
+}
+
+.row.fw:not(:has(.col:nth-child(3))) .col {
+  width: 50%;
+}
+
+
+.align-right{
+    text-align:right;
+}
+
+#myTable {
+    display: none ;
+  width: 100%;
+  max-width: 100%;
+}
+
+
+p {
+    margin: 0;
+}
+.mobile-show {
+    display: none;
+}
+html {
+    scroll-padding-top: 2rem;
+}
+
+.separator{
+    margin-top: auto!important;
+    min-width: 10vh; 
+}
+
+.showBanner {
+    background: url('../images/banner.png') repeat-x;
+    background-size: contain;
+    height: 15vh;
+    width: 100% ;
+    margin: 0;
+}
+
+.footer{
+    margin: 0!important;
+    padding: 0!important;
+    background-color: var(--asb-background-colour-2)!important;
+    font-family: var(--bs-font-sans-serif) !important;
+}
+
+#wrapper-footer-full{
+	height: 9rem!important;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+}
+
+/* 11 rem */
+#wrapper-footer-secondary {
+height: 2rem!important;
+font-size: 0.8rem;
+text-align:center;
+padding:0.4rem;
+font-size: small;
+}
+
+
+.footer-1{
+    font-weight: bold;
+    font-size: large;
+    color: black;
+
+}
+.footer-2 {
+    padding: 0.5rem 0;
+    color: black;
+}   
+
+.footer-3 {
+   color: white;
+}
+.footer-separator {
+    padding-top: 1rem;
+}
+
+#footer-full-content * {
+    font-size: small;
+}
+
+.par{
+    margin-top: .75em;
+    margin-bottom: .75em;
+}
+
+@font-face {
+    font-family: 'Fraktur';
+    font-style: normal;
+    font-weight: normal;
+    src: url('../fonts/UnifrakturMaguntia-Book.woff') ;
+  }
+
+.fraktur{
+    font-family: Bold; 
+}
+
+.smallcaps {
+  font-variant: small-caps;
+}
+
+div#searchPage {
+    padding: 2rem;
+
+}
+
+/* Search only: remove outer padding so the left column aligns with the offcanvas */
+body.page-search #searchPage {
+    padding: 0;
+}
+
+div#searchContainer>div {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+}
+
+/* Search page columns: left matches the open menu width, right fills remaining space */
+#searchContainer.search-container {
+    display: flex;
+    width: 100%;
+    height: 100%
+}
+
+
+#searchContainer.search-container .search-col-left {
+    /* flex: 0 0 var(--site-offcanvas-width); */
+    height: calc(100vh - var(--asb-footer-secondary-height));
+    overflow-y: scroll ;
+    width: var(--site-offcanvas-width)!important;
+    background-color: white;
+    padding: 1rem;
+}
+
+#searchContainer.search-container .search-col-right {
+    height:100%;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.edition-content.row.body {
+     height: calc(100% - 0.5rem -  var(--asb-square-btn-size) * 2) ;
+     margin-left: calc(var(--bs-gutter-x))
+}
+
+
+.site-bottom-strip, .search-col-right-strip {
+    height: 6rem;
+    background-image: url('../images/banner.png');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    background-color: var(--asb-background-colour);
+}
+
+.contents-frame {
+    height: calc(100vh - 25rem);
+}
+
+/* TOC/search pages: pin the vertical CTA to the right, below the site-top */
+body.page-search .contents-frame {
+    position: relative;
+}
+
+body.page-search .contents-frame > a.site-button-bis {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+}
+
+.scroller {
+height: calc(100% );
+overflow: scroll ;
+position: relative;
+}
+
+/* Pagination / Load More section */
+body.page-person-search #pagination {
+    padding: 4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Load more button in #pagination */
+body.page-person-search #pagination .load-more-btn {
+    display: inline-flex;
+    margin-top: 0;
+    background-color: var(--asb-background-colour-2-button) !important;
+}
+
+body.page-person-search #pagination .load-more-btn:hover,
+body.page-person-search #pagination .load-more-btn:active,
+body.page-person-search #pagination .load-more-btn:focus {
+    background-color: var(--asb-background-colour-1-button) !important;
+}
+
+body.page-person-search #pagination .ais-InfiniteHits-loadMore {
+    display: inline-flex;
+    margin-top: 0;
+}
+
+/* Load more wrapper in #pagination */
+body.page-person-search #pagination .load-more-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+body.page-person-search #pagination .load-more-label {
+    font-family: var(--bs-font-sans-serif);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--asb-background-colour-1-button);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+body.page-person-search #pagination .load-more-btn .bi {
+    font-size: var(--asb-square-btn-icon-size);
+    line-height: 1;
+}
+
+/* Scroll to top button */
+.scroll-to-top {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    background-color: var(--asb-background-colour-2-button) !important;
+}
+
+.scroll-to-top:hover,
+.scroll-to-top:active,
+.scroll-to-top:focus {
+    background-color: var(--asb-background-colour-1-button) !important;
+}
+
+.scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-to-top.above-footer {
+    position: absolute;
+    bottom: 2rem;
+}
+
+/* Add breathing room around InstantSearch hits */
+body.page-search .ais-Hits,
+body.page-search .ais-InfiniteHits {
+    padding: 4rem;
+}
+
+/* Person search: let the results overlap into the site-top area
+   up to the top edge of `.site-top-strip` (strip height 168px + its 2rem top gap). */
+/* body.page-person-search #hits {
+    margin-top: calc(-1 * (168px + 2rem));
+    position: relative;
+    z-index: 1;
+} */
+
+/* Person search hit card sizing */
+body.page-person-search {
+    --person-hit-card-max-width: 22rem;
+}
+
+@media screen and (max-width: 1920px) {
+    body.page-person-search {
+        --person-hit-card-max-width: 20rem;
+    }
+}
+
+/* 4rem spacing between hit cards */
+body.page-search .ais-Hits-list,
+body.page-search .ais-InfiniteHits-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Person search (grid view): use a real grid so multiple cards fit per row at large widths.
+   Keep list view as flex (see `.person-view-list`). */
+body.page-person-search:not(.person-view-list) .ais-Hits-list,
+body.page-person-search:not(.person-view-list) .ais-InfiniteHits-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, var(--person-hit-card-max-width));
+    justify-content: center;
+    gap: 4rem;
+}
+
+body.page-search .ais-Hits-item,
+body.page-search .ais-InfiniteHits-item {
+    margin: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Person search hit cards: image-only by default, details on hover */
+body.page-person-search:not(.person-view-list) .ais-Hits-item,
+body.page-person-search:not(.person-view-list) .ais-InfiniteHits-item {
+    padding: 0 !important;
+    overflow: hidden;
+    position: relative;
+    /* Make cards smaller and let the list center them */
+    width: 100% !important;
+    max-width: var(--person-hit-card-max-width);
+    /* Fixed height so images can crop/fill consistently */
+    height: clamp(18rem, 40vw, 30rem);
+}
+
+body.page-person-search .person-hit-card {
+    position: static;
+    width: 100%;
+    height: 100%;
+}
+
+body.page-person-search .person-hit-link {
+    display: block;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+}
+
+body.page-person-search .person-hit-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+body.page-person-search .person-hit-overlay {
+    position: absolute;
+    inset: 0;
+    padding: 1rem;
+    background-color: var(--asb-background-colour-3);
+    color: var(--bs-white);
+    display: none;
+    flex-direction: column;
+}
+
+/* List view: show details as normal flow, hide image */
+body.page-person-search.person-view-list .ais-Hits-item,
+body.page-person-search.person-view-list .ais-InfiniteHits-item {
+    height: auto;
+    max-width: none;
+    flex-basis: 100%;
+}
+
+body.page-person-search.person-view-list .person-hit-link {
+    display: none;
+}
+
+body.page-person-search.person-view-list .person-hit-overlay {
+    position: static;
+    display: flex;
+    background-color: var(--bs-white);
+    color: var(--asb-link-colour);
+}
+
+body.page-person-search.person-view-list .person-hit-title {
+    color: var(--asb-link-colour);
+}
+
+body.page-person-search.person-view-list .person-hit-overlay a,
+body.page-person-search.person-view-list .person-hit-overlay a:visited {
+    color: var(--asb-link-colour) !important;
+}
+
+body.page-person-search .ais-Hits-item:hover .person-hit-overlay,
+body.page-person-search .ais-Hits-item:focus-within .person-hit-overlay,
+body.page-person-search .ais-InfiniteHits-item:hover .person-hit-overlay,
+body.page-person-search .ais-InfiniteHits-item:focus-within .person-hit-overlay {
+    display: flex;
+}
+
+/* Steckbriefansicht: keep grid, show details overlay always */
+body.page-person-search.person-view-steckbrief .person-hit-overlay {
+    display: flex;
+}
+
+body.page-person-search .person-hit-title {
+    margin: 0 0 0.75rem;
+    color: var(--bs-white);
+    font-size: 1.2rem;
+}
+
+body.page-person-search .person-hit-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+body.page-person-search .person-hit-list li {
+    margin: 0.25rem 0;
+    display: grid;
+    grid-template-columns: 11.5rem 1fr;
+    column-gap: 0.75rem;
+    align-items: baseline;
+}
+
+body.page-person-search .person-hit-label {
+    font-variant: small-caps;
+    white-space: nowrap;
+}
+
+body.page-person-search .person-hit-value {
+    font-variant: normal;
+    min-width: 0;
+}
+
+body.page-person-search .person-hit-cta {
+    margin-top: auto;
+    text-align: center;
+}
+
+/* Person search (left column): toggle row + NAME pill search */
+body.page-person-search .person-left-togglebar {
+    background-color: transparent;
+    min-height: var(--asb-square-btn-size); /* match burger button height */
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0 1rem;
+    position: relative;
+}
+
+body.page-person-search .person-left-togglebar::after {
+    content: "";
+    position: absolute;
+    left: -1rem;
+    right: -1rem;
+    bottom: 0;
+    height: 1px;
+    background-color: var(--asb-background-colour-0);
+}
+
+body.page-person-search .person-view-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    cursor: pointer;
+    color: var(--asb-link-colour);
+    font-size: 1.5rem;
+}
+
+body.page-person-search .person-view-toggle-text {
+    font-family: var(--bs-font-sans-serif) !important;
+    color: var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .person-view-toggle input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    background-color: transparent;
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+}
+
+body.page-person-search .person-view-toggle input::after {
+    content: "";
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 9999px;
+    transform: scale(0);
+    transition: transform 120ms ease-in-out;
+    background-color: var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .person-view-toggle input:checked::after {
+    transform: scale(1);
+}
+
+body.page-person-search .person-view-toggle input:focus-visible {
+    outline: 2px solid var(--asb-background-colour-2-button);
+    outline-offset: 3px;
+}
+
+body.page-person-search .person-left-section {
+    background-color: transparent;
+    padding: 2rem 1rem 1.25rem;
+    margin: 0 0 1rem;
+    position: relative;
+}
+
+/* Ensure only the heading draws the separator (avoid stacking borders/lines) */
+body.page-person-search .search-col-left .person-left-section,
+body.page-person-search .search-col-left .person-left-facet {
+    border: 0;
+    box-shadow: none;
+    background-image: none;
+}
+
+body.page-person-search .person-left-section::after {
+    /* Separators are drawn via heading ::before to avoid double-thick lines */
+    content: none;
+    display: none;
+}
+
+body.page-person-search .person-left-section.person-left-section--name::after {
+    content: none;
+    display: none;
+}
+
+/* NAME list: hidden by default; shown via "Als Liste zeigen" */
+body.page-person-search #name_list {
+    display: none;
+}
+
+body.page-person-search.name-list-visible #name_list {
+    display: block;
+}
+
+body.page-person-search .person-left-heading {
+    margin: 0 0 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+/* TOC left column: single 1px separator line before every section heading */
+body.page-person-search .search-col-left h3.person-left-heading {
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.02em;
+    margin: 2rem 0 1rem;
+    padding-top: 1.5rem;
+    position: relative;
+    border-top: 0;
+    box-shadow: none;
+    background-image: linear-gradient(var(--asb-background-colour-0), var(--asb-background-colour-0));
+    background-repeat: no-repeat;
+    background-position: 0.75rem 0;
+    background-size: calc(100% - 1.5rem) 1px;
+}
+
+body.page-person-search .search-col-left h3.person-left-heading::before {
+    content: none !important;
+}
+
+/* First block (TITEL) should not have a separator line above it */
+body.page-person-search .search-col-left .person-left-section--name h3.person-left-heading {
+    margin-top: 0;
+    padding-top: 0;
+    background-image: none;
+}
+
+body.page-person-search .search-col-left .person-left-section--name h3.person-left-heading::before {
+    content: none;
+}
+
+/* Left column title styling for TOC */
+body.page-person-search .person-left-heading:first-of-type {
+    font-family: 'Cormorant', serif !important;
+    font-weight: 700 !important;
+    font-size: 30px !important;
+}
+
+body.page-person-search .person-name-search-inner {
+    display: flex;
+    align-items: stretch;
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    overflow: hidden;
+    background-color: var(--asb-background-colour-2-button);
+    padding: 0;
+    min-height: 2.3rem;
+}
+
+body.page-person-search .person-name-search-inner > * {
+    background-color: inherit;
+}
+
+body.page-person-search .person-name-search-inner .ais-SearchBox {
+    flex: 1 1 auto;
+    min-width: 0;
+    background-color: var(--bs-white);
+    border-radius: 9999px;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+}
+
+/* Alter slider pill */
+body.page-person-search .person-age-hidden {
+    display: none;
+}
+
+body.page-person-search .person-age-pill {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    overflow: visible;
+    background-color: var(--asb-background-colour-2-button);
+    min-height: 2.3rem;
+}
+
+body.page-person-search .person-age-pill-slider {
+    flex: 1 1 auto;
+    min-width: 0;
+    background-color: var(--bs-white);
+    border-radius: 9999px;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    padding: 0 1.1rem;
+    box-shadow: inset 0 0 0 2px var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .person-age-pill-count {
+    flex: 0 0 auto;
+    color: var(--bs-white);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    font-variant: small-caps;
+    font-size: 0.85rem;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+/* noUiSlider theme for Alter */
+body.page-person-search .person-age-pill-slider .noUi-target {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    width: 100%;
+    /* Inset so the circular handles remain fully inside the white pill */
+    margin: 0 0.7rem;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-horizontal {
+    height: 1.4rem;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-base,
+body.page-person-search .person-age-pill-slider .noUi-connects {
+    height: 100%;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-connects {
+    background: transparent;
+    position: relative;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-connects::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    transform: translateY(-50%);
+    background-color: var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .person-age-pill-slider .noUi-connect {
+    background: transparent;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-handle {
+    width: 1.1rem;
+    height: 1.1rem;
+    box-sizing: border-box;
+    border-radius: 9999px;
+    background: var(--asb-background-colour-0);
+    border: 2px solid var(--asb-background-colour-2-button);
+    box-shadow: none;
+}
+
+/* noUi's default theme offsets the handle (top/right) for its own handle size.
+   Re-center for our circular handle so it sits on the line. */
+body.page-person-search .person-age-pill-slider .noUi-horizontal .noUi-handle {
+    top: calc(50% + 0.55rem);
+    margin-top: 0;
+    transform: translateY(-50%);
+    right: -0.55rem;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-handle::before,
+body.page-person-search .person-age-pill-slider .noUi-handle::after {
+    display: none;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-touch-area {
+    border-radius: 9999px;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-tooltip {
+    background: transparent;
+    border: 0;
+    color: var(--asb-background-colour-2-button);
+    font-size: 0.75rem;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    pointer-events: none;
+    white-space: nowrap;
+    /* push labels above the white pill */
+    bottom: calc(100% + 0.6rem);
+}
+
+/* Birth place + execution place lists: hidden by default; shown via their buttons */
+body.page-person-search #birth_place,
+body.page-person-search #execution_places,
+body.page-person-search #person_names,
+body.page-person-search #person_birth_place,
+body.page-person-search #person_execution_places {
+    display: none;
+}
+
+body.page-person-search.birth-place-list-visible #birth_place,
+body.page-person-search.birth-place-list-visible #person_birth_place {
+    display: block;
+}
+
+body.page-person-search.execution-place-list-visible #execution_places,
+body.page-person-search.execution-place-list-visible #person_execution_places {
+    display: block;
+}
+
+body.page-person-search.person-name-list-visible #person_names {
+    display: block;
+}
+
+body.page-person-search .person-name-search-inner #searchbox {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+body.page-person-search .person-name-search-inner .ais-SearchBox-form {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    height: 100%;
+}
+
+body.page-person-search .person-name-search-inner .ais-SearchBox-submit,
+body.page-person-search .person-name-search-inner .ais-SearchBox-reset {
+    background: transparent;
+    border: 0;
+    padding: 0.35rem;
+    min-width: 0;
+    width: 1.8rem;
+    height: 1.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.page-person-search .person-name-search-inner .ais-SearchBox-input {
+    border: 0;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    width: 100%;
+    padding: 0.35rem 0.5rem;
+    /* InstantSearch theme places the submit/reset icons on top of the input;
+       reserve horizontal space so the caret/text doesn't start under the icon. */
+    padding-left: 2.4rem !important;
+    padding-right: 2.4rem !important;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.1;
+    height: 100%;
+}
+
+body.page-person-search .person-view-list-btn {
+    border: 0;
+    background-color: inherit !important;
+    color: var(--bs-white);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem !important;
+	font-family: 'Cormorant', serif;
+	font-weight: 700;
+	font-size: 25px;
+	line-height: 1;
+	font-variant: normal;
+    min-height: 0;
+    align-self: stretch;
+    height: auto;
+    border-radius: 9999px !important;
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+
+body.page-person-search .person-view-list-btn:hover {
+    background-color: var(--asb-background-color-4-button-hover) !important;
+}
+
+body.page-person-search .person-view-list-btn br {
+    display: none;
+}
+
+/* "Enthält" row: Vignetten / Verse side by side */
+body.page-person-search .contains-facet-row {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+body.page-person-search .contains-facet-row > div {
+    flex: 0 0 auto;
+}
+
+body.page-person-search .contains-facet-row .ais-RefinementList-list {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    margin: 0;
+    padding: 0;
+}
+
+body.page-person-search .contains-facet-row::after {
+    /* Use the next heading separator instead (avoid double lines) */
+    content: none;
+    display: none;
+}
+
+body.page-person-search .contains-facet-row {
+    position: relative;
+    padding-bottom: 0;
+}
+
+/* Person search: pill-shaped refinement list items */
+body.page-person-search .search-col-left .ais-RefinementList-list {
+    display: grid;
+    /* Keep 2 columns when there is enough width (as before), but ensure
+       every column starts at a consistent x position. */
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    column-gap: 1rem;
+    row-gap: 0.5rem;
+    list-style: none;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-item {
+    margin: 0;
+    display: block;
+    width: 100%;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-label {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.35rem 1fr auto;
+    column-gap: 0.5rem;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-label:hover {
+    color: var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-checkbox {
+    /* Hide default checkbox, show custom checkmark via label */
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+    margin: 0;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-label::before {
+    content: "";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 9999px;
+    background-color: var(--bs-white);
+    border: 2px solid var(--asb-background-colour-2-button);
+    color: var(--bs-black);
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-item--selected .ais-RefinementList-label::before {
+    content: "✓";
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-count {
+    background-color: var(--asb-background-colour-2-button);
+    color: var(--bs-white);
+    font-size: 0.9rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    margin-left: 0;
+    justify-self: end;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-count::before,
+body.page-person-search .search-col-left .ais-RefinementList-count::after {
+    content: none;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-labelText {
+    min-width: 0;
+}
+
+/* Person search: range slider for ALTER */
+body.page-person-search .search-col-left .ais-RangeSlider {
+    padding: 1rem 0.5rem 0.5rem;
+}
+
+body.page-person-search .search-col-left .ais-RangeSlider .rheostat {
+    margin: 0;
+}
+
+body.page-person-search .search-col-left .ais-RangeSlider .rheostat-background {
+    background-color: var(--asb-background-colour-1);
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    height: 0.5rem;
+}
+
+body.page-person-search .search-col-left .ais-RangeSlider .rheostat-progress {
+    background-color: var(--asb-background-colour-2-button);
+    height: 100%;
+    border-radius: 9999px;
+}
+
+body.page-person-search .search-col-left .ais-RangeSlider .rheostat-handle {
+    background-color: var(--asb-background-colour-1);
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    width: 1.25rem;
+    height: 1.25rem;
+    top: -0.4rem;
+}
+
+body.page-person-search .search-col-left .ais-RangeSlider-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--asb-link-colour);
+}
+
+/* Person search: range input fallback styling */
+body.page-person-search .search-col-left .ais-RangeInput {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+body.page-person-search .search-col-left .ais-RangeInput-input {
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    padding: 0.4rem 0.75rem;
+    width: 5rem;
+    text-align: center;
+    background-color: var(--bs-white);
+	font-family: 'Barlow', sans-serif;
+	font-weight: 400;
+	font-size: 20px;
+	line-height: 1.1;
+}
+
+body.page-person-search .search-col-left .ais-RangeInput-separator {
+    color: var(--asb-link-colour);
+}
+
+body.page-person-search .search-col-left .ais-RangeInput-submit {
+    border-radius: 9999px !important;
+    padding: 0.4rem 1rem !important;
+}
+
+/* Person search: facets with search (birth_place, execution_places) - pill search style */
+body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox {
+    margin-bottom: 0.75rem;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox-form {
+    display: flex;
+    align-items: stretch;
+    border: 3px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    overflow: hidden;
+    background-color: var(--bs-white);
+}
+
+body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox-input {
+    border: 0;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    /* Same icon overlap fix for searchable facet boxes */
+    padding-left: 2.4rem !important;
+    padding-right: 2.4rem !important;
+	font-family: 'Barlow', sans-serif;
+	font-weight: 400;
+	font-size: 20px;
+	line-height: 1.1;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox-submit,
+body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox-reset {
+    background: transparent;
+    border: 0;
+    padding: 0.5rem;
+}
+
+/* Scrollable facet lists keep their border but adjust for pill layout */
+body.page-person-search .search-col-left .facet-list-scroll {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    column-gap: 1rem;
+    row-gap: 0.5rem;
+    padding: 0;
+    max-height: 14rem;
+    border: 0 !important;
+    border-radius: 0 !important;
+}
+
+body.page-search .person-left-tailpiece {
+    display: block;
+    width: 100%;
+    height: 3rem;
+    margin: 2.5rem 0 0.75rem;
+    opacity: 0.35;
+    pointer-events: none;
+    background-image: url('../images/tailpiece.png');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    background-position: center;
+}
+
+body.page-person-search .person-hit-overlay a,
+body.page-person-search .person-hit-overlay a:visited {
+    color: var(--bs-white) !important;
+}
+
+/* Person search overlay DETAILS button: same bg as overlay, custom hover bg */
+body.page-person-search .person-hit-overlay .cta-button {
+    background-color: var(--asb-background-colour-3);
+}
+
+body.page-person-search .person-hit-overlay .cta-button:hover,
+body.page-person-search .person-hit-overlay .cta-button:focus {
+    background-color: var(--asb-background-color-4-button-hover);
+    text-decoration: none;
+}
+
+.container.site-top-inner {
+    margin-left: 0!important;
+    margin-right: 0!important;
+    padding-left: 0;
+    padding-right: 0;
+    max-width: 100% ;
+    height: 18rem;
+}
+
+div#searchContainer div.col-3>div {
+    padding-bottom: 2rem;
+}
+
+div#current-refinements {
+    padding-bottom: 1.5rem;
+}
+
+
+.tabulator {
+    display: inline-block!important ;
+    height: unset ;
+    width: 100%!important;
+    border: 0!important;
+    overflow-y: unset ;
+
+
+}
+
+.container.body {
+	overflow-y: scroll;
+	height: calc(100% - 6rem );
+	padding-bottom: 6rem ;
+    max-width: 100%;
+    padding-left: 15%;
+    padding-right: 15%;
+}
+
+/* Meta pages: replace bottom strip with ::before banner on contents-frame */
+body.page-meta .contents-frame {
+	position: relative;
+}
+
+body.page-meta .container.body {
+	max-height: 100%;
+}
+
+body.page-meta .contents-frame::after,
+body.page-search .scroller::after {
+	content: '';
+	position: sticky;
+	bottom: 0;
+	left: 0;
+	display: block;
+	width: 100%;
+	height: 6rem;
+	background-image: url('../images/asb_banner_2.png');
+	background-repeat: repeat-x;
+	background-size: auto 100%;
+	z-index: 10;
+	pointer-events: none;
+}
+
+
+table{
+    table-layout:fixed;
+    /* border-collapse:collapse; */
+    padding: 0;
+}
+tr td {
+    vertical-align: top;
+}
+
+tr,
+td {
+    border: none;
+    word-wrap:break-word;
+}
+
+
+div ul.ais-RefinementList-list {
+    padding: 0.5rem;
+}
+
+.ais-RefinementList-checkbox {
+    margin-right: 1rem ; 
+}
+
+.facet-list-scroll {
+    overflow: hidden;
+    overflow-y: scroll;
+    max-height: 11rem;
+    min-height: 0;
+    border: solid rgb(204, 204, 204) .1rem;
+    border-radius: 0.3rem;
+}
+
+#edition-text {
+    margin-left: 3rem;
+    padding-bottom: 2rem;
+    max-width: 45%;
+    max-height: 100%;
+    overflow: hidden; /* Remove scrolling completely */
+    
+}
+
+
+.edition-text-inner {
+    background-color: white ;
+    color: black;
+    height: 100%;
+    width: 100%;
+   /* max-width: 75%; */
+    margin: 0 auto;
+    padding: 4rem 0;
+    display: grid;
+    grid-template-columns: minmax(auto, max-content);
+    justify-content: center;
+    font-size: 1.2rem!important;
+}
+
+.edition-text-inner > * {
+    justify-self: center;
+}
+
+.edition-text-inner :where(p, .versegroup, .title_part, .closer, .imprint) {
+    inline-size: fit-content;
+    max-inline-size: 100%;
+    box-sizing: border-box;
+    padding-inline: 2.5rem;
+    text-align: left;
+}
+
+
+#sticky-OSD-wrapper {
+    position: sticky;
+    top: 0;
+    width: 100%;
+}
+
+
+.navbar {
+    background-color: var(--asb-banner-colour)!important;
+    
+}
+
+.navbar * {
+    background-color: var(--asb-banner-colour) !important;
+}
+
+body.landing main {
+    max-width: none;
+    padding: 0;
+}
+
+body.landing .landing-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: auto;
+    z-index: 20000;
+    padding: 0;
+    margin: 0;
+}
+
+body.landing .landing-header-inner {
+    display: flex;
+    align-items: center;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+body.landing .landing-burger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border: 3px solid var(--asb-background-colour-button-banner) !important;
+    background-color: var(--asb-background-colour-button-banner) !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none;
+
+    /* Ensure Bootstrap .btn doesn't introduce hover/active backgrounds */
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: transparent;
+    --bs-btn-hover-bg: transparent;
+    --bs-btn-hover-border-color: transparent;
+    --bs-btn-active-bg: transparent;
+    --bs-btn-active-border-color: transparent;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: transparent;
+}
+
+body.landing .landing-burger:hover,
+body.landing .landing-burger:active,
+body.landing .landing-burger:focus {
+    background-color: var(--asb-background-colour-button-banner) !important;
+    border-color: var(--asb-background-colour-button-banner) !important;
+    box-shadow: none !important;
+}
+
+body.landing .landing-burger .bi {
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--bs-white);
+}
+
+body.landing .landing-burger:focus-visible {
+    outline: 2px solid var(--bs-white);
+    outline-offset: 2px;
+}
+
+body.landing .landing-offcanvas {
+    width: clamp(280px, 34vw, 360px);
+    background-color: var(--asb-background-colour);
+    color: var(--asb-link-colour);
+}
+
+body.landing .landing-offcanvas .btn-close {
+    filter: none;
+}
+
+body.landing .landing-top {
+    background-color: var(--asb-background-colour-2);
+    padding: 5rem 0 0;
+}
+
+body.landing .landing-top-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 2rem;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    body.landing .landing-top {
+        padding-top: 4.5rem;
+    }
+
+    body.landing .landing-top-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+}
+
+body.landing .landing-top-title {
+    margin: 0;
+    color: var(--bs-white);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 0.95;
+	font-family: 'Cormorant', serif;
+	font-weight: 500;
+	font-size: 70px;
+}
+
+body.landing .landing-top-title > span {
+    display: block;
+}
+
+body.landing .landing-top-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+body.landing .landing-top-image {
+    width: min(840px, 100%);
+    height: auto;
+    border: 0;
+    background-color: transparent;
+}
+
+body.landing .landing-top-strip {
+    margin: 2rem 0 0;
+    height: 168px;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    background-image: url('../images/banner.png');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    background-color: var(--asb-background-colour-2);
+}
+
+body.landing .landing-section {
+    padding: 2.25rem 0;
+}
+
+body.landing .landing-section--light {
+    background-color: var(--asb-background-colour);
+    position: relative;
+}
+
+body.landing .landing-section--light .site-button-bis {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+}
+
+body.landing .landing-section--mid {
+    background-color: var(--asb-background-colour-1);
+}
+
+body.landing .landing-section--banner {
+    position: relative;
+    isolation: isolate;
+    --landing-carousel-tile-width: calc(360px * 1.2);
+    --landing-carousel-banner-height: calc(168px * 1.3);
+    --landing-carousel-banner-overlap: calc(var(--landing-carousel-tile-width) * 0.3);
+    padding-top: 2.25rem;
+        background-color: var(--asb-background-colour-1)!important;
+
+    padding-bottom: calc(var(--landing-carousel-banner-height) - var(--landing-carousel-banner-overlap));
+}
+
+body.landing .landing-section--banner::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--landing-carousel-banner-height);
+    background-image: url('../images/banner_bg1.png');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+body.landing .landing-section--banner .landing-section-inner {
+    position: relative;
+    z-index: 1;
+}
+
+body.landing .landing-section-title {
+    margin: 0 0 1rem;
+    color: var(--bs-black);
+    letter-spacing: 0.02em;
+    font-family: 'Cormorant', serif;
+    font-weight: 500;
+}
+
+body.landing h1.landing-section-title, h1 {
+    font-size: 70px;
+    letter-spacing: 20px;
+    line-height: 80px;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #000000;
+}
+
+body.landing h2.landing-section-title {
+    font-size: 3rem;
+}
+
+h2 {
+    font-size: 3rem;    
+}
+
+.landing-section :where(p, ul, ol, li) {
+    margin: 0;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    font-size: 1.4rem;
+}
+
+/* Keep edition content at the tighter historic scale */
+#edition-text :where(p, ul, ol, li),
+.edition-text-inner :where(p, ul, ol, li) {
+    font-size: 1.2rem;
+}
+
+
+body.landing .landing-cta {
+    margin-top: 1.25rem;
+}
+
+body.landing .landing-button {
+    display: inline-block;
+    padding: 1em 1.25em;
+    border: 0 !important;
+    background-color: var(--asb-background-colour-button);
+    color: var(--bs-white) !important;
+    text-decoration: none;
+    border-radius: 9999px;
+	font-family: 'Cormorant', serif;
+	font-weight: 700;
+	font-size: 25px;
+    line-height: 1;
+}
+
+body.landing a.landing-button:visited {
+    color: var(--bs-white) !important;
+}
+
+body.landing .landing-section--mid .landing-button {
+    background-color: var(--asb-background-colour-button-fronted);
+}
+
+body.landing .landing-top .landing-button {
+    background-color: var(--asb-background-colour-button-banner);
+}
+
+body.landing .landing-button:hover,
+body.landing .landing-button:focus {
+    text-decoration: underline;
+}
+
+body.landing .landing-thumbs {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 1rem 0.25rem 0;
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel {
+    --duration: 4.5s;
+    --landing-carousel-gap: 0.75rem;
+    /* Elastic overshoot applied at both ends */
+    --landing-carousel-elastic: 0.75rem;
+    display: block;
+    /* The scroll container is the viewport element, not this wrapper. */
+    overflow-x: visible;
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    /* Always show 6 picture tiles; CTA is the 7th tile to the right */
+    width: 100%;
+    --landing-carousel-tile-width: calc((100% - (5 * var(--landing-carousel-gap))) / 6);
+    --landing-carousel-step: calc(var(--landing-carousel-tile-width) + var(--landing-carousel-gap));
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-strip {
+    display: flex;
+    gap: var(--landing-carousel-gap);
+    width: max-content;
+    /* Provide real left/right elastic padding so overshoot is visible */
+    padding-left: var(--landing-carousel-elastic);
+    padding-right: var(--landing-carousel-elastic);
+    box-sizing: content-box;
+    animation: landingThumbScroll var(--duration) cubic-bezier(.22,1,.36,1) infinite;
+    animation-direction: alternate;
+    animation-play-state: paused;
+    /* JS overwrites this with an exact pixel value so the animation reaches the real end */
+    --landing-carousel-max-translate: calc(-1 * (var(--landing-carousel-step) + (23 * var(--landing-carousel-elastic))));
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel:hover .landing-thumbs-strip,
+body.landing .landing-thumbs.landing-thumbs--carousel:focus-within .landing-thumbs-strip {
+    animation-play-state: running;
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumb--cta {
+     /* Use the carousel tile flex-basis (no !important). Keep width:auto so
+         the flex layout determines the final size and other tiles aren't
+         affected by overrides. */
+    flex: 0 0 auto;
+    width: auto;
+     box-sizing: border-box;
+     background-color: var(--asb-background-colour-2-button);
+     color: var(--bs-white);
+     display: flex;
+     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0.75rem;
+}
+
+/* CTA tile is a link; keep it from inheriting global link styles */
+body.landing .landing-thumbs.landing-thumbs--carousel a.landing-thumb--cta,
+body.landing .landing-thumbs.landing-thumbs--carousel a.landing-thumb--cta:visited {
+    color: var(--bs-white) !important;
+    text-decoration: none;
+}
+
+/* Button-looking element inside the CTA tile */
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button {
+    display: inline-block;
+    padding: 0.65em 1.1em;
+    border: 2px solid var(--bs-white);
+    background-color: var(--asb-background-colour-button-banner);
+    color: var(--bs-white) !important;
+    text-decoration: none;
+    border-radius: 9999px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-title {
+    line-height: 1.05;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-title > span {
+    display: block;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 0.65em 1.1em;
+    border: 2px solid var(--bs-white);
+    background-color: var(--asb-background-colour-button-banner);
+    color: var(--bs-white) !important;
+    text-decoration: none;
+    border-radius: 9999px;
+    line-height: 1;
+}
+
+/* Landing carousel CTA uses `.cta-button` (not `.landing-thumbs-cta-button`).
+   Keep it looking like a button even for visited/hover states. */
+body.landing .cta-button:visited {
+    color: var(--bs-white) !important;
+    text-decoration: none;
+}
+
+body.landing .cta-button:hover,
+body.landing .cta-button:focus {
+    background-color: var(--asb-background-color-4-button-hover);
+    text-decoration: none;
+}
+
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button:hover,
+body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-cta-button:focus {
+    background-color: var(--asb-background-color-4-button-hover);
+    text-decoration: none;
+}
+
+
+
+body.landing .landing-thumb {
+    flex: 0 0 auto;
+    display: block;
+    border: 0;
+    background-color: var(--asb-banner-colour);
+}
+
+body.landing .landing-thumb img {
+    display: block;
+    width: 100% ;
+    height: auto !important;
+}
+
+@keyframes landingThumbScroll {
+    from {
+        /* start with the left padding in place */
+        transform: translateX(0);
+    }
+    to {
+        /* JS sets `--landing-carousel-max-translate` to the exact pixel distance needed
+           (strip.scrollWidth - viewport.clientWidth). Fallback is defined on the strip. */
+        transform: translateX(var(--landing-carousel-max-translate));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.landing .landing-thumbs.landing-thumbs--carousel .landing-thumbs-strip {
+        animation: none;
+    }
+}
+
+body.landing footer.footer {
+    background-color: var(--asb-background-colour-2) !important;
+    color: var(--asb-link-colour);
+}
+
+body.landing .landing-main {
+    flex: 1 0 auto;
+}
+
+body.landing footer.footer a {
+    color: var(--asb-link-colour);
+}
+
+body.landing .landing-menu-section {
+    font-variant: small-caps;
+    letter-spacing: 0.02em;
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+    color: var(--asb-link-colour);
+}
+
+body.landing .landing-menu-link {
+    display: block;
+    padding: 0.25rem 0;
+    color: var(--asb-link-colour);
+    text-decoration: none;
+}
+
+body.landing .landing-menu-link:hover,
+body.landing .landing-menu-link:focus {
+    text-decoration: underline;
+}
+
+body.landing .landing-cta-link {
+    color: var(--asb-link-colour);
+}
+
+div.icon_desc {
+    /* adding: 1rem;
+    background-color: rgb(180, 180, 180);
+    color: white;
+    border-radius: 3px;
+    margin: .5rem 0 .5rem .5rem;
+    font-size: small; */
+    display:grid;
+    justify-content: center;
+    align-items: center;
+    color: #868277;
+    font-style: italic;
+    font-size: small;
+    margin: .5rem 0 .5rem .5rem;
+}
+
+
+/*span.pb {
+    padding-top: 10rem;
+}*/
+
+span.pb.nearly_no_content {
+    display: block;
+    height: 16rem;
+}
+
+span.pb.primary,
+span.pb.secondary,
+span.pb.tertiary,
+span.pb.quaternary {
+    display: inline;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    color: inherit;
+    border: 0;
+    opacity: 0;
+}
+
+.modal-body img {
+    display: block;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+
+  /* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+  }
+  
+  /* The Close Button */
+  .close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+a {
+    color: var(--asb-link-colour)!important;
+}
+
+a:visited {
+    color: var(--asb-link-visited-colour);
+}
+
+a.navbar-brand {
+    color: var(--asb-link-colour);
+    font-weight: bold;
+}
+
+a.variant_anchor_link {
+    background-color: var(--variant-marker-color);
+    border-radius: 6px;
+    padding: 0.1rem 0.1rem;
+    color: inherit;
+    text-decoration: inherit;
+}
+
+a.variant_anchor_link:target {
+    background-color: grey !important;
+}
+a.variant_anchor_link:target>*{
+    background-color: grey !important;
+    color: black!important;
+}
+
+a.variant_anchor_link.block_lemma {
+    display: block;
+    width: fit-content;
+}
+
+a.variant_anchor_link.block_lemma.catch {
+    position: relative;
+    right: var(--catch-offset-right);
+}
+
+span.token {
+    position: relative;
+}
+
+span.sic span.token+span.token::before {
+    content: "\a";
+    white-space: pre;
+    background-color: red;
+}
+/* span.sic span.token::after {
+    background-color: red;
+    font-family: var(--editor-font-family) !important;
+    font-style: normal;
+    text-indent: 0;
+    text-align: left;
+    color: var(--editor-font-color) !important;
+    font-size: 1rem!important;
+    content: 'Lemma: 'attr(lemma)'\A'"POS: "attr(pos)"\Avocabulary: "attr(vocab);
+    white-space: pre;
+} */
+
+span.token:hover {
+    background-color: aliceblue!important;
+}
+
+/* Add this rule to style variant readings
+span.rdg {
+    background-color: lightgreen; /* Replace with your desired green color */
+                    
+
+span.sic span.token::after,
+span.token:hover::before{
+    /* reset text properties */
+    font-family: var(--editor-font-family) !important;
+    font-style: normal;
+    text-indent: 0;
+    text-align: left;
+    color: var(--editor-font-color) !important;
+    font-size: 1rem!important;
+    /* create content */
+    content: 'Lemma: 'attr(lemma)'\A'"POS: "attr(pos)"\Avocabulary: "attr(vocab);
+    white-space: pre;
+    border: 0.1rem dotted black;
+    border-radius: 5px;
+    display: inline;
+    position: absolute;
+    background-color: aliceblue!important;
+    z-index: 10000;
+    padding: 0.3rem;
+    margin: .2rem;
+    left: 100%;
+    top: 50%;
+}
+
+span.empty_lemma a.variant_anchor_link::after {
+    /* hidden: keep no visible placeholder */
+    content: "" !important;
+}
+
+span.empty_lemma {
+    display: none !important;
+}
+
+span.empty_lemma::after {
+    content: "" !important;
+}
+
+span.image_preview img {
+    height: 7rem;
+    width: auto;
+}
+
+
+span.sig {
+    width: fit-content;
+    display: inline-block;
+    color: grey;
+    text-align: center;
+    position: relative;
+}
+
+a.variant_anchor_link.block_lemma.catch>span.catch {
+    width: fit-content;
+    display: block;
+    color: grey;
+    text-align: right;
+    position: relative;
+    right: 0;
+    text-indent: 0;
+}
+
+span.layer_counter {
+    width: 100%;
+    display: block;
+    color: grey;
+    text-align: center;
+}
+
+span.page_number {
+    width: fit-content;
+    display: block;
+    position: relative;
+    color: darkgrey;
+    text-align: left;
+    margin-left: 1rem;
+}
+
+/* span.page_number {
+    width: fit-content;
+    display: block;
+    position: relative;
+    color: darkgrey;
+    text-align: right;
+    align-content: right;
+    left: -2rem;
+} */
+
+*+hr.section_divider {
+    padding-bottom: 1.5rem;
+}
+
+hr.section_divider {
+    width: 10rem;
+    margin: auto!important;
+    padding-bottom: 1.5rem;
+    border-top: solid .3rem;
+}
+
+hr.section_divider+hr.section_divider {
+    width: 10rem;
+    margin: auto;
+    border-top: solid .3rem;
+}
+
+span.lemma::before {
+    content: "↑ ";
+}
+
+*.text_align_center {
+    display: block;
+    text-align: center !important;
+    width: 100%;
+}
+
+
+*.antiqua {
+    font-family: var(--bs-font-sans-serif, sans-serif) !important;
+}
+
+*.majuscule {
+    font-size: 150% !important;
+}
+
+*.bold {
+    font-weight: bold !important;
+}
+
+*.italic {
+    font-style: italic !important;
+}
+
+*.spaced {
+    letter-spacing: 0.125em;
+    /*text-decoration: underline !important;     ABSTAND */
+}
+
+*.indent {
+    display: block;
+    margin-left: 2em !important;
+    text-indent: 0 !important;
+}
+
+*.hanging_indent {
+    text-indent: -4rem !important;
+    padding-left: 4rem !important;
+}
+
+*.superscript {
+    vertical-align: super !important;
+    font-size: 70%;
+}
+
+*.display_inline {
+    display: inline-block !important;
+}
+
+*.star {
+    display: block !important;
+}
+
+*.star::before {
+    content: "*";
+}
+
+*.editor_comment {
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
+}
+
+*.app-section_divider::before {
+    content: " (Spiegelstrich) ";
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
+}
+
+*.app-page_number::before {
+    content: " (Seitenzählung:) ";
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
+}
+
+*.app-layer_counter::before {
+    content: " (Lagenzählung:) ";
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
+}
+
+*.app-catch::before {
+    content: " (Kustode:) ";
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
+}
+
+div.variants {
+    width: 100%;
+    column-count: 3;
+    background-color: aliceblue;
+    padding: 1rem;
+    border-top: 0.3rem solid black;
+    border-radius: 0.1rem;
+}
+
+div.variants p.app {
+    text-indent: -1.2rem;
+    display: block;
+    break-inside: avoid-column;
+    width: 100%;
+    padding: 0.2rem 1rem 0.2rem 1rem;
+    margin: auto;
+}
+
+p.app:target {
+    background-color: var(--variant-marker-color) !important;
+    border-radius: 5px;
+}
+
+p.app a {
+    text-decoration: inherit;
+    color: inherit;
+    border-radius: 0;
+}
+span.corr {
+    border-bottom: 0.2rem dotted red;
+    border-radius: 0px;
+    padding: 0.15rem;
+    padding-bottom: 0.05rem;
+    z-index: 200;
+    position: relative;
+}
+
+span.sic {
+    display: none;
+}
+
+span.corr:hover + span.sic,
+span.corr + span.sic:hover {
+    border: 0.1rem solid black;
+    border-radius: 5px;
+    display: block;
+    position: absolute;
+    background-color: aliceblue!important;
+    z-index: 10000;
+    padding: 0.3rem;
+    font-style: normal;
+    text-indent: 0;
+    text-align: left;
+    font-size: 1rem!important;
+}
+
+span.corr:hover + span.sic::before,
+span.sic:hover::before {
+    content: "Korrigiert aus: ";
+    font-style: normal;
+    text-indent: 0;
+    text-align: left;
+    font-size: 1rem!important;
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
+}
+
+/*.lb {
+  display: block;
+  margin: 0;
+  padding: 0;
+  height: 0;
+  line-height: 0;
+} */
+
+/* Hide line breaks for inactive witnesses */
+br.lb.lb-hidden {
+  display: none !important;
+}
+
+.token .wrapped-text:has(+ br.lb:not(.lb-hidden) + .wrapped-text)::after {
+    content: "⹀";
+    margin-left: 0;
+}
+
+
+.split-word-part-1:has(+ br.lb.current:not([style*="display: none"]))::after,
+.split-word-part-1.current-page:has(+ br.lb.current)::after {
+    content: "⹀";
+    margin-left: 0px;
+}
+
+
+/* *.text_align_center span.lb::after,
+span.verse+span.lb::after {
+     white-space: pre;
+} */
+
+
+div.footnotes {
+    width: 100%;
+    column-count: 3;
+    background-color: aliceblue;
+    padding: 1rem;
+    border-top: 0.3rem solid black;
+    border-radius: 0.1rem;
+}
+
+div.tab-content > div {
+    padding-top: 0;
+}
+
+a.personview {
+    text-decoration: none;
+    padding-bottom: .2rem;
+    font-weight: bold;
+    color: inherit;
+}
+
+a.personview::before {
+    content: "↗ ";
+}
+
+ul {
+    border-bottom: unset!important;
+}
+ul#witness_overview.nav.nav-tabs li.nav-item button.nav-link {
+    font-weight: bold;
+}
+
+ul#witness_pagination_tabs.nav.nav-tabs li.nav-item button.nav-link {
+    background-color: var(--asb-background-colour-button) !important;
+    color: var(--bs-white) !important;
+}
+
+ul#witness_pagination_tabs.nav.nav-tabs li.nav-item button.nav-link.active {
+    background-color: var(--asb-link-colour) !important;
+    color: var(--bs-white) !important;
+}
+
+*:target {
+    background-color: aqua;
+}
+
+dl {
+    padding-left: 1rem;
+}
+
+dd {
+    padding: .2rem 0rem 1rem 10rem;
+}
+
+.edition-title {
+    color: var(--asb-background-colour-2-button);
+text-transform: uppercase;
+}
+
+
+/* Override dropdown-item styles for disabled annotation-sliders */
+li.dropdown-item:has(annotation-slider[disabled="true"]):active,
+li.dropdown-item:has(annotation-slider[disabled="true"]):hover,
+.dropdown-item:has(annotation-slider[disabled="true"]):active,
+.dropdown-item:has(annotation-slider[disabled="true"]):hover,
+.dropdown-item.disabled-annotation-slider:active,
+.dropdown-item.disabled-annotation-slider:hover,
+.dropdown-item.disabled-annotation-slider:focus,
+.dropdown-item.disabled-annotation-slider {
+    font-weight: normal !important;
+    color: #999 !important;
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+    background-color: var(--asb-background-colour) !important;
+    /* Prevent any background changes */
+    background: var(--asb-background-colour) !important;
+}
+
+.ais-Pagination-item--selected .ais-Pagination-link {
+    background-color:  var(--asb-link-colour) !important;
+    border-color:  var(--asb-link-colour) !important;
+    color: white!important ; 
+}
+
+.ais-ClearRefinements {
+    text-align: center ;
+      padding: 1rem!important;
+}
+
+.ais-ClearRefinements-button {
+    background-color:  var(--asb-link-colour) !important;
+}
+
+.ais-RangeInput-submit {
+    background-color: var(--asb-link-colour) !important;
+    color: #fff !important;
+    border: 1px solid var(--asb-link-colour) !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem 0.75rem;
+}
+
+.ais-SortBy-select {
+    min-width: 16rem;
+}
+
+.ais-Pagination {
+    padding-top: 0;
+}
+
+.noske-hits-table {
+	background-color: transparent !important;
+}
+
+.noske-hits-head th {
+	background-color: transparent !important;
+	color: inherit !important;
+}
+
+/* .tabulator {
+    display: inline-block!important;
+} */
+ .tabulator-headers{
+    padding: 0!important;
+    max-width: 100%;
+ }
+
+.tabulator-footer-contents {
+	background-color: white; 
+
+}
+
+.tabulator-row {
+    border-bottom: unset!important ;
+    background-color: unset!important ;
+   
+}
+
+.tabulator-arrow {
+    color: black!important;
+    border-bottom: 6px solid black!important;
+}
+
+.tabulator-col {
+    max-width: 100% ;
+    
+}
+
+
+.thumbnail {
+    max-height: 128px;
+    min-height: 64px;
+}
+/* MEDIA SPECIFIC */
+body:not(.page-noske-search) .tabulator-header {
+  border: solid var(--asb-link-colour) 3px!important;
+    border-radius: 15px!important;
+    background-color: white!important;
+    overflow: hidden; 
+}
+.tabulator-header * {
+    /* background-color:  var(--asb-banner-colour) ; */
+    color: black;
+}
+
+.tabulator-table {
+    max-width: 100% ;
+}
+body:not(.page-noske-search) .tabulator-tableholder {
+    margin-top: 1rem;
+ border: solid var(--asb-link-colour) 3px!important;
+    border-radius: 15px;
+}
+
+.tabulator,
+.tabulator * {
+  box-sizing: border-box !important;
+}
+
+
+.tabulator-cell{
+    border: 0!important;
+}
+
+.tabulator-header-filter * {
+    background-color: white!important;
+}
+.button-group {
+    padding-bottom: 1rem ;
+}
+
+@media screen and (max-width: 767px) {
+    .mobile-align-right {
+         text-align: right;
+    }
+.mobile-align-left {
+         text-align: left;
+    }
+.mobile-hide {
+    display: none ;
+}
+.mobile-show {
+    display: inline-block ;
+}
+}
+/*
+button.nav-link {
+    background-color: var(--asb-background-colour-button)!important;
+    color: var(--bs-white) !important;
+}
+.nav-item{margin:auto;}
+
+button.nav-link.active {
+    background-color: var(--asb-background-colour-button)!important;
+        color: var(--bs-white) !important;
+}
+
+button:not(.btn-close):not(.site-button):not(.site-burger):not(.site-close):not(.site-bottom-button):not(.landing-burger){
+    border: 0 !important;
+    border-radius: 9999px !important;
+    background-color: var(--asb-background-colour-button)!important;
+  max-width: unset!important;
+        padding: 1em 1.25em!important;
+  word-wrap: normal;
+  text-transform: none;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1!important;
+    color: var(--bs-white) !important;
+} 
+    
+select{
+    border: solid var(--asb-link-colour) 3px !important;
+    border-radius: 15px !important;
+    background-color: var(--asb-background-colour-button)!important;
+    max-width: unset!important;
+    padding: 0.5rem!important;
+    word-wrap: normal;
+    text-transform: none;
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: 1!important;
+}
+
+
+option {
+    background-color: var(--asb-banner-colour);
+
+}
+
+
+select.different {
+        background-color: var(--asb-banner-colour);
+        box-sizing: border-box;
+        padding-right: 1.5em;
+}
+
+.kwic, .kwic * {
+    color: pink!important;
+    font-weight: bold;
+    text-align: center;
+}
+
+.kwic-left-cell {
+    display: flex;
+    justify-content: flex-end;
+    overflow: hidden;
+}
+
+.kwic-left-text {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+
+@media screen and (max-width: 1399px) {
+    body:not(.page-person-search) .ais-Hits-item {
+        width: 30% !important;
+    }
+}
+
+
+@media screen and (max-width: 1199px) {
+    body:not(.page-person-search) .ais-Hits-item {
+        width: 45% !important;
+    }
+}
+
+
+@media screen and (max-width: 991px) {
+    body:not(.page-person-search) .ais-Hits-item,
+    body:not(.page-person-search) .ais-InfiniteHits-item {
+        width: 100% !important;
+    }
+
+    .facettes {
+        height: fit-content !important ;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    body.page-person-search:not(.person-view-list) .ais-Hits,
+    body.page-person-search:not(.person-view-list) .ais-InfiniteHits {
+        padding: 1.5rem;
+    }
+
+    body.page-person-search:not(.person-view-list) .ais-Hits-list,
+    body.page-person-search:not(.person-view-list) .ais-InfiniteHits-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.25rem;
+    }
+
+    body.page-person-search:not(.person-view-list) .ais-Hits-item,
+    body.page-person-search:not(.person-view-list) .ais-InfiniteHits-item {
+        width: 100% !important;
+        max-width: none;
+        min-width: 0;
+        height: clamp(14rem, 48vw, 24rem);
+    }
+}
+
+@media screen and (min-width: 640px) {
+    .ais-Panel-body {
+        display: contents!important ;
+    }   
+    .ais-Panel-header .ais-Panel-collapseButton{
+        display: none ;
+    }   
+}
+
+/* Ensure facsimile stays fixed */
+#facsimiles {
+    position: sticky;
+    top: 0;
+    max-height: 100%;
+    overflow: hidden;
+    margin-bottom: 2rem ;
+    margin-left: 0;
+    background-color: #c1a274 ;
+}
+
+/* Ensure page break markers remain inline so they do not split paragraphs */
+span.pb.primary,
+span.pb.tertiary,
+span.pb.quaternary {
+    display: inline !important;
+}
+
+/* --- Anchored Notes Styling --- */
+.anchored-note {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #868277;
+    font-style: italic;
+     margin: .5rem 0 .5rem .5rem;
+    min-height: 40px;
+    height: 100% ;
+    font-size: small;
+}
+
+.anchored-note::before, div.icon_desc .current-page::before {
+    content: "[";
+}
+
+.anchored-note::after, div.icon_desc .current-page::after {
+    content: "]";
+}
+
+/* Ensure line breaks don't affect container height when visible */
+br.lb.current {
+    display: inline;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    font-size: inherit;
+    line-height: inherit;
+    height: auto;
+}
+
+
+.mark-highlight {
+	background-color: #fff6a0;
+	color: inherit;
+	transition: background-color 0.6s ease;
+}
+
+.witness-pages {
+	/* Occupy the right half of the available space */
+	width: 50%;
+	margin-left: auto;
+	margin-right: 0;
+}
+
+.witness-pages .witness-pagination {
+	/* Align pagination controls to the left within the right-side container */
+	display: flex;
+	justify-content: flex-start;
+}
+
+.witness-pages .page-links {
+	/* Make pagination list expand to full width */
+	width: 100%;
+	display: flex;
+	flex-wrap: nowrap;
+}
+
+/* =========================================================
+    Noske (nosketch.html): results table styling
+    ========================================================= */
+
+/* Left column title: Cormorant Bold 30px */
+body.page-noske-search .noske-title {
+    font-family: 'Cormorant', serif !important;
+    font-weight: 700 !important;
+    font-size: 30px !important;
+}
+
+body.page-noske-search .search-col-right .noske-hits-table {
+    background: transparent !important;
+    border: none !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+}
+
+/* Noske results are rendered with Tabulator; remove Tabulator chrome on this page */
+body.page-noske-search .search-col-right .tabulator,
+body.page-noske-search .search-col-right .tabulator * {
+    box-shadow: none !important;
+}
+
+body.page-noske-search .search-col-right .tabulator {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Table background should look like its container */
+body.page-noske-search .search-col-right .tabulator,
+body.page-noske-search .search-col-right .tabulator-tableholder,
+body.page-noske-search .search-col-right .tabulator-table {
+	background: transparent !important;
+}
+
+/* Hide Tabulator's default paginator (we use a TOC-like "Mehr laden" control instead) */
+body.page-noske-search .search-col-right .tabulator-footer {
+    display: none !important;
+}
+
+/* TOC-like load more control on Noske page */
+body.page-noske-search #pagination {
+    padding: 2rem 4rem;
+}
+
+body.page-noske-search #pagination .load-more-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+body.page-noske-search #pagination .load-more-btn {
+    display: inline-flex;
+    margin-top: 0;
+    background-color: var(--asb-background-colour-2-button) !important;
+}
+
+body.page-noske-search #pagination .load-more-btn:hover,
+body.page-noske-search #pagination .load-more-btn:active,
+body.page-noske-search #pagination .load-more-btn:focus {
+    background-color: var(--asb-background-colour-1-button) !important;
+}
+
+body.page-noske-search #pagination .load-more-label {
+    font-family: var(--bs-font-sans-serif);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--asb-background-colour-1-button);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+body.page-noske-search #pagination .load-more-btn .bi {
+    font-size: var(--asb-square-btn-icon-size);
+    line-height: 1;
+}
+
+/* Header row: background like container, text #886848 */
+body.page-noske-search .search-col-right .tabulator-header,
+body.page-noske-search .search-col-right .tabulator-header .tabulator-col {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+body.page-noske-search .search-col-right .tabulator-header,
+body.page-noske-search .search-col-right .tabulator-header * {
+    color: #886848 !important;
+    font-family: 'Barlow', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 20px !important;
+}
+
+/* Header filter inputs styled like toc.html search boxes */
+body.page-noske-search .search-col-right .tabulator-header .tabulator-header-filter {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+body.page-noske-search .search-col-right .tabulator-header .tabulator-header-filter input,
+body.page-noske-search .search-col-right .tabulator-header .tabulator-header-filter select {
+	flex: 1 1 auto;
+	min-width: 0;
+	background-color: var(--bs-white) !important;
+	color: #000 !important;
+	border: 2px solid var(--asb-background-colour-2-button) !important;
+	border-radius: 9999px !important;
+    padding: 0.35rem 2.25rem 0.35rem 2rem !important;
+    font-family: 'Barlow', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 20px !important;
+    line-height: 1.1 !important;
+	/*font-size: 0.9rem !important;
+	line-height: 1.2 !important; */
+	height: auto !important;
+	min-height: 2.3rem !important;
+	outline: none !important;
+	box-shadow: none !important;
+	/* Search icon via background */
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 40 40' fill='%23886848'%3E%3Cpath d='M26.804 29.01c-2.832 2.34-6.465 3.746-10.426 3.746C7.333 32.756 0 25.424 0 16.378 0 7.333 7.333 0 16.378 0c9.046 0 16.378 7.333 16.378 16.378 0 3.96-1.406 7.594-3.746 10.426l10.534 10.534c.607.607.61 1.59-.004 2.202-.61.61-1.597.61-2.202.004L26.804 29.01zm-10.426.627c7.323 0 13.26-5.936 13.26-13.26 0-7.32-5.937-13.257-13.26-13.257C9.056 3.12 3.12 9.056 3.12 16.378c0 7.323 5.936 13.26 13.258 13.26z'/%3E%3C/svg%3E") !important;
+	background-repeat: no-repeat !important;
+	background-position: 0.6rem center !important;
+	background-size: 14px 14px !important;
+}
+
+body.page-noske-search .search-col-right .tabulator-header .tabulator-header-filter input::placeholder {
+	color: rgba(0, 0, 0, 0.5) !important;
+    font-family: 'Barlow', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 20px !important;
+}
+
+body.page-noske-search .search-col-right .tabulator-header .tabulator-header-filter input:focus {
+	border-color: #886848 !important;
+}
+
+/* Sorter arrow styling */
+body.page-noske-search .search-col-right .tabulator-header .tabulator-col {
+    position: relative !important;
+}
+
+/* Tabulator positions the sorter inside `.tabulator-col-title-holder`.
+   Make that holder non-positioned so our absolute sorter can anchor to the full header cell. */
+body.page-noske-search .search-col-right .tabulator-col-title-holder {
+	position: static !important;
+}
+
+body.page-noske-search .search-col-right .tabulator-col-content {
+	position: relative !important;
+}
+
+body.page-noske-search .search-col-right .tabulator-col-sorter {
+    position: absolute !important;
+    right: 0.6rem;
+    bottom: 0.2rem;
+    width: 2.1rem;
+    height: 2.3rem;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0 !important;
+    z-index: 5;
+}
+
+body.page-noske-search .search-col-right .tabulator-arrow {
+	border-bottom-color: #886848 !important;
+}
+
+/* Body cells */
+body.page-noske-search .search-col-right .tabulator-cell {
+	background: transparent !important;
+	color: #000 !important;
+}
+
+/* Remove underlines from links in table body */
+body.page-noske-search .search-col-right .tabulator-cell a {
+	text-decoration: none !important;
+}
+
+/* First 3 columns (Titel, Jahr, Seite): Barlow SemiBold 20px */
+body.page-noske-search .search-col-right .tabulator-cell[tabulator-field="titel"],
+body.page-noske-search .search-col-right .tabulator-cell[tabulator-field="jahr"],
+body.page-noske-search .search-col-right .tabulator-cell[tabulator-field="seite"] {
+    font-family: 'Barlow', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 20px !important;
+}
+
+/* Kotext columns (left, right): Cormorant Bold 20px */
+body.page-noske-search .search-col-right .tabulator-cell[tabulator-field="left"],
+body.page-noske-search .search-col-right .tabulator-cell[tabulator-field="right"] {
+    font-family: 'Cormorant', serif !important;
+    font-weight: 700 !important;
+    font-size: 20px !important;
+}
+
+/* Separation lines between rows */
+body.page-noske-search .search-col-right .tabulator-row {
+	background: transparent !important;
+	border-bottom: 1px solid #886848 !important;
+}
+
+/* Suchbegriff / keyword column (Tabulator adds `kwic` class in js/tabulator/noske.js): Cormorant Bold 20px */
+body.page-noske-search .search-col-right .tabulator-cell.kwic {
+	color: #886848 !important;
+	font-family: 'Cormorant', serif !important;
+	font-weight: 700 !important;
+	font-size: 20px !important;
+}

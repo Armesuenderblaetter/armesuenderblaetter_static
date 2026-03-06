@@ -1,0 +1,929 @@
+/* Person search: let the results overlap into the site-top area
+   up to the top edge of `.site-top-strip` (strip height 168px + its 2rem top gap). */
+/* body.page-person-search #hits {
+    margin-top: calc(-1 * (168px + 2rem));
+    position: relative;
+    z-index: 1;
+} */
+
+
+
+/* Search only: place burger in column 2 (right of the left filter column) */
+body.page-search .site-header,
+#searchPage #searchContainer .site-header {
+    left: var(--site-offcanvas-width);
+}
+
+#searchPage {
+height: calc(100vh - var(--asb-footer-secondary-height));
+}
+
+
+/* Search only: remove outer padding so the left column aligns with the offcanvas */
+body.page-search #searchPage {
+    padding: 0;
+}
+
+div#searchContainer>div {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+}
+
+/* Search page columns: left matches the open menu width, right fills remaining space */
+#searchContainer.search-container {
+    display: flex;
+    width: 100%;
+    height: 100%
+}
+
+
+#searchContainer.search-container .search-col-left {
+    /* flex: 0 0 var(--site-offcanvas-width); */
+    height: calc(100vh - var(--asb-footer-secondary-height));
+    overflow-y: scroll ;
+    width: var(--site-offcanvas-width) !important;
+    background-color: white;
+    padding: 1rem;
+}
+
+#searchContainer.search-container .search-col-right {
+    height:100%;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: calc(100% - var(--site-offcanvas-width)) !important;
+}
+
+./* contents-frame {
+   height: calc(100vh - var(--asb-footer-secondary-height) - 15rem - 6rem);
+    overflow: hidden;
+} */
+
+body.page-search .contents-frame {
+    position: relative;
+}
+
+.scroller {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+}
+
+
+
+/* Person search hit card sizing */
+body.page-person-search {
+    --person-hit-card-max-width: 22rem;
+}
+
+
+/* 4rem spacing between hit cards */
+body.page-search .ais-Hits-list,
+body.page-search .ais-InfiniteHits-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Person search (grid view): use a real grid so multiple cards fit per row at large widths.
+   Keep list view as flex (see `.person-view-list`). */
+body.page-person-search:not(.person-view-list) .ais-Hits-list,
+body.page-person-search:not(.person-view-list) .ais-InfiniteHits-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, var(--person-hit-card-max-width));
+    justify-content: center;
+    gap: 4rem;
+}
+
+body.page-search .ais-Hits-item,
+body.page-search .ais-InfiniteHits-item {
+    margin: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Person search hit cards: image-only by default, details on hover */
+body.page-person-search:not(.person-view-list) .ais-Hits-item,
+body.page-person-search:not(.person-view-list) .ais-InfiniteHits-item {
+    padding: 0 !important;
+    overflow: hidden;
+    position: relative;
+    /* Make cards smaller and let the list center them */
+    width: 100% !important;
+    max-width: var(--person-hit-card-max-width);
+    /* Fixed height so images can crop/fill consistently */
+    height: clamp(18rem, 40vw, 30rem);
+}
+
+body.page-person-search .person-hit-card {
+    position: static;
+    width: 100%;
+    height: 100%;
+}
+
+body.page-person-search .person-hit-link {
+    display: block;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+}
+
+body.page-person-search .person-hit-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+body.page-person-search .person-hit-overlay {
+    position: absolute;
+    inset: 0;
+    padding: 1rem;
+    background-color: var(--asb-background-colour-3);
+    color: var(--bs-white);
+    display: none;
+    flex-direction: column;
+}
+
+/* List view: show details as normal flow, hide image */
+body.page-person-search.person-view-list .ais-Hits-item,
+body.page-person-search.person-view-list .ais-InfiniteHits-item {
+    height: auto;
+    max-width: none;
+    flex-basis: 100%;
+}
+
+body.page-person-search.person-view-list .person-hit-link {
+    display: none;
+}
+
+body.page-person-search.person-view-list .person-hit-overlay {
+    position: static;
+    display: flex;
+    background-color: var(--bs-white);
+    color: var(--asb-link-colour);
+}
+
+body.page-person-search.person-view-list .person-hit-title {
+    color: var(--asb-link-colour);
+}
+
+body.page-person-search.person-view-list .person-hit-overlay a,
+body.page-person-search.person-view-list .person-hit-overlay a:visited {
+    color: var(--asb-link-colour) !important;
+}
+
+body.page-person-search .ais-Hits-item:hover .person-hit-overlay,
+body.page-person-search .ais-Hits-item:focus-within .person-hit-overlay,
+body.page-person-search .ais-InfiniteHits-item:hover .person-hit-overlay,
+body.page-person-search .ais-InfiniteHits-item:focus-within .person-hit-overlay {
+    display: flex;
+}
+
+/* Steckbriefansicht: keep grid, show details overlay always */
+body.page-person-search.person-view-steckbrief .person-hit-overlay {
+    display: flex;
+}
+
+body.page-person-search .person-hit-title {
+    margin: 0 0 0.75rem;
+    color: var(--bs-white);
+    font-size: 1.2rem;
+}
+
+body.page-person-search .person-hit-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+body.page-person-search .person-hit-list li {
+    margin: 0.25rem 0;
+    display: grid;
+    grid-template-columns: 11.5rem 1fr;
+    column-gap: 0.75rem;
+    align-items: baseline;
+}
+
+
+@media screen and (max-width: 1920px) {
+    body.page-person-search {
+        --person-hit-card-max-width: 16rem;
+    }
+
+body.page-person-search .person-hit-title {
+    margin: 0 0 0.55rem;
+    font-size: 1rem;
+}
+    
+body.page-person-search .person-hit-list li {
+    margin: 0.15rem 0;
+    display: grid;
+    grid-template-columns: 10.5rem 1fr;
+    column-gap: 0.25rem;
+    align-items: baseline;
+}
+
+ body.page-person-search .person-hit-label {
+    font-size: 0.6rem;
+    }
+
+body.page-person-search .person-hit-list li {
+    margin: 0.15rem 0;
+    grid-template-columns: 6rem 2fr;
+    column-gap: 0.25rem;
+}
+
+}
+
+
+body.page-person-search .person-hit-label {
+    font-variant: small-caps;
+    white-space: nowrap;
+}
+
+body.page-person-search .person-hit-value {
+    font-variant: normal;
+    min-width: 0;
+}
+
+body.page-person-search .person-hit-cta {
+    margin-top: auto;
+    text-align: center;
+}
+
+/* Person search (left column): toggle row + NAME pill search */
+body.page-person-search .person-left-togglebar {
+    background-color: transparent;
+    min-height: var(--asb-square-btn-size); /* match burger button height */
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0 1rem;
+    position: relative;
+}
+
+body.page-person-search .person-left-togglebar::after {
+    content: "";
+    position: absolute;
+    left: -1rem;
+    right: -1rem;
+    bottom: 0;
+    height: 1px;
+    background-color: var(--asb-background-colour-0);
+}
+
+body.page-person-search .person-view-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    cursor: pointer;
+    color: var(--asb-link-colour);
+    font-size: 1.5rem;
+}
+
+body.page-person-search .person-view-toggle-text {
+    font-family: var(--bs-font-sans-serif) !important;
+    color: var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .person-view-toggle input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    background-color: transparent;
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+}
+
+body.page-person-search .person-view-toggle input::after {
+    content: "";
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 9999px;
+    transform: scale(0);
+    transition: transform 120ms ease-in-out;
+    background-color: var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .person-view-toggle input:checked::after {
+    transform: scale(1);
+}
+
+body.page-person-search .person-view-toggle input:focus-visible {
+    outline: 2px solid var(--asb-background-colour-2-button);
+    outline-offset: 3px;
+}
+
+body.page-person-search .person-left-section {
+    background-color: transparent;
+    padding: 2rem 1rem 1.25rem;
+    margin: 0 0 1rem;
+    position: relative;
+}
+
+/* Ensure only the heading draws the separator (avoid stacking borders/lines) */
+body.page-person-search .search-col-left .person-left-section,
+body.page-person-search .search-col-left .person-left-facet {
+    border: 0;
+    box-shadow: none;
+    background-image: none;
+}
+
+body.page-person-search .person-left-section::after {
+    /* Separators are drawn via heading ::before to avoid double-thick lines */
+    content: none;
+    display: none;
+}
+
+body.page-person-search .person-left-section.person-left-section--name::after {
+    content: none;
+    display: none;
+}
+
+/* NAME list: hidden by default; shown via "Als Liste zeigen" */
+body.page-person-search #name_list {
+    display: none;
+}
+
+body.page-person-search.name-list-visible #name_list {
+    display: block;
+}
+
+body.page-person-search .person-left-heading {
+    margin: 0 0 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+/* TOC left column: single 1px separator line before every section heading */
+body.page-person-search .search-col-left h3.person-left-heading {
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.02em;
+    margin: 2rem 0 1rem;
+    padding-top: 1.5rem;
+    position: relative;
+    border-top: 0;
+    box-shadow: none;
+    background-image: linear-gradient(var(--asb-background-colour-0), var(--asb-background-colour-0));
+    background-repeat: no-repeat;
+    background-position: 0.75rem 0;
+    background-size: calc(100% - 1.5rem) 1px;
+}
+
+body.page-person-search .search-col-left h3.person-left-heading::before {
+    content: none !important;
+}
+
+/* First block (TITEL) should not have a separator line above it */
+body.page-person-search .search-col-left .person-left-section--name h3.person-left-heading {
+    margin-top: 0;
+    padding-top: 0;
+    background-image: none;
+}
+
+body.page-person-search .search-col-left .person-left-section--name h3.person-left-heading::before {
+    content: none;
+}
+
+/* Left column title styling for TOC */
+body.page-person-search .person-left-heading:first-of-type {
+    font-family: 'Cormorant', serif !important;
+    font-weight: 700 !important;
+    font-size: 30px !important;
+}
+
+body.page-person-search .person-name-search-inner {
+    display: flex;
+    align-items: stretch;
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    overflow: hidden;
+    background-color: var(--asb-background-colour-2-button);
+    padding: 0;
+    min-height: 2.3rem;
+}
+
+body.page-person-search .person-name-search-inner > * {
+    background-color: inherit;
+}
+
+body.page-person-search .person-name-search-inner .ais-SearchBox {
+    flex: 1 1 auto;
+    min-width: 0;
+    background-color: var(--bs-white);
+    border-radius: 9999px;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+}
+
+/* Alter slider pill */
+body.page-person-search .person-age-hidden {
+    display: none;
+}
+
+body.page-person-search .person-age-pill {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    overflow: visible;
+    background-color: var(--asb-background-colour-2-button);
+    min-height: 2.3rem;
+}
+
+body.page-person-search .person-age-pill-slider {
+    flex: 1 1 auto;
+    min-width: 0;
+    background-color: var(--bs-white);
+    border-radius: 9999px;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    padding: 0 1.1rem;
+    box-shadow: inset 0 0 0 2px var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .person-age-pill-count {
+    flex: 0 0 auto;
+    color: var(--bs-white);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    font-variant: small-caps;
+    font-size: 0.85rem;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+/* noUiSlider theme for Alter */
+body.page-person-search .person-age-pill-slider .noUi-target {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    width: 100%;
+    /* Inset so the circular handles remain fully inside the white pill */
+    margin: 0 0.7rem;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-horizontal {
+    height: 1.4rem;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-base,
+body.page-person-search .person-age-pill-slider .noUi-connects {
+    height: 100%;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-connects {
+    background: transparent;
+    position: relative;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-connects::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    transform: translateY(-50%);
+    background-color: var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .person-age-pill-slider .noUi-connect {
+    background: transparent;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-handle {
+    width: 1.1rem;
+    height: 1.1rem;
+    box-sizing: border-box;
+    border-radius: 9999px;
+    background: var(--asb-background-colour-0);
+    border: 2px solid var(--asb-background-colour-2-button);
+    box-shadow: none;
+}
+
+/* noUi's default theme offsets the handle (top/right) for its own handle size.
+   Re-center for our circular handle so it sits on the line. */
+body.page-person-search .person-age-pill-slider .noUi-horizontal .noUi-handle {
+    top: calc(50% + 0.55rem);
+    margin-top: 0;
+    transform: translateY(-50%);
+    right: -0.55rem;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-handle::before,
+body.page-person-search .person-age-pill-slider .noUi-handle::after {
+    display: none;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-touch-area {
+    border-radius: 9999px;
+}
+
+body.page-person-search .person-age-pill-slider .noUi-tooltip {
+    background: transparent;
+    border: 0;
+    color: var(--asb-background-colour-2-button);
+    font-size: 0.75rem;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    pointer-events: none;
+    white-space: nowrap;
+    /* push labels above the white pill */
+    bottom: calc(100% + 0.6rem);
+}
+
+/* Birth place + execution place lists: hidden by default; shown via their buttons */
+body.page-person-search #birth_place,
+body.page-person-search #execution_places,
+body.page-person-search #person_names,
+body.page-person-search #person_birth_place,
+body.page-person-search #person_execution_places {
+    display: none;
+}
+
+body.page-person-search.birth-place-list-visible #birth_place,
+body.page-person-search.birth-place-list-visible #person_birth_place {
+    display: block;
+}
+
+body.page-person-search.execution-place-list-visible #execution_places,
+body.page-person-search.execution-place-list-visible #person_execution_places {
+    display: block;
+}
+
+body.page-person-search.person-name-list-visible #person_names {
+    display: block;
+}
+
+body.page-person-search .person-name-search-inner #searchbox {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+body.page-person-search .person-name-search-inner .ais-SearchBox-form {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    height: 100%;
+}
+
+body.page-person-search .person-name-search-inner .ais-SearchBox-submit,
+body.page-person-search .person-name-search-inner .ais-SearchBox-reset {
+    background: transparent;
+    border: 0;
+    padding: 0.35rem;
+    min-width: 0;
+    width: 1.8rem;
+    height: 1.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.page-person-search .person-name-search-inner .ais-SearchBox-input {
+    border: 0;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    width: 100%;
+    padding: 0.35rem 0.5rem;
+    /* InstantSearch theme places the submit/reset icons on top of the input;
+       reserve horizontal space so the caret/text doesn't start under the icon. */
+    padding-left: 2.4rem !important;
+    padding-right: 2.4rem !important;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.1;
+    height: 100%;
+}
+
+body.page-person-search .person-view-list-btn {
+    border: 0;
+    background-color: inherit !important;
+    color: var(--bs-white);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem !important;
+	font-family: 'Cormorant', serif;
+	font-weight: 700;
+	font-size: 25px;
+	line-height: 1;
+	font-variant: normal;
+    min-height: 0;
+    align-self: stretch;
+    height: auto;
+    border-radius: 9999px !important;
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+
+body.page-person-search .person-view-list-btn:hover {
+    background-color: var(--asb-background-color-4-button-hover) !important;
+}
+
+body.page-person-search .person-view-list-btn br {
+    display: none;
+}
+
+/* "Enthält" row: Vignetten / Verse side by side */
+body.page-person-search .contains-facet-row {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+body.page-person-search .contains-facet-row > div {
+    flex: 0 0 auto;
+}
+
+body.page-person-search .contains-facet-row .ais-RefinementList-list {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    margin: 0;
+    padding: 0;
+}
+
+body.page-person-search .contains-facet-row::after {
+    /* Use the next heading separator instead (avoid double lines) */
+    content: none;
+    display: none;
+}
+
+body.page-person-search .contains-facet-row {
+    position: relative;
+    padding-bottom: 0;
+}
+
+/* Person search: pill-shaped refinement list items */
+body.page-person-search .search-col-left .ais-RefinementList-list {
+    display: grid;
+    /* Keep 2 columns when there is enough width (as before), but ensure
+       every column starts at a consistent x position. */
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    column-gap: 1rem;
+    row-gap: 0.5rem;
+    list-style: none;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-item {
+    margin: 0;
+    display: block;
+    width: 100%;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-label {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.35rem 1fr auto;
+    column-gap: 0.5rem;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-label:hover {
+    color: var(--asb-background-colour-2-button);
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-checkbox {
+    /* Hide default checkbox, show custom checkmark via label */
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+    margin: 0;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-label::before {
+    content: "";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 9999px;
+    background-color: var(--bs-white);
+    border: 2px solid var(--asb-background-colour-2-button);
+    color: var(--bs-black);
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-item--selected .ais-RefinementList-label::before {
+    content: "✓";
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-count {
+    background-color: var(--asb-background-colour-2-button);
+    color: var(--bs-white);
+    font-size: 0.9rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    margin-left: 0;
+    justify-self: end;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-count::before,
+body.page-person-search .search-col-left .ais-RefinementList-count::after {
+    content: none;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList-labelText {
+    min-width: 0;
+}
+
+/* Person search: range slider for ALTER */
+body.page-person-search .search-col-left .ais-RangeSlider {
+    padding: 1rem 0.5rem 0.5rem;
+}
+
+body.page-person-search .search-col-left .ais-RangeSlider .rheostat {
+    margin: 0;
+}
+
+body.page-person-search .search-col-left .ais-RangeSlider .rheostat-background {
+    background-color: var(--asb-background-colour-1);
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    height: 0.5rem;
+}
+
+body.page-person-search .search-col-left .ais-RangeSlider .rheostat-progress {
+    background-color: var(--asb-background-colour-2-button);
+    height: 100%;
+    border-radius: 9999px;
+}
+
+body.page-person-search .search-col-left .ais-RangeSlider .rheostat-handle {
+    background-color: var(--asb-background-colour-1);
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    width: 1.25rem;
+    height: 1.25rem;
+    top: -0.4rem;
+}
+
+body.page-person-search .search-col-left .ais-RangeSlider-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--asb-link-colour);
+}
+
+/* Person search: range input fallback styling */
+body.page-person-search .search-col-left .ais-RangeInput {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+body.page-person-search .search-col-left .ais-RangeInput-input {
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    padding: 0.4rem 0.75rem;
+    width: 5rem;
+    text-align: center;
+    background-color: var(--bs-white);
+	font-family: 'Barlow', sans-serif;
+	font-weight: 400;
+	font-size: 20px;
+	line-height: 1.1;
+}
+
+body.page-person-search .search-col-left .ais-RangeInput-separator {
+    color: var(--asb-link-colour);
+}
+
+body.page-person-search .search-col-left .ais-RangeInput-submit {
+    border-radius: 9999px !important;
+    padding: 0.4rem 1rem !important;
+}
+
+/* Person search: facets with search (birth_place, execution_places) - pill search style */
+body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox {
+    margin-bottom: 0.75rem;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox-form {
+    display: flex;
+    align-items: stretch;
+    border: 3px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    overflow: hidden;
+    background-color: var(--bs-white);
+}
+
+body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox-input {
+    border: 0;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    /* Same icon overlap fix for searchable facet boxes */
+    padding-left: 2.4rem !important;
+    padding-right: 2.4rem !important;
+	font-family: 'Barlow', sans-serif;
+	font-weight: 400;
+	font-size: 20px;
+	line-height: 1.1;
+}
+
+body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox-submit,
+body.page-person-search .search-col-left .ais-RefinementList--searchable .ais-SearchBox-reset {
+    background: transparent;
+    border: 0;
+    padding: 0.5rem;
+}
+
+/* Scrollable facet lists keep their border but adjust for pill layout */
+body.page-person-search .search-col-left .facet-list-scroll {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    column-gap: 1rem;
+    row-gap: 0.5rem;
+    padding: 0;
+    max-height: 14rem;
+    border: 0 !important;
+    border-radius: 0 !important;
+}
+
+body.page-search .person-left-tailpiece {
+    display: block;
+    width: 100%;
+    height: 3rem;
+    margin: 2.5rem 0 0.75rem;
+    opacity: 0.35;
+    pointer-events: none;
+    background-image: url('../images/tailpiece.png');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    background-position: center;
+}
+
+body.page-person-search .person-hit-overlay a,
+body.page-person-search .person-hit-overlay a:visited {
+    color: var(--bs-white) !important;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 0.65em 1.1em;
+    border: 2px solid var(--bs-white);
+    background-color: var(--asb-background-colour-button-banner);
+    color: var(--bs-white) !important;
+    text-decoration: none;
+    border-radius: 9999px;
+    line-height: 1;
+}
+
+body.page-person-search .person-hit-overlay .cta-button {
+    background-color: var(--asb-background-colour-3);
+}
+
+body.page-person-search .person-hit-overlay .cta-button:hover,
+body.page-person-search .person-hit-overlay .cta-button:focus {
+    background-color: var(--asb-background-color-4-button-hover);
+    text-decoration: none;
+}
+
+.site-top-title {
+    padding-left: 2rem!important;
+}

@@ -1343,6 +1343,41 @@ function schedulePageFallbackResolution() {
       const page = countPbBeforeToken(doc, tokenId);
       if (page) {
         cell.textContent = page;
+
+        // Also update links in the same table row so they include the
+        // correct page parameter.  Without this the kwic link opens the
+        // target document on page 1 instead of the resolved page.
+        const row = cell.closest("tr");
+        if (row) {
+          row.querySelectorAll("a[href]").forEach((link) => {
+            const href = link.getAttribute("href");
+            if (!href || href === "#") return;
+            try {
+              // Resolve relative URL against current page so URL() works.
+              const resolved = new URL(href, window.location.href);
+              resolved.searchParams.set("pag", page);
+              // Keep attribute as relative when the original href was relative.
+              if (href.startsWith("./") || href.startsWith("../") || !href.startsWith("http")) {
+                const rel = resolved.pathname.split("/").pop()
+                  + "?" + resolved.searchParams.toString()
+                  + (resolved.hash || "");
+                link.setAttribute("href", "./" + rel);
+              } else {
+                link.href = resolved.toString();
+              }
+            } catch (_) {
+              // Best-effort: append pag param manually.
+              const hashIdx = href.indexOf("#");
+              const sep = href.includes("?") ? "&" : "?";
+              if (hashIdx >= 0) {
+                link.setAttribute("href",
+                  href.substring(0, hashIdx) + sep + "pag=" + page + href.substring(hashIdx));
+              } else {
+                link.setAttribute("href", href + sep + "pag=" + page);
+              }
+            }
+          });
+        }
       }
       cell.dataset.resolved = "1";
     }
@@ -1364,13 +1399,15 @@ function B(r, e, t, s, o = !1, n = !1, i) {
 		</div>
 		`;
   let u = document.querySelector("#hits-table-body");
-  // Fixed column headers: Titel, Jahr, Seite, Linker Kotext, Stichwort, Rechter Kotext
+  // Fixed column headers: Titel, Seite, Jahr, Linker Kotext, Stichwort, Rechter Kotext, DocId, TokenId
   var c = `<th class="${i.css?.th || h.th}">Titel</th>
-							<th class="${i.css?.th || h.th}">Jahr</th>
 							<th class="${i.css?.th || h.th}">Seite</th>
+							<th class="${i.css?.th || h.th}">Jahr</th>
 							<th class="${i.css?.th || h.th}">Linker Kotext</th>
 							<th class="${i.css?.th || h.th}">Stichwort</th>
-							<th class="${i.css?.th || h.th}">Rechter Kotext</th>`;
+							<th class="${i.css?.th || h.th}">Rechter Kotext</th>
+							<th style="display:none">DocId</th>
+							<th style="display:none">TokenId</th>`;
   let requiresDeferredThumbnails = !1;
   let x = r
       .map((m) => {
@@ -1395,8 +1432,9 @@ function B(r, e, t, s, o = !1, n = !1, i) {
         // Extract Jahr (year) from doc.id filename
         const jahrValue = docYearEntry ? docYearEntry.split("=")[1] : extractYearFromDocId(docIdValue);
         
-        // Build Titel cell with link
-        const titelHref = baseHref || "#";
+        // Build Titel cell with link (include page param when known)
+        const titelParams = pageValue ? `?pag=${pageValue}` : "";
+        const titelHref = baseHref ? (baseHref + titelParams) : "#";
         const titelText = docTitleValue || docIdValue || "";
         const titelCell = `<td class="${i.css?.td || h.td}"><a href="${titelHref}">${escapeHtmlAttr(titelText)}</a></td>`;
         
@@ -1439,8 +1477,8 @@ function B(r, e, t, s, o = !1, n = !1, i) {
         return `
 			<tr class="${i.css?.trBody || h.trBody}">
 				${titelCell}
-				${jahrCell}
 				${seiteCell}
+				${jahrCell}
 				<td class="${i.css?.left || h.left}">${b}</td>
 				<td class="${i.css?.kwic || h.kwic}">
 					<a href="${v}">
@@ -1448,6 +1486,8 @@ function B(r, e, t, s, o = !1, n = !1, i) {
 					</a>
 				</td>
 				<td class="${i.css?.right || h.right}">${P}</td>
+				<td style="display:none">${escapeHtmlAttr(docIdValue)}</td>
+				<td style="display:none">${escapeHtmlAttr(tokenId)}</td>
 			</tr>
 			`;
       })
@@ -1658,20 +1698,24 @@ var W = class {
       throw new Error("main search div container is not defined");
     if (!e) throw new Error("search input id is not defined");
     let n = document.querySelector(`#${this.container}`);
-    // render button first (left), then input, then select (right)
+    // desired layout: input (white) on the left, then a shared action segment (lens + selector)
     n.innerHTML = `<div id="${e}" class="${o?.div || this.div1css}">
-        <button id="noske-search-button" class="${o?.button || this.buttoncss}" aria-label="Suche">${s || this.button}</button>
-        <input
-          type="search"
-          id="${`${e}-input`}"
-          class="${o?.input || this.inputcss}"
-          placeholder="${t || this.inputPlaceholder}"
-          autocomplete="off"
-        />
-        <select id="${`${e}-select`}" class="${o?.select || this.selectQueryCss}">
-          <option value="simple">Textsuche</option>
-          <option value="cql">CQL</option>
-        </select>
+        <div class="noske-search-pill">
+          <input
+            type="search"
+            id="${`${e}-input`}" 
+            class="${o?.input || this.inputcss}"
+            placeholder="${t || this.inputPlaceholder}"
+            autocomplete="off"
+          />
+        </div>
+        <div class="noske-search-actions" aria-label="Suchmodus">
+          <button id="noske-search-button" class="${o?.button || this.buttoncss}" aria-label="Suche">${s || this.button}</button>
+          <select id="${`${e}-select`}" class="${o?.select || this.selectQueryCss}" aria-label="Suchmodus">
+            <option value="simple">Einfach</option>
+            <option value="cql">Erweitert</option>
+          </select>
+        </div>
       </div>
     `;
   }
