@@ -447,8 +447,12 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#person_offences",
     attribute: "person_offences",
+    limit: 1000,
     sortBy: ["name:asc", "count:desc"],
     searchable: false,
+    cssClasses: {
+      list: "facet-list-scroll",
+    },
   }),
 
   instantsearch.widgets.refinementList({
@@ -465,8 +469,12 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#person_execution",
     attribute: "person_execution",
+    limit: 1000,
     sortBy: ["name:asc", "count:desc"],
     searchable: false,
+    cssClasses: {
+      list: "facet-list-scroll",
+    },
   }),
 ]);
 
@@ -600,7 +608,11 @@ search.start();
 
     function setButtonLabel() {
       const open = document.body.classList.contains(bodyClass);
-      button.textContent = open ? "Einklappen" : "Als Liste zeigen";
+      button.innerHTML = open
+        ? '<i class="bi bi-x-lg" aria-hidden="true"></i>'
+        : '<i class="bi bi-list" aria-hidden="true"></i>';
+      button.setAttribute("aria-label", open ? "Einklappen" : "Als Liste zeigen");
+      button.setAttribute("title", open ? "Einklappen" : "Als Liste zeigen");
     }
 
     function applyFilter() {
@@ -650,6 +662,20 @@ search.start();
     inputId: "executionPlaceFilter",
     bodyClass: "execution-place-list-visible",
     containerSelector: "#person_execution_places",
+  });
+
+  bindToggleAndFilter({
+    buttonId: "offenceListBtn",
+    inputId: "offenceFilter",
+    bodyClass: "offences-list-visible",
+    containerSelector: "#person_offences",
+  });
+
+  bindToggleAndFilter({
+    buttonId: "executionTypeListBtn",
+    inputId: "executionTypeFilter",
+    bodyClass: "execution-type-list-visible",
+    containerSelector: "#person_execution",
   });
 })();
 
