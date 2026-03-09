@@ -13,6 +13,9 @@ data/imprint.xml
 /static-search
 html/static-search
 pnpm-lock.yaml
+data_repo
+test-results
+playwright-report
 
 # Node
 .pnpm-store

@@ -94,3 +94,27 @@ jobs:
         else
           echo "nothing to push"
         fi
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9
+    - name: Use Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 24
+    - name: Node install 
+      run: |
+        pnpm install
+    - name: run tests
+      run: pnpm run e2e:test_all_edition_view
+      continue-on-error: true
+    - name: Setup Pages
+      uses: actions/configure-pages@v5
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        # Upload entire repository
+        path: './playwright-report'
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

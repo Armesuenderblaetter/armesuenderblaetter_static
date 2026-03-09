@@ -40,7 +40,7 @@ export default defineConfig({
         // 1
           args: ["--start-maximized"],
         }, 
-        viewport: { width: 1280, height: 720 },
+        viewport: { width: 1920, height: 1200 },
       },
     },
 
