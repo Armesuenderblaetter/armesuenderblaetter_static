@@ -403,7 +403,7 @@ body.page-person-search .search-col-left .person-left-section--name h3.person-le
 body.page-person-search .person-left-heading:first-of-type {
     font-family: 'Cormorant', serif !important;
     font-weight: 700 !important;
-    font-size: 30px !important;
+    font-size: 1.4em !important;
 }
 
 body.page-person-search .person-name-search-inner {
@@ -632,7 +632,7 @@ body.page-person-search .person-view-list-btn {
     padding: 0 1rem !important;
 	font-family: 'Cormorant', serif;
 	font-weight: 700;
-	font-size: 25px;
+	font-size: 1.2em;
 	line-height: 1;
 	font-variant: normal;
     min-height: 0;
@@ -924,6 +924,13 @@ body.page-person-search .person-hit-overlay .cta-button:focus {
     text-decoration: none;
 }
 
-.site-top-title {
-    padding-left: 2rem!important;
+
+body.page-search .site-top-title {
+	padding-left: 4rem;
+}
+
+@media (min-width: 1921px) {
+body.page-search .site-top-title {
+	padding-left: 16rem;
+}
 }

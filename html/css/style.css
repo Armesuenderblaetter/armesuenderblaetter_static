@@ -53,7 +53,9 @@
 
     /* Ensure the whole site uses a serif font (also picked up by Bootstrap) */
     --bs-body-font-family: var(--editor-font-family);
-    --site-offcanvas-width: clamp(224px, 27.2vw, 320px);
+    /* --site-offcanvas-width: clamp(224px, 27.2vw, 320px); */
+    --site-offcanvas-width: clamp(240px, 10vw, 10vw);
+    --bs-offcanvas-width: var(--site-offcanvas-width)!important;
     /* target height used for the action in the site-top (button or image) */
     /* --site-top-action-height: clamp(2.6rem, 4vw, 3.5rem); */
     --noske-search-btn-size: 2rem;
@@ -64,7 +66,7 @@
 /* On screens wider than 1920px, restore the original (wider) offcanvas width */
 @media (min-width: 1921px) {
     :root {
-        --site-offcanvas-width: clamp(280px, 34vw, 400px);
+         --site-offcanvas-width: clamp(240px, 10vw, 12vw);
         --asb-footer-primary-height: 9rem ;
         --asb-footer-secondary-height: 3rem ;
         --asb-square-btn-size: 4.5rem;
@@ -147,6 +149,7 @@ body {
     display: inline-block;
     color: inherit;
     text-decoration: none;
+    /* padding-left:calc(var(--site-offcanvas-width) + 16rem) ; */
 }
 
 .site-top-title {
@@ -156,7 +159,19 @@ body {
     text-transform: uppercase;
     line-height: 1.2;
     font-size: clamp(2.6rem, 5vw, 4rem);
+	    padding-left: calc(var(--site-offcanvas-width) + 4rem);
+}
+
+@media (min-width: 1921px) {
+.site-top-title {
+    margin: 0;
+    color: var(--bs-white);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    font-size: clamp(2.6rem, 5vw, 4rem);
 	    padding-left: calc(var(--site-offcanvas-width) + 16rem);
+}
 }
 
 .site-top-image{
@@ -216,10 +231,23 @@ body {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+    padding-right:2em ;
     /*right: 25rem ;*/
     pointer-events: none; /* avoid accidental interactions when it overlaps */
 }
 
+@media (min-width: 1921px) {
+.site-top-image {
+    /* keep the image at its natural size and allow it to overflow the
+       `site-top-right` container (which is constrained to the action height) */
+    /* width: auto;
+    height: auto;
+    max-width: min(840px, 100%); */
+    padding-right:calc(var(--site-offcanvas-width) + 2rem) ;
+    /*right: 25rem ;*/
+    pointer-events: none; /* avoid accidental interactions when it overlaps */
+}
+}
 
 /* BUTTONS */
 
@@ -446,7 +474,7 @@ body.landing .landing-offcanvas .offcanvas-body::-webkit-scrollbar {
     display: none;
 }
 .site-menu {
-    padding-left: 4rem;
+    padding-left: 2rem;
 }
 .site-menu-section {
     font-variant: small-caps;
@@ -596,14 +624,22 @@ main.meta, .contents-frame{
 
 
 
+
 .container-inner {
     padding-top: 4rem;
     padding-bottom: 6rem;
-      padding-left: 15%;
-    padding-right: 15%;
+      padding-left: calc(var(--site-offcanvas-width) + 4rem);
+    padding-right: calc(var(--site-offcanvas-width) + 4rem) ;
         height: auto;
         min-height: 100%;
         box-sizing: border-box;
+}
+
+@media (min-width: 1921px) {
+.container-inner {
+      padding-left: calc(var(--site-offcanvas-width) + 16rem);
+    padding-right: calc(var(--site-offcanvas-width) + 16rem) ;
+ }
 }
 
 .container-inner p {
