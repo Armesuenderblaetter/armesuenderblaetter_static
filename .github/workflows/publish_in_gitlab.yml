@@ -2,6 +2,11 @@ name: build page and push to gitlab
 
 on: [workflow_dispatch]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build_html:
     name: Publish Edition as GitHub Pages Website
@@ -105,6 +110,7 @@ jobs:
     - name: Node install 
       run: |
         pnpm install
+        pnpm exec playwright install
     - name: run tests
       run: pnpm run e2e:run_all_tests
       continue-on-error: true
