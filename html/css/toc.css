@@ -559,8 +559,7 @@ body.page-person-search #execution_places,
 body.page-person-search #person_names,
 body.page-person-search #person_birth_place,
 body.page-person-search #person_execution_places,
-body.page-person-search #person_offences,
-body.page-person-search #person_execution {
+body.page-person-search #person_offences {
     display: none;
 }
 

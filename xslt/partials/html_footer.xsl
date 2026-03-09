@@ -15,13 +15,13 @@
                             <div class="col-3 logo row" style="padding-right: 0px">
                                 <div class="col-6 text-right" style="padding-right: 0px">
                                     <a href="https://www.oeaw.ac.at/acdh">
-                                        <img src="images/logo_acdh.svg" width="90" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
+                                        <img src="images/logo_acdh.svg" width="90%" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
                                     </a>
                                 </div>
-                                <div class="col-6" style="padding-left: 0px">
+                                <div class="col-6" style="padding-left: 1em;">
                                     <div class="footer-1">Austrian Centre<br/>
                                     for Digital Humanities</div>
-                                    <div class="footer-2">Bäckerstraße 13<br/>
+                                    <div class="footer-2" style="padding-left: 1em">Bäckerstraße 13<br/>
                                     1010 Wien</div>
                                 </div>
                             </div>
@@ -30,9 +30,9 @@
                                 LITERATURWISSENSCHAFT<br/> &amp; <br/>PRINTKULTURFORSCHUNG
                                 </div>
                             </div>
-                             <div class="col-3">
+                             <div class="col-3 logo">
                                  <a href="https://wien.gv.at">
-                                        <img src="images/logo_stadtwien.png" width="90" alt="Stadt Wien" title="Stadt Wien"/>
+                                        <img src="images/logo_stadtwien.png" width="90%" alt="Stadt Wien" title="Stadt Wien"/>
                                     </a>
                             </div>
                         </div>

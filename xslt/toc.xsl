@@ -114,8 +114,18 @@
                                 <h3 class="person-left-heading">Konfession</h3>
                                 <div id="person_faith"></div>
                             </div>
-                            <div class="person-left-facet">
+                            <div class="person-left-section person-left-section--offences">
                                 <h3 class="person-left-heading">Verbrechen</h3>
+                                <div class="person-name-search">
+                                    <div class="person-name-search-inner">
+                                        <div class="ais-SearchBox" aria-label="Verbrechen filtern">
+                                            <form class="ais-SearchBox-form" role="search" onsubmit="return false;">
+                                                <input class="ais-SearchBox-input person-facet-filter" id="offenceFilter" type="search" placeholder="Suchen" autocomplete="off" />
+                                            </form>
+                                        </div>
+                                        <button type="button" class="person-view-list-btn" id="offenceListBtn">Als Liste zeigen</button>
+                                    </div>
+                                </div>
                                 <div id="person_offences"></div>
                             </div>
                             <div class="person-left-section person-left-section--execution-place">
