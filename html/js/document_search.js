@@ -13,6 +13,14 @@ function getDocumentLink(hit) {
   return `${id}.html`;
 }
 
+function normalizeOffenceFacetLabel(label) {
+  const value = String(label || "").trim();
+  if (value === "Degendiebstahl" || value === "Holzdiebstahl") {
+    return "Diebstahl";
+  }
+  return value;
+}
+
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   server: {
     apiKey: typesense_search_key,
@@ -450,6 +458,12 @@ search.addWidgets([
     limit: 1000,
     sortBy: ["name:asc", "count:desc"],
     searchable: false,
+    transformItems(items) {
+      return items.map((item) => ({
+        ...item,
+        label: normalizeOffenceFacetLabel(item.label),
+      }));
+    },
     cssClasses: {
       list: "facet-list-scroll",
     },
