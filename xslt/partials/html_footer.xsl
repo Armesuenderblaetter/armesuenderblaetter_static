@@ -19,16 +19,15 @@
                                     </a>
                                 </div>
                                 <div class="col-6" style="padding-left: 0px">
-                                    <div class="footer-2">Austrian Centre <br/>
-                                    for Digital Humanities<br/>
-                                    Bäckerstraße 13<br/>
-                                    1010 Wien
-                                    </div>
+                                    <div class="footer-1">Austrian Centre<br/>
+                                    for Digital Humanities</div>
+                                    <div>Bäckerstraße 13<br/>
+                                    1010 Wien</div>
                                 </div>
                             </div>
                             <div class="col-4 text-left">
-                                <div class="footer-1">
-                                LITERATURWISSENSCHAFT &amp; PRINTKULTURFORSCHUNG<br/>
+                                <div class="footer-1 text-center">
+                                LITERATURWISSENSCHAFT<br/> &amp; <br/>PRINTKULTURFORSCHUNG
                                 </div>
                                 <!-- <div class="footer-3"><div>T: +43 1 51581-2223</div><div>
                                 E: <a href="mailto:ace@oeaw.ac.at">ace@oeaw.ac.at</a></div>
