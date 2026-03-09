@@ -7,32 +7,33 @@
                 <div class="wrapper" id="wrapper-footer-full">
                     <div class="container" id="footer-full-content" tabindex="-1">
                         <div class="row">
-                         <div class="col-4 logo">
+                         <div class="col-3 logo">
                                 <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
                                     <img src="images/logo_oeaw.svg" height="80%" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
                                 </a>
                             </div>
-                            <div class="col-4 logo row" style="padding-right: 0px">
+                            <div class="col-3 logo row" style="padding-right: 0px">
                                 <div class="col-6 text-right" style="padding-right: 0px">
                                     <a href="https://www.oeaw.ac.at/acdh">
                                         <img src="images/logo_acdh.svg" width="90" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
                                     </a>
                                 </div>
                                 <div class="col-6" style="padding-left: 0px">
-                                    <div class="footer-2">Austrian Centre <br/>
-                                    for Digital Humanities<br/>
-                                    Bäckerstraße 13<br/>
-                                    1010 Wien
-                                    </div>
+                                    <div class="footer-1">Austrian Centre<br/>
+                                    for Digital Humanities</div>
+                                    <div class="footer-2">Bäckerstraße 13<br/>
+                                    1010 Wien</div>
                                 </div>
                             </div>
-                            <div class="col-4 text-left">
-                                <div class="footer-1">
-                                LITERATURWISSENSCHAFT &amp; PRINTKULTURFORSCHUNG<br/>
+                            <div class="col-3 text-left">
+                                <div class="footer-1 text-center">
+                                LITERATURWISSENSCHAFT<br/> &amp; <br/>PRINTKULTURFORSCHUNG
                                 </div>
-                                <!-- <div class="footer-3"><div>T: +43 1 51581-2223</div><div>
-                                E: <a href="mailto:ace@oeaw.ac.at">ace@oeaw.ac.at</a></div>
-                            </div> -->
+                            </div>
+                             <div class="col-3">
+                                 <a href="https://wien.gv.at">
+                                        <img src="images/logo_stadtwien.png" width="90" alt="Stadt Wien" title="Stadt Wien"/>
+                                    </a>
                             </div>
                         </div>
                     </div>
