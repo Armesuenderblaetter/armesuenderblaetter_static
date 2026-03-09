@@ -30,8 +30,10 @@
                                 LITERATURWISSENSCHAFT<br/> &amp; <br/>PRINTKULTURFORSCHUNG
                                 </div>
                             </div>
-                             <div class="col-3 text-left">
-                                HIER LOGO STADT WIEN
+                             <div class="col-3">
+                                 <a href="https://wien.gv.at">
+                                        <img src="images/logo_stadtwien.png" width="90" alt="Stadt Wien" title="Stadt Wien"/>
+                                    </a>
                             </div>
                         </div>
                     </div>
