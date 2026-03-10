@@ -1711,7 +1711,10 @@ var W = class {
         </div>
         <div class="noske-search-actions" aria-label="Suchmodus">
           <button id="noske-search-button" class="${o?.button || this.buttoncss}" aria-label="Suche">${s || this.button}</button>
-          <select id="${`${e}-select`}" class="${o?.select || this.selectQueryCss}" aria-label="Suchmodus">
+          <button type="button" id="${`${e}-mode-btn`}" class="noske-search-mode-btn" aria-label="Suchmodus wählen" title="Suchmodus: Einfach">
+            <i class="bi bi-alphabet" aria-hidden="true"></i>
+          </button>
+          <select id="${`${e}-select`}" class="${o?.select || this.selectQueryCss}" aria-label="Suchmodus" style="display:none">
             <option value="simple">Einfach</option>
             <option value="cql">Erweitert</option>
           </select>

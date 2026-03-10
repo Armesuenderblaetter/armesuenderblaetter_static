@@ -19,10 +19,14 @@
                                     </a>
                                 </div>
                                 <div class="col-6" style="padding-left: 1em;">
-                                    <div class="footer-1">Austrian Centre<br/>
-                                    for Digital Humanities</div>
-                                    <div class="footer-2" style="padding-left: 1em">Bäckerstraße 13<br/>
-                                    1010 Wien</div>
+                                    <div class="footer-2">
+                                        <b>Austrian Centre<br/>
+                                        for Digital Humanities</b>
+                                    </div>
+                                    <div class="footer-2">
+                                        Bäckerstraße 13<br/>
+                                            1010 Wien
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-3 text-left">
