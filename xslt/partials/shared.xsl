@@ -270,6 +270,14 @@
         <xsl:variable name="witness_label" select="if ($witness_id != '' and local:has-multiple-witnesses(.))
             then local:witness-label(., $witness_id)
             else ''"/>
+        <!-- <xsl:if test="not(preceding-sibling::*[1][local-name() = 'head']) and not(following-sibling::*[1][local-name() = 'l'])">
+            <xsl:element name="br">
+                <xsl:attribute name="class" select="normalize-space(concat('lb ', local:resp-classes(.)))"/>
+                <xsl:if test="$witness_label != ''">
+                    <xsl:attribute name="data-witness" select="$witness_label"/>
+                </xsl:if>
+            </xsl:element>
+        </xsl:if> -->
         <xsl:element name="br">
             <xsl:attribute name="class" select="normalize-space(concat('lb ', local:resp-classes(.)))"/>
             <xsl:if test="$witness_label != ''">
@@ -393,9 +401,15 @@
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
         <span>
-            <xsl:if test="normalize-space($rendering) != ''">
-                <xsl:attribute name="class" select="normalize-space($rendering)"/>
-            </xsl:if>
+            <xsl:attribute name="class">
+                <xsl:if test="parent::tei:head">
+                    <xsl:text>d-block</xsl:text>
+                    <xsl:text> </xsl:text>
+                </xsl:if>
+                <xsl:if test="normalize-space($rendering) != ''">
+                    <xsl:value-of select="normalize-space($rendering)"/>
+                </xsl:if>
+            </xsl:attribute>
             <xsl:apply-templates/>
         </span>
     </xsl:template>
@@ -404,9 +418,13 @@
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
         <h4>
-            <xsl:if test="normalize-space($rendering) != ''">
-                <xsl:attribute name="class" select="normalize-space($rendering)"/>
-            </xsl:if>
+            <xsl:attribute name="class">
+                <xsl:text>d-block</xsl:text>
+                <xsl:if test="normalize-space($rendering) != ''">
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="normalize-space($rendering)"/>
+                </xsl:if>
+            </xsl:attribute>
             <xsl:apply-templates/>
         </h4>
     </xsl:template>
@@ -508,9 +526,9 @@
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
-        <p class="{normalize-space(concat($rendering, 'versegroup'))}">
+        <span class="d-block {normalize-space(concat($rendering, 'versegroup'))}">
             <xsl:apply-templates/>
-        </p>
+        </span>
     </xsl:template>
     <xsl:template match="tei:l">
         <xsl:variable name="rendering">
@@ -527,15 +545,19 @@
         <xsl:variable name="rendering">
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
-        <p>
-            <xsl:if test="normalize-space($rendering) != ''">
-                <xsl:attribute name="class" select="normalize-space($rendering)"/>
-            </xsl:if>
+        <span>
+            <xsl:attribute name="class">
+                <xsl:text>d-block</xsl:text>
+                <xsl:if test="normalize-space($rendering) != ''">
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="normalize-space($rendering)"/>
+                </xsl:if>
+            </xsl:attribute>
             <xsl:attribute name="id">
                 <xsl:value-of select="@xml:id"/>
             </xsl:attribute>
             <xsl:apply-templates/>
-        </p>
+        </span>
     </xsl:template>
     <xsl:template match="tei:titlePage">
         <xsl:apply-templates/>

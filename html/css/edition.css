@@ -611,6 +611,7 @@ span.lemma::before {
 *.antiqua {
     font-family: var(--bs-font-sans-serif, sans-serif) !important;
     font-size: 0.8em;
+    text-align: center !important;
 }
 
 *.majuscule {
@@ -631,7 +632,7 @@ span.lemma::before {
 
 
 *.indent {
-    display: block;
+    /* display: block; */
     margin-left: 0 !important;
     text-indent: 0 !important;
 }
