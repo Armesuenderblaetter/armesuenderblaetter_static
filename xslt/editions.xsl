@@ -167,6 +167,14 @@
                 </xsl:if>
                 <script src="https://unpkg.com/de-micro-editor@0.3.4/dist/de-editor.min.js"/>
                 <script type="text/javascript" src="js/run.js"/>
+                <!-- <script type="text/javascript">
+                    document.querySelectorAll('.d-block.indent').forEach(function(el) {
+                        var prev = el.previousElementSibling;
+                        if (prev &amp;&amp; prev.classList.contains('pb')) {
+                            el.classList.remove('indent');
+                        }
+                    });
+                </script> -->
             </body>
         </html>
     </xsl:template>

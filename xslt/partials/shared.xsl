@@ -401,15 +401,11 @@
             <xsl:call-template name="rendition_2_class"/>
         </xsl:variable>
         <span>
+            <xsl:if test="normalize-space($rendering) != ''">
             <xsl:attribute name="class">
-                <xsl:if test="parent::tei:head">
-                    <xsl:text>d-block</xsl:text>
-                    <xsl:text> </xsl:text>
-                </xsl:if>
-                <xsl:if test="normalize-space($rendering) != ''">
-                    <xsl:value-of select="normalize-space($rendering)"/>
-                </xsl:if>
+                <xsl:value-of select="normalize-space($rendering)"/>
             </xsl:attribute>
+            </xsl:if>
             <xsl:apply-templates/>
         </span>
     </xsl:template>
