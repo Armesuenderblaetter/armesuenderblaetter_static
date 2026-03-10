@@ -527,14 +527,33 @@ body.page-noske-search .tabulator .tabulator-cell[tabulator-field="left"] .kwic-
     overflow-y: auto;
     position: relative;
     margin: 0;
+    padding: 0;
 }
 
 .noske-modal-close {
-    position: sticky;
-    top: 0.5rem;
-    float: right;
-    margin-right: 0.5rem;
-    z-index: 1;
+    position: sticky !important;
+    top: 0;
+    display: flex !important;
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+    z-index: 2;
+    width: var(--asb-square-btn-size) !important;
+    height: var(--asb-square-btn-size) !important;
+    min-width: var(--asb-square-btn-size);
+    min-height: var(--asb-square-btn-size);
+    max-width: var(--asb-square-btn-size);
+    max-height: var(--asb-square-btn-size);
+    border-radius: 0 8px 0 0 !important;
+    left: auto !important;
+    flex: 0 0 var(--asb-square-btn-size) !important;
+    box-sizing: border-box !important;
+}
+
+.noske-modal-content > div {
+    padding: 0 1.5em 1.5em;
 }
 
 .noske-modal-content h2 {
