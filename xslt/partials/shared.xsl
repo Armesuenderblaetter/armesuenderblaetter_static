@@ -270,20 +270,20 @@
         <xsl:variable name="witness_label" select="if ($witness_id != '' and local:has-multiple-witnesses(.))
             then local:witness-label(., $witness_id)
             else ''"/>
-        <!-- <xsl:if test="not(preceding-sibling::*[1][local-name() = 'head']) and not(following-sibling::*[1][local-name() = 'l'])">
+        <xsl:if test="not(preceding-sibling::*[1][local-name() = 'head'])">
             <xsl:element name="br">
                 <xsl:attribute name="class" select="normalize-space(concat('lb ', local:resp-classes(.)))"/>
                 <xsl:if test="$witness_label != ''">
                     <xsl:attribute name="data-witness" select="$witness_label"/>
                 </xsl:if>
             </xsl:element>
-        </xsl:if> -->
-        <xsl:element name="br">
+        </xsl:if>
+        <!-- <xsl:element name="br">
             <xsl:attribute name="class" select="normalize-space(concat('lb ', local:resp-classes(.)))"/>
             <xsl:if test="$witness_label != ''">
                 <xsl:attribute name="data-witness" select="$witness_label"/>
             </xsl:if>
-        </xsl:element>
+        </xsl:element> -->
     </xsl:template>
     <xsl:template match="tei:note">
         <xsl:choose>
