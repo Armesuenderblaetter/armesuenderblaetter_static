@@ -259,21 +259,49 @@ search.search({
 });
 search.minQueryLength=1;
 
-function bindNoskeSearchSelectTrigger() {
-  const searchSelect = document.getElementById("custom-noske-input-select");
-  const searchButton = document.getElementById("noske-search-button");
-  if (!searchSelect || !searchButton) return;
+// Icon button toggles between simple/cql mode and triggers search
+(function initModeToggle() {
+  function bind() {
+    const sel = document.getElementById("custom-noske-input-select");
+    const btn = document.getElementById("custom-noske-input-mode-btn");
+    const searchBtn = document.getElementById("noske-search-button");
+    if (!sel || !btn || !searchBtn) return;
 
-  // Default to "Textsuche" (simple mode) unless the current URL explicitly
-  // carries a query (which may indicate a saved CQL search).
-  const { searchParams } = new URL(window.location.href);
-  if (!searchParams.has("q")) {
-    searchSelect.value = "simple";
+    // Default to simple
+    const { searchParams } = new URL(window.location.href);
+    if (!searchParams.has("q")) sel.value = "simple";
+
+    function updateBtn() {
+      const isCql = sel.value === "cql";
+      const label = isCql ? "Erweitert" : "Einfach";
+      btn.title = "Suchmodus: " + label;
+      const icon = btn.querySelector("i");
+      if (icon) {
+        icon.className = isCql ? "bi bi-regex" : "bi bi-alphabet";
+      }
+    }
+    updateBtn();
+
+    // Click icon → toggle mode and search
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      sel.value = sel.value === "cql" ? "simple" : "cql";
+      updateBtn();
+      searchBtn.click();
+    });
+
+    sel.addEventListener("change", () => {
+      updateBtn();
+      searchBtn.click();
+    });
   }
 
-  searchSelect.addEventListener("change", () => {
-    searchButton.click();
-  });
-}
-
-bindNoskeSearchSelectTrigger();
+  bind();
+  // Noske re-renders the search input; re-bind after DOM changes
+  const container = document.getElementById("noske-search");
+  if (container) {
+    new MutationObserver(() => setTimeout(bind, 50)).observe(container, {
+      childList: true, subtree: true
+    });
+  }
+})();

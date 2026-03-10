@@ -156,8 +156,9 @@ body.page-noske-search .noske-search-actions {
     align-items: center;
     background-color: var(--asb-background-colour-1-button);
     border-radius: 9999px;
-    overflow: hidden;
+    overflow: visible;
     height: var(--noske-search-btn-size);
+    flex: 0 0 auto;
 }
 
 /* Remove negative margins from base stylesheet so segments don't visually shift */
@@ -166,10 +167,26 @@ body.page-noske-search .noske-search-button {
 }
 
 body.page-noske-search .noske-search-select {
+    display: none;
+}
+
+body.page-noske-search .noske-search-mode-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--noske-search-btn-size);
+    height: var(--noske-search-btn-size);
+    flex: 0 0 var(--noske-search-btn-size);
+    border: 0;
     border-radius: 9999px;
-    margin: 0;
-    padding: 0 0.9rem;
-    background-color: transparent;
+    background: transparent;
+    color: var(--bs-white);
+    padding: 0;
+    cursor: pointer;
+}
+
+body.page-noske-search .noske-search-mode-btn:hover {
+    background-color: var(--asb-background-colour-1-button-hover);
 }
 
 body.page-noske-search #noske-search-button {
@@ -191,27 +208,17 @@ body.page-noske-search #noske-search-button {
 
 
 /* No border/outline highlight on hover; keep simple */
-body.page-noske-search .noske-search-select:hover,
-body.page-noske-search .noske-search-select:focus,
 body.page-noske-search #noske-search-button:hover,
 body.page-noske-search #noske-search-button:focus {
     background-color: transparent;
     outline: none;
 }
 
-body.page-noske-search .noske-search-select:hover,
-body.page-noske-search .noske-search-select:focus,
 body.page-noske-search #noske-search-button:hover,
 body.page-noske-search #noske-search-button:focus {
     /* match info button hover color */
     background-color: var(--asb-background-colour-1-button-hover);
     color: var(--bs-white) !important;
-}
-
-body.page-noske-search .noske-search-select:focus-visible {
-    outline: 2px solid var(--bs-white);
-    outline-offset: 2px;
-    border-radius: 0 9999px 9999px 0;
 }
 
 body.page-noske-search #noske-search-button:focus-visible {
@@ -492,7 +499,21 @@ body.page-noske-search .tabulator .tabulator-cell[tabulator-field="left"] .kwic-
 
 /* Modal styling to match site */
 .noske-modal {
-    z-index: 10000;
+    z-index: 99999;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.noske-modal[style*="display: block"] {
+    display: flex !important;
 }
 
 .noske-modal-content {
@@ -501,8 +522,19 @@ body.page-noske-search .tabulator .tabulator-cell[tabulator-field="left"] .kwic-
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     max-width: 800px;
+    width: 90%;
     max-height: 80vh;
     overflow-y: auto;
+    position: relative;
+    margin: 0;
+}
+
+.noske-modal-close {
+    position: sticky;
+    top: 0.5rem;
+    float: right;
+    margin-right: 0.5rem;
+    z-index: 1;
 }
 
 .noske-modal-content h2 {
@@ -544,13 +576,11 @@ body.page-noske-search .tabulator .tabulator-cell[tabulator-field="left"] .kwic-
     line-height: 1.6;
 }
 
-.noske-modal-content .close {
-    color: var(--asb-link-colour);
-    font-size: 2rem;
-    font-weight: normal;
+.noske-modal-content .noske-modal-close {
+    /* inherits site-button-1 / square-button styling */
 }
 
-.noske-modal-content .close:hover {
+.noske-modal-content .noske-modal-close:hover {
     color: var(--asb-background-colour-3);
 }
 
