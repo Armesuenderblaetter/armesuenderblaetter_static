@@ -37,8 +37,8 @@
                     </xsl:for-each>
                 </xsl:when>
                 <xsl:otherwise>
-                    <!-- Fallback: try to get persons from back/listPerson in the document itself -->
-                    <xsl:for-each select="//tei:back/tei:listPerson/tei:person">
+                    <!-- Fallback: try to get persons from standOff/listPerson in the document itself -->
+                    <xsl:for-each select="//tei:standOff/tei:listPerson/tei:person">
                         <xsl:variable name="person_index" select="position()"/>
                         <xsl:call-template name="render_person_card_from_back">
                             <xsl:with-param name="person" select="."/>
