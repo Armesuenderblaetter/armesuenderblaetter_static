@@ -9,13 +9,13 @@
                         <div class="row">
                          <div class="col-3 logo">
                                 <a href="http://www.oeaw.ac.at/oesterreichische-akademie-der-wissenschaften/">
-                                    <img src="images/logo_oeaw.svg" height="80%" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
+                                    <img src="images/logo_oeaw_bw.svg" height="80%" alt="Österreichische Akademie der Wissenschaften" title="Österreichische Akademie der Wissenschaften"/>
                                 </a>
                             </div>
                             <div class="col-3 logo row" style="padding-right: 0px">
                                 <div class="col-6 text-right" style="padding-right: 0px">
                                     <a href="https://www.oeaw.ac.at/acdh">
-                                        <img src="images/logo_acdh.svg" width="90%" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
+                                        <img src="images/logo_acdh.svg" height="80%" alt="Austrian Centre for Digital Humanities" title="Austrian Centre for Digital Humanities"/>
                                     </a>
                                 </div>
                                 <div class="col-6" style="padding-left: 1em;">

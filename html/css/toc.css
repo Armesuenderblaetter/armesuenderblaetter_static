@@ -559,6 +559,7 @@ body.page-person-search #execution_places,
 body.page-person-search #person_names,
 body.page-person-search #person_birth_place,
 body.page-person-search #person_execution_places,
+body.page-person-search #person_execution,
 body.page-person-search #person_offences {
     display: none;
 }
@@ -661,38 +662,43 @@ body.page-person-search .person-view-list-btn br {
     display: none;
 }
 
-/* "Enthält" row: Vignetten / Verse side by side */
-body.page-person-search .contains-facet-row {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    gap: 1rem;
+body.page-person-search #clear-refinements {
+    padding: 0.5rem 0 0;
 }
 
-body.page-person-search .contains-facet-row > div {
-    flex: 0 0 auto;
-}
-
-
-body.page-person-search .contains-facet-row .ais-RefinementList-list {
-    display: inline-flex;
-    flex-wrap: nowrap;
-    margin: 0;
+body.page-person-search #clear-refinements .ais-ClearRefinements {
+    text-align: left;
     padding: 0;
 }
 
-body.page-person-search .contains-facet-row::after {
-    /* Use the next heading separator instead (avoid double lines) */
-    content: none;
-    display: none;
+body.page-person-search #clear-refinements .ais-ClearRefinements-button {
+    appearance: none;
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    background-color: var(--asb-background-colour-2-button) !important;
+    color: var(--bs-white) !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.3rem;
+    padding: 0 1rem;
+    font-family: 'Cormorant', serif;
+    font-weight: 700;
+    font-size: 1.2em;
+    line-height: 1;
+    white-space: nowrap;
 }
 
-body.page-person-search .contains-facet-row {
-    position: relative;
-    padding-bottom: 0;
+body.page-person-search #clear-refinements .ais-ClearRefinements-button:hover:not(:disabled) {
+    background-color: var(--asb-background-color-4-button-hover) !important;
+    border-color: var(--asb-background-color-4-button-hover);
 }
 
-
+body.page-person-search #clear-refinements .ais-ClearRefinements-button:disabled,
+body.page-person-search #clear-refinements .ais-ClearRefinements-button--disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
 
 /* Person search: pill-shaped refinement list items */
 body.page-person-search .search-col-left .ais-RefinementList-list {
