@@ -4,8 +4,8 @@ var modal = document.getElementById("infoBox");
 // Get the button that opens the modal
 var btn = document.getElementById("infoBoxBtn");
 
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
+// Get the <button> element that closes the modal
+var span = document.querySelector(".noske-modal-close");
 
 // When the user clicks the button, open the modal 
 btn.onclick = function() {

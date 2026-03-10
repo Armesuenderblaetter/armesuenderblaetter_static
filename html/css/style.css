@@ -54,7 +54,7 @@
     /* Ensure the whole site uses a serif font (also picked up by Bootstrap) */
     --bs-body-font-family: var(--editor-font-family);
     /* --site-offcanvas-width: clamp(224px, 27.2vw, 320px); */
-    --site-offcanvas-width: clamp(240px, 10vw, 10vw);
+    --site-offcanvas-width: clamp(240px, 11vw, 14vw);
     --bs-offcanvas-width: var(--site-offcanvas-width)!important;
     /* target height used for the action in the site-top (button or image) */
     /* --site-top-action-height: clamp(2.6rem, 4vw, 3.5rem); */
@@ -66,7 +66,7 @@
 /* On screens wider than 1920px, restore the original (wider) offcanvas width */
 @media (min-width: 1921px) {
     :root {
-         --site-offcanvas-width: clamp(240px, 10vw, 12vw);
+         --site-offcanvas-width: clamp(240px, 11vw, 14vw);
         --asb-footer-primary-height: 9rem ;
         --asb-footer-secondary-height: 3rem ;
         --asb-square-btn-size: 4.5rem;
@@ -772,7 +772,7 @@ padding:0.4rem;
     color: black;
 }
 .footer-2 {
-    padding: 0.5rem 0;
+    /*padding: 0.5rem 0; */
     color: black;
 }
 

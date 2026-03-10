@@ -38,7 +38,10 @@
                                             <button id="noske-search-button" class="noske-search-button p-2" aria-label="Suche">
                                                 <i class="bi bi-search" aria-hidden="true"></i>
                                             </button>
-                                            <select id="custom-noske-input-select" class="noske-search-select" aria-label="Suchmodus">
+                                            <button type="button" id="custom-noske-input-mode-btn" class="noske-search-mode-btn" aria-label="Suchmodus wählen" title="Suchmodus: Einfach">
+                                                <i class="bi bi-alphabet" aria-hidden="true"></i>
+                                            </button>
+                                            <select id="custom-noske-input-select" class="noske-search-select" aria-label="Suchmodus" style="display:none">
                                                 <option value="simple">Einfach</option>
                                                 <option value="cql">Erweitert</option>
                                             </select>
@@ -48,7 +51,7 @@
                                 <div id="custom-noske-stats" class="noske-stats"/>
                             </div>
                             <div class="noske-left-section noske-left-section-inline">
-                                <a href="https://flugblaetter-noske.acdh-dev.oeaw.ac.at/crystal/#open" class="noske-crystal-link">Sketch Engine (extern)</a>
+                                <a href="https://flugblaetter-noske.acdh-dev.oeaw.ac.at/crystal/#open" class="noske-crystal-link">Sketch Engine <i class="bi bi-box-arrow-up-right" aria-hidden="true" /></a>
                                 <span class="noske-left-spacer"></span>
                                 <button id="infoBoxBtn" class="noske-info-btn">ⓘ</button>
                             </div>
@@ -87,7 +90,7 @@
                 <!-- Modal for Help -->
                 <div id="infoBox" class="modal noske-modal">
                     <div class="modal-content noske-modal-content">
-                        <span class="close">×</span>
+                        <button type="button" class="site-button-1 square-button close-button semitrans noske-modal-close" aria-label="Schließen"><i class="bi bi-x" aria-hidden="true"></i></button>
                         <div>
                             <h2>Einfache Suche</h2>
                             <div class="section">
@@ -166,7 +169,7 @@
             </li>
         </ul>
     </div>
-    <a href="https://www.sketchengine.eu/documentation/corpus-querying/" alt="Offizielle Webseite von SketchEngine">Weitere Informationen</a>
+    Weitere Informationen <a href="https://www.sketchengine.eu/documentation/corpus-querying/" alt="Offizielle Webseite von SketchEngine"><i class="bi bi-box-arrow-up-right" aria-hidden="true" /></a>
 </div>
 </div>
 </div>
