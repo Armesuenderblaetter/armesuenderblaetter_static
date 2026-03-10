@@ -1,7 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:tei="http://www.tei-c.org/ns/1.0"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="#all" version="2.0">
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:asb="https://armesuenderblaetter.github.io/ns"
+    exclude-result-prefixes="#all" version="2.0">
+    
+    <xsl:function name="asb:witness-short-base" as="xs:string">
+        <xsl:param name="witness" as="element(tei:witness)"/>
+        <xsl:variable name="wit_id" select="lower-case(normalize-space(string($witness/@xml:id)))"/>
+        <xsl:variable name="institution" select="lower-case(normalize-space(string(($witness//tei:msDesc//tei:institution)[1])))"/>
+        <xsl:choose>
+            <xsl:when test="contains($wit_id, 'oenb') or contains($institution, 'nationalbibliothek')">ÖNB</xsl:when>
+            <xsl:when test="starts-with($wit_id, 'wb') or contains($institution, 'wienbibliothek')">WBR</xsl:when>
+            <xsl:when test="contains($institution, 'wien museum') or starts-with($wit_id, 'wm')">WM</xsl:when>
+            <xsl:when test="normalize-space(string(($witness//tei:msDesc//tei:repository)[1])) != ''">
+                <xsl:value-of select="upper-case(normalize-space(string(($witness//tei:msDesc//tei:repository)[1])))"/>
+            </xsl:when>
+            <xsl:when test="normalize-space(string(($witness//tei:msDesc//tei:institution)[1])) != ''">
+                <xsl:value-of select="string-join(for $w in tokenize(normalize-space(string(($witness//tei:msDesc//tei:institution)[1])), '\\s+') return upper-case(substring($w, 1, 1)), '')"/>
+            </xsl:when>
+            <xsl:otherwise>WIT</xsl:otherwise>
+        </xsl:choose>
+    </xsl:function>
     
     <!-- Template for witness pagination - used in right column header -->
     <xsl:template name="witness_pagination">
@@ -35,6 +54,10 @@
                     <ul class="nav nav-tabs nav-tabs-sm" id="witness_pagination_tabs" role="tablist">
                         <xsl:for-each select="$ordered_witnesses">
                             <xsl:variable name="wit_pos" select="position()"/>
+                            <xsl:variable name="wit_short_base" select="asb:witness-short-base(.)"/>
+                            <xsl:variable name="wit_short_total" select="count($ordered_witnesses[asb:witness-short-base(.) = $wit_short_base])"/>
+                            <xsl:variable name="wit_short_index" select="count($ordered_witnesses[position() le $wit_pos][asb:witness-short-base(.) = $wit_short_base])"/>
+                            <xsl:variable name="wit_short" select="if ($wit_short_total gt 1) then concat($wit_short_base, ' ', $wit_short_index) else $wit_short_base"/>
                             <xsl:variable name="wit_label">
                                 <xsl:choose>
                                     <xsl:when test="$wit_pos = 1">primary</xsl:when>
@@ -62,7 +85,7 @@
                                             <xsl:otherwise>false</xsl:otherwise>
                                         </xsl:choose>
                                     </xsl:attribute>
-                                    <xsl:text>Textzeuge </xsl:text><xsl:value-of select="$wit_pos"/>
+                                    <xsl:value-of select="$wit_short"/>
                                 </button>
                             </li>
                         </xsl:for-each>
@@ -135,6 +158,10 @@
                         <xsl:for-each select="$ordered_witnesses">
                             <xsl:variable name="wit_pos" select="position()"/>
                             <xsl:variable name="is_current" select="@xml:id = $current_witness_id"/>
+                            <xsl:variable name="wit_short_base" select="asb:witness-short-base(.)"/>
+                            <xsl:variable name="wit_short_total" select="count($ordered_witnesses[asb:witness-short-base(.) = $wit_short_base])"/>
+                            <xsl:variable name="wit_short_index" select="count($ordered_witnesses[position() le $wit_pos][asb:witness-short-base(.) = $wit_short_base])"/>
+                            <xsl:variable name="wit_short" select="if ($wit_short_total gt 1) then concat($wit_short_base, ' ', $wit_short_index) else $wit_short_base"/>
                             <li class="nav-item" role="presentation">
                                 <a href="{concat($base_name, '_', $wit_pos, '.html')}" role="tab">
                                     <xsl:attribute name="class">
@@ -146,7 +173,7 @@
                                     <xsl:if test="$is_current">
                                         <xsl:attribute name="aria-current">page</xsl:attribute>
                                     </xsl:if>
-                                    <xsl:text> Textzeuge </xsl:text><xsl:value-of select="$wit_pos"/>
+                                    <xsl:value-of select="$wit_short"/>
                                 </a>
                             </li>
                         </xsl:for-each>
@@ -207,6 +234,10 @@
                 <ul class="nav nav-tabs" id="witness_overview" role="tablist">
                     <xsl:for-each select="$ordered_witnesses">
                         <xsl:variable name="wit_pos" select="position()"/>
+                        <xsl:variable name="wit_short_base" select="asb:witness-short-base(.)"/>
+                        <xsl:variable name="wit_short_total" select="count($ordered_witnesses[asb:witness-short-base(.) = $wit_short_base])"/>
+                        <xsl:variable name="wit_short_index" select="count($ordered_witnesses[position() le $wit_pos][asb:witness-short-base(.) = $wit_short_base])"/>
+                        <xsl:variable name="wit_short" select="if ($wit_short_total gt 1) then concat($wit_short_base, ' ', $wit_short_index) else $wit_short_base"/>
                         <xsl:variable name="wit_label">
                             <xsl:choose>
                                 <xsl:when test="$wit_pos = 1">primary</xsl:when>
@@ -234,7 +265,7 @@
                                         <xsl:otherwise>false</xsl:otherwise>
                                     </xsl:choose>
                                 </xsl:attribute>
-                                <xsl:text> Textzeuge </xsl:text><xsl:value-of select="$wit_pos"/>
+                                <xsl:value-of select="$wit_short"/>
                             </button>
                         </li>
                     </xsl:for-each>

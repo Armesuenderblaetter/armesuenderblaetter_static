@@ -1281,21 +1281,62 @@ function extractYearFromDocId(docId) {
 // Fallback: derive page number from the static document HTML (page breaks are
 // rendered as <span class="pb primary"> ... </span> markers).
 const __noskeDocHtmlCache = new Map();
-async function getDocHtmlDocument(docId) {
-  if (!docId) return null;
-  if (__noskeDocHtmlCache.has(docId)) return __noskeDocHtmlCache.get(docId);
+const __noskeResolvedDocByTokenCache = new Map();
+
+async function fetchDocHtmlDocument(url) {
+  if (__noskeDocHtmlCache.has(url)) return __noskeDocHtmlCache.get(url);
   const promise = (async () => {
-    const url = `./${docId}.html`;
-    const res = await fetch(url, { credentials: "same-origin" });
-    if (!res.ok) return null;
-    const html = await res.text();
     try {
+      const res = await fetch(url, { credentials: "same-origin" });
+      if (!res.ok) return null;
+      const html = await res.text();
       return new DOMParser().parseFromString(html, "text/html");
     } catch {
       return null;
     }
   })();
-  __noskeDocHtmlCache.set(docId, promise);
+  __noskeDocHtmlCache.set(url, promise);
+  return promise;
+}
+
+function buildDocCandidateUrls(docId) {
+  const urls = [`./${docId}.html`];
+  for (let idx = 1; idx <= 8; idx += 1) {
+    urls.push(`./${docId}_${idx}.html`);
+  }
+  return urls;
+}
+
+async function getDocHtmlDocument(docId, tokenId = "") {
+  if (!docId) return { doc: null, url: "" };
+  const cacheKey = `${docId}::${tokenId || ""}`;
+  if (__noskeResolvedDocByTokenCache.has(cacheKey)) {
+    return __noskeResolvedDocByTokenCache.get(cacheKey);
+  }
+
+  const promise = (async () => {
+    let fallback = { doc: null, url: "" };
+    for (const candidateUrl of buildDocCandidateUrls(docId)) {
+      const candidateDoc = await fetchDocHtmlDocument(candidateUrl);
+      if (!candidateDoc) continue;
+
+      if (!fallback.doc) {
+        fallback = { doc: candidateDoc, url: candidateUrl };
+      }
+
+      if (tokenId) {
+        const tokenEl = candidateDoc.getElementById(tokenId);
+        if (tokenEl) {
+          return { doc: candidateDoc, url: candidateUrl };
+        }
+      } else {
+        return { doc: candidateDoc, url: candidateUrl };
+      }
+    }
+    return fallback;
+  })();
+
+  __noskeResolvedDocByTokenCache.set(cacheKey, promise);
   return promise;
 }
 
@@ -1326,7 +1367,7 @@ function schedulePageFallbackResolution() {
   // Only resolve a reasonable number of missing page cells to avoid huge batches.
   const cells = Array.from(
     document.querySelectorAll('td[data-noske-seite="1"]')
-  ).slice(0, 250);
+  ).slice(0, 1000);
   if (!cells.length) return;
 
   (async () => {
@@ -1339,7 +1380,9 @@ function schedulePageFallbackResolution() {
         continue;
       }
 
-      const doc = await getDocHtmlDocument(docId);
+      const resolvedDoc = await getDocHtmlDocument(docId, tokenId);
+      const doc = resolvedDoc ? resolvedDoc.doc : null;
+      const resolvedDocUrl = resolvedDoc ? resolvedDoc.url : "";
       const page = countPbBeforeToken(doc, tokenId);
       if (page) {
         cell.textContent = page;
@@ -1355,6 +1398,10 @@ function schedulePageFallbackResolution() {
             try {
               // Resolve relative URL against current page so URL() works.
               const resolved = new URL(href, window.location.href);
+              if (resolvedDocUrl) {
+                const targetPath = new URL(resolvedDocUrl, window.location.href).pathname;
+                resolved.pathname = targetPath;
+              }
               resolved.searchParams.set("pag", page);
               // Keep attribute as relative when the original href was relative.
               if (href.startsWith("./") || href.startsWith("../") || !href.startsWith("http")) {
@@ -1366,7 +1413,7 @@ function schedulePageFallbackResolution() {
                 link.href = resolved.toString();
               }
             } catch (_) {
-              // Best-effort: append pag param manually.
+              // Best-effort: append page param manually.
               const hashIdx = href.indexOf("#");
               const sep = href.includes("?") ? "&" : "?";
               if (hashIdx >= 0) {
@@ -1374,6 +1421,37 @@ function schedulePageFallbackResolution() {
                   href.substring(0, hashIdx) + sep + "pag=" + page + href.substring(hashIdx));
               } else {
                 link.setAttribute("href", href + sep + "pag=" + page);
+              }
+            }
+          });
+        }
+      } else {
+        // Keep a visible fallback and ensure links still carry a page parameter.
+        cell.textContent = "1";
+        const row = cell.closest("tr");
+        if (row) {
+          row.querySelectorAll("a[href]").forEach((link) => {
+            const href = link.getAttribute("href");
+            if (!href || href === "#") return;
+            try {
+              const resolved = new URL(href, window.location.href);
+              resolved.searchParams.set("pag", "1");
+              if (href.startsWith("./") || href.startsWith("../") || !href.startsWith("http")) {
+                const rel = resolved.pathname.split("/").pop()
+                  + "?" + resolved.searchParams.toString()
+                  + (resolved.hash || "");
+                link.setAttribute("href", "./" + rel);
+              } else {
+                link.href = resolved.toString();
+              }
+            } catch (_) {
+              const hashIdx = href.indexOf("#");
+              const sep = href.includes("?") ? "&" : "?";
+              if (hashIdx >= 0) {
+                link.setAttribute("href",
+                  href.substring(0, hashIdx) + sep + "pag=1" + href.substring(hashIdx));
+              } else {
+                link.setAttribute("href", href + sep + "pag=1");
               }
             }
           });
@@ -1432,7 +1510,7 @@ function B(r, e, t, s, o = !1, n = !1, i) {
         // Extract Jahr (year) from doc.id filename
         const jahrValue = docYearEntry ? docYearEntry.split("=")[1] : extractYearFromDocId(docIdValue);
         
-        // Build Titel cell with link (include page param when known)
+        // Build Titel cell with link (include pag param when known)
         const titelParams = pageValue ? `?pag=${pageValue}` : "";
         const titelHref = baseHref ? (baseHref + titelParams) : "#";
         const titelText = docTitleValue || docIdValue || "";
@@ -1497,6 +1575,8 @@ function B(r, e, t, s, o = !1, n = !1, i) {
   // Kick off async resolution for missing page numbers.
   try {
     setTimeout(schedulePageFallbackResolution, 0);
+    setTimeout(schedulePageFallbackResolution, 1200);
+    setTimeout(schedulePageFallbackResolution, 3000);
   } catch (e) {
     // ignore
   }

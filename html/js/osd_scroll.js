@@ -782,9 +782,9 @@ function initializePageView() {
     wrap_all_text_nodes(editionText);
   }
   
-  // Check if there's a pag/wit parameter in the URL
+  // Check if there's a page/wit parameter in the URL
   const urlParams = new URLSearchParams(window.location.search);
-  const pagParam = urlParams.get('pag');
+  const pageParam = urlParams.get('page') || urlParams.get('pag');
   const witParam = urlParams.get('wit');
   
   // Also check if this is a multi-witness document (has pbs with different data-witness values)
@@ -800,9 +800,9 @@ function initializePageView() {
     return;
   }
 
-  if (pagParam) {
-    // Single-witness doc with pag param: use the page number directly.
-    const requestedIndex = Math.max(0, parseInt(pagParam, 10) - 1);
+  if (pageParam) {
+    // Single-witness doc with page param: use the page number directly.
+    const requestedIndex = Math.max(0, parseInt(pageParam, 10) - 1);
     if (pb_elements_array.length > 0) {
       current_page_index = Math.min(requestedIndex, pb_elements_array.length - 1);
       handle_new_image(current_page_index);
@@ -937,7 +937,7 @@ function buildSingleWitnessPagination() {
       a.setAttribute('data-page-index', String(idx));
 
       const linkUrl = new URL(window.location.href);
-      linkUrl.searchParams.set('pag', String(idx + 1));
+      linkUrl.searchParams.set('page', String(idx + 1));
       linkUrl.searchParams.delete('wit');
       linkUrl.searchParams.delete('tab');
       a.href = linkUrl.toString();
@@ -1027,19 +1027,19 @@ function updatePageLinksActual(page_links) {
     if (page_index !== null) {
       const page_num = parseInt(page_index, 10) + 1; // Convert to 1-based
 
-      // If the link already has a matching ?pag page number, do not rewrite it
+      // If the link already has a matching ?page page number, do not rewrite it
       try {
         const existingHref = link.getAttribute('href') || '';
         const existingUrl = new URL(existingHref, window.location.href);
-        const existingPag = existingUrl.searchParams.get('pag');
+        const existingPag = existingUrl.searchParams.get('page') || existingUrl.searchParams.get('pag');
         if (existingPag && parseInt(existingPag, 10) === page_num) {
           return;
         }
       } catch (_) {}
 
-  // Build the URL with pag/wit, preserving existing search params like pbs
+  // Build the URL with page/wit, preserving existing search params like pbs
   const updatedUrl = new URL(window.location.href);
-  updatedUrl.searchParams.set('pag', String(page_num));
+  updatedUrl.searchParams.set('page', String(page_num));
   if (witness) {
     updatedUrl.searchParams.set('wit', String(witness));
   } else {
