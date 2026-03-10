@@ -631,7 +631,7 @@ span.lemma::before {
 
 
 *.indent {
-    display: block;
+    /* display: block; */
     margin-left: 0 !important;
     text-indent: 0 !important;
 }
@@ -740,7 +740,7 @@ span.lemma::before {
         padding-left: 0.5rem ;
     }
     .edition-text-inner {
-        padding: padding: 10% ;
+        padding: 10% ;
     }
 }
 
@@ -756,7 +756,7 @@ span.lemma::before {
         padding-left: 0.5rem ;
     }
     .edition-text-inner {
-        padding: padding: 5% ;
+        padding: 5% ;
     }
 }
 
