@@ -51,7 +51,7 @@
                                 <div id="custom-noske-stats" class="noske-stats"/>
                             </div>
                             <div class="noske-left-section noske-left-section-inline">
-                                <a href="https://flugblaetter-noske.acdh-dev.oeaw.ac.at/crystal/#open" class="noske-crystal-link">Sketch Engine <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a>
+                                <a href="https://flugblaetter-noske.acdh-dev.oeaw.ac.at/crystal/#open" class="noske-crystal-link">Sketch Engine <i class="bi bi-box-arrow-up-right" aria-hidden="true" /></a>
                                 <span class="noske-left-spacer"></span>
                                 <button id="infoBoxBtn" class="noske-info-btn">ⓘ</button>
                             </div>
@@ -169,7 +169,7 @@
             </li>
         </ul>
     </div>
-    <a href="https://www.sketchengine.eu/documentation/corpus-querying/" alt="Offizielle Webseite von SketchEngine">Weitere Informationen</a>
+    Weitere Informationen <a href="https://www.sketchengine.eu/documentation/corpus-querying/" alt="Offizielle Webseite von SketchEngine"><i class="bi bi-box-arrow-up-right" aria-hidden="true" /></a>
 </div>
 </div>
 </div>
