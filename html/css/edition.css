@@ -292,8 +292,44 @@ a.personview::before {
 ul {
     border-bottom: unset!important;
 }
-ul#witness_overview.nav.nav-tabs li.nav-item button.nav-link {
+ul#witness_overview.nav.nav-tabs li.nav-item button.nav-link,
+ul#witness_overview.nav.nav-tabs li.nav-item a.nav-link {
     font-weight: bold;
+}
+
+/* Witness tabs: small pill buttons, always visible for all witnesses */
+ul#witness_overview.nav.nav-tabs {
+    gap: 0.25em;
+}
+
+ul#witness_overview.nav.nav-tabs li.nav-item a.nav-link {
+    background-color: var(--asb-background-colour-1-button) !important;
+    color: var(--bs-white) !important;
+    border: 0 !important;
+    border-radius: 9999px !important;
+    padding: 0.45em 0.8em;
+    margin: 0.1em 0.15em;
+    text-decoration: none;
+    font-family: 'Cormorant', serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+ul#witness_overview.nav.nav-tabs li.nav-item a.nav-link:hover,
+ul#witness_overview.nav.nav-tabs li.nav-item a.nav-link:focus {
+    background-color: var(--asb-background-colour-1-button-hover) !important;
+    color: var(--bs-white) !important;
+    text-decoration: none;
+}
+
+ul#witness_overview.nav.nav-tabs li.nav-item a.nav-link.active {
+    background-color: var(--asb-link-colour) !important;
+    color: var(--bs-white) !important;
 }
 
 ul#witness_pagination_tabs.nav.nav-tabs li.nav-item button.nav-link {
