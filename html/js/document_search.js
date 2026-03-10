@@ -13,6 +13,7 @@ function getDocumentLink(hit) {
   return `${id}.html`;
 }
 
+
 const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   server: {
     apiKey: typesense_search_key,
@@ -237,6 +238,126 @@ function createRangeSliderWidget({ sliderContainer, countContainer, attribute })
   });
 }
 
+function createContainsFacetWidget({ containerSelector }) {
+  const containsOptions = [
+    { attribute: "has_vignette", label: "Vignetten" },
+    { attribute: "has_verse", label: "Verse" },
+  ];
+
+  function getTrueCount(results, attribute) {
+    if (!results || typeof results.getFacetValues !== "function") return 0;
+    let facetValues = [];
+    try {
+      facetValues = results.getFacetValues(attribute) || [];
+    } catch (e) {
+      facetValues = [];
+    }
+    const trueItem = (Array.isArray(facetValues) ? facetValues : []).find(
+      (item) => item && item.name === "true"
+    );
+    return trueItem && typeof trueItem.count === "number" ? trueItem.count : 0;
+  }
+
+  return {
+    init({ helper }) {
+      this.helper = helper;
+      this.container = document.querySelector(containerSelector);
+      if (!this.helper || !this.container) return;
+    },
+
+    getWidgetUiState(uiState, { searchParameters }) {
+      const currentRefinementList =
+        uiState.refinementList && typeof uiState.refinementList === "object"
+          ? uiState.refinementList
+          : {};
+
+      const containsRefinements = {};
+      containsOptions.forEach(({ attribute }) => {
+        const values =
+          (searchParameters.disjunctiveFacetsRefinements || {})[attribute] || [];
+        if (values.length) {
+          containsRefinements[attribute] = values;
+        }
+      });
+
+      if (!Object.keys(containsRefinements).length) {
+        return uiState;
+      }
+
+      return {
+        ...uiState,
+        refinementList: {
+          ...currentRefinementList,
+          ...containsRefinements,
+        },
+      };
+    },
+
+    getWidgetSearchParameters(searchParameters, { uiState }) {
+      let next = searchParameters;
+      containsOptions.forEach(({ attribute }) => {
+        next = next.addDisjunctiveFacet(attribute);
+      });
+
+      const refinementList =
+        uiState && uiState.refinementList && typeof uiState.refinementList === "object"
+          ? uiState.refinementList
+          : {};
+
+      containsOptions.forEach(({ attribute }) => {
+        const values = refinementList[attribute];
+        if (Array.isArray(values)) {
+          values.forEach((value) => {
+            next = next.addDisjunctiveFacetRefinement(attribute, value);
+          });
+        }
+      });
+
+      return next;
+    },
+
+    render({ results }) {
+      if (!this.helper || !this.container) return;
+
+      const listHtml = containsOptions
+        .map(({ attribute, label }) => {
+          const checked = this.helper.state.isDisjunctiveFacetRefined(
+            attribute,
+            "true"
+          );
+          const count = getTrueCount(results, attribute);
+
+          return `<li class="ais-RefinementList-item${checked ? " ais-RefinementList-item--selected" : ""}" data-contains-attribute="${attribute}">
+              <div>
+                <label class="ais-RefinementList-label">
+                  <input type="checkbox" class="ais-RefinementList-checkbox" value="true" ${checked ? "checked" : ""}>
+                  <span class="ais-RefinementList-labelText">${label}</span>
+                  <span class="ais-RefinementList-count">${count}</span>
+                </label>
+              </div>
+            </li>`;
+        })
+        .join("");
+
+      this.container.innerHTML = `<div class="ais-RefinementList"><ul class="ais-RefinementList-list">${listHtml}</ul></div>`;
+
+      this.container
+        .querySelectorAll("[data-contains-attribute]")
+        .forEach((item) => {
+          const attribute = item.getAttribute("data-contains-attribute");
+          const label = item.querySelector(".ais-RefinementList-label");
+          if (!attribute || !label) return;
+
+          label.addEventListener("click", (event) => {
+            event.preventDefault();
+            this.helper.toggleFacetRefinement(attribute, "true");
+            this.helper.search();
+          });
+        });
+    },
+  };
+}
+
 // ---------- Widgets ----------
 search.addWidgets([
   instantsearch.widgets.searchBox({
@@ -362,36 +483,8 @@ search.addWidgets([
     searchable: false,
   }),
 
-  instantsearch.widgets.refinementList({
-    container: "#has_vignette",
-    attribute: "has_vignette",
-    sortBy: ["name:desc"],
-    transformItems: function (items) {
-      return items
-        .filter(function (item) { return item.label === "true"; })
-        .map(function (item) {
-          return Object.assign({}, item, {
-            label: "Vignetten",
-            highlighted: "Vignetten",
-          });
-        });
-    },
-  }),
-
-  instantsearch.widgets.refinementList({
-    container: "#has_verse",
-    attribute: "has_verse",
-    sortBy: ["name:desc"],
-    transformItems: function (items) {
-      return items
-        .filter(function (item) { return item.label === "true"; })
-        .map(function (item) {
-          return Object.assign({}, item, {
-            label: "Verse",
-            highlighted: "Verse",
-          });
-        });
-    },
+  createContainsFacetWidget({
+    containerSelector: "#contains_facets",
   }),
 
   // Person-level facets
@@ -447,8 +540,12 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#person_offences",
     attribute: "person_offences",
+    limit: 1000,
     sortBy: ["name:asc", "count:desc"],
     searchable: false,
+    cssClasses: {
+      list: "facet-list-scroll",
+    },
   }),
 
   instantsearch.widgets.refinementList({
@@ -465,8 +562,12 @@ search.addWidgets([
   instantsearch.widgets.refinementList({
     container: "#person_execution",
     attribute: "person_execution",
+    limit: 1000,
     sortBy: ["name:asc", "count:desc"],
     searchable: false,
+    cssClasses: {
+      list: "facet-list-scroll",
+    },
   }),
 ]);
 
@@ -600,7 +701,11 @@ search.start();
 
     function setButtonLabel() {
       const open = document.body.classList.contains(bodyClass);
-      button.textContent = open ? "Einklappen" : "Als Liste zeigen";
+      button.innerHTML = open
+        ? '<i class="bi bi-x-lg" aria-hidden="true"></i>'
+        : '<i class="bi bi-list" aria-hidden="true"></i>';
+      button.setAttribute("aria-label", open ? "Einklappen" : "Als Liste zeigen");
+      button.setAttribute("title", open ? "Einklappen" : "Als Liste zeigen");
     }
 
     function applyFilter() {
@@ -650,6 +755,20 @@ search.start();
     inputId: "executionPlaceFilter",
     bodyClass: "execution-place-list-visible",
     containerSelector: "#person_execution_places",
+  });
+
+  bindToggleAndFilter({
+    buttonId: "offenceListBtn",
+    inputId: "offenceFilter",
+    bodyClass: "offences-list-visible",
+    containerSelector: "#person_offences",
+  });
+
+  bindToggleAndFilter({
+    buttonId: "executionTypeListBtn",
+    inputId: "executionTypeFilter",
+    bodyClass: "execution-type-list-visible",
+    containerSelector: "#person_execution",
   });
 })();
 

@@ -1,0 +1,35 @@
+{
+  "name": "armesuenderblaetter-static",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint:check": "eslint . --cache --ext .js,.ts --ignore-path .gitignore",
+    "format:check": "prettier . \"!./html/**\" --cache --check --ext .js,.ts --ignore-path .gitignore",
+    "e2e:run_all_tests": "npx playwright test --project=chromium",
+    "e2e:edition_view": "npx playwright test e2e/specs/edition_view.spec.ts --project=chromium",
+    "e2e:edition_view_update_snapshots": "npx playwright test e2e/specs/edition_view.spec.ts --update-snapshots --project=chromium"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@acdh-oeaw/eslint-config": "^2.0.10",
+    "@acdh-oeaw/eslint-config-playwright": "^1.0.10",
+    "@acdh-oeaw/prettier-config": "^2.0.1",
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^20.19.24",
+    "ci-info": "^4.3.1",
+    "glob": "^13.0.6",
+    "playwright": "^1.58.2"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@acdh-oeaw/eslint-config",
+      "@acdh-oeaw/eslint-config/strict",
+      "@acdh-oeaw/eslint-config-playwright"
+    ]
+  },
+  "prettier": "@acdh-oeaw/prettier-config",
+  "type": "module"
+}

@@ -72,6 +72,12 @@ def unique_list(lst):
     return result
 
 
+OFFENCE_NORMALIZATION = {
+    "Degendiebstahl": "Diebstahl",
+    "Holzdiebstahl": "Diebstahl",
+}
+
+
 def aggregate_person_field(persons, field):
     """Collect all values from a field across persons, flatten arrays, deduplicate."""
     values = []
@@ -81,6 +87,10 @@ def aggregate_person_field(persons, field):
             values.extend(val)
         elif val:
             values.append(val)
+
+    if field == "offences":
+        values = [OFFENCE_NORMALIZATION.get(v, v) for v in values]
+
     return unique_list(values)
 
 

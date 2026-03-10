@@ -329,7 +329,7 @@ body.page-person-search .person-view-toggle input:focus-visible {
 
 body.page-person-search .person-left-section {
     background-color: transparent;
-    padding: 2rem 1rem 1.25rem;
+    /* padding: 2rem 1rem 1.25rem; */
     margin: 0 0 1rem;
     position: relative;
 }
@@ -558,7 +558,9 @@ body.page-person-search #birth_place,
 body.page-person-search #execution_places,
 body.page-person-search #person_names,
 body.page-person-search #person_birth_place,
-body.page-person-search #person_execution_places {
+body.page-person-search #person_execution_places,
+body.page-person-search #person_execution,
+body.page-person-search #person_offences {
     display: none;
 }
 
@@ -573,6 +575,14 @@ body.page-person-search.execution-place-list-visible #person_execution_places {
 }
 
 body.page-person-search.person-name-list-visible #person_names {
+    display: block;
+}
+
+body.page-person-search.offences-list-visible #person_offences {
+    display: block;
+}
+
+body.page-person-search.execution-type-list-visible #person_execution {
     display: block;
 }
 
@@ -613,8 +623,8 @@ body.page-person-search .person-name-search-inner .ais-SearchBox-input {
     padding: 0.35rem 0.5rem;
     /* InstantSearch theme places the submit/reset icons on top of the input;
        reserve horizontal space so the caret/text doesn't start under the icon. */
-    padding-left: 2.4rem !important;
-    padding-right: 2.4rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
     font-family: 'Barlow', sans-serif;
     font-weight: 400;
     font-size: 20px;
@@ -652,34 +662,42 @@ body.page-person-search .person-view-list-btn br {
     display: none;
 }
 
-/* "Enthält" row: Vignetten / Verse side by side */
-body.page-person-search .contains-facet-row {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    gap: 1rem;
+body.page-person-search #clear-refinements {
+    padding: 0.5rem 0 0;
 }
 
-body.page-person-search .contains-facet-row > div {
-    flex: 0 0 auto;
-}
-
-body.page-person-search .contains-facet-row .ais-RefinementList-list {
-    display: inline-flex;
-    flex-wrap: nowrap;
-    margin: 0;
+body.page-person-search #clear-refinements .ais-ClearRefinements {
+    text-align: left;
     padding: 0;
 }
 
-body.page-person-search .contains-facet-row::after {
-    /* Use the next heading separator instead (avoid double lines) */
-    content: none;
-    display: none;
+body.page-person-search #clear-refinements .ais-ClearRefinements-button {
+    appearance: none;
+    border: 2px solid var(--asb-background-colour-2-button);
+    border-radius: 9999px;
+    background-color: var(--asb-background-colour-2-button) !important;
+    color: var(--bs-white) !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.3rem;
+    padding: 0 1rem;
+    font-family: 'Cormorant', serif;
+    font-weight: 700;
+    font-size: 1.2em;
+    line-height: 1;
+    white-space: nowrap;
 }
 
-body.page-person-search .contains-facet-row {
-    position: relative;
-    padding-bottom: 0;
+body.page-person-search #clear-refinements .ais-ClearRefinements-button:hover:not(:disabled) {
+    background-color: var(--asb-background-color-4-button-hover) !important;
+    border-color: var(--asb-background-color-4-button-hover);
+}
+
+body.page-person-search #clear-refinements .ais-ClearRefinements-button:disabled,
+body.page-person-search #clear-refinements .ais-ClearRefinements-button--disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
 }
 
 /* Person search: pill-shaped refinement list items */
@@ -693,6 +711,7 @@ body.page-person-search .search-col-left .ais-RefinementList-list {
     list-style: none;
     padding: 0 !important;
     margin: 0 !important;
+    padding-top: 1em!important;
 }
 
 body.page-person-search .search-col-left .ais-RefinementList-item {
@@ -881,9 +900,13 @@ body.page-person-search .search-col-left .facet-list-scroll {
     row-gap: 0.5rem;
     padding: 0;
     max-height: 14rem;
+    overflow-y: auto;
+    overflow-x: hidden;
     border: 0 !important;
     border-radius: 0 !important;
 }
+
+
 
 body.page-search .person-left-tailpiece {
     display: block;

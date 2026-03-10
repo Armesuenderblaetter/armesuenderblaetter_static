@@ -607,7 +607,11 @@ search.start();
   function setListBtnLabel() {
     if (!listBtn) return;
     const open = document.body.classList.contains(NAME_LIST_CLASS);
-    listBtn.textContent = open ? "Einklappen" : "Als Liste zeigen";
+    listBtn.innerHTML = open
+      ? '<i class="bi bi-x-lg" aria-hidden="true"></i>'
+      : '<i class="bi bi-list" aria-hidden="true"></i>';
+    listBtn.setAttribute("aria-label", open ? "Einklappen" : "Als Liste zeigen");
+    listBtn.setAttribute("title", open ? "Einklappen" : "Als Liste zeigen");
   }
 
   function applySteckbriefView() {
@@ -654,7 +658,11 @@ search.start();
 
     function setButtonLabel() {
       const open = document.body.classList.contains(bodyClass);
-      button.textContent = open ? "Einklappen" : "Als Liste zeigen";
+      button.innerHTML = open
+        ? '<i class="bi bi-x-lg" aria-hidden="true"></i>'
+        : '<i class="bi bi-list" aria-hidden="true"></i>';
+      button.setAttribute("aria-label", open ? "Einklappen" : "Als Liste zeigen");
+      button.setAttribute("title", open ? "Einklappen" : "Als Liste zeigen");
     }
 
     function applyFilter() {
