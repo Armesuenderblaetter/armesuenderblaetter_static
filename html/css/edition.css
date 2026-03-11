@@ -207,6 +207,47 @@ span.sic {
     display: none;
 }
 
+span.choice-correction {
+    position: relative;
+    display: inline;
+}
+
+span.sic-inline {
+    display: inline-block;
+    color: #c00000 !important;
+    cursor: help;
+    font-weight: 700;
+    border: 1px solid #c00000;
+    border-radius: 3px;
+    padding: 0 0.2em;
+    line-height: 1.1;
+}
+
+span.sic-inline:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 0;
+    top: 1.6em;
+    background-color: aliceblue;
+    border: 0.1rem solid black;
+    border-radius: 5px;
+    padding: 0.3rem;
+    white-space: nowrap;
+    z-index: 10000;
+    font-style: normal;
+    font-size: 1rem;
+    font-family: var(--editor-font-family) !important;
+    color: var(--editor-font-color) !important;
+}
+
+span.choice-correction-marker {
+    display: none;
+}
+
+span.unclear-bracket {
+    color: #7a7a7a;
+}
+
 span.corr:hover + span.sic,
 span.corr + span.sic:hover {
     border: 0.1rem solid black;
@@ -247,14 +288,14 @@ br.lb.lb-hidden {
 }
 
 .token .wrapped-text:has(+ br.lb:not(.lb-hidden) + .wrapped-text)::after {
-    content: "⹀";
+    content: "⸗";
     margin-left: 0;
 }
 
 
 .split-word-part-1:has(+ br.lb.current:not([style*="display: none"]))::after,
 .split-word-part-1.current-page:has(+ br.lb.current)::after {
-    content: "⹀";
+    content: "⸗";
     margin-left: 0px;
 }
 
@@ -292,8 +333,44 @@ a.personview::before {
 ul {
     border-bottom: unset!important;
 }
-ul#witness_overview.nav.nav-tabs li.nav-item button.nav-link {
+ul#witness_overview.nav.nav-tabs li.nav-item button.nav-link,
+ul#witness_overview.nav.nav-tabs li.nav-item a.nav-link {
     font-weight: bold;
+}
+
+/* Witness tabs: small pill buttons, always visible for all witnesses */
+ul#witness_overview.nav.nav-tabs {
+    gap: 0.25em;
+}
+
+ul#witness_overview.nav.nav-tabs li.nav-item a.nav-link {
+    background-color: var(--asb-background-colour-1-button) !important;
+    color: var(--bs-white) !important;
+    border: 0 !important;
+    border-radius: 9999px !important;
+    padding: 0.45em 0.8em;
+    margin: 0.1em 0.15em;
+    text-decoration: none;
+    font-family: 'Cormorant', serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+ul#witness_overview.nav.nav-tabs li.nav-item a.nav-link:hover,
+ul#witness_overview.nav.nav-tabs li.nav-item a.nav-link:focus {
+    background-color: var(--asb-background-colour-1-button-hover) !important;
+    color: var(--bs-white) !important;
+    text-decoration: none;
+}
+
+ul#witness_overview.nav.nav-tabs li.nav-item a.nav-link.active {
+    background-color: var(--asb-link-colour) !important;
+    color: var(--bs-white) !important;
 }
 
 ul#witness_pagination_tabs.nav.nav-tabs li.nav-item button.nav-link {

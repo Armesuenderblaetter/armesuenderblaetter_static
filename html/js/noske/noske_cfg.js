@@ -185,7 +185,7 @@ const clientConfig = {
   base: getNoskeBaseUrl(),
   corpname: "flugblaetter",
   attrs: "word,lemma,pos,vocab,id",
-  structs: "doc,head,p,lg,l,placeName,quote,bibl,persName,date,cit,g",
+  structs: "doc,head,p,lg,l,placeName,quote,bibl,persName,date,cit,g,pb",
   refs: "doc.id,doc.year,doc.title,pb.n,doc.attrs,persName.id,doc.archive",
   kwicrightctx: "45#",
   kwicleftctx: "45#",

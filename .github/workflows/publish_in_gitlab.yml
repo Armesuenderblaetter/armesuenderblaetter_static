@@ -61,6 +61,8 @@ jobs:
     - name: Build
       run: |
         ant
+    - name: Put OSD scripts in html tree
+      run: mv openseadragon-bin-6.0.1 html/js/openseadragon
     - name: Verify required static assets
       run: |
         test -f html/js/document_search.js

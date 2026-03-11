@@ -75,50 +75,86 @@
         <xsl:value-of select="concat(substring-before(., $stripped_string), $stripped_string, ' ')" />
     </xsl:template>
     <xsl:template match="tei:app[tei:lem]">
-        <xsl:variable name="num">
-            <xsl:number level="any"/>
-        </xsl:variable>
+        <xsl:param name="current_witness_id" tunnel="yes" select="''"/>
         <xsl:variable name="num">
             <xsl:number level="any"/>
         </xsl:variable>
         <xsl:variable name="app_id" select="concat('app_', $num)"/>
-        <span class="variant-container" data-app-id="{$app_id}">
-            <!-- Process lem elements -->
-            <xsl:for-each select="tei:lem">
-                <xsl:variable name="witness_name" select="substring-after(@wit, '#')"/>
-                <xsl:variable name="witness_label" select="local:witness-label(., $witness_name)"/>
-                <span class="variant-reading lem" data-variant-type="lem">
-                    <xsl:if test="$witness_label != ''">
-                        <xsl:attribute name="data-witness" select="$witness_label"/>
-                    </xsl:if>
-                    <xsl:apply-templates select="node()"/>
+        <xsl:variable name="wit_ref" select="concat('#', $current_witness_id)"/>
+        <xsl:choose>
+            <!-- Per-witness mode: show only the reading for this witness -->
+            <xsl:when test="$current_witness_id != ''">
+                <xsl:choose>
+                    <!-- Specific lem for this witness -->
+                    <xsl:when test="tei:lem[@wit = $wit_ref]">
+                        <xsl:apply-templates select="tei:lem[@wit = $wit_ref][1]/node()"/>
+                    </xsl:when>
+                    <!-- Specific rdg for this witness -->
+                    <xsl:when test="tei:rdg[@wit = $wit_ref]">
+                        <xsl:apply-templates select="tei:rdg[@wit = $wit_ref][1]/node()"/>
+                    </xsl:when>
+                    <!-- Default lem without @wit -->
+                    <xsl:when test="tei:lem[not(@wit)]">
+                        <xsl:apply-templates select="tei:lem[not(@wit)][1]/node()"/>
+                    </xsl:when>
+                    <!-- Fallback: first lem -->
+                    <xsl:otherwise>
+                        <xsl:apply-templates select="tei:lem[1]/node()"/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:when>
+            <!-- Original behavior (no per-witness filtering) -->
+            <xsl:otherwise>
+                <span class="variant-container" data-app-id="{$app_id}">
+                    <xsl:for-each select="tei:lem">
+                        <xsl:variable name="witness_name" select="substring-after(@wit, '#')"/>
+                        <xsl:variable name="witness_label" select="local:witness-label(., $witness_name)"/>
+                        <span class="variant-reading lem" data-variant-type="lem">
+                            <xsl:if test="$witness_label != ''">
+                                <xsl:attribute name="data-witness" select="$witness_label"/>
+                            </xsl:if>
+                            <xsl:apply-templates select="node()"/>
+                        </span>
+                    </xsl:for-each>
+                    <xsl:for-each select="tei:rdg">
+                        <xsl:variable name="witness_name" select="substring-after(@wit, '#')"/>
+                        <xsl:variable name="witness_label" select="local:witness-label(., $witness_name)"/>
+                        <span class="variant-reading rdg" data-variant-type="rdg">
+                            <xsl:if test="$witness_label != ''">
+                                <xsl:attribute name="data-witness" select="$witness_label"/>
+                            </xsl:if>
+                            <xsl:apply-templates select="node()"/>
+                        </span>
+                    </xsl:for-each>
                 </span>
-            </xsl:for-each>
-            <!-- Process rdg elements -->
-            <xsl:for-each select="tei:rdg">
-                <xsl:variable name="witness_name" select="substring-after(@wit, '#')"/>
-                <xsl:variable name="witness_label" select="local:witness-label(., $witness_name)"/>
-                <span class="variant-reading rdg" data-variant-type="rdg">
-                    <xsl:if test="$witness_label != ''">
-                        <xsl:attribute name="data-witness" select="$witness_label"/>
-                    </xsl:if>
-                    <xsl:apply-templates select="node()"/>
-                </span>
-            </xsl:for-each>
-        </span>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     <xsl:template match="tei:app[not(tei:lem)]">
+        <xsl:param name="current_witness_id" tunnel="yes" select="''"/>
         <xsl:variable name="num">
             <xsl:number level="any"/>
         </xsl:variable>
-        <span class="empty_lemma">
-            <a class="variant_anchor_link" href="#app_{$num}">
-                <xsl:attribute name="id">
-                    <xsl:value-of select="concat('var_', $num)"/>
-                </xsl:attribute>
-                <xsl:value-of select="' '"/>
-            </a>
-        </span>
+        <xsl:variable name="wit_ref" select="concat('#', $current_witness_id)"/>
+        <xsl:choose>
+            <!-- Per-witness mode: show only the rdg for this witness -->
+            <xsl:when test="$current_witness_id != ''">
+                <xsl:if test="tei:rdg[@wit = $wit_ref]">
+                    <xsl:apply-templates select="tei:rdg[@wit = $wit_ref][1]/node()"/>
+                </xsl:if>
+            </xsl:when>
+            <!-- Original behavior -->
+            <xsl:otherwise>
+                <span class="empty_lemma">
+                    <a class="variant_anchor_link" href="#app_{$num}">
+                        <xsl:attribute name="id">
+                            <xsl:value-of select="concat('var_', $num)"/>
+                        </xsl:attribute>
+                        <xsl:value-of select="' '"/>
+                    </a>
+                </span>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     <!-- add whitespace after tei:w, but preserve tei:app handling -->
     <xsl:template match="tei:w" mode="#all">
@@ -166,18 +202,31 @@
     </xsl:template>
 
     <xsl:template match="tei:pb" mode="#all">
-        <xsl:variable name="witness_id" select="if (@edRef) then replace(@edRef, '^#', '') else ''"/>
-        <xsl:variable name="witness_label" select="if ($witness_id != '' and local:has-multiple-witnesses(.))
-            then local:witness-label(., $witness_id)
-            else ''" />
-        <!-- Use witness_label for the CSS class when available, fall back to @type or 'primary' -->
-        <xsl:variable name="pb_type" select="if ($witness_label != '') then $witness_label
-            else if(@type) then @type else 'primary'"/>
-        <span class="pb {$pb_type}" source="{@facs}" data-pb-type="{$pb_type}">
-            <xsl:if test="$witness_label != ''">
-                <xsl:attribute name="data-witness" select="$witness_label"/>
-            </xsl:if>
-        </span>
+        <xsl:param name="current_witness_id" tunnel="yes" select="''"/>
+        <xsl:variable name="pb_edRef" select="if (@edRef) then replace(@edRef, '^#', '') else ''"/>
+        <xsl:choose>
+            <!-- Per-witness mode: only render pb for the current witness or common pb -->
+            <xsl:when test="$current_witness_id != ''">
+                <xsl:if test="$pb_edRef = '' or $pb_edRef = $current_witness_id">
+                    <!-- In per-witness pages, all pbs are treated as primary -->
+                    <span class="pb primary" source="{@facs}" data-pb-type="primary">
+                    </span>
+                </xsl:if>
+            </xsl:when>
+            <!-- Original behavior -->
+            <xsl:otherwise>
+                <xsl:variable name="witness_label" select="if ($pb_edRef != '' and local:has-multiple-witnesses(.))
+                    then local:witness-label(., $pb_edRef)
+                    else ''" />
+                <xsl:variable name="pb_type" select="if ($witness_label != '') then $witness_label
+                    else if(@type) then @type else 'primary'"/>
+                <span class="pb {$pb_type}" source="{@facs}" data-pb-type="{$pb_type}">
+                    <xsl:if test="$witness_label != ''">
+                        <xsl:attribute name="data-witness" select="$witness_label"/>
+                    </xsl:if>
+                </span>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     <xsl:template match="tei:pb" mode="app">
         <xsl:text> | </xsl:text>
@@ -187,8 +236,19 @@
         <xsl:apply-templates mode="app" select="./tei:sic"/>
     </xsl:template>
     <xsl:template match="tei:choice">
-        <xsl:apply-templates select="./tei:corr"/>
-        <xsl:apply-templates select="./tei:sic"/>
+        <xsl:variable name="corr_text" select="normalize-space(string-join(./tei:corr//text(), ' '))"/>
+        <xsl:choose>
+            <xsl:when test="tei:sic and tei:corr">
+                <span class="choice-correction">
+                    <span class="sic-inline" data-tooltip="{concat('Korrektur: ', $corr_text)}">
+                        <xsl:apply-templates select="./tei:sic/node()"/>
+                    </span>
+                </span>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates/>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     <xsl:template match="tei:corr">
         <span class="corr">
@@ -211,9 +271,18 @@
         </span>
     </xsl:template>
     <xsl:template match="tei:unclear">
-        <abbr title="unclear">
+        <span class="unclear-bracket" title="unclear">
+            <xsl:text>[</xsl:text>
             <xsl:apply-templates/>
-        </abbr>
+            <xsl:text>]</xsl:text>
+        </span>
+    </xsl:template>
+    <xsl:template match="tei:unclear" mode="replace-equals">
+        <span class="unclear-bracket" title="unclear">
+            <xsl:text>[</xsl:text>
+            <xsl:apply-templates mode="replace-equals"/>
+            <xsl:text>]</xsl:text>
+        </span>
     </xsl:template>
     <xsl:template match="tei:del">
         <del>
@@ -266,24 +335,30 @@
         </span>
     </xsl:template>
     <xsl:template match="tei:lb" mode="#all">
-        <xsl:variable name="witness_id" select="if (@edRef) then replace(@edRef, '^#', '') else ''"/>
-        <xsl:variable name="witness_label" select="if ($witness_id != '' and local:has-multiple-witnesses(.))
-            then local:witness-label(., $witness_id)
-            else ''"/>
-        <xsl:if test="not(preceding-sibling::*[1][local-name() = 'head'])">
-            <xsl:element name="br">
-                <xsl:attribute name="class" select="normalize-space(concat('lb ', local:resp-classes(.)))"/>
-                <xsl:if test="$witness_label != ''">
-                    <xsl:attribute name="data-witness" select="$witness_label"/>
+        <xsl:param name="current_witness_id" tunnel="yes" select="''"/>
+        <xsl:variable name="lb_edRef" select="if (@edRef) then replace(@edRef, '^#', '') else ''"/>
+        <xsl:choose>
+            <!-- Per-witness mode: only render lb for the current witness or common lb -->
+            <xsl:when test="$current_witness_id != ''">
+                <xsl:if test="$lb_edRef = '' or $lb_edRef = $current_witness_id">
+                    <xsl:element name="br">
+                        <xsl:attribute name="class" select="normalize-space(concat('lb ', local:resp-classes(.)))"/>
+                    </xsl:element>
                 </xsl:if>
-            </xsl:element>
-        </xsl:if>
-        <!-- <xsl:element name="br">
-            <xsl:attribute name="class" select="normalize-space(concat('lb ', local:resp-classes(.)))"/>
-            <xsl:if test="$witness_label != ''">
-                <xsl:attribute name="data-witness" select="$witness_label"/>
-            </xsl:if>
-        </xsl:element> -->
+            </xsl:when>
+            <!-- Original behavior -->
+            <xsl:otherwise>
+                <xsl:variable name="witness_label" select="if ($lb_edRef != '' and local:has-multiple-witnesses(.))
+                    then local:witness-label(., $lb_edRef)
+                    else ''"/>
+                <xsl:element name="br">
+                    <xsl:attribute name="class" select="normalize-space(concat('lb ', local:resp-classes(.)))"/>
+                    <xsl:if test="$witness_label != ''">
+                        <xsl:attribute name="data-witness" select="$witness_label"/>
+                    </xsl:if>
+                </xsl:element>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     <xsl:template match="tei:note">
         <xsl:choose>
@@ -351,28 +426,28 @@
                     select="exists(ancestor::tei:l | ancestor::tei:p | ancestor::tei:head)"/>
                 <xsl:element name="{if ($is_inline_context) then 'span' else 'div'}">
                     <xsl:attribute name="class" select="normalize-space(concat('col catch ', $rendering, ' fw'))"/>
-                    <xsl:apply-templates/>
+                    <xsl:apply-templates mode="replace-equals"/>
                 </xsl:element>
             </xsl:when>
             <xsl:when test="@type = 'footer'">
                 <div class="{normalize-space(concat('row layer_counter ', $rendering, 'fw'))}">
                     <div class="col fw" />
-                    <xsl:apply-templates/>
+                    <xsl:apply-templates mode="replace-equals"/>
                 </div>
             </xsl:when>
             <xsl:when test="@type = 'pageNum'">
                 <div class="{normalize-space(concat('col page_number ', $rendering, 'fw'))}">
-                    <xsl:apply-templates/>
+                    <xsl:apply-templates mode="replace-equals"/>
                 </div>
             </xsl:when>
             <xsl:when test="@type = 'sig'">
                 <div class="{normalize-space(concat('col sig ', $rendering, 'fw'))}">
-                    <xsl:apply-templates/>
+                    <xsl:apply-templates mode="replace-equals"/>
                 </div>
             </xsl:when>
             <xsl:when test="@type = 'footnote'">
                 <span class="{normalize-space(concat('footnote ', $rendering, 'fw'))}">
-                    <xsl:apply-templates/>
+                    <xsl:apply-templates mode="replace-equals"/>
                 </span>
             </xsl:when>
         </xsl:choose>
@@ -1091,28 +1166,49 @@
     </xsl:template>
     <!-- Improved tei:app template: wrap both lem and rdg in spans with data-witness, and add a space after each -->
     <xsl:template match="tei:app" mode="#all">
-        <span class="app" id="{@xml:id}">
-            <xsl:for-each select="tei:lem">
-                <xsl:variable name="witness_label" select="local:witness-label(., substring-after(@wit, '#'))"/>
-                <span class="rdg">
-                    <xsl:if test="$witness_label != ''">
-                        <xsl:attribute name="data-witness" select="$witness_label"/>
-                    </xsl:if>
-                    <xsl:apply-templates select="." mode="#current"/>
+        <xsl:param name="current_witness_id" tunnel="yes" select="''"/>
+        <xsl:variable name="wit_ref" select="concat('#', $current_witness_id)"/>
+        <xsl:choose>
+            <!-- Per-witness mode: show only the reading for this witness -->
+            <xsl:when test="$current_witness_id != ''">
+                <xsl:choose>
+                    <xsl:when test="(tei:lem|tei:rdg)[@wit = $wit_ref]">
+                        <xsl:apply-templates select="(tei:lem|tei:rdg)[@wit = $wit_ref][1]" mode="#current"/>
+                    </xsl:when>
+                    <xsl:when test="tei:lem[not(@wit)]">
+                        <xsl:apply-templates select="tei:lem[not(@wit)][1]" mode="#current"/>
+                    </xsl:when>
+                    <xsl:when test="tei:lem">
+                        <xsl:apply-templates select="tei:lem[1]" mode="#current"/>
+                    </xsl:when>
+                </xsl:choose>
+            </xsl:when>
+            <!-- Original behavior -->
+            <xsl:otherwise>
+                <span class="app" id="{@xml:id}">
+                    <xsl:for-each select="tei:lem">
+                        <xsl:variable name="witness_label" select="local:witness-label(., substring-after(@wit, '#'))"/>
+                        <span class="rdg">
+                            <xsl:if test="$witness_label != ''">
+                                <xsl:attribute name="data-witness" select="$witness_label"/>
+                            </xsl:if>
+                            <xsl:apply-templates select="." mode="#current"/>
+                        </span>
+                        <xsl:text> </xsl:text>
+                    </xsl:for-each>
+                    <xsl:for-each select="tei:rdg">
+                        <xsl:variable name="witness_label" select="local:witness-label(., substring-after(@wit, '#'))"/>
+                        <span class="rdg">
+                            <xsl:if test="$witness_label != ''">
+                                <xsl:attribute name="data-witness" select="$witness_label"/>
+                            </xsl:if>
+                            <xsl:apply-templates select="." mode="#current"/>
+                        </span>
+                        <xsl:text> </xsl:text>
+                    </xsl:for-each>
                 </span>
-                <xsl:text> </xsl:text>
-            </xsl:for-each>
-            <xsl:for-each select="tei:rdg">
-                <xsl:variable name="witness_label" select="local:witness-label(., substring-after(@wit, '#'))"/>
-                <span class="rdg">
-                    <xsl:if test="$witness_label != ''">
-                        <xsl:attribute name="data-witness" select="$witness_label"/>
-                    </xsl:if>
-                    <xsl:apply-templates select="." mode="#current"/>
-                </span>
-                <xsl:text> </xsl:text>
-            </xsl:for-each>
-        </span>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     <!-- <xsl:template match="tei:rs[@ref or @key]">
         <strong>
@@ -1128,7 +1224,7 @@
     
     <!-- Templates for replace-equals mode -->
     <xsl:template match="text()" mode="replace-equals">
-        <xsl:value-of select="replace(., '=', '⹀')"/>
+        <xsl:value-of select="replace(., '=', '⸗')"/>
     </xsl:template>
     
     <xsl:template match="*" mode="replace-equals">
@@ -1139,28 +1235,49 @@
     </xsl:template>
 
     <xsl:template match="tei:app" mode="replace-equals">
-        <span class="app" id="{@xml:id}">
-            <xsl:for-each select="tei:lem">
-                <xsl:variable name="witness_label" select="local:witness-label(., substring-after(@wit, '#'))"/>
-                <span class="rdg">
-                    <xsl:if test="$witness_label != ''">
-                        <xsl:attribute name="data-witness" select="$witness_label"/>
-                    </xsl:if>
-                    <xsl:apply-templates mode="replace-equals"/>
+        <xsl:param name="current_witness_id" tunnel="yes" select="''"/>
+        <xsl:variable name="wit_ref" select="concat('#', $current_witness_id)"/>
+        <xsl:choose>
+            <!-- Per-witness mode: show only the reading for this witness -->
+            <xsl:when test="$current_witness_id != ''">
+                <xsl:choose>
+                    <xsl:when test="(tei:lem|tei:rdg)[@wit = $wit_ref]">
+                        <xsl:apply-templates select="(tei:lem|tei:rdg)[@wit = $wit_ref][1]/node()" mode="replace-equals"/>
+                    </xsl:when>
+                    <xsl:when test="tei:lem[not(@wit)]">
+                        <xsl:apply-templates select="tei:lem[not(@wit)][1]/node()" mode="replace-equals"/>
+                    </xsl:when>
+                    <xsl:when test="tei:lem">
+                        <xsl:apply-templates select="tei:lem[1]/node()" mode="replace-equals"/>
+                    </xsl:when>
+                </xsl:choose>
+            </xsl:when>
+            <!-- Original behavior -->
+            <xsl:otherwise>
+                <span class="app" id="{@xml:id}">
+                    <xsl:for-each select="tei:lem">
+                        <xsl:variable name="witness_label" select="local:witness-label(., substring-after(@wit, '#'))"/>
+                        <span class="rdg">
+                            <xsl:if test="$witness_label != ''">
+                                <xsl:attribute name="data-witness" select="$witness_label"/>
+                            </xsl:if>
+                            <xsl:apply-templates mode="replace-equals"/>
+                        </span>
+                        <xsl:text> </xsl:text>
+                    </xsl:for-each>
+                    <xsl:for-each select="tei:rdg">
+                        <xsl:variable name="witness_label" select="local:witness-label(., substring-after(@wit, '#'))"/>
+                        <span class="rdg">
+                            <xsl:if test="$witness_label != ''">
+                                <xsl:attribute name="data-witness" select="$witness_label"/>
+                            </xsl:if>
+                            <xsl:apply-templates mode="replace-equals"/>
+                        </span>
+                        <xsl:text> </xsl:text>
+                    </xsl:for-each>
                 </span>
-                <xsl:text> </xsl:text>
-            </xsl:for-each>
-            <xsl:for-each select="tei:rdg">
-                <xsl:variable name="witness_label" select="local:witness-label(., substring-after(@wit, '#'))"/>
-                <span class="rdg">
-                    <xsl:if test="$witness_label != ''">
-                        <xsl:attribute name="data-witness" select="$witness_label"/>
-                    </xsl:if>
-                    <xsl:apply-templates mode="replace-equals"/>
-                </span>
-                <xsl:text> </xsl:text>
-            </xsl:for-each>
-        </span>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     
 </xsl:stylesheet>
