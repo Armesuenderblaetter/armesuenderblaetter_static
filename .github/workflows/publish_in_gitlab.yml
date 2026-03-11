@@ -57,10 +57,13 @@ jobs:
         uv run ./pyscripts/ts_index.py
     - name: denormalize
       run: |
+        uv run ./shellscripts/split_milestone_gesamt.sh
+        ant add-attributes
+        uv run ./pyscripts/add_facsimiles.py
         uv run ./shellscripts/denormalize_indices.sh
     - name: Build
       run: |
-        ant
+        ant default
     - name: Verify required static assets
       run: |
         test -f html/js/document_search.js
