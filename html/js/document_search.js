@@ -359,11 +359,17 @@ function createContainsFacetWidget({ containerSelector }) {
 }
 
 // ---------- Widgets ----------
+const hasMainSearchbox = !!document.querySelector("#searchbox");
+
 search.addWidgets([
-  instantsearch.widgets.searchBox({
-    container: "#searchbox",
-    autofocus: true,
-  }),
+  ...(hasMainSearchbox
+    ? [
+        instantsearch.widgets.searchBox({
+          container: "#searchbox",
+          autofocus: true,
+        }),
+      ]
+    : []),
 
   createFacetSliderWidget({
     sliderContainer: "#decadeAgeSlider",

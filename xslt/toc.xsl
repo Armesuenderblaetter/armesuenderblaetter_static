@@ -27,16 +27,6 @@
                                 </label>
                             </div>
 
-                            <!-- Document-level facets -->
-                            <div class="person-left-section person-left-section--name">
-                                <h3 class="person-left-heading">TITEL</h3>
-                                <div class="person-name-search">
-                                    <div class="person-name-search-inner">
-                                        <div id="searchbox"></div>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="person-left-facet">
                                 <h3 class="person-left-heading">Publikationsdatum</h3>
                                     <div class="person-age-pill" aria-label="Publikationsdatum filtern">
@@ -48,14 +38,6 @@
                                         </div>
                                     </div>
                                     <div id="label_date" class="person-age-hidden"></div>
-                            </div>
-                            <div class="person-left-facet">
-                                <h3 class="person-left-heading">Archiv</h3>
-                                <div id="archives"></div>
-                            </div>
-                            <div class="person-left-facet">
-                                <h3 class="person-left-heading">Enthält</h3>
-                                <div id="contains_facets"></div>
                             </div>
 
                             <!-- Person-level facets -->
@@ -152,6 +134,14 @@
                                     </div>
                                 </div>
                                 <div id="person_execution"></div>
+                            </div>
+                            <div class="person-left-facet">
+                                <h3 class="person-left-heading">Archiv</h3>
+                                <div id="archives"></div>
+                            </div>
+                            <div class="person-left-facet">
+                                <h3 class="person-left-heading">Enthält</h3>
+                                <div id="contains_facets"></div>
                             </div>
                             <div id="sort-by"></div>
                             <div id="clear-refinements"></div>
