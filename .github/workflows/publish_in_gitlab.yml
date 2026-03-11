@@ -28,14 +28,10 @@ jobs:
       uses: actions/checkout@v4
     - name: Install Saxon, Ant and Python
       run: |
-        # apt-get update && apt-get install openjdk-11-jre-headless ant -y --no-install-recommend
-        ./shellscripts/dl_saxon.sh
-        python -m pip config set global.break-system-packages true
-        pip install -r requirements.txt
-    - name: Download OSD
-      run: |
-        curl -LO https://github.com/openseadragon/openseadragon/releases/download/v6.0.1/openseadragon-bin-6.0.1.tar.gz
-        tar xvfz openseadragon-bin-6.0.1.tar.gz
+        # python -m pip config set global.break-system-packages true
+        pip install -U pip
+        pip install uv
+        uv run ./shellscripts/dl_saxon.sh
     - name: clone data output repo
       run: |
         rm -rf data_repo  data
@@ -48,20 +44,20 @@ jobs:
         cp -r data_repo/xml/indices/ data
         cp -r data_repo/json .
         cp -r data_repo/meta/ data
-        ./shellscripts/dl_imprint.sh
+        uv run ./shellscripts/dl_imprint.sh
     - name: Filter editions for Vienna executions
       run: |
-        python pyscripts/filter_editions.py --editions-dir data/editions --events-file data/indices/events.xml
+        uv run pyscripts/filter_editions.py --editions-dir data/editions --events-file data/indices/events.xml
     - name: Filter Typesense JSON to match surviving editions
       run: |
-        python pyscripts/filter_typesense_json.py --editions-dir data/editions --typesense-json json/typesense_entries.json --persons-json json/persons.json
+        uv run pyscripts/filter_typesense_json.py --editions-dir data/editions --typesense-json json/typesense_entries.json --persons-json json/persons.json
     - name: setup typesense
       run: |
         # ./pyscripts/reverse_name.py ./json/persons.json
-        ./pyscripts/ts_index.py
+        uv run ./pyscripts/ts_index.py
     - name: denormalize
       run: |
-        ./shellscripts/denormalize_indices.sh
+        uv run ./shellscripts/denormalize_indices.sh
     - name: Build
       run: |
         ant

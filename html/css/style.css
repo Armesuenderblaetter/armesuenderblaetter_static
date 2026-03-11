@@ -694,7 +694,7 @@ main.meta, .contents-frame{
 }
 
 *.indent {
-    display: block;
+    /* display: block; */
     margin-left: 2em !important;
 }
 

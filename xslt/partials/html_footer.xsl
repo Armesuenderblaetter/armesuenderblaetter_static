@@ -36,7 +36,7 @@
                             </div>
                              <div class="col-3 logo">
                                  <a href="https://wien.gv.at">
-                                        <img src="images/logo_stadtwien.png" width="90%" alt="Stadt Wien" title="Stadt Wien"/>
+                                        <img src="images/logo_stadtwien.png" max-width="90%" alt="Stadt Wien" title="Stadt Wien"/>
                                     </a>
                             </div>
                         </div>
