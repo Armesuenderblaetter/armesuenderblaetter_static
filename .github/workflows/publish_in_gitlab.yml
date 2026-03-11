@@ -32,6 +32,10 @@ jobs:
         ./shellscripts/dl_saxon.sh
         python -m pip config set global.break-system-packages true
         pip install -r requirements.txt
+    - name: Download OSD
+      run: |
+        curl -LO https://github.com/openseadragon/openseadragon/releases/download/v6.0.1/openseadragon-bin-6.0.1.tar.gz
+        tar xvfz openseadragon-bin-6.0.1.tar.gz
     - name: clone data output repo
       run: |
         rm -rf data_repo  data
@@ -61,6 +65,8 @@ jobs:
     - name: Build
       run: |
         ant
+    - name: Put OSD scripts in html tree
+      run: mv openseadragon-bin-6.0.1 html/js/openseadragon
     - name: Verify required static assets
       run: |
         test -f html/js/document_search.js

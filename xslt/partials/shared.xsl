@@ -236,8 +236,19 @@
         <xsl:apply-templates mode="app" select="./tei:sic"/>
     </xsl:template>
     <xsl:template match="tei:choice">
-        <xsl:apply-templates select="./tei:corr"/>
-        <xsl:apply-templates select="./tei:sic"/>
+        <xsl:variable name="corr_text" select="normalize-space(string-join(./tei:corr//text(), ' '))"/>
+        <xsl:choose>
+            <xsl:when test="tei:sic and tei:corr">
+                <span class="choice-correction">
+                    <span class="sic-inline" data-tooltip="{concat('Korrektur: ', $corr_text)}">
+                        <xsl:apply-templates select="./tei:sic/node()"/>
+                    </span>
+                </span>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates/>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     <xsl:template match="tei:corr">
         <span class="corr">
@@ -260,9 +271,18 @@
         </span>
     </xsl:template>
     <xsl:template match="tei:unclear">
-        <abbr title="unclear">
+        <span class="unclear-bracket" title="unclear">
+            <xsl:text>[</xsl:text>
             <xsl:apply-templates/>
-        </abbr>
+            <xsl:text>]</xsl:text>
+        </span>
+    </xsl:template>
+    <xsl:template match="tei:unclear" mode="replace-equals">
+        <span class="unclear-bracket" title="unclear">
+            <xsl:text>[</xsl:text>
+            <xsl:apply-templates mode="replace-equals"/>
+            <xsl:text>]</xsl:text>
+        </span>
     </xsl:template>
     <xsl:template match="tei:del">
         <del>
@@ -406,28 +426,28 @@
                     select="exists(ancestor::tei:l | ancestor::tei:p | ancestor::tei:head)"/>
                 <xsl:element name="{if ($is_inline_context) then 'span' else 'div'}">
                     <xsl:attribute name="class" select="normalize-space(concat('col catch ', $rendering, ' fw'))"/>
-                    <xsl:apply-templates/>
+                    <xsl:apply-templates mode="replace-equals"/>
                 </xsl:element>
             </xsl:when>
             <xsl:when test="@type = 'footer'">
                 <div class="{normalize-space(concat('row layer_counter ', $rendering, 'fw'))}">
                     <div class="col fw" />
-                    <xsl:apply-templates/>
+                    <xsl:apply-templates mode="replace-equals"/>
                 </div>
             </xsl:when>
             <xsl:when test="@type = 'pageNum'">
                 <div class="{normalize-space(concat('col page_number ', $rendering, 'fw'))}">
-                    <xsl:apply-templates/>
+                    <xsl:apply-templates mode="replace-equals"/>
                 </div>
             </xsl:when>
             <xsl:when test="@type = 'sig'">
                 <div class="{normalize-space(concat('col sig ', $rendering, 'fw'))}">
-                    <xsl:apply-templates/>
+                    <xsl:apply-templates mode="replace-equals"/>
                 </div>
             </xsl:when>
             <xsl:when test="@type = 'footnote'">
                 <span class="{normalize-space(concat('footnote ', $rendering, 'fw'))}">
-                    <xsl:apply-templates/>
+                    <xsl:apply-templates mode="replace-equals"/>
                 </span>
             </xsl:when>
         </xsl:choose>
@@ -1194,7 +1214,7 @@
     
     <!-- Templates for replace-equals mode -->
     <xsl:template match="text()" mode="replace-equals">
-        <xsl:value-of select="replace(., '=', '⹀')"/>
+        <xsl:value-of select="replace(., '=', '⸗')"/>
     </xsl:template>
     
     <xsl:template match="*" mode="replace-equals">

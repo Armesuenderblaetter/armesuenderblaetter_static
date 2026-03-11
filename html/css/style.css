@@ -60,14 +60,13 @@
     /* --site-top-action-height: clamp(2.6rem, 4vw, 3.5rem); */
     --noske-search-btn-size: 2rem;
     --asb-footer-secondary-height: 2rem ;
-    --asb-footer-primary-height: 7rem ;
+    --asb-footer-primary-height: 9rem ;
 }
 
 /* On screens wider than 1920px, restore the original (wider) offcanvas width */
 @media (min-width: 1921px) {
     :root {
          --site-offcanvas-width: clamp(240px, 11vw, 14vw);
-        --asb-footer-primary-height: 9rem ;
         --asb-footer-secondary-height: 3rem ;
         --asb-square-btn-size: 4.5rem;
         --asb-square-btn-icon-size: 2.625rem;
