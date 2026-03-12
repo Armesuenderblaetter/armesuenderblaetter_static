@@ -194,34 +194,13 @@
             </xsl:result-document>
         </xsl:for-each>
 
-                            <div class="nav-buttons">
-                                <a class="square-button bottom-button  ais-Pagination-item" href="{$site_bottom_corner_toc_href}" role="button" aria-label="{$site_bottom_corner_toc_aria_label}" alt="{$site_bottom_corner_home_aria_label}">
-                                    <i class="{$site_bottom_corner_toc_icon_class}" aria-hidden="true"></i>
-                                </a>
-                                <a class="square-button bottom-button  ais-Pagination-item" href="{$site_bottom_corner_home_href}" role="button" aria-label="{$site_bottom_corner_home_aria_label}" alt="{$site_bottom_corner_home_aria_label}">
-                                    <i class="{$site_bottom_corner_home_icon_class}" aria-hidden="true"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </main>
-                <xsl:call-template name="html_footer"/>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"/>
-                <script type="text/javascript" src="js/osd_scroll.js"/>
-                <xsl:if test="count(//tei:witness) &gt; 1">
-                    <script type="text/javascript" src="js/witness_switcher.js"/>
-                </xsl:if>
-                <script src="https://unpkg.com/de-micro-editor@0.3.4/dist/de-editor.min.js"/>
-                <script type="text/javascript" src="js/run.js"/>
-                <!-- <script type="text/javascript">
-                    document.querySelectorAll('.d-block.indent').forEach(function(el) {
-                        var prev = el.previousElementSibling;
-                        if (prev &amp;&amp; prev.classList.contains('pb')) {
-                            el.classList.remove('indent');
-                        }
-                    });
-                </script> -->
-            </body>
-        </html>
+              <!-- Default Ant output: redirect to witness 1 page -->
+        <html lang="de">
+            <head>
+                <meta http-equiv="refresh" content="0;url={concat($base_name, '_1.html')}"/>
+                <title><xsl:value-of select="$doc_title"/></title>
+            </head> 
+            <body/>
+        </html> 
     </xsl:template>
 </xsl:stylesheet>
